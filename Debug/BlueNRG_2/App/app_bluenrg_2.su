@@ -1,0 +1,11 @@
+app_bluenrg_2.c:131:6:MX_BlueNRG_2_Init	8	static
+app_bluenrg_2.c:153:6:MX_BlueNRG_2_Process	8	static
+app_bluenrg_2.c:172:13:User_Init	8	static
+app_bluenrg_2.c:183:13:User_Process	272	static
+app_bluenrg_2.c:269:6:handle_vendor_command	280	static
+app_bluenrg_2.c:333:6:Hal_Write_Serial	296	static
+app_bluenrg_2.c:355:6:BlueNRG_HW_Bootloader	8	static
+app_bluenrg_2.c:371:6:Enable_SPI_IRQ	8	static
+app_bluenrg_2.c:381:6:Disable_SPI_IRQ	8	static
+app_bluenrg_2.c:391:6:set_irq_as_output	32	static
+app_bluenrg_2.c:409:6:set_irq_as_input	32	static

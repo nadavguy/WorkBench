@@ -1,0 +1,14 @@
+FlashQSPIAgent.c:50:9:QSPI_Init	8	static
+FlashQSPIAgent.c:65:9:QSPI_Erase_Sector4K	80	static
+FlashQSPIAgent.c:119:9:QSPI_Write	96	static
+FlashQSPIAgent.c:199:9:QSPI_Read	80	static
+FlashQSPIAgent.c:237:9:QSPI_WriteEnable	88	static
+FlashQSPIAgent.c:277:9:QSPI_READMD	104	static
+FlashQSPIAgent.c:313:9:QSPI_ResetFlash	88	static
+FlashQSPIAgent.c:357:9:QSPI_DeleteFlash	88	static
+FlashQSPIAgent.c:389:9:QSPI_AutoPolling_Write_in_progress	96	static
+FlashQSPIAgent.c:421:16:QSPI_AutoPolling_Erase_in_progress	80	static
+FlashQSPIAgent.c:456:9:QSPI_Read_Status_registers	104	static
+FlashQSPIAgent.c:538:9:QSPI_Reset_Status_registers	80	static
+FlashQSPIAgent.c:625:9:QSPI_DummyCyclesCfg	88	static,ignoring_inline_asm
+FlashQSPIAgent.c:718:6:fatFSInit	4128	static
