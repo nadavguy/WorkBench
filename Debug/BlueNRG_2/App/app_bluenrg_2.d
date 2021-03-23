@@ -42,6 +42,14 @@ BlueNRG_2/App/app_bluenrg_2.o: ../BlueNRG_2/App/app_bluenrg_2.c \
  ../Drivers/BSP/custom/custom_errno.h ../Core/Inc/main.h \
  ../BlueNRG_2/Target/hci_tl_interface.h ../Core/Inc/custom_bus.h \
  ../Core/Inc/custom_conf.h ../Drivers/BSP/custom/custom_errno.h \
+ ../Core/Inc/../../Support/Inc/str_util.h \
+ ../Core/Inc/../../Support/Inc/TypeDefs.h \
+ ../Core/Inc/../../Support/Inc/Common.h \
+ ../Core/Inc/../../Support/Inc/ymodem.h \
+ ../Core/Inc/../../Modules/Inc/ci_func.h \
+ ../Core/Inc/../../Modules/Inc/cmd_interp.h \
+ ../Core/Inc/../../Modules/Inc/cmd_interp.h \
+ ../Core/Inc/../../Modules/Inc/ConfigParams.h \
  ../Middlewares/ST/BlueNRG-2/includes/hci.h \
  ../Middlewares/ST/BlueNRG-2/includes/bluenrg1_types.h \
  ../Middlewares/ST/BlueNRG-2/includes/compiler.h \
@@ -154,6 +162,22 @@ BlueNRG_2/App/app_bluenrg_2.o: ../BlueNRG_2/App/app_bluenrg_2.c \
 ../Core/Inc/custom_conf.h:
 
 ../Drivers/BSP/custom/custom_errno.h:
+
+../Core/Inc/../../Support/Inc/str_util.h:
+
+../Core/Inc/../../Support/Inc/TypeDefs.h:
+
+../Core/Inc/../../Support/Inc/Common.h:
+
+../Core/Inc/../../Support/Inc/ymodem.h:
+
+../Core/Inc/../../Modules/Inc/ci_func.h:
+
+../Core/Inc/../../Modules/Inc/cmd_interp.h:
+
+../Core/Inc/../../Modules/Inc/cmd_interp.h:
+
+../Core/Inc/../../Modules/Inc/ConfigParams.h:
 
 ../Middlewares/ST/BlueNRG-2/includes/hci.h:
 

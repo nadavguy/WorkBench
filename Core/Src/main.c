@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "dma.h"
 #include "fatfs.h"
 #include "quadspi.h"
 #include "spi.h"
@@ -37,6 +38,8 @@
 #include "math.h"
 #include "ff.h"
 #include "FlashQSPIAgent.h"
+#include "PushButton.h"
+#include "TBSAgent.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -56,7 +59,22 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+SYSTEMState rcState = PREINIT;
 
+LINKType linkType = PWM;
+
+uint16_t armChannelPWMValue = 1000;
+uint16_t triggerChannelPWMValue = 1000;
+
+uint32_t lastCRSFChannelMessage = 0;
+
+FLASH_EraseInitTypeDef EraseInitStruct;
+uint32_t PAGEError = 0;
+
+float fwVersion = 1.00;
+float BuildID = 1.01;
+
+char aRxBufferCh1='1';
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -98,10 +116,10 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_FATFS_Init();
   MX_QUADSPI_Init();
   MX_SPI1_Init();
-  MX_TIM1_Init();
   MX_USART1_UART_Init();
   MX_USB_DEVICE_Init();
   MX_ADC1_Init();
@@ -112,6 +130,8 @@ int main(void)
   QSPI_Init();
   fatFSInit();
 
+  CheckButtons();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -119,9 +139,12 @@ int main(void)
   while (1)
   {
 	  CheckButtons();
+	  sendChannelMessageToRX();
+	  readUSBData();
+
     /* USER CODE END WHILE */
 
-	  MX_BlueNRG_2_Process();
+  MX_BlueNRG_2_Process();
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

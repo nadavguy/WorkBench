@@ -1,0 +1,9 @@
+core_cm7.h:2147:34:__NVIC_SystemReset	4	static,ignoring_inline_asm
+ci_func.c:6:12:func_debug	4	static
+ci_func.c:11:12:func_updateRCVersion	8	static
+ci_func.c:25:12:func_versionReport	4	static
+ci_func.c:31:12:func_endUpdatePhase	16	static,ignoring_inline_asm
+ci_func.c:46:12:func_resetRC	8	static
+ci_func.c:52:12:func_showAvailableCommands	4	static
+ci_func.c:57:12:func_fmt	4	static
+ci_func.c:79:9:funcTable	24	static

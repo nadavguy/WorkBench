@@ -40,8 +40,16 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../BlueNRG_2/Target/hci_tl_interface.h ../Core/Inc/custom_bus.h \
  ../Core/Inc/custom_conf.h ../Drivers/BSP/custom/custom_errno.h \
  ../Drivers/BSP/custom/custom.h ../Core/Inc/custom_conf.h \
- ../Drivers/BSP/custom/custom_errno.h ../Core/Inc/adc.h \
- ../Core/Inc/main.h ../FATFS/App/fatfs.h \
+ ../Drivers/BSP/custom/custom_errno.h \
+ ../Core/Inc/../../Support/Inc/str_util.h \
+ ../Core/Inc/../../Support/Inc/TypeDefs.h \
+ ../Core/Inc/../../Support/Inc/Common.h \
+ ../Core/Inc/../../Support/Inc/ymodem.h \
+ ../Core/Inc/../../Modules/Inc/ci_func.h \
+ ../Core/Inc/../../Modules/Inc/cmd_interp.h \
+ ../Core/Inc/../../Modules/Inc/cmd_interp.h \
+ ../Core/Inc/../../Modules/Inc/ConfigParams.h ../Core/Inc/adc.h \
+ ../Core/Inc/main.h ../Core/Inc/dma.h ../FATFS/App/fatfs.h \
  ../Middlewares/Third_Party/FatFs/src/ff.h \
  ../Middlewares/Third_Party/FatFs/src/integer.h ../FATFS/Target/ffconf.h \
  ../Middlewares/Third_Party/FatFs/src/ff_gen_drv.h \
@@ -52,7 +60,9 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
  ../USB_DEVICE/Target/usbd_conf.h ../Core/Inc/gpio.h \
  ../BlueNRG_2/App/app_bluenrg_2.h \
- C:/Users/gilad/Downloads/STM32MiniCar-master\ (3)/RCF777Based/Modules/Inc/FlashQSPIAgent.h
+ /home/nadav/Documents/MXProjects/RC-BeyondTheIronCurtain/Modules/Inc/FlashQSPIAgent.h \
+ /home/nadav/Documents/MXProjects/RC-BeyondTheIronCurtain/Modules/Inc/PushButton.h \
+ /home/nadav/Documents/MXProjects/RC-BeyondTheIronCurtain/Modules/Inc/TBSAgent.h
 
 ../Core/Inc/main.h:
 
@@ -146,9 +156,27 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 
 ../Drivers/BSP/custom/custom_errno.h:
 
+../Core/Inc/../../Support/Inc/str_util.h:
+
+../Core/Inc/../../Support/Inc/TypeDefs.h:
+
+../Core/Inc/../../Support/Inc/Common.h:
+
+../Core/Inc/../../Support/Inc/ymodem.h:
+
+../Core/Inc/../../Modules/Inc/ci_func.h:
+
+../Core/Inc/../../Modules/Inc/cmd_interp.h:
+
+../Core/Inc/../../Modules/Inc/cmd_interp.h:
+
+../Core/Inc/../../Modules/Inc/ConfigParams.h:
+
 ../Core/Inc/adc.h:
 
 ../Core/Inc/main.h:
+
+../Core/Inc/dma.h:
 
 ../FATFS/App/fatfs.h:
 
@@ -184,4 +212,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 
 ../BlueNRG_2/App/app_bluenrg_2.h:
 
-C:/Users/gilad/Downloads/STM32MiniCar-master\ (3)/RCF777Based/Modules/Inc/FlashQSPIAgent.h:
+/home/nadav/Documents/MXProjects/RC-BeyondTheIronCurtain/Modules/Inc/FlashQSPIAgent.h:
+
+/home/nadav/Documents/MXProjects/RC-BeyondTheIronCurtain/Modules/Inc/PushButton.h:
+
+/home/nadav/Documents/MXProjects/RC-BeyondTheIronCurtain/Modules/Inc/TBSAgent.h:

@@ -28,7 +28,7 @@
 #include "usbd_cdc_if.h"
 
 /* USER CODE BEGIN Includes */
-
+#include "main.h"
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN PV */
@@ -48,13 +48,34 @@ USBD_HandleTypeDef hUsbDeviceFS;
  * -- Insert your variables declaration here --
  */
 /* USER CODE BEGIN 0 */
+uint8_t usbRXArray[APP_RX_DATA_SIZE] = {0};
+uint8_t usbTXArray[APP_TX_DATA_SIZE] = {0};
 
+uint32_t lastUSBDataRead = 0;
 /* USER CODE END 0 */
 
 /*
  * -- Insert your external function declaration here --
  */
 /* USER CODE BEGIN 1 */
+uint16_t readUSBData(void)
+{
+	uint16_t usbBytesRead = 0;
+	if (HAL_GetTick() - lastUSBDataRead >= 10)
+	{
+		USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &usbRXArray[0]);
+		USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+		usbBytesRead = strlen((char *)usbRXArray);
+		if (usbBytesRead > 0)
+		{
+			parse((char *)usbRXArray);
+			memset(usbRXArray, 0, APP_RX_DATA_SIZE);
+			usbBytesRead = 0;
+		}
+		lastUSBDataRead = HAL_GetTick();
+	}
+	return usbBytesRead;
+}
 
 /* USER CODE END 1 */
 

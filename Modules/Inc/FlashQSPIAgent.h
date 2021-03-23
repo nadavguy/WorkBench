@@ -8,7 +8,6 @@
 #ifndef PERIPHERALS_INC_FLASHQSPIAGENT_H_
 #define PERIPHERALS_INC_FLASHQSPIAGENT_H_
 
-
 uint8_t QSPI_Init(void);
 uint8_t QSPI_Read(uint8_t* pData, uint32_t ReadAddr, uint32_t Size);
 uint8_t QSPI_Write(uint8_t* pData, uint32_t WriteAddr, uint32_t Size);

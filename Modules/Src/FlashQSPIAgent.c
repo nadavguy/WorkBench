@@ -298,7 +298,7 @@ uint8_t QSPI_READMD(uint8_t *Mid, uint8_t *Did)
 
 
  uint8_t reg2[6] = {0};
- HAL_QSPI_Receive(&hqspi, &(reg2), HAL_QPSI_TIMEOUT_DEFAULT_VALUE);
+ HAL_QSPI_Receive(&hqspi, (reg2), HAL_QPSI_TIMEOUT_DEFAULT_VALUE);
  *Mid = reg2[3];
  *Did = reg2[4];
 //  HAL_QSPI_Receive(&hqspi, &(reg2[1]), HAL_QPSI_TIMEOUT_DEFAULT_VALUE);
@@ -532,6 +532,7 @@ uint8_t QSPI_Read_Status_registers(QSPI_HandleTypeDef *hqspi, uint16_t *R1, uint
     return HAL_ERROR;
   }
   *R3 = reg3[0];
+  return HAL_OK;
 }
 
 // Reset Status Register-1 (05h), Status Register-2 (35h) & Status Register-3 (15h)
@@ -615,6 +616,7 @@ uint8_t QSPI_Reset_Status_registers(QSPI_HandleTypeDef *hqspi, uint16_t *R1, uin
   {
     return HAL_ERROR;
   }
+  return HAL_OK;
 }
 
 /**

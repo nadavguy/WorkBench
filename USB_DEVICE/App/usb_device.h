@@ -57,14 +57,17 @@
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-
+uint16_t readUSBData(void);
 /* USER CODE END PFP */
 
 /*
  * -- Insert your variables declaration here --
  */
 /* USER CODE BEGIN VARIABLES */
+extern USBD_HandleTypeDef hUsbDeviceFS;
 
+extern uint8_t usbRXArray[2048];
+extern uint8_t usbTXArray[2048];
 /* USER CODE END VARIABLES */
 /**
   * @}

@@ -34,7 +34,19 @@ extern "C" {
 #include "custom.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdio.h>		//printf()
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <stdint.h>
+#include <stdbool.h>
 
+#include "../../Support/Inc/str_util.h"
+#include "../../Support/Inc/TypeDefs.h"
+#include "../../Support/Inc/Common.h"
+#include "../../Modules/Inc/ci_func.h"
+#include "../../Modules/Inc/cmd_interp.h"
+#include "../../Modules/Inc/ConfigParams.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -88,12 +100,12 @@ void Error_Handler(void);
 #define GPIO_BLE___EXTI_GPIO_Port GPIOE
 #define GPIO_BLE___CS_Pin GPIO_PIN_8
 #define GPIO_BLE___CS_GPIO_Port GPIOE
-#define TIM1_CH1___TriggerButton_Pin GPIO_PIN_9
-#define TIM1_CH1___TriggerButton_GPIO_Port GPIOE
+#define GPIO_TriggerButton_Pin GPIO_PIN_9
+#define GPIO_TriggerButton_GPIO_Port GPIOE
 #define GPIO_BLE___Reset_Pin GPIO_PIN_10
 #define GPIO_BLE___Reset_GPIO_Port GPIOE
-#define TIM1_CH2___ArmButton_Pin GPIO_PIN_11
-#define TIM1_CH2___ArmButton_GPIO_Port GPIOE
+#define GPIO_ArmButton_Pin GPIO_PIN_11
+#define GPIO_ArmButton_GPIO_Port GPIOE
 #define SPI2_SCK___BLE_Pin GPIO_PIN_13
 #define SPI2_SCK___BLE_GPIO_Port GPIOB
 #define USART1_TX___TBS_Pin GPIO_PIN_14
@@ -117,7 +129,31 @@ void Error_Handler(void);
 #define GPIO_ChargeEN_Pin GPIO_PIN_1
 #define GPIO_ChargeEN_GPIO_Port GPIOE
 /* USER CODE BEGIN Private defines */
+typedef enum {PREINIT, INIT, OPERATIONAL, MAINTENANCE, UNKNOWN, IDLE, ARMED, TRIGGERED} SYSTEMState;
 
+typedef enum {PWM, DIGITAL} LINKType;
+
+extern SYSTEMState rcState;
+
+extern LINKType linkType;
+
+extern SYSTEMState currentSMAState;
+extern SYSTEMState desiredSMAState;
+
+extern uint16_t armChannelPWMValue;
+extern uint16_t triggerChannelPWMValue;
+
+extern uint32_t lastCRSFChannelMessage;
+
+
+
+extern FLASH_EraseInitTypeDef EraseInitStruct;
+extern uint32_t PAGEError;
+
+extern float fwVersion;
+extern float BuildID;
+
+extern char aRxBufferCh1;
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

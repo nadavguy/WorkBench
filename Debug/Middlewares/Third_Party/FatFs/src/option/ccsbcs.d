@@ -44,7 +44,15 @@ Middlewares/Third_Party/FatFs/src/option/ccsbcs.o: \
  ../BlueNRG_2/Target/hci_tl_interface.h ../Core/Inc/custom_bus.h \
  ../Core/Inc/custom_conf.h ../Drivers/BSP/custom/custom_errno.h \
  ../Drivers/BSP/custom/custom.h ../Core/Inc/custom_conf.h \
- ../Drivers/BSP/custom/custom_errno.h
+ ../Drivers/BSP/custom/custom_errno.h \
+ ../Core/Inc/../../Support/Inc/str_util.h \
+ ../Core/Inc/../../Support/Inc/TypeDefs.h \
+ ../Core/Inc/../../Support/Inc/Common.h \
+ ../Core/Inc/../../Support/Inc/ymodem.h \
+ ../Core/Inc/../../Modules/Inc/ci_func.h \
+ ../Core/Inc/../../Modules/Inc/cmd_interp.h \
+ ../Core/Inc/../../Modules/Inc/cmd_interp.h \
+ ../Core/Inc/../../Modules/Inc/ConfigParams.h
 
 ../Middlewares/Third_Party/FatFs/src/option/../ff.h:
 
@@ -143,3 +151,19 @@ Middlewares/Third_Party/FatFs/src/option/ccsbcs.o: \
 ../Core/Inc/custom_conf.h:
 
 ../Drivers/BSP/custom/custom_errno.h:
+
+../Core/Inc/../../Support/Inc/str_util.h:
+
+../Core/Inc/../../Support/Inc/TypeDefs.h:
+
+../Core/Inc/../../Support/Inc/Common.h:
+
+../Core/Inc/../../Support/Inc/ymodem.h:
+
+../Core/Inc/../../Modules/Inc/ci_func.h:
+
+../Core/Inc/../../Modules/Inc/cmd_interp.h:
+
+../Core/Inc/../../Modules/Inc/cmd_interp.h:
+
+../Core/Inc/../../Modules/Inc/ConfigParams.h:

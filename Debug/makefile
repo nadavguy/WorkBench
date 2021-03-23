@@ -11,6 +11,7 @@ RM := rm -rf
 -include sources.mk
 -include USB_DEVICE/Target/subdir.mk
 -include USB_DEVICE/App/subdir.mk
+-include Support/Src/subdir.mk
 -include Modules/Src/subdir.mk
 -include Middlewares/Third_Party/FatFs/src/option/subdir.mk
 -include Middlewares/Third_Party/FatFs/src/subdir.mk
@@ -51,34 +52,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := RCF777Based
+BUILD_ARTIFACT_NAME := RC-BeyondTheIronCurtain
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX := 
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME).$(BUILD_ARTIFACT_EXTENSION)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-RCF777Based.elf \
+RC-BeyondTheIronCurtain.elf \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-RCF777Based.list \
+RC-BeyondTheIronCurtain.list \
 
 OBJCOPY_BIN += \
-RCF777Based.bin \
+RC-BeyondTheIronCurtain.bin \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: RCF777Based.elf secondary-outputs
+main-build: RC-BeyondTheIronCurtain.elf secondary-outputs
 
 # Tool invocations
-RCF777Based.elf: $(OBJS) $(USER_OBJS) C:\Users\gilad\Downloads\STM32MiniCar-master\ (3)\RCF777Based\STM32F777VITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "RCF777Based.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"C:\Users\gilad\Downloads\STM32MiniCar-master (3)\RCF777Based\STM32F777VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="RCF777Based.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+RC-BeyondTheIronCurtain.elf: $(OBJS) $(USER_OBJS) /home/nadav/Documents/MXProjects/RC-BeyondTheIronCurtain/STM32F777VITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "RC-BeyondTheIronCurtain.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"/home/nadav/Documents/MXProjects/RC-BeyondTheIronCurtain/STM32F777VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="RC-BeyondTheIronCurtain.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -87,13 +88,13 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-RCF777Based.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "RCF777Based.list"
+RC-BeyondTheIronCurtain.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "RC-BeyondTheIronCurtain.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-RCF777Based.bin: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "RCF777Based.bin"
+RC-BeyondTheIronCurtain.bin: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "RC-BeyondTheIronCurtain.bin"
 	@echo 'Finished building: $@'
 	@echo ' '
 

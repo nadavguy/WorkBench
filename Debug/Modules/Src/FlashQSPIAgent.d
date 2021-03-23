@@ -41,7 +41,15 @@ Modules/Src/FlashQSPIAgent.o: ../Modules/Src/FlashQSPIAgent.c \
  ../Core/Inc/custom_conf.h ../Drivers/BSP/custom/custom_errno.h \
  ../Drivers/BSP/custom/custom.h ../Core/Inc/custom_conf.h \
  ../Drivers/BSP/custom/custom_errno.h \
- C:/Users/gilad/Downloads/STM32MiniCar-master\ (3)/RCF777Based/Modules/Inc/FlashQSPIAgent.h \
+ ../Core/Inc/../../Support/Inc/str_util.h \
+ ../Core/Inc/../../Support/Inc/TypeDefs.h \
+ ../Core/Inc/../../Support/Inc/Common.h \
+ ../Core/Inc/../../Support/Inc/ymodem.h \
+ ../Core/Inc/../../Modules/Inc/ci_func.h \
+ ../Core/Inc/../../Modules/Inc/cmd_interp.h \
+ ../Core/Inc/../../Modules/Inc/cmd_interp.h \
+ ../Core/Inc/../../Modules/Inc/ConfigParams.h \
+ /home/nadav/Documents/MXProjects/RC-BeyondTheIronCurtain/Modules/Inc/FlashQSPIAgent.h \
  ../Middlewares/Third_Party/FatFs/src/ff.h \
  ../Middlewares/Third_Party/FatFs/src/integer.h ../FATFS/Target/ffconf.h \
  ../Core/Inc/quadspi.h ../Core/Inc/main.h ../FATFS/App/fatfs.h \
@@ -141,7 +149,23 @@ Modules/Src/FlashQSPIAgent.o: ../Modules/Src/FlashQSPIAgent.c \
 
 ../Drivers/BSP/custom/custom_errno.h:
 
-C:/Users/gilad/Downloads/STM32MiniCar-master\ (3)/RCF777Based/Modules/Inc/FlashQSPIAgent.h:
+../Core/Inc/../../Support/Inc/str_util.h:
+
+../Core/Inc/../../Support/Inc/TypeDefs.h:
+
+../Core/Inc/../../Support/Inc/Common.h:
+
+../Core/Inc/../../Support/Inc/ymodem.h:
+
+../Core/Inc/../../Modules/Inc/ci_func.h:
+
+../Core/Inc/../../Modules/Inc/cmd_interp.h:
+
+../Core/Inc/../../Modules/Inc/cmd_interp.h:
+
+../Core/Inc/../../Modules/Inc/ConfigParams.h:
+
+/home/nadav/Documents/MXProjects/RC-BeyondTheIronCurtain/Modules/Inc/FlashQSPIAgent.h:
 
 ../Middlewares/Third_Party/FatFs/src/ff.h:
 

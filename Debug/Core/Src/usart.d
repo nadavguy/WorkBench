@@ -40,7 +40,16 @@ Core/Src/usart.o: ../Core/Src/usart.c ../Core/Inc/usart.h \
  ../BlueNRG_2/Target/hci_tl_interface.h ../Core/Inc/custom_bus.h \
  ../Core/Inc/custom_conf.h ../Drivers/BSP/custom/custom_errno.h \
  ../Drivers/BSP/custom/custom.h ../Core/Inc/custom_conf.h \
- ../Drivers/BSP/custom/custom_errno.h ../Core/Inc/main.h
+ ../Drivers/BSP/custom/custom_errno.h ../Core/Inc/main.h \
+ ../Core/Inc/../../Support/Inc/str_util.h \
+ ../Core/Inc/../../Support/Inc/TypeDefs.h \
+ ../Core/Inc/../../Support/Inc/Common.h \
+ ../Core/Inc/../../Support/Inc/ymodem.h \
+ ../Core/Inc/../../Modules/Inc/ci_func.h \
+ ../Core/Inc/../../Modules/Inc/cmd_interp.h \
+ ../Core/Inc/../../Modules/Inc/cmd_interp.h \
+ ../Core/Inc/../../Modules/Inc/ConfigParams.h \
+ /home/nadav/Documents/MXProjects/RC-BeyondTheIronCurtain/Modules/Inc/TBSAgent.h
 
 ../Core/Inc/usart.h:
 
@@ -137,3 +146,21 @@ Core/Src/usart.o: ../Core/Src/usart.c ../Core/Inc/usart.h \
 ../Drivers/BSP/custom/custom_errno.h:
 
 ../Core/Inc/main.h:
+
+../Core/Inc/../../Support/Inc/str_util.h:
+
+../Core/Inc/../../Support/Inc/TypeDefs.h:
+
+../Core/Inc/../../Support/Inc/Common.h:
+
+../Core/Inc/../../Support/Inc/ymodem.h:
+
+../Core/Inc/../../Modules/Inc/ci_func.h:
+
+../Core/Inc/../../Modules/Inc/cmd_interp.h:
+
+../Core/Inc/../../Modules/Inc/cmd_interp.h:
+
+../Core/Inc/../../Modules/Inc/ConfigParams.h:
+
+/home/nadav/Documents/MXProjects/RC-BeyondTheIronCurtain/Modules/Inc/TBSAgent.h:
