@@ -10,7 +10,6 @@
 #include "ff.h"
 #include "stdint.h"
 #include "quadspi.h"
-#include "fatfs.h"
 
 
 
@@ -25,16 +24,6 @@ __IO uint32_t qspi_addr = 0;
 uint8_t *flash_addr;
 __IO uint8_t step = 0;
 uint32_t max_size, size;
-
-
-FRESULT FS_ret2;
-
-uint8_t MID = 0;
-uint8_t DID = 0;
-
-uint16_t RR1 = 0;
-uint16_t RR2 = 0;
-uint16_t RR3 = 0;
 
 /**
  * @brief  This function sends a Write Enable and waits until it is effective.
@@ -140,12 +129,23 @@ uint8_t QSPI_Write(uint8_t *pData, uint32_t WriteAddr, uint32_t Size)
   end_addr = WriteAddr + Size;
 
   /* Initialize the program command */
+//  s_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
+//  s_command.Instruction = 0x02; // simple page programm //QPI_PAGE_PROG_4_BYTE_ADDR_CMD;
+//  s_command.AddressMode = QSPI_ADDRESS_1_LINE;
+//  s_command.AddressSize = QSPI_ADDRESS_24_BITS;
+//  s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+//  s_command.DataMode = QSPI_DATA_1_LINE;
+//  s_command.DummyCycles = 0;
+//  s_command.DdrMode = QSPI_DDR_MODE_DISABLE;
+//  s_command.DdrHoldHalfCycle = QSPI_DDR_HHC_ANALOG_DELAY;
+//  s_command.SIOOMode = QSPI_SIOO_INST_EVERY_CMD;
+
   s_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
-  s_command.Instruction = 0x02; // simple page programm //QPI_PAGE_PROG_4_BYTE_ADDR_CMD;
+  s_command.Instruction = QUAD_IN_FAST_PROG_CMD; // simple page programm //QPI_PAGE_PROG_4_BYTE_ADDR_CMD;
   s_command.AddressMode = QSPI_ADDRESS_1_LINE;
   s_command.AddressSize = QSPI_ADDRESS_24_BITS;
   s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
-  s_command.DataMode = QSPI_DATA_1_LINE;
+  s_command.DataMode = QSPI_DATA_4_LINES;
   s_command.DummyCycles = 0;
   s_command.DdrMode = QSPI_DDR_MODE_DISABLE;
   s_command.DdrHoldHalfCycle = QSPI_DDR_HHC_ANALOG_DELAY;
@@ -201,13 +201,26 @@ uint8_t QSPI_Read(uint8_t *pData, uint32_t ReadAddr, uint32_t Size)
   QSPI_CommandTypeDef s_command;
 
   /* Initialize the read command */
+//  s_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
+//  s_command.Instruction = 0x03; // simple data read // QPI_READ_4_BYTE_ADDR_CMD; //
+//  s_command.AddressMode = QSPI_ADDRESS_1_LINE;
+//  s_command.AddressSize = QSPI_ADDRESS_24_BITS;
+//  s_command.Address = ReadAddr;
+//  s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+//  s_command.DataMode = QSPI_DATA_1_LINE;
+//  s_command.DummyCycles = QSPI_DUMMY_CYCLES_READ;
+//  s_command.NbData = Size;
+//  s_command.DdrMode = QSPI_DDR_MODE_DISABLE;
+//  s_command.DdrHoldHalfCycle = QSPI_DDR_HHC_ANALOG_DELAY;
+//  s_command.SIOOMode = QSPI_SIOO_INST_EVERY_CMD;
+
   s_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
-  s_command.Instruction = 0x03; // simple data read // QPI_READ_4_BYTE_ADDR_CMD; //
-  s_command.AddressMode = QSPI_ADDRESS_1_LINE;
+  s_command.Instruction = QUAD_INOUT_FAST_READ_CMD; // simple data read // QPI_READ_4_BYTE_ADDR_CMD; //
+  s_command.AddressMode = QSPI_ADDRESS_4_LINES;
   s_command.AddressSize = QSPI_ADDRESS_24_BITS;
   s_command.Address = ReadAddr;
   s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
-  s_command.DataMode = QSPI_DATA_1_LINE;
+  s_command.DataMode = QSPI_DATA_4_LINES;
   s_command.DummyCycles = QSPI_DUMMY_CYCLES_READ;
   s_command.NbData = Size;
   s_command.DdrMode = QSPI_DDR_MODE_DISABLE;
@@ -298,7 +311,7 @@ uint8_t QSPI_READMD(uint8_t *Mid, uint8_t *Did)
 
 
  uint8_t reg2[6] = {0};
- HAL_QSPI_Receive(&hqspi, (reg2), HAL_QPSI_TIMEOUT_DEFAULT_VALUE);
+ HAL_QSPI_Receive(&hqspi, &(reg2), HAL_QPSI_TIMEOUT_DEFAULT_VALUE);
  *Mid = reg2[3];
  *Did = reg2[4];
 //  HAL_QSPI_Receive(&hqspi, &(reg2[1]), HAL_QPSI_TIMEOUT_DEFAULT_VALUE);
@@ -317,7 +330,7 @@ uint8_t QSPI_ResetFlash(void)
 
   /* Enable write operations */
   s_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
-  s_command.Instruction = 0x66; // ok
+  s_command.Instruction = RESET_ENABLE_CMD; // ok
   s_command.AddressMode = QSPI_ADDRESS_NONE;
   s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
   s_command.DataMode = QSPI_DATA_1_LINE;
@@ -334,7 +347,7 @@ uint8_t QSPI_ResetFlash(void)
 
   /* Enable write operations */
     s_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
-    s_command.Instruction = 0x99; // ok
+    s_command.Instruction = RESET_MEMORY_CMD; // ok
     s_command.AddressMode = QSPI_ADDRESS_NONE;
     s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
     s_command.DataMode = QSPI_DATA_1_LINE;
@@ -425,7 +438,7 @@ static uint8_t QSPI_AutoPolling_Erase_in_progress(QSPI_HandleTypeDef *hqspi, uin
 
   /* Initialize the reading of status register */
   s_command.InstructionMode = QSPI_INSTRUCTION_1_LINE; //QSPI_INSTRUCTION_4_LINES;
-  s_command.Instruction = 0x05;
+  s_command.Instruction = READ_STATUS_REG_CMD;
   s_command.AddressMode = QSPI_ADDRESS_NONE;
   s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
   s_command.DataMode = QSPI_DATA_1_LINE; // QSPI_DATA_4_LINES;
@@ -462,7 +475,7 @@ uint8_t QSPI_Read_Status_registers(QSPI_HandleTypeDef *hqspi, uint16_t *R1, uint
 
   /* Initialize the reading of status register */
   s_command.InstructionMode = QSPI_INSTRUCTION_1_LINE; //QSPI_INSTRUCTION_4_LINES;
-  s_command.Instruction = 0x05;
+  s_command.Instruction = READ_STATUS_REG_CMD;
   s_command.AddressMode = QSPI_ADDRESS_NONE;
   s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
   s_command.DataMode = QSPI_DATA_1_LINE; // QSPI_DATA_4_LINES;
@@ -486,7 +499,7 @@ uint8_t QSPI_Read_Status_registers(QSPI_HandleTypeDef *hqspi, uint16_t *R1, uint
   *R1 = reg1[0];
   /* Initialize the reading of status register */
   s_command.InstructionMode = QSPI_INSTRUCTION_1_LINE; //QSPI_INSTRUCTION_4_LINES;
-  s_command.Instruction = 0x35;
+  s_command.Instruction = READ_STATUS_REG_CMD2;
   s_command.AddressMode = QSPI_ADDRESS_NONE;
   s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
   s_command.DataMode = QSPI_DATA_1_LINE; // QSPI_DATA_4_LINES;
@@ -510,7 +523,7 @@ uint8_t QSPI_Read_Status_registers(QSPI_HandleTypeDef *hqspi, uint16_t *R1, uint
   *R2 = reg2[0];
   /* Initialize the reading of status register */
   s_command.InstructionMode = QSPI_INSTRUCTION_1_LINE; //QSPI_INSTRUCTION_4_LINES;
-  s_command.Instruction = 0x15;
+  s_command.Instruction = READ_CFG_REG_CMD;
   s_command.AddressMode = QSPI_ADDRESS_NONE;
   s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
   s_command.DataMode = QSPI_DATA_1_LINE; // QSPI_DATA_4_LINES;
@@ -532,7 +545,6 @@ uint8_t QSPI_Read_Status_registers(QSPI_HandleTypeDef *hqspi, uint16_t *R1, uint
     return HAL_ERROR;
   }
   *R3 = reg3[0];
-  return HAL_OK;
 }
 
 // Reset Status Register-1 (05h), Status Register-2 (35h) & Status Register-3 (15h)
@@ -543,7 +555,7 @@ uint8_t QSPI_Reset_Status_registers(QSPI_HandleTypeDef *hqspi, uint16_t *R1, uin
   QSPI_WriteEnable();
 
   s_command.InstructionMode = QSPI_INSTRUCTION_1_LINE; //QSPI_INSTRUCTION_4_LINES;
-  s_command.Instruction = 0x01;
+  s_command.Instruction = WRITE_STATUS_CFG_REG_CMD;
   s_command.AddressMode = QSPI_ADDRESS_NONE;
   s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
   s_command.DataMode = QSPI_DATA_1_LINE; // QSPI_DATA_4_LINES;
@@ -616,7 +628,6 @@ uint8_t QSPI_Reset_Status_registers(QSPI_HandleTypeDef *hqspi, uint16_t *R1, uin
   {
     return HAL_ERROR;
   }
-  return HAL_OK;
 }
 
 /**
@@ -715,36 +726,5 @@ uint8_t QSPI_DummyCyclesCfg(QSPI_HandleTypeDef *hqspi)
   HAL_Delay(40);
 
   return HAL_OK;
-}
-
-void fatFSInit(void)
-{
-	  //  Flash example
-	  QSPI_Read_Status_registers(&hqspi, &RR1, &RR2, &RR3);
-	  RR2 = 0x22;
-	  RR3 = 0x60;
-	  QSPI_Reset_Status_registers(&hqspi, &RR1, &RR2, &RR3);
-	  HAL_Delay(40);
-	  QSPI_READMD(&MID, &DID);
-
-	  QSPI_Read_Status_registers(&hqspi, &RR1, &RR2, &RR3);
-	  do
-	  {
-		  HAL_Delay(1);
-		  FS_ret2 = f_mount(&USERFatFS, "\\", 0);
-	  } while (FS_ret2 != FR_OK);
-
-	  DWORD free_clusters, free_sectors, total_sectors;
-
-	  FATFS *getFreeFs;
-	  uint8_t buffer[_MAX_SS];
-	  FS_ret2 = f_getfree("\\", &free_clusters, &getFreeFs);
-	  if (FS_ret2 != FR_OK)
-	  {
-		  FS_ret2 = f_mkfs("\\", FM_FAT, 0, buffer, sizeof(buffer));
-	  }
-
-	  total_sectors = (getFreeFs->n_fatent - 2) * getFreeFs->csize;
-	  free_sectors = free_clusters * getFreeFs->csize;
 }
 

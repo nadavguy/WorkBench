@@ -215,7 +215,8 @@ DRESULT USER_ioctl (
 
 		/* Get erase block size in unit of sector (DWORD) */
 	case GET_BLOCK_SIZE :
-		*(DWORD*)buff = SECTOR_SIZE;
+		*(DWORD*)buff = 16;//SECTOR_SIZE;
+		res = RES_OK;
 		break;
 
 	default:

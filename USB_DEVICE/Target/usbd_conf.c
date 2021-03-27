@@ -2,7 +2,7 @@
 /**
   ******************************************************************************
   * @file           : Target/usbd_conf.c
-  * @version        : v1.0_Cube
+  * @version        : v2.0_Cube
   * @brief          : This file implements the board support package for the USB device library
   ******************************************************************************
   * @attention
@@ -24,6 +24,7 @@
 #include "stm32f7xx_hal.h"
 #include "usbd_def.h"
 #include "usbd_core.h"
+#include "usbd_cdc.h"
 
 /* USER CODE BEGIN Includes */
 
@@ -59,6 +60,7 @@ USBD_StatusTypeDef USBD_Get_USB_Status(HAL_StatusTypeDef hal_status);
 /* USER CODE BEGIN 1 */
 static void SystemClockConfig_Resume(void);
 /* USER CODE END 1 */
+extern void SystemClock_Config(void);
 
 /*******************************************************************************
                        LL Driver Callbacks (PCD -> USB Device Library)

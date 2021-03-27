@@ -1,9 +1,0 @@
-hci_tl_interface.c:49:13:HCI_TL_SPI_Disable_IRQ	8	static
-hci_tl_interface.c:61:9:HCI_TL_SPI_Init	40	static
-hci_tl_interface.c:99:9:HCI_TL_SPI_DeInit	8	static
-hci_tl_interface.c:113:9:HCI_TL_SPI_Reset	8	static
-hci_tl_interface.c:132:9:HCI_TL_SPI_Receive	40	static
-hci_tl_interface.c:182:9:HCI_TL_SPI_Send	48	static
-hci_tl_interface.c:256:16:IsDataAvailable	8	static
-hci_tl_interface.c:268:6:hci_tl_lowlevel_init	40	static
-hci_tl_interface.c:307:6:hci_tl_lowlevel_isr	8	static

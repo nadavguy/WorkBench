@@ -49,7 +49,9 @@ void CheckButtons(void)
 		armButtonIsLow = true;
 		if ( (linkType == PWM) && (rcState == OPERATIONAL) )
 		{
-			channelPWMValues[0] =  ((2000 - 1500) * 8 / 5 + 992);
+			channelPWMValues[0] =  ((2000 - 1500) * 2);
+//			memset(rcChannelsFrame,0,26);
+//			memcpy(rcChannelsFrame, TriggerMessageArray,26);
 		}
 	}
 	else
@@ -58,7 +60,9 @@ void CheckButtons(void)
 		{
 			if ( (linkType == PWM) && (rcState == OPERATIONAL) )
 			{
-				channelPWMValues[0] = ((1000 - 1500) * 8 / 5 + 992);
+				channelPWMValues[0] = ((1000 - 1500) * 2);
+//				memset(rcChannelsFrame,0,26);
+//				memcpy(rcChannelsFrame, IdleMessageArray,26);
 			}
 			uint32_t armLocalDuration = ((HAL_GetTick()
 					- armButtonPressStart) / 100) * 100;
@@ -88,14 +92,14 @@ void CheckButtons(void)
 		triggerButtonIsLow = true;
 		if ( (linkType == PWM) && (rcState == OPERATIONAL) )
 		{
-			channelPWMValues[1] = ((2000 - 1500) * 8 / 5 + 992);
+			channelPWMValues[1] = ((2000 - 1500) * 8 / 5);
 		}
 	}
 	else
 	{
 		if ( (linkType == PWM) && (rcState == OPERATIONAL) )
 		{
-			channelPWMValues[1] = ((1000 - 1500) * 8 / 5 + 992);
+			channelPWMValues[1] = ((1000 - 1500) * 8 / 5);
 		}
 		if (triggerButtonIsLow)
 		{

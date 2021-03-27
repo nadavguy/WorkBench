@@ -1,8 +1,0 @@
-custom.c:80:9:BSP_GetVersion	4	static
-custom.c:94:9:BSP_COM_Init	24	static
-custom.c:133:9:BSP_COM_DeInit	24	static
-custom.c:170:26:MX_USART2_UART_Init	24	static
-custom.c:273:9:BSP_COM_SelectLogPort	16	static
-custom.c:285:6:__io_putchar	16	static
-custom.c:298:13:USART2_MspInit	48	static
-custom.c:331:13:USART2_MspDeInit	16	static

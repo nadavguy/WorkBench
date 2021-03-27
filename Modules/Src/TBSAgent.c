@@ -14,10 +14,15 @@
 #define CROSSFIRE_CH_BITS           11
 #define CROSSFIRE_CHANNELS_COUNT    16
 
-uint8_t tbsRXArray[64] = {0};
+uint8_t tbsRXArray[TBS_RX_BUFFER] = {0};
 uint8_t rcChannelsFrame[26] = {0};
 
+uint8_t IdleMessageArray[26] = {0xC8, 0x18, 0x16, 0xAC, 0x60, 0x05, 0x2B, 0x58, 0xC1, 0x0A, 0x56, 0xB0, 0x82, 0x15, 0xAC, 0x60, 0x05, 0x2B, 0x58, 0xC1, 0x0A, 0x56, 0xB0, 0x82, 0x15, 0x5B};
+uint8_t TriggerMessageArray[26] = {0xC8, 0x18, 0x16, 0xA4, 0x26, 0x35, 0xA9, 0x49, 0x4D, 0x6A, 0x52, 0x93, 0x9A, 0xD4, 0xA4, 0x26, 0x35, 0xA9, 0x49, 0x4D, 0x6A, 0x52, 0x93, 0x9A, 0xD4, 0x64};
+
 int16_t channelPWMValues[16] = {((1000 - 1500) * 8 / 5 + 992)};
+
+tRC_LINK rcLinkStatus;
 
 // CRC8 implementation with polynom = x^8+x^7+x^6+x^4+x^2+1 (0xD5)
 const unsigned char crc8tab[256] = {
@@ -115,12 +120,27 @@ void sendMessageToRC(void)
 
 void sendChannelMessageToRX(void)
 {
-	if ( HAL_GetTick() - lastCRSFChannelMessage > 4)
+//	uint16_t R = 0;
+	if ( HAL_GetTick() - lastCRSFChannelMessage > 6)
 	{
 		memset(rcChannelsFrame, 0, 26);
 		createCrossfireChannelsFrame(rcChannelsFrame, channelPWMValues);
-		HAL_UART_Transmit_IT(&huart1, rcChannelsFrame, 26);
+		HAL_UART_Transmit_IT(&TBS_UART, rcChannelsFrame, 26);
 		lastCRSFChannelMessage = HAL_GetTick();
+	}
+	else if ( ( HAL_GetTick() - lastCRSFChannelMessage <= 6)  && (( HAL_GetTick() - lastCRSFChannelMessage > 1)) )
+	{
+		HAL_UART_Receive_DMA(&TBS_UART, tbsRXArray,TBS_RX_BUFFER);
+		parseTBSMessage();
+//		char test[1024] = "";
+//		logData((char *)"TBS RX: ", true, true);
+//		for (int i = 0 ; i < 64 ; i ++)
+//		{
+//			sprintf(&test[i*3], "-%02x",tbsRXArray[i]);
+//		}
+//		logData(test, true, true);
+//		memset(test, 0, 1024);
+//		memset(tbsRXArray, 0, 256);
 	}
 }
 
@@ -169,5 +189,27 @@ uint8_t createCrossfireChannelsFrame(uint8_t * frame, int16_t * pulses)
 
 bool parseTBSMessage(void)
 {
-
+	int i = 0;
+	bool localRet = false;
+	while ( i < TBS_RX_BUFFER - 3)
+	{
+		if ( (tbsRXArray[i] == 0xea) && (tbsRXArray[i + 1] == 0x0c) && (tbsRXArray[i + 2] == 0x14) && (TBS_RX_BUFFER - i >= 14) )
+		{
+			rcLinkStatus.UplinkRSSIAnt1 = tbsRXArray[i + 3];
+			rcLinkStatus.UplinkRSSIAnt2 = tbsRXArray[i + 4];
+			rcLinkStatus.UplinkPSRLQ 	= tbsRXArray[i + 5];
+			rcLinkStatus.UplinkSNR 		= tbsRXArray[i + 6];
+			rcLinkStatus.DiversityActiveAntena = tbsRXArray[i + 7];
+			rcLinkStatus.RFMode = tbsRXArray[i + 8];
+			rcLinkStatus.UplinkTXPower = tbsRXArray[i + 9];
+			rcLinkStatus.DownlinkRSSI = tbsRXArray[i + 10];
+			rcLinkStatus.DownlinkPSRLQ = tbsRXArray[i + 11];
+			rcLinkStatus.DownlinkSNR = tbsRXArray[i + 12];
+			i = i + 13;
+			localRet = true;
+		}
+		i++;
+	}
+	memset(tbsRXArray, 0, TBS_RX_BUFFER);
+	return localRet;
 }

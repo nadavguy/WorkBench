@@ -47,6 +47,12 @@ extern "C" {
 #include "../../Modules/Inc/ci_func.h"
 #include "../../Modules/Inc/cmd_interp.h"
 #include "../../Modules/Inc/ConfigParams.h"
+#include "PushButton.h"
+#include "TBSAgent.h"
+#include "LogAgent.h"
+#include "TimeHelper.h"
+#include "TerminalAgent.h"
+#include "ScreenAgent.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -129,6 +135,15 @@ void Error_Handler(void);
 #define GPIO_ChargeEN_Pin GPIO_PIN_1
 #define GPIO_ChargeEN_GPIO_Port GPIOE
 /* USER CODE BEGIN Private defines */
+
+#define DC_Pin GPIO_PIN_14
+#define DC_GPIO_Port GPIOB
+#define RST_Pin GPIO_PIN_13
+#define RST_GPIO_Port GPIOB
+#define CS_Pin GPIO_PIN_15
+#define CS_GPIO_Port GPIOB
+
+
 typedef enum {PREINIT, INIT, OPERATIONAL, MAINTENANCE, UNKNOWN, IDLE, ARMED, TRIGGERED} SYSTEMState;
 
 typedef enum {PWM, DIGITAL} LINKType;

@@ -40,6 +40,11 @@
 #include "FlashQSPIAgent.h"
 #include "PushButton.h"
 #include "TBSAgent.h"
+#include "GUI_Paint.h"
+#include "fonts.h"
+#include "image.h"
+#include "LCD_Test.h"
+#include "usbd_cdc_if.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -62,9 +67,8 @@
 SYSTEMState rcState = PREINIT;
 
 LINKType linkType = PWM;
-
-uint16_t armChannelPWMValue = 1000;
-uint16_t triggerChannelPWMValue = 1000;
+uint16_t armChannelPWMValue = ((1000 - 1500) * 2); // 8/5
+uint16_t triggerChannelPWMValue = ((1000 - 1500) * 8 / 6); // 8/5
 
 uint32_t lastCRSFChannelMessage = 0;
 
@@ -72,7 +76,7 @@ FLASH_EraseInitTypeDef EraseInitStruct;
 uint32_t PAGEError = 0;
 
 float fwVersion = 1.00;
-float BuildID = 1.01;
+float BuildID = 1.02;
 
 char aRxBufferCh1='1';
 /* USER CODE END PV */
@@ -126,11 +130,29 @@ int main(void)
   MX_TIM2_Init();
   MX_BlueNRG_2_Init();
   /* USER CODE BEGIN 2 */
+  HAL_Delay(5000);
 
   QSPI_Init();
   fatFSInit();
+    /* Things ToDo*/
+  // Add EEPROM Support
+  // Add Flash Support
+  // Add Brightness as parameter to EE
+//  LCD_1in8_test();
+  screenInit();
+  HAL_Delay(1000);
+//  screenClear();
+
+//  CDC_Transmit_FS((uint8_t *)"Hello\r\n", strlen("Hello\r\n"));
+
+  memcpy(rcChannelsFrame, IdleMessageArray,26);
+  channelPWMValues[0] =  ((1000 - 1500) * 2);
+  screenClear();
+
 
   CheckButtons();
+
+  rcState = OPERATIONAL;
 
   /* USER CODE END 2 */
 

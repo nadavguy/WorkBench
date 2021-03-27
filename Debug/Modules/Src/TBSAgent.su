@@ -1,7 +1,0 @@
-TBSAgent.c:58:6:tbsInit	4	static
-TBSAgent.c:63:6:sendMessageToRC	16	static
-TBSAgent.c:116:6:sendChannelMessageToRX	8	static
-TBSAgent.c:127:9:calcCrossfireTelemetryFrameCRC	16	static
-TBSAgent.c:134:9:crc8	24	static
-TBSAgent.c:145:9:createCrossfireChannelsFrame	48	static
-TBSAgent.c:170:6:parseTBSMessage	4	static

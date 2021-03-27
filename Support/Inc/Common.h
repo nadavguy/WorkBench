@@ -4,8 +4,6 @@
  *  Created on: Mar 23, 2021
  *      Author: nadav
  */
-#include <stdint.h>
-#include "stm32f7xx.h"
 #include "ymodem.h"
 #include "main.h"
 

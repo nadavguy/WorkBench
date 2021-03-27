@@ -10,23 +10,45 @@
 
 #include "stdint.h"
 
-#define BROADCAST_ADDRESS              0x00
-#define RADIO_ADDRESS                  0xEA
-#define MODULE_ADDRESS                 0xEE
+#define BROADCAST_ADDRESS           0x00
+#define RADIO_ADDRESS               0xEA
+#define MODULE_ADDRESS              0xC8
 
-#define GPS_ID                         0x02
-#define CF_VARIO_ID                    0x07
-#define BATTERY_ID                     0x08
-#define LINK_ID                        0x14
-#define CHANNELS_ID                    0x16
-#define ATTITUDE_ID                    0x1E
-#define FLIGHT_MODE_ID                 0x21
-#define PING_DEVICES_ID                0x28
-#define DEVICE_INFO_ID                 0x29
-#define REQUEST_SETTINGS_ID            0x2A
+#define GPS_ID                      0x02
+#define CF_VARIO_ID                 0x07
+#define BATTERY_ID                  0x08
+#define LINK_ID                     0x14
+#define CHANNELS_ID                 0x16
+#define ATTITUDE_ID                 0x1E
+#define FLIGHT_MODE_ID              0x21
+#define PING_DEVICES_ID             0x28
+#define DEVICE_INFO_ID              0x29
+#define REQUEST_SETTINGS_ID         0x2A
+#define TBS_UART					huart1
+#define TBS_RX_BUFFER				128
 
-extern uint8_t tbsRXArray[64];
+typedef struct sRC_LINK
+{
+	uint8_t UplinkRSSIAnt1; //Uplink is ground to UAV
+	uint8_t UplinkRSSIAnt2;
+	uint8_t UplinkPSRLQ;
+	int8_t UplinkSNR;
+	uint8_t DiversityActiveAntena;
+	uint8_t RFMode;
+	uint8_t UplinkTXPower;
+	uint8_t DownlinkRSSI; //Downlink is UAV to ground
+	uint8_t DownlinkPSRLQ;
+	int8_t DownlinkSNR;
+}tRC_LINK;
+
+extern uint8_t tbsRXArray[TBS_RX_BUFFER];
 extern int16_t channelPWMValues[16];
+
+extern uint8_t rcChannelsFrame[26];
+extern uint8_t IdleMessageArray[26];
+extern uint8_t TriggerMessageArray[26];
+
+extern tRC_LINK rcLinkStatus;
 
 void tbsInit(void);
 void sendMessageToRC(void);

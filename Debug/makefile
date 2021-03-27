@@ -21,6 +21,12 @@ RM := rm -rf
 -include Middlewares/ST/BlueNRG-2/hci/hci_tl_patterns/Basic/subdir.mk
 -include Middlewares/ST/BlueNRG-2/hci/controller/subdir.mk
 -include Middlewares/ST/BlueNRG-2/hci/subdir.mk
+-include Hardware/Screen/image/subdir.mk
+-include Hardware/Screen/example/subdir.mk
+-include Hardware/Screen/LCD/subdir.mk
+-include Hardware/Screen/GUI_DEV/subdir.mk
+-include Hardware/Screen/Fonts/subdir.mk
+-include Hardware/Screen/Config/subdir.mk
 -include FATFS/Target/subdir.mk
 -include FATFS/App/subdir.mk
 -include Drivers/STM32F7xx_HAL_Driver/Src/subdir.mk
@@ -78,8 +84,8 @@ all: main-build
 main-build: RC-BeyondTheIronCurtain.elf secondary-outputs
 
 # Tool invocations
-RC-BeyondTheIronCurtain.elf: $(OBJS) $(USER_OBJS) /home/nadav/Documents/MXProjects/RC-BeyondTheIronCurtain/STM32F777VITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "RC-BeyondTheIronCurtain.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"/home/nadav/Documents/MXProjects/RC-BeyondTheIronCurtain/STM32F777VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="RC-BeyondTheIronCurtain.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+RC-BeyondTheIronCurtain.elf: $(OBJS) $(USER_OBJS) C:\Users\gilad\Downloads\STM32MiniCar-master\ (3)\RCF777Based\STM32F777VITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "RC-BeyondTheIronCurtain.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"C:\Users\gilad\Downloads\STM32MiniCar-master (3)\RCF777Based\STM32F777VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="RC-BeyondTheIronCurtain.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

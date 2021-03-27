@@ -28,6 +28,12 @@ Drivers/BSP/custom \
 Drivers/STM32F7xx_HAL_Driver/Src \
 FATFS/App \
 FATFS/Target \
+Hardware/Screen/Config \
+Hardware/Screen/Fonts \
+Hardware/Screen/GUI_DEV \
+Hardware/Screen/LCD \
+Hardware/Screen/example \
+Hardware/Screen/image \
 Middlewares/ST/BlueNRG-2/hci \
 Middlewares/ST/BlueNRG-2/hci/controller \
 Middlewares/ST/BlueNRG-2/hci/hci_tl_patterns/Basic \

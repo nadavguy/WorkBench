@@ -2,7 +2,7 @@
 /**
   ******************************************************************************
   * @file           : usb_device.c
-  * @version        : v1.0_Cube
+  * @version        : v2.0_Cube
   * @brief          : This file implements the USB Device
   ******************************************************************************
   * @attention
@@ -43,6 +43,7 @@
 
 /* USB Device Core handle declaration. */
 USBD_HandleTypeDef hUsbDeviceFS;
+extern USBD_DescriptorsTypeDef FS_Desc;
 
 /*
  * -- Insert your variables declaration here --
