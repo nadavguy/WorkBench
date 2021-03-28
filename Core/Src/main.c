@@ -68,15 +68,12 @@ SYSTEMState rcState = PREINIT;
 
 LINKType linkType = PWM;
 uint16_t armChannelPWMValue = ((1000 - 1500) * 2); // 8/5
-uint16_t triggerChannelPWMValue = ((1000 - 1500) * 8 / 6); // 8/5
+uint16_t triggerChannelPWMValue = ((1000 - 1500) * 2); // 8/5
 
 uint32_t lastCRSFChannelMessage = 0;
 
-FLASH_EraseInitTypeDef EraseInitStruct;
-uint32_t PAGEError = 0;
-
 float fwVersion = 1.00;
-float BuildID = 1.02;
+float BuildID = 1.03;
 
 char aRxBufferCh1='1';
 /* USER CODE END PV */
@@ -133,7 +130,12 @@ int main(void)
   HAL_Delay(5000);
 
   QSPI_Init();
-  fatFSInit();
+
+  flashInit();
+
+  createNewLogFile();
+
+  getCurrentLogSize();
     /* Things ToDo*/
   // Add EEPROM Support
   // Add Flash Support

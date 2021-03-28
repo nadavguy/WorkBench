@@ -11,6 +11,6 @@ char CTime[20] = {0};
 
 char *CT()
 {
-	sprintf(CTime,"%7.3f,", (float)HAL_GetTick()/1000.0);
+	sprintf(CTime,"%7.3f", (float)HAL_GetTick()/1000.0);
     return CTime;
 }

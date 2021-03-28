@@ -1,6 +1,7 @@
 #include "main.h"
 #include "usart.h"
 
+
 bool isReportParametersActive = false;
 
 eCI_RESULT func_debug(void)
@@ -10,14 +11,14 @@ eCI_RESULT func_debug(void)
 
 eCI_RESULT func_updateRCVersion(void)
 {
-	HAL_UART_DMAStop(&huart1);
-
-	SerialDownload(true);
-
-	if(HAL_UART_Receive_DMA(&huart1, (uint8_t *)&aRxBufferCh1, 1 ) != HAL_OK)
-	{
-
-	} //  Error_Handler();
+//	HAL_UART_DMAStop(&huart1);
+//
+//	SerialDownload(true);
+//
+//	if(HAL_UART_Receive_DMA(&huart1, (uint8_t *)&aRxBufferCh1, 1 ) != HAL_OK)
+//	{
+//
+//	} //  Error_Handler();
 	//HAL_FLASH_Lock(); Is it realy needed?
 	return CI_OK;
 }
@@ -30,15 +31,15 @@ eCI_RESULT func_versionReport(void)
 
 eCI_RESULT func_endUpdatePhase(void)
 {
-	HAL_UART_DMAStop(&huart2);
-
-	HAL_Delay(100);
-	JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4);
-	/* Jump to user application */
-	JumpToApplication = (pFunction) JumpAddress;
-	/* Initialize user application's Stack Pointer */
-	__set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
-	JumpToApplication();
+//	HAL_UART_DMAStop(&huart2);
+//
+//	HAL_Delay(100);
+//	JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4);
+//	/* Jump to user application */
+//	JumpToApplication = (pFunction) JumpAddress;
+//	/* Initialize user application's Stack Pointer */
+//	__set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
+//	JumpToApplication();
 	//TODO: show Flash process finished
 	return CI_OK;
 }
@@ -50,6 +51,11 @@ eCI_RESULT func_resetRC(void)
 }
 
 eCI_RESULT func_showAvailableCommands(void)
+{
+	return CI_OK;
+}
+
+eCI_RESULT func_dir(void)
 {
 	return CI_OK;
 }
@@ -73,6 +79,7 @@ functionsList cases [] =
 		{ "end" , func_endUpdatePhase },
 		{ "rst" , func_resetRC },
 		{ "help", func_showAvailableCommands },
+		{ "dir" , func_dir },
 		{ "fmt" , func_fmt }
 };
 

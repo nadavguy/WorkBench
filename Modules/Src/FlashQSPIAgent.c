@@ -10,6 +10,7 @@
 #include "ff.h"
 #include "stdint.h"
 #include "quadspi.h"
+#include "fatfs.h"
 
 
 
@@ -25,6 +26,19 @@ uint8_t *flash_addr;
 __IO uint8_t step = 0;
 uint32_t max_size, size;
 
+DWORD free_clusters, free_sectors, total_sectors;
+
+FATFS *getFreeFs;
+uint8_t buffer[_MAX_SS] = {0};
+uint8_t MID = 0;
+uint8_t DID = 0;
+
+uint16_t RR1 = 0;
+uint16_t RR2 = 0;
+uint16_t RR3 = 0;
+
+unsigned int BytesWritten = 0;
+
 /**
  * @brief  This function sends a Write Enable and waits until it is effective.
  * @param  hqspi: QSPI handle
@@ -38,8 +52,14 @@ uint32_t max_size, size;
   */
 uint8_t QSPI_Init(void)
 {
-  /* Configuration of the dummy cycles on QSPI memory side */
-  if (QSPI_DummyCyclesCfg(&hqspi) != HAL_OK)
+	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_SET); // QSPI WP High
+	HAL_Delay(1);
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET); // QSPI RST High
+	HAL_Delay(1);
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET); // QSPI RST High
+	HAL_Delay(2);
+	/* Configuration of the dummy cycles on QSPI memory side */
+	if (QSPI_DummyCyclesCfg(&hqspi) != HAL_OK)
   {
     return HAL_ERROR;
   }
@@ -311,7 +331,7 @@ uint8_t QSPI_READMD(uint8_t *Mid, uint8_t *Did)
 
 
  uint8_t reg2[6] = {0};
- HAL_QSPI_Receive(&hqspi, &(reg2), HAL_QPSI_TIMEOUT_DEFAULT_VALUE);
+ HAL_QSPI_Receive(&hqspi, (reg2), HAL_QPSI_TIMEOUT_DEFAULT_VALUE);
  *Mid = reg2[3];
  *Did = reg2[4];
 //  HAL_QSPI_Receive(&hqspi, &(reg2[1]), HAL_QPSI_TIMEOUT_DEFAULT_VALUE);
@@ -728,3 +748,29 @@ uint8_t QSPI_DummyCyclesCfg(QSPI_HandleTypeDef *hqspi)
   return HAL_OK;
 }
 
+void flashInit(void)
+{
+	//  Flash example
+	QSPI_Read_Status_registers(&hqspi, &RR1, &RR2, &RR3);
+	RR2 = 0x22;
+	RR3 = 0x60;
+	QSPI_Reset_Status_registers(&hqspi, &RR1, &RR2, &RR3);
+	HAL_Delay(40);
+	QSPI_READMD(&MID, &DID);
+
+	QSPI_Read_Status_registers(&hqspi, &RR1, &RR2, &RR3);
+	do
+	{
+		HAL_Delay(1);
+		FS_ret = f_mount(&USERFatFS, "\\", 0);
+	} while (FS_ret != FR_OK);
+
+	FS_ret = f_getfree("\\", &free_clusters, &getFreeFs);
+	if (FS_ret != FR_OK)
+	{
+		FS_ret = f_mkfs("\\", FM_FAT, 0, buffer, sizeof(buffer));
+	}
+
+	total_sectors = (getFreeFs->n_fatent - 2) * getFreeFs->csize;
+	free_sectors = free_clusters * getFreeFs->csize;
+}

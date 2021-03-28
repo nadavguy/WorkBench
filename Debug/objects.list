@@ -94,6 +94,7 @@
 "Modules/Src/FlashQSPIAgent.o"
 "Modules/Src/LogAgent.o"
 "Modules/Src/PushButton.o"
+"Modules/Src/ScreenAgent.o"
 "Modules/Src/TBSAgent.o"
 "Modules/Src/ci_func.o"
 "Modules/Src/cmd_interp.o"

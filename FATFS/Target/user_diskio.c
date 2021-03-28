@@ -40,6 +40,7 @@
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 #define SECTOR_SIZE                4096
+
 /* Private variables ---------------------------------------------------------*/
 /* Disk status */
 static volatile DSTATUS Stat = STA_NOINIT;
@@ -100,9 +101,9 @@ DSTATUS USER_status (
 )
 {
   /* USER CODE BEGIN STATUS */
-	  Stat = STA_NOINIT;
-	  Stat &= ~STA_NOINIT;
-    return Stat;
+	Stat = STA_NOINIT;
+	Stat &= ~STA_NOINIT;
+	return Stat;
   /* USER CODE END STATUS */
 }
 

@@ -5,6 +5,7 @@
 // Global instance of command interpreter class
 
 #include "main.h"
+#include "ci_func.h"
 
 cCMD_INTERP g_ci;
 

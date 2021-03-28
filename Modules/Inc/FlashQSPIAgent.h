@@ -8,6 +8,11 @@
 #ifndef PERIPHERALS_INC_FLASHQSPIAGENT_H_
 #define PERIPHERALS_INC_FLASHQSPIAGENT_H_
 
+#include "ff.h"
+
+extern FRESULT FS_ret;
+
+extern unsigned int BytesWritten;
 
 uint8_t QSPI_Init(void);
 uint8_t QSPI_Read(uint8_t* pData, uint32_t ReadAddr, uint32_t Size);
@@ -22,6 +27,8 @@ uint8_t QSPI_AutoPolling_Write_in_progress(QSPI_HandleTypeDef *hqspi, uint32_t T
 uint8_t QSPI_READMD(uint8_t *Mid, uint8_t *Mim);
 uint8_t QSPI_ResetFlash(void);
 uint8_t QSPI_DeleteFlash(void);
+
+extern void flashInit(void);
 
 #define QSPI_FORCE_RESET()         __HAL_RCC_QSPI_FORCE_RESET()
 #define QSPI_RELEASE_RESET()       __HAL_RCC_QSPI_RELEASE_RESET()

@@ -8,20 +8,23 @@
 #ifndef INC_LOGAGENT_H_
 #define INC_LOGAGENT_H_
 
+#include "main.h"
 
 #define MAX_LOG_SIZE (100000)
-extern int previousLogIndex;
+#define MAX_LOG_ID 	 (99999)
 
 extern char logsIndexFile[35];
 extern char currentLogFilename[64];
+extern char FileReadBuffer[1024];
 
 extern bool sessionUnlocked;
+extern uint32_t previousLogIndex;
+extern uint32_t lastFileSizeCheck;
 
-//extern bool initFile(char *newFile);
-//extern bool initFileWithData(char *newFile, char *dataToWrite);
-//extern bool createNewLogFile(void);
-//extern FILE *openFile(char *fileToOpen);
+extern bool createNewLogFile(void);
 extern void logData(char *dataToLog, bool forceToDisplay, bool displayOnly);
+extern uint32_t getCurrentLogSize(void);
+extern void monitorLogSize(void);
 //extern void writeLogHeader(void);
 
 

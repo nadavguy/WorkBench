@@ -33,7 +33,7 @@
 #include "usbd_def.h"
 
 /* USER CODE BEGIN INCLUDE */
-
+#include "usbd_cdc_if.h"
 /* USER CODE END INCLUDE */
 
 /** @addtogroup USBD_OTG_DRIVER
@@ -66,8 +66,8 @@ uint16_t readUSBData(void);
 /* USER CODE BEGIN VARIABLES */
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
-extern uint8_t usbRXArray[2048];
-extern uint8_t usbTXArray[2048];
+extern uint8_t usbRXArray[APP_RX_DATA_SIZE];
+extern uint8_t usbTXArray[APP_TX_DATA_SIZE];
 /* USER CODE END VARIABLES */
 /**
   * @}
