@@ -73,9 +73,10 @@ uint16_t triggerChannelPWMValue = ((1000 - 1500) * 2); // 8/5
 uint32_t lastCRSFChannelMessage = 0;
 
 float fwVersion = 1.00;
-float BuildID = 1.03;
+float BuildID = 1.04;
 
 char aRxBufferCh1='1';
+char terminalBuffer[1024] = {0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -154,6 +155,15 @@ int main(void)
 
   CheckButtons();
 
+  if (!ee_validate1())
+  {
+	  sprintf(terminalBuffer,"EEPROM1 Error, set default values");
+	  logData(terminalBuffer, true, false);
+	  ee_save1();
+  }
+
+  printRCConfiguration(false);
+
   rcState = OPERATIONAL;
 
   /* USER CODE END 2 */
@@ -165,6 +175,7 @@ int main(void)
 	  CheckButtons();
 	  sendChannelMessageToRX();
 	  readUSBData();
+	  monitorLogSize();
 
     /* USER CODE END WHILE */
 

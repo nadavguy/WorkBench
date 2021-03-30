@@ -41,18 +41,19 @@ extern "C" {
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "../../Support/Inc/str_util.h"
-#include "../../Support/Inc/TypeDefs.h"
-#include "../../Support/Inc/Common.h"
-#include "../../Modules/Inc/ci_func.h"
-#include "../../Modules/Inc/cmd_interp.h"
-#include "../../Modules/Inc/ConfigParams.h"
+#include "str_util.h"
+#include "TypeDefs.h"
+#include "Common.h"
+#include "ci_func.h"
+#include "cmd_interp.h"
+#include "ConfigParams.h"
 #include "PushButton.h"
 #include "TBSAgent.h"
 #include "LogAgent.h"
 #include "TimeHelper.h"
 #include "TerminalAgent.h"
 #include "ScreenAgent.h"
+#include "ConfigurationHelper.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -169,6 +170,7 @@ extern float fwVersion;
 extern float BuildID;
 
 extern char aRxBufferCh1;
+extern char terminalBuffer[1024];
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

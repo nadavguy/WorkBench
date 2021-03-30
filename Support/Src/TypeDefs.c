@@ -7,6 +7,17 @@
 
 
 #include "main.h"
+#include "TypeDefs.h"
+#include "iap.h"
+
+pU32 ee_ram_base1;
+pU32 ee_ram_ptr1;
+pU32 ee_flash_base1;
+pU32 ee_flash_ptr1;
+uint32_t ee_size1;
+uint32_t ee_count1;
+
+uint32_t startAddressEEPROM1  = 0x081C0000;
 //-----------------------------------------------------------------------------
 
 uint32_t ee_validate_data(eEEV_DATA_TYPE data_type, void* value_ptr, void* eev_ptr)
@@ -87,3 +98,66 @@ uint32_t ee_validate_data(eEEV_DATA_TYPE data_type, void* value_ptr, void* eev_p
 	return (ee_invalid_counter);
 }
 //-----------------------------------------------------------------------------
+
+static void ee_set_start1(void)
+{
+  ee_ram_ptr1 = ee_ram_base1;
+  ee_flash_ptr1 = ee_flash_base1;
+  ee_count1 = ee_size1;
+}
+
+void ee_init1(pU32 data_base1, uint32_t data_size1)
+{
+  ee_ram_base1 = data_base1;
+  ee_size1 = data_size1 / 4;
+  ee_flash_base1 = (pU32)(uint32_t)startAddressEEPROM1;
+  ee_set_start1();
+
+  while (ee_count1--)
+  {
+    *ee_ram_ptr1++ = *ee_flash_ptr1++;
+  }
+}
+
+bool ee_save1(void)
+{
+
+  ee_set_start1();
+
+  if (iap_erase_sector((uint32_t)ee_flash_base1) != 0)
+  {
+	  sprintf(terminalBuffer, "Failed to save EEPROM1");
+	  logData(terminalBuffer, true, false);
+	  return false;
+  }
+
+  if (iap_write_sector((uint32_t)ee_flash_base1, (pU32)ee_ram_ptr1, ee_size1) != 0)
+  {
+	  sprintf(terminalBuffer, "Failed to write EEPROM1");
+	  logData(terminalBuffer, true, false);
+	  return false;
+  }
+
+  if (iap_verify((pU32)ee_flash_base1, (pU32)ee_ram_ptr1, ee_size1) != 0)
+  {
+	  sprintf(terminalBuffer, "Failed to verify EEPROM1");
+	  logData(terminalBuffer, true, false);
+	  return false;
+  }
+  HAL_FLASH_Lock();
+
+  return true;
+}
+
+bool ee_erase_sector1(void)
+{
+	ee_set_start1();
+
+	if (iap_erase_sector((uint32_t)ee_flash_base1) != 0)
+	{
+		return false;
+	}
+
+	return true;
+}
+

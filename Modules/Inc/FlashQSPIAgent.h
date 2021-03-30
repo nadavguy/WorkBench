@@ -14,6 +14,11 @@ extern FRESULT FS_ret;
 
 extern unsigned int BytesWritten;
 
+extern float free_kb;
+extern float total_kb;
+
+extern uint8_t buffer[_MAX_SS];
+
 uint8_t QSPI_Init(void);
 uint8_t QSPI_Read(uint8_t* pData, uint32_t ReadAddr, uint32_t Size);
 uint8_t QSPI_Write(uint8_t* pData, uint32_t WriteAddr, uint32_t Size);

@@ -37,6 +37,9 @@ uint16_t RR1 = 0;
 uint16_t RR2 = 0;
 uint16_t RR3 = 0;
 
+float free_kb = 0;
+float total_kb = 0;
+
 unsigned int BytesWritten = 0;
 
 /**

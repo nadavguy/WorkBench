@@ -36,9 +36,7 @@ void logData(char *dataToLog, bool forceToDisplay, bool displayOnly)
     }
     if (!displayOnly)
     {
-
-//        fwrite(localString, strlen(localString) + 1, 1, logFileHandler);
-//        fflush(logFileHandler);
+    	f_write(&USERFile, localString, strlen(localString), &BytesWritten);
     }
     uint32_t logFileSize = 0;  // ftell(logFileHandler);
     if (logFileSize > MAX_LOG_SIZE )
@@ -122,6 +120,7 @@ uint32_t getCurrentLogSize(void)
     		return fno1.fsize;
     	}
     }
+    f_closedir(&dp1);
     return 0;
 }
 
@@ -131,6 +130,8 @@ void monitorLogSize(void)
 	{
 		if (getCurrentLogSize() > MAX_LOG_SIZE)
 		{
+			sprintf(terminalBuffer, "%s, Closing current log file\r\n", CT());
+			logData(terminalBuffer, false, false);
 			f_close(&USERFile);
 			createNewLogFile();
 		}

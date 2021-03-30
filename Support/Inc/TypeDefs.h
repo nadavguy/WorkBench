@@ -91,5 +91,6 @@ typedef float* pFLOAT;
 
 uint32_t ee_validate_data(eEEV_DATA_TYPE data_type, void* value_ptr, void* eev_ptr);
 void ee_disp_memory(void);
+extern bool ee_save1(void);
 
 #endif /* INC_TYPEDEFS_H_ */
