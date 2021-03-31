@@ -149,6 +149,15 @@ int main(void)
   setBuzzerPattern(testBuzzerPattern);
 
   printRCConfiguration(false);
+      /* Things ToDo*/
+  // Add EEPROM Support
+  // Add Flash Support
+  // Add Brightness as parameter to EE
+//  LCD_1in8_test();
+  // screenInit();
+  // HAL_Delay(1000);
+
+  // screenClear();
 //  createPingMessage();
 
 

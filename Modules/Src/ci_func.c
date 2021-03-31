@@ -158,8 +158,8 @@ typedef struct
 
 functionsList cases [] =
 {
-		{ "ver ", func_versionReport },
-		{ "dbg ", func_debug },
+		{ "ver"	, func_versionReport },
+		{ "dbg"	, func_debug },
 		{ "urcv", func_updateRCVersion },
 		{ "end" , func_endUpdatePhase },
 		{ "rst" , func_resetRC },

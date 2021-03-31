@@ -78,8 +78,6 @@ uint8_t QSPI_Erase_Sector4K(uint32_t SectorAddress)
 {
   QSPI_CommandTypeDef s_command;
 
-  uint8_t reg1[6];
-
   if (QSPI_WriteEnable() != HAL_OK)
   {
     return HAL_ERROR;
@@ -313,7 +311,6 @@ uint8_t QSPI_WriteEnable(void)
 uint8_t QSPI_READMD(uint8_t *Mid, uint8_t *Did)
 {
   QSPI_CommandTypeDef s_command;
-  QSPI_AutoPollingTypeDef s_config;
 
   /* Enable write operations */
   s_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
@@ -349,7 +346,6 @@ uint8_t QSPI_READMD(uint8_t *Mid, uint8_t *Did)
 uint8_t QSPI_ResetFlash(void)
 {
   QSPI_CommandTypeDef s_command;
-  QSPI_AutoPollingTypeDef s_config;
 
   /* Enable write operations */
   s_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
@@ -393,7 +389,6 @@ uint8_t QSPI_ResetFlash(void)
 uint8_t QSPI_DeleteFlash(void)
 {
   QSPI_CommandTypeDef s_command;
-  QSPI_AutoPollingTypeDef s_config;
 
   QSPI_WriteEnable();
   /* Enable write operations */
@@ -454,39 +449,39 @@ uint8_t QSPI_AutoPolling_Write_in_progress(QSPI_HandleTypeDef *hqspi, uint32_t T
   return HAL_OK;
 }
 
-static uint8_t QSPI_AutoPolling_Erase_in_progress(QSPI_HandleTypeDef *hqspi, uint32_t Timeout)
-{
-  QSPI_CommandTypeDef s_command;
-  uint8_t reg1[2];
-
-  /* Initialize the reading of status register */
-  s_command.InstructionMode = QSPI_INSTRUCTION_1_LINE; //QSPI_INSTRUCTION_4_LINES;
-  s_command.Instruction = READ_STATUS_REG_CMD;
-  s_command.AddressMode = QSPI_ADDRESS_NONE;
-  s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
-  s_command.DataMode = QSPI_DATA_1_LINE; // QSPI_DATA_4_LINES;
-  s_command.DummyCycles = 0;
-  s_command.NbData = 2;
-  s_command.DdrMode = QSPI_DDR_MODE_DISABLE;
-  s_command.DdrHoldHalfCycle = QSPI_DDR_HHC_ANALOG_DELAY;
-  s_command.SIOOMode = QSPI_SIOO_INST_EVERY_CMD;
-
-  do
-  {
-    /* Configure the command */
-    if (HAL_QSPI_Command(hqspi, &s_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
-    {
-      return HAL_ERROR;
-    }
-
-    /* Reception of the data */
-    if (HAL_QSPI_Receive(hqspi, (uint8_t *)reg1, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
-    {
-      return HAL_ERROR;
-    }
-  } while (reg1[1] & 2);
-  return HAL_OK;
-}
+//static uint8_t QSPI_AutoPolling_Erase_in_progress(QSPI_HandleTypeDef *hqspi, uint32_t Timeout)
+//{
+//  QSPI_CommandTypeDef s_command;
+//  uint8_t reg1[2];
+//
+//  /* Initialize the reading of status register */
+//  s_command.InstructionMode = QSPI_INSTRUCTION_1_LINE; //QSPI_INSTRUCTION_4_LINES;
+//  s_command.Instruction = READ_STATUS_REG_CMD;
+//  s_command.AddressMode = QSPI_ADDRESS_NONE;
+//  s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+//  s_command.DataMode = QSPI_DATA_1_LINE; // QSPI_DATA_4_LINES;
+//  s_command.DummyCycles = 0;
+//  s_command.NbData = 2;
+//  s_command.DdrMode = QSPI_DDR_MODE_DISABLE;
+//  s_command.DdrHoldHalfCycle = QSPI_DDR_HHC_ANALOG_DELAY;
+//  s_command.SIOOMode = QSPI_SIOO_INST_EVERY_CMD;
+//
+//  do
+//  {
+//    /* Configure the command */
+//    if (HAL_QSPI_Command(hqspi, &s_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+//    {
+//      return HAL_ERROR;
+//    }
+//
+//    /* Reception of the data */
+//    if (HAL_QSPI_Receive(hqspi, (uint8_t *)reg1, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+//    {
+//      return HAL_ERROR;
+//    }
+//  } while (reg1[1] & 2);
+//  return HAL_OK;
+//}
 
 // Read Status Register-1 (05h), Status Register-2 (35h) & Status Register-3 (15h)
 uint8_t QSPI_Read_Status_registers(QSPI_HandleTypeDef *hqspi, uint16_t *R1, uint16_t *R2, uint16_t *R3)
@@ -568,6 +563,7 @@ uint8_t QSPI_Read_Status_registers(QSPI_HandleTypeDef *hqspi, uint16_t *R1, uint
     return HAL_ERROR;
   }
   *R3 = reg3[0];
+  return HAL_OK;
 }
 
 // Reset Status Register-1 (05h), Status Register-2 (35h) & Status Register-3 (15h)
@@ -651,6 +647,7 @@ uint8_t QSPI_Reset_Status_registers(QSPI_HandleTypeDef *hqspi, uint16_t *R1, uin
   {
     return HAL_ERROR;
   }
+  return HAL_OK;
 }
 
 /**

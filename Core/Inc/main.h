@@ -54,6 +54,8 @@ extern "C" {
 #include "TerminalAgent.h"
 #include "ScreenAgent.h"
 #include "ConfigurationHelper.h"
+#include "TBSAgent.h"
+#include "BuzzerAgent.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -159,7 +161,7 @@ extern SYSTEMState desiredSMAState;
 extern uint16_t armChannelPWMValue;
 extern uint16_t triggerChannelPWMValue;
 
-extern uint32_t lastCRSFChannelMessage;
+//extern uint32_t lastCRSFChannelMessage;
 
 
 

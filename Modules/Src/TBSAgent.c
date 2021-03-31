@@ -16,11 +16,14 @@
 
 uint8_t tbsRXArray[TBS_RX_BUFFER] = {0};
 uint8_t rcChannelsFrame[26] = {0};
+uint8_t tbsPingMessage[8] = {0}; //C8	4	0x28	0x00	0xEA	0x00	0xEA
 
 uint8_t IdleMessageArray[26] = {0xC8, 0x18, 0x16, 0xAC, 0x60, 0x05, 0x2B, 0x58, 0xC1, 0x0A, 0x56, 0xB0, 0x82, 0x15, 0xAC, 0x60, 0x05, 0x2B, 0x58, 0xC1, 0x0A, 0x56, 0xB0, 0x82, 0x15, 0x5B};
 uint8_t TriggerMessageArray[26] = {0xC8, 0x18, 0x16, 0xA4, 0x26, 0x35, 0xA9, 0x49, 0x4D, 0x6A, 0x52, 0x93, 0x9A, 0xD4, 0xA4, 0x26, 0x35, 0xA9, 0x49, 0x4D, 0x6A, 0x52, 0x93, 0x9A, 0xD4, 0x64};
 
 int16_t channelPWMValues[16] = {((1000 - 1500) * 8 / 5 + 992)};
+
+uint32_t lastCRSFChannelMessage = 0;
 
 tRC_LINK rcLinkStatus;
 
@@ -67,7 +70,7 @@ void tbsInit(void)
 
 void sendMessageToRC(void)
 {
-	uint8_t tempState = 0x06;
+//	uint8_t tempState = 0x06;
 //	if (isInHardFault)
 //	{
 //		tempState = 0x4;
@@ -118,7 +121,7 @@ void sendMessageToRC(void)
 //	rc_telem.putbyte(rc_tx_buffer,19);
 }
 
-void sendChannelMessageToRX(void)
+void sendChannelMessageToTBS(void)
 {
 //	uint16_t R = 0;
 	if ( HAL_GetTick() - lastCRSFChannelMessage > 6)
@@ -207,9 +210,59 @@ bool parseTBSMessage(void)
 			rcLinkStatus.DownlinkSNR = tbsRXArray[i + 12];
 			i = i + 13;
 			localRet = true;
+			sprintf(terminalBuffer,"Uplink RSSI1: %d, RSSI2: %d, LQ: %d, SNR: %d",
+					rcLinkStatus.UplinkRSSIAnt1, rcLinkStatus.UplinkRSSIAnt2, rcLinkStatus.UplinkPSRLQ,
+					rcLinkStatus.UplinkSNR);
+			logData(terminalBuffer, false, false);
+			sprintf(terminalBuffer,"Uplink Diversity: %d, RFMode: %d, TX: %d",
+					rcLinkStatus.DiversityActiveAntena, rcLinkStatus.RFMode,
+					rcLinkStatus.UplinkTXPower);
+			logData(terminalBuffer, false, false);
+			sprintf(terminalBuffer,"Downlink RSSI: %d, LQ: %d, SNR: %d",
+					rcLinkStatus.DownlinkRSSI, rcLinkStatus.DownlinkPSRLQ,
+					rcLinkStatus.DownlinkSNR);
+			logData(terminalBuffer, false, false);
 		}
 		i++;
 	}
 	memset(tbsRXArray, 0, TBS_RX_BUFFER);
 	return localRet;
+}
+
+void createPingMessage(void)
+{
+	uint8_t Counter = 0;
+	while (1)
+	{
+	tbsPingMessage[0] = 0xC8; //C8	4	0x28	0x00	0xEA	0x00	0xEA
+	tbsPingMessage[1] = 0x06;
+	tbsPingMessage[2] = 0x28;
+	tbsPingMessage[3] = 0x00;
+	tbsPingMessage[4] = 0xC8;
+	tbsPingMessage[5] = 0x00;
+	tbsPingMessage[6] = 0xC8;
+//	tbsPingMessage[7] = crc8(&tbsPingMessage[2], 5);
+	tbsPingMessage[7] = Counter;
+
+
+
+		HAL_UART_Receive_DMA(&TBS_UART, tbsRXArray,TBS_RX_BUFFER);
+		HAL_Delay(1);
+		HAL_UART_Transmit_IT(&TBS_UART, tbsPingMessage, 8);
+		HAL_Delay(1);
+		char test[1024] = "";
+		logData((char *)"TBS RX: ", true, true);
+		for (int i = 0 ; i < 128 ; i ++)
+		{
+			sprintf(&test[i*3], "-%02x",tbsRXArray[i]);
+			if (tbsRXArray[i] == 0x29)
+			{
+				int y = 1;
+			}
+		}
+		logData(test, true, true);
+		memset(test, 0, 1024);
+		memset(tbsRXArray, 0, 256);
+		Counter++;
+	}
 }

@@ -47,16 +47,20 @@ extern int16_t channelPWMValues[16];
 extern uint8_t rcChannelsFrame[26];
 extern uint8_t IdleMessageArray[26];
 extern uint8_t TriggerMessageArray[26];
+extern uint8_t tbsPingMessage[8];
+
+extern uint32_t lastCRSFChannelMessage;
 
 extern tRC_LINK rcLinkStatus;
 
 void tbsInit(void);
 void sendMessageToRC(void);
-void sendChannelMessageToRX(void);
+void sendChannelMessageToTBS(void);
 uint8_t calcCrossfireTelemetryFrameCRC(void);
 uint8_t crc8(const uint8_t *ptr, uint32_t len);
 uint8_t createCrossfireChannelsFrame(uint8_t * frame, int16_t * pulses);
 bool parseTBSMessage(void);
+extern void createPingMessage(void);
 
 
 #endif /* INC_TBSAGENT_H_ */

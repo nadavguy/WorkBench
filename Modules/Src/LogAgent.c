@@ -128,6 +128,7 @@ void monitorLogSize(void)
 {
 	if (HAL_GetTick() - lastFileSizeCheck > 10000)
 	{
+		f_sync(&USERFile);
 		if (getCurrentLogSize() > MAX_LOG_SIZE)
 		{
 			sprintf(terminalBuffer, "%s, Closing current log file\r\n", CT());

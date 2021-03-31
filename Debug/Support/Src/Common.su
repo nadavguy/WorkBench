@@ -9,4 +9,4 @@ Common.c:186:6:Serial_PutString6	16	static
 Common.c:202:19:Serial_PutByte6	16	static
 Common.c:214:15:lrotate	24	static
 Common.c:224:15:rrotate	24	static
-Common.c:243:10:SerialDownload	64	static
+Common.c:243:10:SerialDownload	56	static

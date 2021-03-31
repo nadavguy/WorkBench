@@ -26,10 +26,10 @@ uint32_t triggerButtonPressStart = 0;
 uint32_t triggerButtonPressCycleStart = 0;
 uint32_t triggerButtonPressDurationmSec[5] = {0};
 
-bool armButtonIsHigh = false;
+bool armButtonIsHigh = true;
 bool armButtonIsLow = false;
 
-bool triggerButtonIsHigh = false;
+bool triggerButtonIsHigh = true;
 bool triggerButtonIsLow = false;
 
 void CheckButtons(void)
@@ -37,19 +37,23 @@ void CheckButtons(void)
 	/*Get Buttons State */
 	armPinState = HAL_GPIO_ReadPin(armGPIO, armPIN);
 	triggerPinState = HAL_GPIO_ReadPin(triggerGPIO, triggerPIN);
-	if ( (rcState == PREINIT) && (armPinState == GPIO_PIN_SET) )
+	if ( (rcState == PREINIT) && (armPinState == GPIO_PIN_RESET) )
 	{
-
+		rcState = MAINTENANCE;
 	}
 
 	/*Accumulate Button Press Pattern  */
 	if (armPinState == GPIO_PIN_RESET)
 	{
+		if ( (armButtonIsHigh) && (!armButtonIsLow) )
+		{
+			logData("Arm button pressed", false, false);
+		}
 		armButtonIsHigh = false;
 		armButtonIsLow = true;
-		if ( (linkType == PWM) && (rcState == OPERATIONAL) )
+		if ( (ee.linkType == PWM) && (rcState == OPERATIONAL) )
 		{
-			channelPWMValues[0] =  ((2000 - 1500) * 2);
+			channelPWMValues[0] =  ((ee.armPWMOnValue - 1500) * 2);
 //			memset(rcChannelsFrame,0,26);
 //			memcpy(rcChannelsFrame, TriggerMessageArray,26);
 		}
@@ -58,9 +62,9 @@ void CheckButtons(void)
 	{
 		if (armButtonIsLow)
 		{
-			if ( (linkType == PWM) && (rcState == OPERATIONAL) )
+			if ( (ee.linkType == PWM) && (rcState == OPERATIONAL) )
 			{
-				channelPWMValues[0] = ((1000 - 1500) * 2);
+				channelPWMValues[0] = ((ee.armPWMOffValue - 1500) * 2);
 //				memset(rcChannelsFrame,0,26);
 //				memcpy(rcChannelsFrame, IdleMessageArray,26);
 			}
@@ -77,6 +81,12 @@ void CheckButtons(void)
 				memset(armButtonPressDurationmSec, 0, 20);
 			}
 		}
+
+		if ( (!armButtonIsHigh) && (armButtonIsLow) )
+		{
+			logData("Arm button released", false, false);
+		}
+
 		armButtonIsHigh = true;
 		armButtonIsLow = false;
 		armButtonPressStart = HAL_GetTick();
@@ -88,18 +98,22 @@ void CheckButtons(void)
 
 	if (triggerPinState == GPIO_PIN_RESET)
 	{
+		if ( (triggerButtonIsHigh) && (!triggerButtonIsLow) )
+		{
+			logData("Trigger button pressed", false, false);
+		}
 		triggerButtonIsHigh = false;
 		triggerButtonIsLow = true;
-		if ( (linkType == PWM) && (rcState == OPERATIONAL) )
+		if ( (ee.linkType == PWM) && (rcState == OPERATIONAL) )
 		{
-			channelPWMValues[1] = ((2000 - 1500) * 8 / 5);
+			channelPWMValues[1] = ((ee.triggerPWMOnValue - 1500) * 8 / 5);
 		}
 	}
 	else
 	{
-		if ( (linkType == PWM) && (rcState == OPERATIONAL) )
+		if ( (ee.linkType == PWM) && (rcState == OPERATIONAL) )
 		{
-			channelPWMValues[1] = ((1000 - 1500) * 8 / 5);
+			channelPWMValues[1] = ((ee.triggerPWMOffValue - 1500) * 8 / 5);
 		}
 		if (triggerButtonIsLow)
 		{
@@ -116,6 +130,12 @@ void CheckButtons(void)
 				memset(triggerButtonPressDurationmSec, 0, 20);
 			}
 		}
+
+		if ( (!triggerButtonIsHigh) && (triggerButtonIsLow) )
+		{
+			logData("Trigger button released", false, false);
+		}
+
 		triggerButtonIsHigh = true;
 		triggerButtonIsLow = false;
 		triggerButtonPressStart = HAL_GetTick();
@@ -128,7 +148,7 @@ void CheckButtons(void)
 	/* Act Upon Received Pattern */
 	if ( (armButtonIsHigh) && (triggerButtonIsHigh) )
 	{
-		if ( (rcState == OPERATIONAL) && (linkType == DIGITAL) )
+		if ( (rcState == OPERATIONAL) && (ee.linkType == DIGITAL) )
 		{
 			if (HAL_GetTick() - armButtonPressCycleStart > 5000)
 			{

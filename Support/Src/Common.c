@@ -242,9 +242,8 @@ unsigned char rrotate(unsigned char val, int n)
   */
 uint32_t SerialDownload(bool move)
 {
-  uint8_t number[11] = {0};
   uint32_t size = 0;
-  static uint32_t ci,ck;
+  static uint32_t ck;
   uint32_t B4;
   uint8_t *B4_Addr;
   uint32_t FlashDestination1, FlashDestination2;
