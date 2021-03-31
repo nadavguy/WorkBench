@@ -70,10 +70,10 @@ LINKType linkType = PWM;
 uint16_t armChannelPWMValue = ((1000 - 1500) * 2); // 8/5
 uint16_t triggerChannelPWMValue = ((1000 - 1500) * 2); // 8/5
 
-uint32_t lastCRSFChannelMessage = 0;
+//uint32_t lastCRSFChannelMessage = 0;
 
 float fwVersion = 1.00;
-float BuildID = 1.04;
+float BuildID = 1.05;
 
 char aRxBufferCh1='1';
 char terminalBuffer[1024] = {0};
@@ -129,41 +129,31 @@ int main(void)
   MX_BlueNRG_2_Init();
   /* USER CODE BEGIN 2 */
   HAL_Delay(5000);
-
-  QSPI_Init();
-
-  flashInit();
-
-  createNewLogFile();
-
-  getCurrentLogSize();
-    /* Things ToDo*/
-  // Add EEPROM Support
-  // Add Flash Support
-  // Add Brightness as parameter to EE
-//  LCD_1in8_test();
-  screenInit();
-  HAL_Delay(1000);
-//  screenClear();
-
-//  CDC_Transmit_FS((uint8_t *)"Hello\r\n", strlen("Hello\r\n"));
-
-  memcpy(rcChannelsFrame, IdleMessageArray,26);
-  channelPWMValues[0] =  ((1000 - 1500) * 2);
-  screenClear();
-
-
   CheckButtons();
 
+  QSPI_Init();
+  flashInit();
+  createNewLogFile();
+
+  ee_init1((pU32)&ee, sizeof(ee));
   if (!ee_validate1())
   {
 	  sprintf(terminalBuffer,"EEPROM1 Error, set default values");
 	  logData(terminalBuffer, true, false);
 	  ee_save1();
+
   }
+  rcState = INIT;
+
+  initBuzzerPatterns();
+  setBuzzerPattern(testBuzzerPattern);
 
   printRCConfiguration(false);
+//  createPingMessage();
 
+
+
+//  getCurrentLogSize();
   rcState = OPERATIONAL;
 
   /* USER CODE END 2 */
@@ -173,7 +163,7 @@ int main(void)
   while (1)
   {
 	  CheckButtons();
-	  sendChannelMessageToRX();
+	  sendChannelMessageToTBS();
 	  readUSBData();
 	  monitorLogSize();
 
