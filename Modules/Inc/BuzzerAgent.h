@@ -23,6 +23,8 @@ extern uint8_t buzzerPhase;
 extern float startBuzzerPhase;
 extern float currentBuzzerPhase;
 
+extern bool isBuzzerCycleEnded;
+
 extern tBuzzer_Pattern currentPattern;
 extern tBuzzer_Pattern testBuzzerPattern;
 

@@ -31,6 +31,10 @@ extern HAL_StatusTypeDef FLASHStatus;
 extern uint32_t JumpAddress;
 extern pFunction JumpToApplication;
 
+extern FLASH_EraseInitTypeDef EraseInitStruct;
+
+extern uint32_t PAGEError;
+
 extern int8_t sgn(int32_t sourceValue);
 
 extern int32_t limitInt32(int32_t minValue, int32_t value, int32_t maxValue);

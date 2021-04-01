@@ -8,12 +8,13 @@
 #include "main.h"
 
 //tEEV_FLOAT EEV_Vibrations = {0.0f, 0.08f, 12.0f}; 	//	[m/s^2] //Vibrations value to check landing
-tEEV_U08 EEV_DebugLevel = {0, 0, 255}; 				// 	Debug Level
+tEEV_U08 EEV_DebugLevel = {0, 0, 32}; 				// 	Debug Level
 tEEV_U16 EEV_ArmPWMOffValue = {1000, 1000, 2000};
 tEEV_U16 EEV_ArmPWMOnValue = {1000, 2000, 2000};
 tEEV_U16 EEV_TriggerPWMOffValue = {1000, 1000, 2000};
 tEEV_U16 EEV_TriggerPWMOnValue = {1000, 2000, 2000};
 tEEV_U08 EEV_LinkType = {0, 0, 1};
+tEEV_U16 EEV_Backlight = {0, 1000, 1000};
 
 tEE_DATA ee;
 
@@ -29,6 +30,7 @@ bool ee_validate1(void)
 	ee_invalid_counter += ee_validate_data(EEV_U16, (pU16)&ee.triggerPWMOffValue, (pEEV_U16)&EEV_TriggerPWMOffValue);
 	ee_invalid_counter += ee_validate_data(EEV_U16, (pU16)&ee.triggerPWMOnValue, (pEEV_U16)&EEV_TriggerPWMOnValue);
 	ee_invalid_counter += ee_validate_data(EEV_U08, (pU08)&ee.linkType, (pEEV_U08)&EEV_LinkType);
+	ee_invalid_counter += ee_validate_data(EEV_U16, (pU16)&ee.backLight, (pEEV_U16)&EEV_Backlight);
 
 	return (ee_invalid_counter == 0);
 }

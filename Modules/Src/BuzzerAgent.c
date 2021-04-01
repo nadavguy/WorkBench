@@ -13,6 +13,7 @@ float currentBuzzerPhase = 0;
 
 tBuzzer_Pattern currentPattern;
 tBuzzer_Pattern testBuzzerPattern;
+bool isBuzzerCycleEnded = true;
 
 void setBuzzerPattern(tBuzzer_Pattern patternToSet)
 {
@@ -25,10 +26,12 @@ void updateBuzzerStatus(void)
     {
         startBuzzerPhase = HAL_GetTick();
         buzzerPhase++;
+        isBuzzerCycleEnded = false;
     }
     if (buzzerPhase >= currentPattern.patternLength + 1)
     {
     	buzzerPhase = 0;
+    	isBuzzerCycleEnded = true;
         return;
     }
     if (HAL_GetTick() - startBuzzerPhase > currentPattern.patternDuration[buzzerPhase - 1])

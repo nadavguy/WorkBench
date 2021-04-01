@@ -26,6 +26,7 @@ int16_t channelPWMValues[16] = {((1000 - 1500) * 8 / 5 + 992)};
 uint32_t lastCRSFChannelMessage = 0;
 
 tRC_LINK rcLinkStatus;
+tSMA_Status smaStatus;
 
 // CRC8 implementation with polynom = x^8+x^7+x^6+x^4+x^2+1 (0xD5)
 const unsigned char crc8tab[256] = {
@@ -196,7 +197,7 @@ bool parseTBSMessage(void)
 	bool localRet = false;
 	while ( i < TBS_RX_BUFFER - 3)
 	{
-		if ( (tbsRXArray[i] == 0xea) && (tbsRXArray[i + 1] == 0x0c) && (tbsRXArray[i + 2] == 0x14) && (TBS_RX_BUFFER - i >= 14) )
+		if ( (tbsRXArray[i] == 0xea) && (tbsRXArray[i + 1] == 0x0c) && (tbsRXArray[i + 2] == 0x14) && (TBS_RX_BUFFER - i >= 0x0c) )
 		{
 			rcLinkStatus.UplinkRSSIAnt1 = tbsRXArray[i + 3];
 			rcLinkStatus.UplinkRSSIAnt2 = tbsRXArray[i + 4];
@@ -221,6 +222,23 @@ bool parseTBSMessage(void)
 			sprintf(terminalBuffer,"Downlink RSSI: %d, LQ: %d, SNR: %d",
 					rcLinkStatus.DownlinkRSSI, rcLinkStatus.DownlinkPSRLQ,
 					rcLinkStatus.DownlinkSNR);
+			logData(terminalBuffer, false, false);
+		}
+		if ( (tbsRXArray[i] == 0x00) && (tbsRXArray[i + 1] == 0x11) && (tbsRXArray[i + 2] == 0xDD) && (TBS_RX_BUFFER - i >= 0x11) )
+		{
+			smaStatus.batteryVoltage = tbsRXArray[i + 3] / 10.0;
+			smaStatus.smaState = tbsRXArray[i + 4];
+			smaStatus.triggerMode = tbsRXArray[i + 5];
+			smaStatus.Altitude = (tbsRXArray[i + 6] * 256 + tbsRXArray[i + 7] + 28000)/10.0;
+			smaStatus.Acceleration = (tbsRXArray[i + 8] * 256 + tbsRXArray[i + 9])/100.0;
+
+			sprintf(terminalBuffer,"SmartAir state: %d, trigger mode: %d",
+					smaStatus.smaState, smaStatus.triggerMode);
+			logData(terminalBuffer, false, false);
+			sprintf(terminalBuffer,"SmartAir Battery: %6.3f",smaStatus.batteryVoltage);
+			logData(terminalBuffer, false, false);
+			sprintf(terminalBuffer,"SmartAir Altitude: %6.3f, Acceleration: %6.3f",
+					smaStatus.Altitude, smaStatus.Acceleration);
 			logData(terminalBuffer, false, false);
 		}
 		i++;

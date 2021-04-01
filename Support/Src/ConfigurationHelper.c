@@ -12,7 +12,7 @@ void printRCConfiguration(bool toDisplayOnly)
 
     logData("", false, toDisplayOnly);
     logData("General Information", false, toDisplayOnly);
-    sprintf(terminalBuffer,"RC Firmware - Version: %3.2f, BuildID: %3.2f", fwVersion, BuildID);
+    sprintf(terminalBuffer,"RC Firmware - Version: %3.2f, BuildID: %3.2f", fwVersion, buildID);
     logData(terminalBuffer, false, toDisplayOnly);
 
     logData("-----------------System configuration----------------", false, toDisplayOnly);

@@ -18,6 +18,7 @@ typedef struct sEE_DATA
 	uint16_t triggerPWMOffValue;
 	uint16_t triggerPWMOnValue;
 	uint8_t linkType;
+	uint16_t backLight;
 }tEE_DATA;
 
 extern tEE_DATA ee;
@@ -29,6 +30,7 @@ extern tEEV_U16 EEV_ArmPWMOnValue;
 extern tEEV_U16 EEV_TriggerPWMOffValue;
 extern tEEV_U16 EEV_TriggerPWMOnValue;
 extern tEEV_U08 EEV_LinkType;
+extern tEEV_U16 EEV_Backlight;
 
 extern bool ee_validate1(void);
 

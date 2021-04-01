@@ -41,6 +41,15 @@ typedef struct sRC_LINK
 	int8_t DownlinkSNR;
 }tRC_LINK;
 
+typedef struct sSMA_Status
+{
+	float batteryVoltage;
+	uint8_t smaState;
+	uint8_t triggerMode;
+	float Altitude;
+	float Acceleration;
+}tSMA_Status;
+
 extern uint8_t tbsRXArray[TBS_RX_BUFFER];
 extern int16_t channelPWMValues[16];
 
@@ -52,6 +61,7 @@ extern uint8_t tbsPingMessage[8];
 extern uint32_t lastCRSFChannelMessage;
 
 extern tRC_LINK rcLinkStatus;
+extern tSMA_Status smaStatus;
 
 void tbsInit(void);
 void sendMessageToRC(void);

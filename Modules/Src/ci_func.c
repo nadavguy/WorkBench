@@ -13,6 +13,8 @@ eCI_RESULT func_debug(void)
 	{
 		ee.debugLevel = get_param_int(0);
 		ee_save1();
+		sprintf(terminalBuffer,"Debug level set to: %d",ee.debugLevel);
+		logData(terminalBuffer, false, false);
 	}
 	return CI_OK;
 }
@@ -33,7 +35,7 @@ eCI_RESULT func_updateRCVersion(void)
 
 eCI_RESULT func_versionReport(void)
 {
-	sprintf(terminalBuffer,"%s, RC Firmware version: %6.2f, BuildID: %6.2f",CT(), fwVersion, BuildID);
+	sprintf(terminalBuffer,"RC Firmware version: %6.2f, BuildID: %6.2f",fwVersion, buildID);
 	logData(terminalBuffer, false, true);
 	return CI_OK;
 }
@@ -70,6 +72,8 @@ eCI_RESULT func_armPWMOff(void)
 	{
 		ee.armPWMOffValue = get_param_int(0);
 		ee_save1();
+		sprintf(terminalBuffer,"Arm PWM Off value set to: %d",ee.armPWMOffValue);
+		logData(terminalBuffer, false, false);
 	}
 	return CI_OK;
 }
@@ -80,6 +84,8 @@ eCI_RESULT func_armPWMOn(void)
 	{
 		ee.armPWMOnValue = get_param_int(0);
 		ee_save1();
+		sprintf(terminalBuffer,"Arm PWM On value set to: %d",ee.armPWMOnValue);
+		logData(terminalBuffer, false, false);
 	}
 	return CI_OK;
 }
@@ -90,6 +96,8 @@ eCI_RESULT func_triggerPWMOff(void)
 	{
 		ee.triggerPWMOffValue = get_param_int(0);
 		ee_save1();
+		sprintf(terminalBuffer,"Trigger PWM Off value set to: %d",ee.triggerPWMOffValue);
+		logData(terminalBuffer, false, false);
 	}
 	return CI_OK;
 }
@@ -100,6 +108,8 @@ eCI_RESULT func_triggerPWMOn(void)
 	{
 		ee.triggerPWMOnValue = get_param_int(0);
 		ee_save1();
+		sprintf(terminalBuffer,"Trigger PWM On value set to: %d",ee.triggerPWMOnValue);
+		logData(terminalBuffer, false, false);
 	}
 	return CI_OK;
 }
@@ -110,6 +120,8 @@ eCI_RESULT func_linkType(void)
 	{
 		ee.linkType = get_param_int(0);
 		ee_save1();
+		sprintf(terminalBuffer,"Link type set to: %s",(ee.linkType==PWM) ? "PWM" : "Digital");
+		logData(terminalBuffer, false, false);
 	}
 	return CI_OK;
 }
@@ -117,6 +129,18 @@ eCI_RESULT func_linkType(void)
 eCI_RESULT func_systemConfiguration(void)
 {
 	printRCConfiguration(true);
+	return CI_OK;
+}
+
+eCI_RESULT func_backLight(void)
+{
+	if (get_param_count() > 0)
+	{
+		ee.backLight = get_param_int(0);
+		ee_save1();
+		sprintf(terminalBuffer,"Backlight value set to: %3.1f per-cent",ee.backLight/10.0);
+		logData(terminalBuffer, false, false);
+	}
 	return CI_OK;
 }
 
@@ -170,6 +194,7 @@ functionsList cases [] =
 		{ "tpon", func_triggerPWMOn },
 		{ "lnkt", func_linkType },
 		{ "ee?"	, func_systemConfiguration },
+		{ "bklt", func_backLight },
 		{ "dir" , func_dir },
 		{ "fmt" , func_fmt }
 };

@@ -17,6 +17,10 @@ uint8_t aFileName[FILE_NAME_LENGTH];
 uint8_t key[256] = {0};
 HAL_StatusTypeDef FLASHStatus;
 
+FLASH_EraseInitTypeDef EraseInitStruct;
+
+uint32_t PAGEError = 0;
+
 
 int8_t sgn(int32_t sourceValue)
 {
