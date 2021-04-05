@@ -39,7 +39,6 @@
 #include "FlashQSPIAgent.h"
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
-#define SECTOR_SIZE                4096
 
 /* Private variables ---------------------------------------------------------*/
 /* Disk status */
@@ -216,7 +215,7 @@ DRESULT USER_ioctl (
 
 		/* Get erase block size in unit of sector (DWORD) */
 	case GET_BLOCK_SIZE :
-		*(DWORD*)buff = 16;//SECTOR_SIZE;
+		*(DWORD*)buff = 1;//SECTOR_SIZE;
 		res = RES_OK;
 		break;
 

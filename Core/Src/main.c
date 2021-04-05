@@ -44,7 +44,7 @@
 #include "fonts.h"
 #include "image.h"
 #include "LCD_Test.h"
-#include "usbd_cdc_if.h"
+#include "FlashQSPIAgent.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -68,7 +68,7 @@
 char terminalBuffer[1024] = {0};
 
 float fwVersion = 1.00;
-float buildID = 1.06;
+float buildID = 1.07;
 
 SYSTEMState rcState = PREINIT;
 

@@ -69,12 +69,15 @@
 #define USBD_PID_FS     22336
 #define USBD_PRODUCT_STRING_FS     "Parazero RC comPort"
 #define USBD_CONFIGURATION_STRING_FS     "CDC Config"
-#define USBD_INTERFACE_STRING_FS     "CDC Interface"
 
 #define USB_SIZ_BOS_DESC            0x0C
 
 /* USER CODE BEGIN PRIVATE_DEFINES */
-
+//#define USBD_INTERFACE_STRING_FS     "CDC Interface"
+//#define USBD_PID_FS     22314
+//#define USBD_PRODUCT_STRING_FS     "STM32 Mass Storage"
+//#define USBD_CONFIGURATION_STRING_FS     "MSC Config"
+#define USBD_INTERFACE_STRING_FS     "MSC Interface"
 /* USER CODE END PRIVATE_DEFINES */
 
 /**
@@ -82,7 +85,33 @@
   */
 
 /* USER CODE BEGIN 0 */
-
+__ALIGN_BEGIN uint8_t USBD_FS_MSC_DeviceDesc[USB_LEN_DEV_DESC] __ALIGN_END =
+{
+  0x12,                       /*bLength */
+  USB_DESC_TYPE_DEVICE,       /*bDescriptorType*/
+#if (USBD_LPM_ENABLED == 1)
+  0x01,                       /*bcdUSB */ /* changed to USB version 2.01
+                                             in order to support LPM L1 suspend
+                                             resume test of USBCV3.0*/
+#else
+  0x00,                       /*bcdUSB */
+#endif /* (USBD_LPM_ENABLED == 1) */
+  0x02,
+  0x00,                       /*bDeviceClass*/
+  0x00,                       /*bDeviceSubClass*/
+  0x00,                       /*bDeviceProtocol*/
+  USB_MAX_EP0_SIZE,           /*bMaxPacketSize*/
+  LOBYTE(USBD_VID),           /*idVendor*/
+  HIBYTE(USBD_VID),           /*idVendor*/
+  LOBYTE(USBD_PID_FS),        /*idProduct*/
+  HIBYTE(USBD_PID_FS),        /*idProduct*/
+  0x00,                       /*bcdDevice rel. 2.00*/
+  0x02,
+  USBD_IDX_MFC_STR,           /*Index of manufacturer  string*/
+  USBD_IDX_PRODUCT_STR,       /*Index of product string*/
+  USBD_IDX_SERIAL_STR,        /*Index of serial number string*/
+  USBD_MAX_NUM_CONFIGURATION  /*bNumConfigurations*/
+};
 /* USER CODE END 0 */
 
 /** @defgroup USBD_DESC_Private_Macros USBD_DESC_Private_Macros

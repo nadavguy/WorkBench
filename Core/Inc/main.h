@@ -147,36 +147,36 @@ extern void updateRCState(void);
 #define CS_Pin GPIO_PIN_15
 #define CS_GPIO_Port GPIOB
 
-	extern char terminalBuffer[1024];
-	extern float fwVersion;
-	extern float buildID;
+extern char terminalBuffer[1024];
+extern float fwVersion;
+extern float buildID;
 
-	extern bool isUSBConnected;
+extern bool isUSBConnected;
 
-	typedef enum
-	{
-		PREINIT,
-		INIT,
-		OPERATIONAL,
-		MAINTENANCE,
-		UNKNOWN,
-		IDLE,
-		ARMED,
-		TRIGGERED
-	} SYSTEMState;
+typedef enum
+{
+	PREINIT,
+	INIT,
+	OPERATIONAL,
+	MAINTENANCE,
+	UNKNOWN,
+	IDLE,
+	ARMED,
+	TRIGGERED
+} SYSTEMState;
 
-	typedef enum
-	{
-		PWM,
-		DIGITAL
-	} LINKType;
+typedef enum
+{
+	PWM,
+	DIGITAL
+} LINKType;
 
-	extern SYSTEMState rcState;
+extern SYSTEMState rcState;
 
-	extern LINKType linkType;
+extern LINKType linkType;
 
-	extern SYSTEMState currentSMAState;
-	extern SYSTEMState desiredSMAState;
+extern SYSTEMState currentSMAState;
+extern SYSTEMState desiredSMAState;
 	/* USER CODE END Private defines */
 
 #ifdef __cplusplus

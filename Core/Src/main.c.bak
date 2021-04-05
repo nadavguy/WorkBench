@@ -44,6 +44,7 @@
 #include "fonts.h"
 #include "image.h"
 #include "LCD_Test.h"
+#include "usbd_cdc_if.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -53,6 +54,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define __USE_BOOT_LOADER__
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -63,22 +65,22 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-SYSTEMState rcState = PREINIT;
-
-LINKType linkType = PWM;
-
-uint16_t armChannelPWMValue = ((1000 - 1500) * 8 / 5);
-uint16_t triggerChannelPWMValue = ((1000 - 1500) * 8 / 5);
-
-uint32_t lastCRSFChannelMessage = 0;
-
-FLASH_EraseInitTypeDef EraseInitStruct;
-uint32_t PAGEError = 0;
+char terminalBuffer[1024] = {0};
 
 float fwVersion = 1.00;
-float BuildID = 1.01;
+float buildID = 1.06;
 
-char aRxBufferCh1='1';
+SYSTEMState rcState = PREINIT;
+
+bool isLowBattery = false;
+bool isEmptyBattery = false;
+bool isUSBConnected = false;
+bool isSignalLow = false;
+bool isNoSignal = false;
+
+float batteryVoltage = 4.2;
+
+uint8_t previousSMAState = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -98,62 +100,87 @@ void SystemClock_Config(void);
   */
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
+	/* USER CODE BEGIN 1 */
+#ifdef __USE_BOOT_LOADER__
+//  SCB->VTOR = 0x8020000; /* NVIC Vector Table Relocation in Internal FLASH */
+#endif
+	/* USER CODE END 1 */
 
-  /* USER CODE END 1 */
+	/* MCU Configuration--------------------------------------------------------*/
 
-  /* MCU Configuration--------------------------------------------------------*/
+	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+	HAL_Init();
 
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+	/* USER CODE BEGIN Init */
 
-  /* USER CODE BEGIN Init */
+	/* USER CODE END Init */
 
-  /* USER CODE END Init */
+	/* Configure the system clock */
+	SystemClock_Config();
 
-  /* Configure the system clock */
-  SystemClock_Config();
+	/* USER CODE BEGIN SysInit */
 
-  /* USER CODE BEGIN SysInit */
+	/* USER CODE END SysInit */
 
-  /* USER CODE END SysInit */
+	/* Initialize all configured peripherals */
+	MX_GPIO_Init();
+	MX_DMA_Init();
+	MX_FATFS_Init();
+	MX_QUADSPI_Init();
+	MX_SPI1_Init();
+	MX_USART1_UART_Init();
+	MX_USB_DEVICE_Init();
+	MX_ADC1_Init();
+	MX_TIM2_Init();
+	MX_BlueNRG_2_Init();
+	/* USER CODE BEGIN 2 */
+	HAL_Delay(5000);
+	CheckButtons();
 
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_DMA_Init();
-  MX_FATFS_Init();
-  MX_QUADSPI_Init();
-  MX_SPI1_Init();
-  MX_USART1_UART_Init();
-  MX_USB_DEVICE_Init();
-  MX_ADC1_Init();
-  MX_TIM2_Init();
-  MX_BlueNRG_2_Init();
-  /* USER CODE BEGIN 2 */
+	QSPI_Init();
+	flashInit();
+	createNewLogFile();
 
-  QSPI_Init();
-  fatFSInit();
+	ee_init1((pU32)&ee, sizeof(ee));
+	if (!ee_validate1())
+	{
+		sprintf(terminalBuffer, "EEPROM1 Error, set default values");
+		logData(terminalBuffer, true, false);
+		ee_save1();
+	}
 
-  CheckButtons();
+	rcState = INIT;
+	initBuzzerPatterns();
+	setBuzzerPattern(testBuzzerPattern);
+	printRCConfiguration(false);
+	//  createPingMessage();
+	/* Things ToDo*/
+	// Add Flash Support
+	//  LCD_1in8_test();
+	// screenInit();
+	// HAL_Delay(1000);
+	// screenClear();
+	/* USER CODE END 2 */
 
-  LCD_1in8_test();
+	/* Infinite loop */
+	/* USER CODE BEGIN WHILE */
+	while (1)
+	{
+		CheckButtons();
+		sendChannelMessageToTBS();
+		updateRCState();
+		updateBuzzerStatus();
+		monitorLogSize();
+		if (isUSBConnected)
+		{
+			readUSBData();
+		}
+		/* USER CODE END WHILE */
 
-  /* USER CODE END 2 */
-
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-	  CheckButtons();
-	  sendChannelMessageToRX();
-	  readUSBData();
-
-    /* USER CODE END WHILE */
-
-  MX_BlueNRG_2_Process();
-    /* USER CODE BEGIN 3 */
-  }
-  /* USER CODE END 3 */
+		MX_BlueNRG_2_Process();
+		/* USER CODE BEGIN 3 */
+	}
+	/* USER CODE END 3 */
 }
 
 /**
@@ -224,7 +251,99 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void updateRCState(void)
+{
+	if ((rcState == INIT) && (!isNoSignal))
+	{
+		rcState = OPERATIONAL;
+	}
+	else if ((rcState == OPERATIONAL) && (isNoSignal))
+	{
+		rcState = INIT;
+	}
+	if (isUSBConnected)
+	{
+		isLowBattery = false;
+		isEmptyBattery = false;
+		//Show charging symbol
+	}
+	else
+	{
+		if (batteryVoltage <= 3.6)
+		{
+			isLowBattery = true;
+			isEmptyBattery = true;
+			//Show Empty battery icon
+		}
+		else if ((batteryVoltage > 3.6) && (batteryVoltage <= 3.9))
+		{
+			isLowBattery = true;
+			//Show Low battery icon
+		}
+	}
+	if ((rcLinkStatus.UplinkRSSIAnt1 == 0xFF) && (rcLinkStatus.UplinkRSSIAnt2 == 0xFF))
+	{
+		isNoSignal = true;
+		//Show no signal icon
+	}
+	else if (rcLinkStatus.DownlinkPSRLQ < 50)
+	{
+		isNoSignal = false;
+		isSignalLow = true;
+	}
+	else
+	{
+		isNoSignal = false;
+		isSignalLow = false;
+	}
 
+	if (smaStatus.smaState == 0x4)
+	{
+		//Sound SMA Error
+		previousSMAState = 0x04;
+	}
+	else if (smaStatus.smaState == 0x03)
+	{
+		//Sound SMA triggered
+		previousSMAState = 0x03;
+	}
+	else if ((smaStatus.smaState == 0x02) && (previousSMAState != 0x02))
+	{
+		//Sound SMA Armed
+		previousSMAState = 0x02;
+	}
+	else if ((smaStatus.smaState == 0x01) && (previousSMAState != 0x01))
+	{
+		if (isBuzzerCycleEnded)
+		{
+			//Sound SMA Disarmed
+			previousSMAState = 0x01;
+		}
+	}
+	else if (smaStatus.batteryVoltage < 3.8)
+	{
+		if (isBuzzerCycleEnded)
+		{
+			//Sound SMA low battery
+		}
+	}
+	else if (isNoSignal)
+	{
+		//Sound no Link
+	}
+	else if (isSignalLow)
+	{
+		//Sound Low signal
+	}
+	else if (isLowBattery)
+	{
+		// Sound low RC battery
+	}
+	else
+	{
+		//Sound nothing
+	}
+}
 /* USER CODE END 4 */
 
 /**

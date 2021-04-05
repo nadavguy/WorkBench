@@ -57,7 +57,8 @@
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-uint16_t readUSBData(void);
+ uint16_t readUSBData(void);
+ extern void MX_MSC_DEVICE_Init(void);
 /* USER CODE END PFP */
 
 /*

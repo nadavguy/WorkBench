@@ -106,6 +106,10 @@
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/USB_DEVICE/App}&quot;"/>
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/FATFS/App}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Hardware/MSC/App}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Hardware/MSC/Class/Inc}&quot;"/>
                                     								
                                 </option>
                                 								
@@ -180,6 +184,10 @@
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/USB_DEVICE/App}&quot;"/>
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/FATFS/App}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Hardware/MSC/App}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Hardware/MSC/Class/Inc}&quot;"/>
                                     								
                                 </option>
                                 								
@@ -362,6 +370,10 @@
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/USB_DEVICE/App}&quot;"/>
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/FATFS/App}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Hardware/MSC/App}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Hardware/MSC/Class/Inc}&quot;"/>
                                     								
                                 </option>
                                 								
@@ -434,6 +446,10 @@
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/USB_DEVICE/App}&quot;"/>
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/FATFS/App}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Hardware/MSC/App}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Hardware/MSC/Class/Inc}&quot;"/>
                                     								
                                 </option>
                                 								

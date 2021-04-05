@@ -28,6 +28,8 @@ Drivers/BSP/custom \
 Drivers/STM32F7xx_HAL_Driver/Src \
 FATFS/App \
 FATFS/Target \
+Hardware/MSC/App \
+Hardware/MSC/Class/Src \
 Hardware/Screen/Config \
 Hardware/Screen/Fonts \
 Hardware/Screen/GUI_DEV \

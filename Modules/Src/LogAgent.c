@@ -57,7 +57,7 @@ void logData(char *dataToLog, bool forceToDisplay, bool displayOnly)
 bool createNewLogFile(void)
 {
     bool localret = false;
-    char localIndex[5] = "";
+    char localIndex[6] = "";
 	unsigned int br = 0;
 
     FS_ret = f_open(&USERFile, "Index.txt", FA_READ);
@@ -78,6 +78,7 @@ bool createNewLogFile(void)
     if (br == 6)
     {
     	memcpy(localIndex, FileReadBuffer, 5);
+    	localIndex[5] = '\0';
     	previousLogIndex = atoi(localIndex);
     }
     else

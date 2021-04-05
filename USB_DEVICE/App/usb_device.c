@@ -29,11 +29,15 @@
 
 /* USER CODE BEGIN Includes */
 #include "main.h"
+#include "cmd_interp.h"
+#include "usbd_msc.h"
+#include "usbd_storage_if.h"
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-
+uint8_t localCounter = 0;
+char localCommand[5] = "";
 /* USER CODE END PV */
 
 /* USER CODE BEGIN PFP */
@@ -63,12 +67,25 @@ uint16_t readUSBData(void)
 	uint16_t usbBytesRead = 0;
 	if (HAL_GetTick() - lastUSBDataRead >= 10)
 	{
+		//		memset(usbRXArray, 0, APP_RX_DATA_SIZE);
 		USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &usbRXArray[0]);
 		USBD_CDC_ReceivePacket(&hUsbDeviceFS);
 		usbBytesRead = strlen((char *)usbRXArray);
-		if (usbBytesRead > 0)
+
+		if (usbBytesRead >= 1)
 		{
-			parse((char *)usbRXArray);
+			//TODO: move before release
+			if (usbRXArray[0] == '\r')
+			{
+				parse(localCommand);
+				localCounter = 0;
+				memset(localCommand,0,5);
+			}
+			else
+			{
+				localCommand[localCounter] = usbRXArray[0];
+				localCounter++;
+			}
 			memset(usbRXArray, 0, APP_RX_DATA_SIZE);
 			usbBytesRead = 0;
 		}
@@ -77,6 +94,25 @@ uint16_t readUSBData(void)
 	return usbBytesRead;
 }
 
+void MX_MSC_DEVICE_Init(void)
+{
+ if (USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS) != USBD_OK)
+  {
+    Error_Handler();
+  }
+  if (USBD_RegisterClass(&hUsbDeviceFS, &USBD_MSC) != USBD_OK)
+  {
+    Error_Handler();
+  }
+  if (USBD_MSC_RegisterStorage(&hUsbDeviceFS, &USBD_Storage_Interface_fops_FS) != USBD_OK)
+  {
+    Error_Handler();
+  }
+  if (USBD_Start(&hUsbDeviceFS) != USBD_OK)
+  {
+    Error_Handler();
+  }
+}
 /* USER CODE END 1 */
 
 /**
