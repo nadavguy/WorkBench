@@ -43,6 +43,15 @@
 #include "GUI_Paint.h"
 #include "fonts.h"
 #include "image.h"
+#include "image.h"
+#include "BatteryImages.h"
+#include "LogoImages.h"
+#include "LocationImages.h"
+#include "AutoPilotImages.h"
+#include "SignalImages.h"
+#include "SafeAirImages.h"
+#include "BluetoothImages.h"
+#include "PlatformImages.h"
 #include "LCD_Test.h"
 #include "FlashQSPIAgent.h"
 /* USER CODE END Includes */
@@ -68,7 +77,7 @@
 char terminalBuffer[1024] = {0};
 
 float fwVersion = 1.00;
-float buildID = 1.07;
+float buildID = 1.08;
 
 SYSTEMState rcState = PREINIT;
 
@@ -100,40 +109,40 @@ void SystemClock_Config(void);
   */
 int main(void)
 {
-	/* USER CODE BEGIN 1 */
+  /* USER CODE BEGIN 1 */
 #ifdef __USE_BOOT_LOADER__
 //  SCB->VTOR = 0x8020000; /* NVIC Vector Table Relocation in Internal FLASH */
 #endif
-	/* USER CODE END 1 */
+  /* USER CODE END 1 */
 
-	/* MCU Configuration--------------------------------------------------------*/
+  /* MCU Configuration--------------------------------------------------------*/
 
-	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-	HAL_Init();
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
 
-	/* USER CODE BEGIN Init */
+  /* USER CODE BEGIN Init */
 
-	/* USER CODE END Init */
+  /* USER CODE END Init */
 
-	/* Configure the system clock */
-	SystemClock_Config();
+  /* Configure the system clock */
+  SystemClock_Config();
 
-	/* USER CODE BEGIN SysInit */
+  /* USER CODE BEGIN SysInit */
 
-	/* USER CODE END SysInit */
+  /* USER CODE END SysInit */
 
-	/* Initialize all configured peripherals */
-	MX_GPIO_Init();
-	MX_DMA_Init();
-	MX_FATFS_Init();
-	MX_QUADSPI_Init();
-	MX_SPI1_Init();
-	MX_USART1_UART_Init();
-	MX_USB_DEVICE_Init();
-	MX_ADC1_Init();
-	MX_TIM2_Init();
-	MX_BlueNRG_2_Init();
-	/* USER CODE BEGIN 2 */
+  /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+  MX_DMA_Init();
+  MX_FATFS_Init();
+  MX_QUADSPI_Init();
+  MX_SPI1_Init();
+  MX_USART1_UART_Init();
+  MX_USB_DEVICE_Init();
+  MX_ADC1_Init();
+  MX_TIM2_Init();
+  MX_BlueNRG_2_Init();
+  /* USER CODE BEGIN 2 */
 	HAL_Delay(5000);
 	CheckButtons();
 
@@ -160,10 +169,10 @@ int main(void)
 	// screenInit();
 	// HAL_Delay(1000);
 	// screenClear();
-	/* USER CODE END 2 */
+  /* USER CODE END 2 */
 
-	/* Infinite loop */
-	/* USER CODE BEGIN WHILE */
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
 	while (1)
 	{
 		CheckButtons();
@@ -175,12 +184,12 @@ int main(void)
 		{
 			readUSBData();
 		}
-		/* USER CODE END WHILE */
+    /* USER CODE END WHILE */
 
-		MX_BlueNRG_2_Process();
-		/* USER CODE BEGIN 3 */
+  MX_BlueNRG_2_Process();
+    /* USER CODE BEGIN 3 */
 	}
-	/* USER CODE END 3 */
+  /* USER CODE END 3 */
 }
 
 /**

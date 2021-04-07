@@ -47,9 +47,9 @@
 #define DEV_RST_PIN     RST_GPIO_Port,RST_Pin
 #define DEV_DC_PIN      DC_GPIO_Port,DC_Pin
 #define DEV_CS_PIN		CS_GPIO_Port,CS_Pin
-#define DEV_BL_PIN		TIM2->CCR1
+#define DEV_BL_PIN		TIM2->CCR2
 #define DEV_SPI			hspi1
-#define DEV_BL_CH		TIM_CHANNEL_1
+#define DEV_BL_CH		TIM_CHANNEL_2
 #define DEV_BL_TIM		htim2
 
 /**

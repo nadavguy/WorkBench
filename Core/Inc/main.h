@@ -24,8 +24,7 @@
 #define __MAIN_H
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
@@ -57,25 +56,25 @@ extern "C"
 #include "ConfigurationHelper.h"
 #include "TBSAgent.h"
 #include "BuzzerAgent.h"
-	/* USER CODE END Includes */
+/* USER CODE END Includes */
 
-	/* Exported types ------------------------------------------------------------*/
-	/* USER CODE BEGIN ET */
+/* Exported types ------------------------------------------------------------*/
+/* USER CODE BEGIN ET */
 
-	/* USER CODE END ET */
+/* USER CODE END ET */
 
-	/* Exported constants --------------------------------------------------------*/
-	/* USER CODE BEGIN EC */
+/* Exported constants --------------------------------------------------------*/
+/* USER CODE BEGIN EC */
 
-	/* USER CODE END EC */
+/* USER CODE END EC */
 
-	/* Exported macro ------------------------------------------------------------*/
-	/* USER CODE BEGIN EM */
+/* Exported macro ------------------------------------------------------------*/
+/* USER CODE BEGIN EM */
 
-	/* USER CODE END EM */
+/* USER CODE END EM */
 
-	/* Exported functions prototypes ---------------------------------------------*/
-	void Error_Handler(void);
+/* Exported functions prototypes ---------------------------------------------*/
+void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 extern void updateRCState(void);
@@ -138,7 +137,7 @@ extern void updateRCState(void);
 #define GPIO_Buzzer_GPIO_Port GPIOE
 #define GPIO_ChargeEN_Pin GPIO_PIN_1
 #define GPIO_ChargeEN_GPIO_Port GPIOE
-	/* USER CODE BEGIN Private defines */
+/* USER CODE BEGIN Private defines */
 
 #define DC_Pin GPIO_PIN_14
 #define DC_GPIO_Port GPIOB
@@ -177,7 +176,7 @@ extern LINKType linkType;
 
 extern SYSTEMState currentSMAState;
 extern SYSTEMState desiredSMAState;
-	/* USER CODE END Private defines */
+/* USER CODE END Private defines */
 
 #ifdef __cplusplus
 }
