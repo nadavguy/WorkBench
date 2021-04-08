@@ -34,20 +34,28 @@ extern "C" {
 #include "custom.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include <stdio.h>		//printf()
+#include <stdio.h> //printf()
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "../../Support/Inc/str_util.h"
-#include "../../Support/Inc/TypeDefs.h"
-#include "../../Support/Inc/Common.h"
-#include "../../Modules/Inc/ci_func.h"
-#include "../../Modules/Inc/cmd_interp.h"
-#include "../../Modules/Inc/ConfigParams.h"
-
+#include "str_util.h"
+#include "TypeDefs.h"
+#include "Common.h"
+#include "ci_func.h"
+#include "cmd_interp.h"
+#include "ConfigParams.h"
+#include "PushButton.h"
+#include "TBSAgent.h"
+#include "LogAgent.h"
+#include "TimeHelper.h"
+#include "TerminalAgent.h"
+#include "ScreenAgent.h"
+#include "ConfigurationHelper.h"
+#include "TBSAgent.h"
+#include "BuzzerAgent.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -69,7 +77,7 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
+extern void updateRCState(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
@@ -138,10 +146,29 @@ void Error_Handler(void);
 #define CS_Pin GPIO_PIN_15
 #define CS_GPIO_Port GPIOB
 
+extern char terminalBuffer[1024];
+extern float fwVersion;
+extern float buildID;
 
-typedef enum {PREINIT, INIT, OPERATIONAL, MAINTENANCE, UNKNOWN, IDLE, ARMED, TRIGGERED} SYSTEMState;
+extern bool isUSBConnected;
 
-typedef enum {PWM, DIGITAL} LINKType;
+typedef enum
+{
+	PREINIT,
+	INIT,
+	OPERATIONAL,
+	MAINTENANCE,
+	UNKNOWN,
+	IDLE,
+	ARMED,
+	TRIGGERED
+} SYSTEMState;
+
+typedef enum
+{
+	PWM,
+	DIGITAL
+} LINKType;
 
 extern SYSTEMState rcState;
 
@@ -149,21 +176,6 @@ extern LINKType linkType;
 
 extern SYSTEMState currentSMAState;
 extern SYSTEMState desiredSMAState;
-
-extern uint16_t armChannelPWMValue;
-extern uint16_t triggerChannelPWMValue;
-
-extern uint32_t lastCRSFChannelMessage;
-
-
-
-extern FLASH_EraseInitTypeDef EraseInitStruct;
-extern uint32_t PAGEError;
-
-extern float fwVersion;
-extern float BuildID;
-
-extern char aRxBufferCh1;
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

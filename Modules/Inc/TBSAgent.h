@@ -27,6 +27,21 @@
 #define TBS_UART					huart1
 #define TBS_RX_BUFFER				128
 
+
+typedef enum {NOPLATFORM, M200, M300, M600, PHANTOM, MAVICK} PLATFORMName;
+
+typedef enum {MULTICOPTER, VTOLHORIZONTAL, VTOLTRANSITION, VTOLVERTICAL} PLATFORMType;
+
+typedef enum {PREINIT, INIT, OPERATIONAL, MAINTENANCE, UNKNOWN, IDLE, ARMED, TRIGGERED, AUTOCALIBRATION} SYSTEMState;
+
+typedef enum {MANUAL, AUTO} TRIGGERMode;
+
+typedef enum {DISCONNECTED, CONNECTED, PAIRING, SEARCHING} SYSTEMConnectionStatus;
+
+typedef enum {STRONG, MEDIUM, LOW, NOSIGNAL, CHARGING , EMPTY} SIGNALStrength;
+
+typedef enum {CRITICALANGLE, FREEFALL, MANUALTRIGGER, GEOFENCING, AUTOPILOTTRIGGER, NOTTRIGGERED} TRIGGERReason;
+
 typedef struct sRC_LINK
 {
 	uint8_t UplinkRSSIAnt1; //Uplink is ground to UAV
@@ -44,11 +59,27 @@ typedef struct sRC_LINK
 typedef struct sSMA_Status
 {
 	float batteryVoltage;
-	uint8_t smaState;
+//	uint8_t smaState;
 	uint8_t triggerMode;
 	float Altitude;
 	float Acceleration;
+	uint16_t BITStatus;
+	PLATFORMName smaPlatformName;
+	PLATFORMType smaPlatfom;
+	bool isAutoPilotConnected;
+	SYSTEMState smaState;
+	SYSTEMConnectionStatus autoPilotConnection;
+//	PLATFORMType safeairPlatform;
+	TRIGGERMode safeairTriggerMode;
+	SIGNALStrength batteryStrength;
+	TRIGGERReason smaTriggerReason;
 }tSMA_Status;
+
+typedef struct sWarning
+{
+	bool displayWarning;
+	uint16_t BITStatus; // 1 - SMA Crit Bat, 2 - SMA Low Bat, 4 - SMA Flash Error, 8 - SMA Out Of Bounds, 16 - Pyro Error, 32 - RC Low Bat
+}tWarning;
 
 extern uint8_t tbsRXArray[TBS_RX_BUFFER];
 extern int16_t channelPWMValues[16];
@@ -58,10 +89,12 @@ extern uint8_t IdleMessageArray[26];
 extern uint8_t TriggerMessageArray[26];
 extern uint8_t tbsPingMessage[8];
 
+extern uint16_t previousBITStatus;
 extern uint32_t lastCRSFChannelMessage;
 
 extern tRC_LINK rcLinkStatus;
-extern tSMA_Status smaStatus;
+extern tSMA_Status previusSmaStatus;
+extern tSMA_Status currentSmaStatus;
 
 void tbsInit(void);
 void sendMessageToRC(void);

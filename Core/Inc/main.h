@@ -40,6 +40,7 @@ extern "C" {
 #include <ctype.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <math.h>
 
 #include "str_util.h"
 #include "TypeDefs.h"
@@ -61,6 +62,20 @@ extern "C" {
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
 
+typedef enum {PWM, DIGITAL} LINKType;
+
+
+#define smaCritBat		1
+#define smaLowBat 		2
+#define smaFlashError 	4
+#define smaOutOfBounds 	8
+#define smaPyroError 	16
+#define rcLowBat 		32
+#define manualTrigger	64
+#define geoFencing 		128
+#define autoPilot 		256
+#define freeFall 		512
+#define criticalAngle	1024
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -70,7 +85,40 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
+extern char terminalBuffer[1024];
+extern float fwVersion;
+extern float buildID;
 
+extern bool isLowBattery;
+extern bool isEmptyBattery;
+extern bool isUSBConnected;
+extern bool isSignalLow;
+extern bool isNoSignal;
+extern bool shouldUpdateSatusText;
+extern bool shouldRedrawBatteryIcon;
+extern bool shouldRedrawSignalStrengthIcon;
+extern bool shouldDrawRedAlertIcon;
+extern bool shouldReDrawPlatformIcon;
+extern bool shouldUpdatePlatformText;
+extern bool shouldReDrawAutoPilotIcon;
+extern bool shouldReDrawBluetoothIcon;
+extern bool shouldReDrawTriggerModeIcon;
+extern bool shouldClearDisplayedWarning;
+
+//extern SYSTEMConnectionStatus autoPilotConnection;
+extern SYSTEMConnectionStatus bluetoothConnection;
+//extern PLATFORMType safeairPlatform;
+extern SIGNALStrength tbsLink;
+//extern SIGNALStrength batteryStrength;
+extern SYSTEMState rcState;
+extern LINKType linkType;
+extern tWarning displayWarning;
+//extern TRIGGERMode safeairTriggerMode;
+//extern TRIGGERReason smaTriggerReason;
+
+//extern SYSTEMState previousSMAState;
+//extern SYSTEMState currentSMAState;
+extern SYSTEMState desiredSMAState;
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
@@ -146,36 +194,6 @@ extern void updateRCState(void);
 #define CS_Pin GPIO_PIN_15
 #define CS_GPIO_Port GPIOB
 
-extern char terminalBuffer[1024];
-extern float fwVersion;
-extern float buildID;
-
-extern bool isUSBConnected;
-
-typedef enum
-{
-	PREINIT,
-	INIT,
-	OPERATIONAL,
-	MAINTENANCE,
-	UNKNOWN,
-	IDLE,
-	ARMED,
-	TRIGGERED
-} SYSTEMState;
-
-typedef enum
-{
-	PWM,
-	DIGITAL
-} LINKType;
-
-extern SYSTEMState rcState;
-
-extern LINKType linkType;
-
-extern SYSTEMState currentSMAState;
-extern SYSTEMState desiredSMAState;
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
