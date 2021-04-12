@@ -127,21 +127,21 @@ bool ee_save1(void)
   if (iap_erase_sector((uint32_t)ee_flash_base1) != 0)
   {
 	  sprintf(terminalBuffer, "Failed to save EEPROM1");
-	  logData(terminalBuffer, true, false, false);
+	  logData(terminalBuffer, true, false);
 	  return false;
   }
 
   if (iap_write_sector((uint32_t)ee_flash_base1, (pU32)ee_ram_ptr1, ee_size1) != 0)
   {
 	  sprintf(terminalBuffer, "Failed to write EEPROM1");
-	  logData(terminalBuffer, true, false, false);
+	  logData(terminalBuffer, true, false);
 	  return false;
   }
 
   if (iap_verify((pU32)ee_flash_base1, (pU32)ee_ram_ptr1, ee_size1) != 0)
   {
 	  sprintf(terminalBuffer, "Failed to verify EEPROM1");
-	  logData(terminalBuffer, true, false, false);
+	  logData(terminalBuffer, true, false);
 	  return false;
   }
   HAL_FLASH_Lock();

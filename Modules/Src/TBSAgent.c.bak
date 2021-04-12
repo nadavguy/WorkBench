@@ -22,10 +22,12 @@ uint8_t IdleMessageArray[26] = {0xC8, 0x18, 0x16, 0xAC, 0x60, 0x05, 0x2B, 0x58, 
 uint8_t TriggerMessageArray[26] = {0xC8, 0x18, 0x16, 0xA4, 0x26, 0x35, 0xA9, 0x49, 0x4D, 0x6A, 0x52, 0x93, 0x9A, 0xD4, 0xA4, 0x26, 0x35, 0xA9, 0x49, 0x4D, 0x6A, 0x52, 0x93, 0x9A, 0xD4, 0x64};
 
 int16_t channelPWMValues[16] = {((1000 - 1500) * 8 / 5 + 992)};
+uint16_t previousBITStatus = 0;
 
 uint32_t lastCRSFChannelMessage = 0;
 
 tRC_LINK rcLinkStatus;
+tSMA_Status previousSmaStatus;
 tSMA_Status currentSmaStatus;
 
 // CRC8 implementation with polynom = x^8+x^7+x^6+x^4+x^2+1 (0xD5)
@@ -224,13 +226,171 @@ bool parseTBSMessage(void)
 					rcLinkStatus.DownlinkSNR);
 			logData(terminalBuffer, false, false);
 		}
-		if ( (tbsRXArray[i] == 0x00) && (tbsRXArray[i + 1] == 0x11) && (tbsRXArray[i + 2] == 0xDD) && (TBS_RX_BUFFER - i >= 0x11) )
+		if ( (tbsRXArray[i] == 0x00) && (tbsRXArray[i + 1] == 0x11) && (tbsRXArray[i + 2] == 0xDD) && (TBS_RX_BUFFER - i >= 0x1A) )
 		{
+			previousSmaStatus = currentSmaStatus;
 			currentSmaStatus.batteryVoltage = tbsRXArray[i + 3] / 10.0;
 			currentSmaStatus.smaState = tbsRXArray[i + 4];
 			currentSmaStatus.triggerMode = tbsRXArray[i + 5];
 			currentSmaStatus.Altitude = (tbsRXArray[i + 6] * 256 + tbsRXArray[i + 7] + 28000)/10.0;
 			currentSmaStatus.Acceleration = (tbsRXArray[i + 8] * 256 + tbsRXArray[i + 9])/100.0;
+			currentSmaStatus.BITStatus = tbsRXArray[i + 10] * 256 + tbsRXArray[i + 11];
+
+			if (tbsRXArray[i + 12] == 1)
+			{
+				currentSmaStatus.smaPlatformName = M200;
+			}
+			else if (tbsRXArray[i + 12] == 2)
+			{
+				currentSmaStatus.smaPlatfom = M300;
+			}
+			else if (tbsRXArray[i + 12] == 3)
+			{
+				currentSmaStatus.smaPlatfom = M600;
+			}
+			else if (tbsRXArray[i + 12] == 4)
+			{
+				currentSmaStatus.smaPlatfom = PHANTOM;
+			}
+			else if (tbsRXArray[i + 12] == 5)
+			{
+				currentSmaStatus.smaPlatfom = MAVICK;
+			}
+
+			if (tbsRXArray[i + 13] == 1)
+			{
+				currentSmaStatus.smaPlatfom = MULTICOPTER;
+			}
+			else
+			{
+				currentSmaStatus.smaPlatfom = VTOLHORIZONTAL;
+			}
+			i = i + 0x1A;
+
+			previousBITStatus = currentSmaStatus.BITStatus;
+			if (currentSmaStatus.BITStatus & 0x01)
+			{
+				displayWarning.BITStatus |= smaFlashError;
+			}
+			else
+			{
+				displayWarning.BITStatus &= ~smaFlashError;
+			}
+
+			if (currentSmaStatus.BITStatus & 0x02)
+			{
+				displayWarning.BITStatus |= smaOutOfBounds;
+			}
+			else
+			{
+				displayWarning.BITStatus &= ~smaOutOfBounds;
+			}
+
+			if (currentSmaStatus.BITStatus & 0x04)
+			{
+				displayWarning.BITStatus |= smaPyroError;
+			}
+			else
+			{
+				displayWarning.BITStatus &= ~smaPyroError;
+			}
+
+			if (currentSmaStatus.batteryVoltage < 3.8 )
+			{
+				displayWarning.BITStatus |= smaCritBat;
+			}
+			else if ( (currentSmaStatus.batteryVoltage >= 3.8 ) && (currentSmaStatus.batteryVoltage < 3.9 ) )
+			{
+				displayWarning.BITStatus &= ~smaCritBat;
+				displayWarning.BITStatus |= smaLowBat;
+			}
+			else
+			{
+				displayWarning.BITStatus &= ~smaCritBat;
+				displayWarning.BITStatus &= ~smaLowBat;
+			}
+
+			if (currentSmaStatus.BITStatus & 0x40)
+			{
+				displayWarning.BITStatus |= manualTrigger;
+			}
+			else
+			{
+				displayWarning.BITStatus &= ~manualTrigger;
+			}
+
+			if (currentSmaStatus.BITStatus & 0x80)
+			{
+				displayWarning.BITStatus |= geoFencing;
+			}
+			else
+			{
+				displayWarning.BITStatus &= ~geoFencing;
+			}
+
+			if (currentSmaStatus.BITStatus & 0x100)
+			{
+				displayWarning.BITStatus |= autoPilot;
+				currentSmaStatus.isAutoPilotConnected = true;
+
+			}
+			else
+			{
+				displayWarning.BITStatus &= ~autoPilot;
+				currentSmaStatus.isAutoPilotConnected = false;
+			}
+
+			if (currentSmaStatus.BITStatus & 0x200)
+			{
+				displayWarning.BITStatus |= freeFall;
+			}
+			else
+			{
+				displayWarning.BITStatus &= ~freeFall;
+			}
+
+			if (currentSmaStatus.BITStatus & 0x400)
+			{
+				displayWarning.BITStatus |= criticalAngle;
+			}
+			else
+			{
+				displayWarning.BITStatus &= ~criticalAngle;
+			}
+
+			if (currentSmaStatus.triggerMode == 1)
+			{
+				currentSmaStatus.safeairTriggerMode = MANUAL;
+			}
+			else
+			{
+				currentSmaStatus.safeairTriggerMode = AUTO;
+			}
+
+//			if (currentSmaStatus.smaState == 1)
+//			{
+//				currentSMAState = IDLE;
+//			}
+//			else if (currentSmaStatus.smaState == 2)
+//			{
+//				currentSMAState = ARMED;
+//			}
+//			else if (currentSmaStatus.smaState == 3)
+//			{
+//				currentSMAState = TRIGGERED;
+//			}
+//			else if (currentSmaStatus.smaState == 4)
+//			{
+//				currentSMAState = UNKNOWN;
+//			}
+//			else if (currentSmaStatus.smaState == 5)
+//			{
+//				currentSMAState = MAINTENANCE;
+//			}
+//			else if (currentSmaStatus.smaState == 6)
+//			{
+//				currentSMAState = AUTOCALIBRATION;
+//			}
 
 			sprintf(terminalBuffer,"SmartAir state: %d, trigger mode: %d",
 					currentSmaStatus.smaState, currentSmaStatus.triggerMode);

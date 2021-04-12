@@ -16,26 +16,59 @@
 #define HorizontalLogoX 0
 #define HorizontalLogoY 0
 
-#define HorizontalPltfomTypeX 36
+#define HorizontalPltfomTypeX 1
 #define HorizontalPltfomTypeY 0
 
-#define HorizontalAutoPilotX 60
-#define HorizontalAutoPilotY 0
+#define HorizontalAutoPilotX 1 + 26
+#define HorizontalAutoPilotY HorizontalPltfomTypeY
 
-#define HorizontalTBSSignalX 84
-#define HorizontalTBSSignalY 0
-
-#define HorizontalBluetoothX 108
+#define HorizontalBluetoothX 1 + 52
 #define HorizontalBluetoothY 0
 
-#define HorizontalBatteryX 132
-#define HorizontalBatteryY 0
+#define HorizontalTriggerModeX 1 + 78
+#define HorizontalTriggerModeY HorizontalPltfomTypeY
 
-#define HorizontalWarningIconX 26
-#define HorizontalWarningIconY 24+12
+#define HorizontalTBSSignalX 1 + 106
+#define HorizontalTBSSignalY HorizontalPltfomTypeY
 
-#define HorizontalWarningTextX 50
-#define HorizontalWarningTextY HorizontalWarningIconY + 8 + 12
+#define HorizontalBatteryX 1 + 132
+#define HorizontalBatteryY HorizontalPltfomTypeY
+
+#define HorizontalSystemTextX 80
+#define HorizontalSystemTextY 32
+
+#define HorizontalParachute1X 0
+#define HorizontalParachute1Y 48
+
+#define HorizontalParachute2X 136
+#define HorizontalParachute2Y HorizontalParachute1Y
+
+#define HorizontalSystemStatusTextX 80
+#define HorizontalSystemStatusTextY HorizontalParachute1Y + 8
+
+#define HorizontalWarningIconX 1
+#define HorizontalWarningIconY 80
+
+#define HorizontalWarningTextX HorizontalWarningIconX + 24
+#define HorizontalWarningTextY HorizontalWarningIconY
+
+#define HorizontalSafeAirLogo599IconX 1
+#define HorizontalSafeAirLogo599IconY 110
+
+#define HorizontalSafeAirBatteryIconX 60
+#define HorizontalSafeAirBatteryIconY 104
+
+#define HorizontalSafeAirBatteryTextX 78
+#define HorizontalSafeAirBatteryTextY 110
+
+#define HorizontalAltitudeIconX 106
+#define HorizontalAltitudeIconY HorizontalSafeAirBatteryIconY
+
+#define HorizontalAltitudeText1X HorizontalAltitudeIconX - 5 + 24
+#define HorizontalAltitudeText1Y HorizontalSafeAirBatteryIconY + 2
+
+#define HorizontalAltitudeText2X HorizontalAltitudeIconX - 5 + 24
+#define HorizontalAltitudeText2Y HorizontalSafeAirBatteryIconY + 2 + 12
 
 extern void screenInit(void);
 extern void screenClear(void);

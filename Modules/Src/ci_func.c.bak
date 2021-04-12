@@ -3,6 +3,7 @@
 #include "ff.h"
 #include "fatfs.h"
 #include "FlashQSPIAgent.h"
+#include "usb_device.h"
 
 
 bool isReportParametersActive = false;
@@ -144,6 +145,12 @@ eCI_RESULT func_backLight(void)
 	return CI_OK;
 }
 
+eCI_RESULT func_massStorage(void)
+{
+//	MX_MSC_DEVICE_Init();
+	return CI_OK;
+}
+
 eCI_RESULT func_dir(void)
 {
     FILINFO fno1;
@@ -195,6 +202,7 @@ functionsList cases [] =
 		{ "lnkt", func_linkType },
 		{ "ee?"	, func_systemConfiguration },
 		{ "bklt", func_backLight },
+		{ "msc", func_massStorage },
 		{ "dir" , func_dir },
 		{ "fmt" , func_fmt }
 };

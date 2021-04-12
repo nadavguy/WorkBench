@@ -25,9 +25,11 @@ int16_t channelPWMValues[16] = {((1000 - 1500) * 8 / 5 + 992)};
 uint16_t previousBITStatus = 0;
 
 uint32_t lastCRSFChannelMessage = 0;
+uint32_t lastLoggedLinkMessage = 0;
+uint32_t lastLoggedSafeAirStatusMessage = 0;
 
 tRC_LINK rcLinkStatus;
-tSMA_Status previusSmaStatus;
+tSMA_Status previousSmaStatus;
 tSMA_Status currentSmaStatus;
 
 // CRC8 implementation with polynom = x^8+x^7+x^6+x^4+x^2+1 (0xD5)
@@ -137,6 +139,7 @@ void sendChannelMessageToTBS(void)
 	else if ( ( HAL_GetTick() - lastCRSFChannelMessage <= 6)  && (( HAL_GetTick() - lastCRSFChannelMessage > 1)) )
 	{
 		HAL_UART_Receive_DMA(&TBS_UART, tbsRXArray,TBS_RX_BUFFER);
+		HAL_Delay(2);
 		parseTBSMessage();
 //		char test[1024] = "";
 //		logData((char *)"TBS RX: ", true, true);
@@ -196,68 +199,93 @@ uint8_t createCrossfireChannelsFrame(uint8_t * frame, int16_t * pulses)
 bool parseTBSMessage(void)
 {
 	int i = 0;
+	uint8_t crc = 0;
 	bool localRet = false;
+
+//	char test[1024] = "";
+//	logData((char *)"TBS RX: ", true, true);
+//	for (int i = 0 ; i < 128 ; i ++)
+//	{
+//		sprintf(&test[i*3], "-%02x",tbsRXArray[i]);
+//		if (tbsRXArray[i] == 0x29)
+//		{
+//			int y = 1;
+//		}
+//	}
+//	logData(test, true, true);
+//	memset(test, 0, 1024);
+	uint8_t localRxArray[TBS_RX_BUFFER] = {0};
+	memcpy(localRxArray,tbsRXArray,TBS_RX_BUFFER);
+
 	while ( i < TBS_RX_BUFFER - 3)
 	{
-		if ( (tbsRXArray[i] == 0xea) && (tbsRXArray[i + 1] == 0x0c) && (tbsRXArray[i + 2] == 0x14) && (TBS_RX_BUFFER - i >= 0x0c) )
+		crc = crc8(&localRxArray[i + 2], 0x0c-1);
+		if ( (localRxArray[i] == 0xea) && (localRxArray[i + 1] == 0x0c) && (localRxArray[i + 2] == 0x14) && (TBS_RX_BUFFER - i >= 0x0c)
+				&& (crc == localRxArray[i + 0x0c + 1]))
 		{
-			rcLinkStatus.UplinkRSSIAnt1 = tbsRXArray[i + 3];
-			rcLinkStatus.UplinkRSSIAnt2 = tbsRXArray[i + 4];
-			rcLinkStatus.UplinkPSRLQ 	= tbsRXArray[i + 5];
-			rcLinkStatus.UplinkSNR 		= tbsRXArray[i + 6];
-			rcLinkStatus.DiversityActiveAntena = tbsRXArray[i + 7];
-			rcLinkStatus.RFMode = tbsRXArray[i + 8];
-			rcLinkStatus.UplinkTXPower = tbsRXArray[i + 9];
-			rcLinkStatus.DownlinkRSSI = tbsRXArray[i + 10];
-			rcLinkStatus.DownlinkPSRLQ = tbsRXArray[i + 11];
-			rcLinkStatus.DownlinkSNR = tbsRXArray[i + 12];
-			i = i + 13;
+			rcLinkStatus.UplinkRSSIAnt1 = localRxArray[i + 3];
+			rcLinkStatus.UplinkRSSIAnt2 = localRxArray[i + 4];
+			rcLinkStatus.UplinkPSRLQ 	= localRxArray[i + 5];
+			rcLinkStatus.UplinkSNR 		= localRxArray[i + 6];
+			rcLinkStatus.DiversityActiveAntena = localRxArray[i + 7];
+			rcLinkStatus.RFMode = localRxArray[i + 8];
+			rcLinkStatus.UplinkTXPower = localRxArray[i + 9];
+			rcLinkStatus.DownlinkRSSI = localRxArray[i + 10];
+			rcLinkStatus.DownlinkPSRLQ = localRxArray[i + 11];
+			rcLinkStatus.DownlinkSNR = localRxArray[i + 12];
+			i = i + 12;
 			localRet = true;
-			sprintf(terminalBuffer,"Uplink RSSI1: %d, RSSI2: %d, LQ: %d, SNR: %d",
-					rcLinkStatus.UplinkRSSIAnt1, rcLinkStatus.UplinkRSSIAnt2, rcLinkStatus.UplinkPSRLQ,
-					rcLinkStatus.UplinkSNR);
-			logData(terminalBuffer, false, false);
-			sprintf(terminalBuffer,"Uplink Diversity: %d, RFMode: %d, TX: %d",
-					rcLinkStatus.DiversityActiveAntena, rcLinkStatus.RFMode,
-					rcLinkStatus.UplinkTXPower);
-			logData(terminalBuffer, false, false);
-			sprintf(terminalBuffer,"Downlink RSSI: %d, LQ: %d, SNR: %d",
-					rcLinkStatus.DownlinkRSSI, rcLinkStatus.DownlinkPSRLQ,
-					rcLinkStatus.DownlinkSNR);
-			logData(terminalBuffer, false, false);
+			if (HAL_GetTick() - lastLoggedLinkMessage > 100)
+			{
+				sprintf(terminalBuffer,"Uplink RSSI1: %d, RSSI2: %d, LQ: %d, SNR: %d",
+						rcLinkStatus.UplinkRSSIAnt1, rcLinkStatus.UplinkRSSIAnt2, rcLinkStatus.UplinkPSRLQ,
+						rcLinkStatus.UplinkSNR);
+				logData(terminalBuffer, true, false, false);
+				sprintf(terminalBuffer,"Uplink Diversity: %d, RFMode: %d, TX: %d",
+						rcLinkStatus.DiversityActiveAntena, rcLinkStatus.RFMode,
+						rcLinkStatus.UplinkTXPower);
+				logData(terminalBuffer, true, false, false);
+				sprintf(terminalBuffer,"Downlink RSSI: %d, LQ: %d, SNR: %d",
+						rcLinkStatus.DownlinkRSSI, rcLinkStatus.DownlinkPSRLQ,
+						rcLinkStatus.DownlinkSNR);
+				logData(terminalBuffer, true, false, false);
+				lastLoggedLinkMessage = HAL_GetTick();
+			}
 		}
-		if ( (tbsRXArray[i] == 0x00) && (tbsRXArray[i + 1] == 0x11) && (tbsRXArray[i + 2] == 0xDD) && (TBS_RX_BUFFER - i >= 0x1A) )
+		crc = crc8(&localRxArray[i + 2], 0x1B-1);
+		if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x1B) && (localRxArray[i + 2] == 0xDD) && (TBS_RX_BUFFER - i >= 0x1B)
+				&& (crc == localRxArray[i + 0x1B + 1]))
 		{
-			previusSmaStatus = currentSmaStatus;
-			currentSmaStatus.batteryVoltage = tbsRXArray[i + 3] / 10.0;
-			currentSmaStatus.smaState = tbsRXArray[i + 4];
-			currentSmaStatus.triggerMode = tbsRXArray[i + 5];
-			currentSmaStatus.Altitude = (tbsRXArray[i + 6] * 256 + tbsRXArray[i + 7] + 28000)/10.0;
-			currentSmaStatus.Acceleration = (tbsRXArray[i + 8] * 256 + tbsRXArray[i + 9])/100.0;
-			currentSmaStatus.BITStatus = tbsRXArray[i + 10] * 256 + tbsRXArray[i + 11];
+			previousSmaStatus = currentSmaStatus;
+			currentSmaStatus.batteryVoltage = localRxArray[i + 3] / 10.0;
+			currentSmaStatus.smaState = localRxArray[i + 4];
+			currentSmaStatus.triggerMode = localRxArray[i + 5] - 1;
+			currentSmaStatus.Altitude = (localRxArray[i + 6] * 256 + localRxArray[i + 7] + 28000)/10.0;
+			currentSmaStatus.Acceleration = (localRxArray[i + 8] * 256 + localRxArray[i + 9])/100.0;
+			currentSmaStatus.BITStatus = localRxArray[i + 10] * 256 + localRxArray[i + 11];
 
-			if (tbsRXArray[i + 12] == 1)
+			if (localRxArray[i + 12] == 1)
 			{
 				currentSmaStatus.smaPlatformName = M200;
 			}
-			else if (tbsRXArray[i + 12] == 2)
+			else if (localRxArray[i + 12] == 2)
 			{
 				currentSmaStatus.smaPlatfom = M300;
 			}
-			else if (tbsRXArray[i + 12] == 3)
+			else if (localRxArray[i + 12] == 3)
 			{
 				currentSmaStatus.smaPlatfom = M600;
 			}
-			else if (tbsRXArray[i + 12] == 4)
+			else if (localRxArray[i + 12] == 4)
 			{
 				currentSmaStatus.smaPlatfom = PHANTOM;
 			}
-			else if (tbsRXArray[i + 12] == 5)
+			else if (localRxArray[i + 12] == 5)
 			{
 				currentSmaStatus.smaPlatfom = MAVICK;
 			}
 
-			if (tbsRXArray[i + 13] == 1)
+			if (localRxArray[i + 13] == 1)
 			{
 				currentSmaStatus.smaPlatfom = MULTICOPTER;
 			}
@@ -265,7 +293,7 @@ bool parseTBSMessage(void)
 			{
 				currentSmaStatus.smaPlatfom = VTOLHORIZONTAL;
 			}
-			i = i + 0x1A;
+			i = i + 0x1B - 1;
 
 			previousBITStatus = currentSmaStatus.BITStatus;
 			if (currentSmaStatus.BITStatus & 0x01)
@@ -358,7 +386,7 @@ bool parseTBSMessage(void)
 				displayWarning.BITStatus &= ~criticalAngle;
 			}
 
-			if (currentSmaStatus.triggerMode == 1)
+			if (currentSmaStatus.triggerMode == 0)
 			{
 				currentSmaStatus.safeairTriggerMode = MANUAL;
 			}
@@ -392,18 +420,24 @@ bool parseTBSMessage(void)
 //				currentSMAState = AUTOCALIBRATION;
 //			}
 
-			sprintf(terminalBuffer,"SmartAir state: %d, trigger mode: %d",
-					currentSmaStatus.smaState, currentSmaStatus.triggerMode);
-			logData(terminalBuffer, false, false);
-			sprintf(terminalBuffer,"SmartAir Battery: %6.3f",currentSmaStatus.batteryVoltage);
-			logData(terminalBuffer, false, false);
-			sprintf(terminalBuffer,"SmartAir Altitude: %6.3f, Acceleration: %6.3f",
-					currentSmaStatus.Altitude, currentSmaStatus.Acceleration);
-			logData(terminalBuffer, false, false);
+//			sprintf(terminalBuffer,"SmartAir state: %d, trigger mode: %d",
+//					currentSmaStatus.smaState, currentSmaStatus.triggerMode);
+//			logData(terminalBuffer, false, false, false);
+//			sprintf(terminalBuffer,"SmartAir Battery: %6.3f",currentSmaStatus.batteryVoltage);
+//			logData(terminalBuffer, false, false, false);
+//			sprintf(terminalBuffer,"SmartAir Altitude: %6.3f, Acceleration: %6.3f",
+//					currentSmaStatus.Altitude, currentSmaStatus.Acceleration);
+//			logData(terminalBuffer, false, false, false);
+		}
+		else if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x1B) && (localRxArray[i + 2] == 0xDD) && (TBS_RX_BUFFER - i >= 0x1B)
+				&& (crc != localRxArray[i + 0x1B + 1]))
+		{
+			int a= 1;
 		}
 		i++;
 	}
 	memset(tbsRXArray, 0, TBS_RX_BUFFER);
+	memset(localRxArray, 0, TBS_RX_BUFFER);
 	return localRet;
 }
 
@@ -428,18 +462,18 @@ void createPingMessage(void)
 		HAL_Delay(1);
 		HAL_UART_Transmit_IT(&TBS_UART, tbsPingMessage, 8);
 		HAL_Delay(1);
-		char test[1024] = "";
-		logData((char *)"TBS RX: ", true, true);
-		for (int i = 0 ; i < 128 ; i ++)
-		{
-			sprintf(&test[i*3], "-%02x",tbsRXArray[i]);
-			if (tbsRXArray[i] == 0x29)
-			{
-				int y = 1;
-			}
-		}
-		logData(test, true, true);
-		memset(test, 0, 1024);
+//		char test[1024] = "";
+//		logData((char *)"TBS RX: ", true, true);
+//		for (int i = 0 ; i < 128 ; i ++)
+//		{
+//			sprintf(&test[i*3], "-%02x",tbsRXArray[i]);
+//			if (tbsRXArray[i] == 0x29)
+//			{
+//				int y = 1;
+//			}
+//		}
+//		logData(test, true, true);
+//		memset(test, 0, 1024);
 		memset(tbsRXArray, 0, 256);
 		Counter++;
 	}

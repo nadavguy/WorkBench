@@ -76,6 +76,8 @@ typedef enum {PWM, DIGITAL} LINKType;
 #define autoPilot 		256
 #define freeFall 		512
 #define criticalAngle	1024
+
+#define terminalRXBufferSize 1024
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -85,7 +87,7 @@ typedef enum {PWM, DIGITAL} LINKType;
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-extern char terminalBuffer[1024];
+extern char terminalBuffer[terminalRXBufferSize];
 extern float fwVersion;
 extern float buildID;
 

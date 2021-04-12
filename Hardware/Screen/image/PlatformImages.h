@@ -9,6 +9,7 @@
 #define SCREEN_IMAGE_PLATFORMIMAGES_H_
 
 extern const unsigned char gImage_Multicopter[];
+extern const unsigned char gImage_VTOLTransition[];
 
 
 

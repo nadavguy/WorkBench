@@ -18,25 +18,33 @@ uint32_t lastFileSizeCheck = 0;
 char currentLogFilename[64] = "";
 char FileReadBuffer[1024] = "";
 
-void logData(char *dataToLog, bool forceToDisplay, bool displayOnly)
+void logData(char *dataToLog, bool doNotShowOnDisplay, bool displayOnly, bool doNotDisplayTime)
 {
     char localString[1024] = "";
-    if (strcmp(dataToLog,"") != 0)
+    if ( (strcmp(dataToLog,"") != 0) && (!doNotDisplayTime) )
     {
         sprintf(localString, "%s, %s\r\n", CT(), dataToLog);
+    }
+    else if ( (strcmp(dataToLog,"") != 0) && (doNotDisplayTime) )
+    {
+        sprintf(localString, "%s\r\n", dataToLog);
     }
     else
     {
         sprintf(localString, "\r\n");
     }
     //TODO: disable sessionUnlocked and replace with debugLevel
-    if (forceToDisplay || displayOnly)
+    if (displayOnly)
     {
         CDC_Transmit_FS((uint8_t*)localString, strlen(localString));
     }
-    if (!displayOnly)
+    else if (!displayOnly || !doNotShowOnDisplay)
     {
     	f_write(&USERFile, localString, strlen(localString), &BytesWritten);
+    	if (!doNotShowOnDisplay)
+    	{
+    		CDC_Transmit_FS((uint8_t*)localString, strlen(localString));
+    	}
     }
     uint32_t logFileSize = 0;  // ftell(logFileHandler);
     if (logFileSize > MAX_LOG_SIZE )
@@ -113,7 +121,7 @@ uint32_t getCurrentLogSize(void)
     DIR dp1;
     f_opendir(&dp1, "\\");
     f_findfirst(&dp1, &fno1, "\\", "LOG_*");
-    while( f_findnext(&dp1, &fno1) == FR_OK)
+    while( (f_findnext(&dp1, &fno1) == FR_OK) && (fno1.fname[0] != 0x00) )
     {
     	f_stat("\\", &fno1);
     	if(strcmp(currentLogFilename, fno1.fname) == 0)
@@ -133,7 +141,7 @@ void monitorLogSize(void)
 		if (getCurrentLogSize() > MAX_LOG_SIZE)
 		{
 			sprintf(terminalBuffer, "%s, Closing current log file\r\n", CT());
-			logData(terminalBuffer, false, false);
+			logData(terminalBuffer, false, false, false);
 			f_close(&USERFile);
 			createNewLogFile();
 		}

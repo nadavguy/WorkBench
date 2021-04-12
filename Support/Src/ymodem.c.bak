@@ -380,7 +380,7 @@ COM_StatusTypeDef Ymodem_Receive ( uint32_t *p_size )
                   /* Write received data in Flash */
 
 //                  if (FLASH_If_Write(flashdestination, (uint32_t*) ramsource, packet_length/4) == FLASHIF_OK)
-                  if (HAL_FLASH_Program(flashdestination, (uint32_t*) ramsource, packet_length/4) == HAL_OK)
+                  if (HAL_FLASH_Program(flashdestination, ramsource, packet_length/4) == HAL_OK)
                   {
                     flashdestination += packet_length;
                     Serial_PutByte(ACK);

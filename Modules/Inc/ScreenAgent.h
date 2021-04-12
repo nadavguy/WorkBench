@@ -70,10 +70,17 @@
 #define HorizontalAltitudeText2X HorizontalAltitudeIconX - 5 + 24
 #define HorizontalAltitudeText2Y HorizontalSafeAirBatteryIconY + 2 + 12
 
+extern const unsigned char *previousBluetoothImage;
+extern const unsigned char *previousPlatformImage;
+extern const unsigned char *previousAutoPilotImage;
+extern const unsigned char *previousTriggerModeImage;
+extern const unsigned char *previousSignalImage;
+extern const unsigned char *previousBatteryImage;
+
 extern void screenInit(void);
 extern void screenClear(void);
-extern void centeredString(uint16_t XCenterstart, uint16_t Ystart, const char * pString, uint16_t textColor);
-extern void screenUpdate(void);
+extern void centeredString(uint16_t XCenterstart, uint16_t Ystart, const char * pString, uint16_t textColor, uint16_t backgroundColor);
+extern void screenUpdate(bool drawDeltaImage);
 
 
 #endif /* SRC_SCREENAGENT_H_ */

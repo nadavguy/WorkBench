@@ -32,7 +32,7 @@ typedef enum {NOPLATFORM, M200, M300, M600, PHANTOM, MAVICK} PLATFORMName;
 
 typedef enum {MULTICOPTER, VTOLHORIZONTAL, VTOLTRANSITION, VTOLVERTICAL} PLATFORMType;
 
-typedef enum {PREINIT, INIT, OPERATIONAL, MAINTENANCE, UNKNOWN, IDLE, ARMED, TRIGGERED, AUTOCALIBRATION} SYSTEMState;
+typedef enum {PREINIT, IDLE, ARMED, TRIGGERED, UNKNOWN, MAINTENANCE, AUTOCALIBRATION, INIT, OPERATIONAL} SYSTEMState;
 
 typedef enum {MANUAL, AUTO} TRIGGERMode;
 
@@ -93,7 +93,7 @@ extern uint16_t previousBITStatus;
 extern uint32_t lastCRSFChannelMessage;
 
 extern tRC_LINK rcLinkStatus;
-extern tSMA_Status previusSmaStatus;
+extern tSMA_Status previousSmaStatus;
 extern tSMA_Status currentSmaStatus;
 
 void tbsInit(void);

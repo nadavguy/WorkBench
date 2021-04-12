@@ -15,7 +15,7 @@ eCI_RESULT func_debug(void)
 		ee.debugLevel = get_param_int(0);
 		ee_save1();
 		sprintf(terminalBuffer,"Debug level set to: %d",ee.debugLevel);
-		logData(terminalBuffer, false, false);
+		logData(terminalBuffer, false, false, false);
 	}
 	return CI_OK;
 }
@@ -37,7 +37,7 @@ eCI_RESULT func_updateRCVersion(void)
 eCI_RESULT func_versionReport(void)
 {
 	sprintf(terminalBuffer,"RC Firmware version: %6.2f, BuildID: %6.2f",fwVersion, buildID);
-	logData(terminalBuffer, false, true);
+	logData(terminalBuffer, false, true, false);
 	return CI_OK;
 }
 
@@ -74,7 +74,7 @@ eCI_RESULT func_armPWMOff(void)
 		ee.armPWMOffValue = get_param_int(0);
 		ee_save1();
 		sprintf(terminalBuffer,"Arm PWM Off value set to: %d",ee.armPWMOffValue);
-		logData(terminalBuffer, false, false);
+		logData(terminalBuffer, false, false, false);
 	}
 	return CI_OK;
 }
@@ -86,7 +86,7 @@ eCI_RESULT func_armPWMOn(void)
 		ee.armPWMOnValue = get_param_int(0);
 		ee_save1();
 		sprintf(terminalBuffer,"Arm PWM On value set to: %d",ee.armPWMOnValue);
-		logData(terminalBuffer, false, false);
+		logData(terminalBuffer, false, false, false);
 	}
 	return CI_OK;
 }
@@ -98,7 +98,7 @@ eCI_RESULT func_triggerPWMOff(void)
 		ee.triggerPWMOffValue = get_param_int(0);
 		ee_save1();
 		sprintf(terminalBuffer,"Trigger PWM Off value set to: %d",ee.triggerPWMOffValue);
-		logData(terminalBuffer, false, false);
+		logData(terminalBuffer, false, false, false);
 	}
 	return CI_OK;
 }
@@ -110,7 +110,7 @@ eCI_RESULT func_triggerPWMOn(void)
 		ee.triggerPWMOnValue = get_param_int(0);
 		ee_save1();
 		sprintf(terminalBuffer,"Trigger PWM On value set to: %d",ee.triggerPWMOnValue);
-		logData(terminalBuffer, false, false);
+		logData(terminalBuffer, false, false, false);
 	}
 	return CI_OK;
 }
@@ -122,7 +122,7 @@ eCI_RESULT func_linkType(void)
 		ee.linkType = get_param_int(0);
 		ee_save1();
 		sprintf(terminalBuffer,"Link type set to: %s",(ee.linkType==PWM) ? "PWM" : "Digital");
-		logData(terminalBuffer, false, false);
+		logData(terminalBuffer, false, false, false);
 	}
 	return CI_OK;
 }
@@ -140,15 +140,46 @@ eCI_RESULT func_backLight(void)
 		ee.backLight = get_param_int(0);
 		ee_save1();
 		sprintf(terminalBuffer,"Backlight value set to: %3.1f per-cent",ee.backLight/10.0);
-		logData(terminalBuffer, false, false);
+		logData(terminalBuffer, false, false, false);
 	}
 	return CI_OK;
 }
 
 eCI_RESULT func_massStorage(void)
 {
-//	MX_MSC_DEVICE_Init();
+
+	MX_MSC_DEVICE_Init();
 	return CI_OK;
+}
+
+eCI_RESULT func_importFile(void)
+{
+	  char *res = 0;
+//	  uint16_t slen = 0;
+	  bool _endFile = false;
+	  char *fn = get_param_str(0);
+	  FIL fileToRead;
+//	  f_close(&fileToRead);
+	  char fullFileName[64] = "";
+	  sprintf(fullFileName, "%s",get_param_str(0));
+	  if (f_open(&fileToRead, fullFileName, FA_READ) == FR_OK)
+	  {
+	    while (!_endFile)
+	    {
+	      res = f_gets(terminalBuffer, terminalRXBufferSize, &fileToRead);
+	      if (res != 0x00)
+	      {
+	    	  logData(terminalBuffer, true, false, true);
+	      }
+	      else
+	      {
+	        _endFile = true;
+	        logData("\r\nEOF", true, false, true);
+	      }
+	    }
+	  }
+	  f_close(&fileToRead);
+	  return CI_OK;
 }
 
 eCI_RESULT func_dir(void)
@@ -157,11 +188,13 @@ eCI_RESULT func_dir(void)
     DIR dp1;
     f_opendir(&dp1, "\\");
     f_findfirst(&dp1, &fno1, "\\", "LOG_*");
-    while( (f_findnext(&dp1, &fno1) == FR_OK) && (fno1.fname[0] != 0) )
+
+    while( (fno1.fname[0] != 0) )
     {
-    	f_stat("\\", &fno1);
-    	sprintf(terminalBuffer,"%s\t%ld",fno1.fname, fno1.fsize);
-    	logData(terminalBuffer, false, true);
+//    	f_stat("\\", &fno1);
+    	sprintf(terminalBuffer,"%s\t %lu",fno1.fname, (long int)fno1.fsize);
+    	logData(terminalBuffer, false, true, true);
+    	f_findnext(&dp1, &fno1);
     }
     f_closedir(&dp1);
 	return CI_OK;
@@ -170,7 +203,7 @@ eCI_RESULT func_dir(void)
 eCI_RESULT func_fmt(void)
 {
 	sprintf(terminalBuffer, "\r\n%s!Formatting Flash...restart required!\n\r", CT());
-	logData(terminalBuffer, false, false);
+	logData(terminalBuffer, false, false, false);
 	f_sync(&USERFile);
 	f_close(&USERFile);
 
@@ -203,6 +236,7 @@ functionsList cases [] =
 		{ "ee?"	, func_systemConfiguration },
 		{ "bklt", func_backLight },
 		{ "msc", func_massStorage },
+		{ "imp", func_importFile },
 		{ "dir" , func_dir },
 		{ "fmt" , func_fmt }
 };

@@ -43,7 +43,6 @@
 #include "GUI_Paint.h"
 #include "fonts.h"
 #include "image.h"
-#include "image.h"
 #include "BatteryImages.h"
 #include "LogoImages.h"
 #include "LocationImages.h"
@@ -77,7 +76,7 @@
 char terminalBuffer[1024] = {0};
 
 float fwVersion = 1.00;
-float buildID = 1.08;
+float buildID = 1.09;
 
 SYSTEMState rcState = PREINIT;
 
@@ -86,10 +85,29 @@ bool isEmptyBattery = false;
 bool isUSBConnected = false;
 bool isSignalLow = false;
 bool isNoSignal = false;
+bool shouldUpdateSatusText = true;
+bool shouldRedrawBatteryIcon = true;
+bool shouldRedrawSignalStrengthIcon = true;
+bool shouldDrawRedAlertIcon = true;
+bool shouldReDrawPlatformIcon = true;
+bool shouldUpdatePlatformText = true;
+bool shouldReDrawAutoPilotIcon = true;
+bool shouldReDrawBluetoothIcon = true;
+bool shouldReDrawTriggerModeIcon = true;
+bool shouldClearDisplayedWarning = true;
+
+//SYSTEMConnectionStatus autoPilotConnection = DISCONNECTED;
+SYSTEMConnectionStatus bluetoothConnection = DISCONNECTED;
+//PLATFORMType safeairPlatform = MULTICOPTER;
+//TRIGGERMode safeairTriggerMode = MANUAL;
+SIGNALStrength tbsLink = NOSIGNAL;
+SIGNALStrength batteryStrength = NOSIGNAL;
+//TRIGGERReason smaTriggerReason = NOTTRIGGERED;
+
+tWarning displayWarning;
 
 float batteryVoltage = 4.2;
 
-uint8_t previousSMAState = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -254,79 +272,150 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  /** Enables the Clock Security System
-  */
-  HAL_RCC_EnableCSS();
 }
 
 /* USER CODE BEGIN 4 */
 void updateRCState(void)
 {
-	if ((rcState == INIT) && (!isNoSignal))
+	if ( (rcState == INIT) && (!isNoSignal) )
 	{
 		rcState = OPERATIONAL;
 	}
-	else if ((rcState == OPERATIONAL) && (isNoSignal))
+	else if ( (rcState == OPERATIONAL) && (isNoSignal) )
 	{
 		rcState = INIT;
 	}
-	if (isUSBConnected)
+
+	if  ( (isUSBConnected) && (batteryStrength != CHARGING) )
 	{
 		isLowBattery = false;
 		isEmptyBattery = false;
+		shouldRedrawBatteryIcon = true;
+		batteryStrength = CHARGING;
+		displayWarning.BITStatus &= ~rcLowBat;
 		//Show charging symbol
 	}
 	else
 	{
-		if (batteryVoltage <= 3.6)
+		if ( (batteryVoltage <= 3.6) && (batteryStrength < EMPTY))
 		{
 			isLowBattery = true;
 			isEmptyBattery = true;
-			//Show Empty battery icon
+			shouldRedrawBatteryIcon = true;
+			batteryStrength = EMPTY;
+			displayWarning.BITStatus |= rcLowBat;
 		}
-		else if ((batteryVoltage > 3.6) && (batteryVoltage <= 3.9))
+		else if ( (batteryVoltage > 3.6) && (batteryVoltage <= 3.8) && (batteryStrength < LOW))
 		{
-			isLowBattery = true;
-			//Show Low battery icon
+			shouldRedrawBatteryIcon = true;
+			batteryStrength = LOW;
+			displayWarning.BITStatus |= rcLowBat;
+
+		}
+		else if ( (batteryVoltage > 3.8) && (batteryVoltage <= 4.0) && (batteryStrength < MEDIUM) )
+		{
+			shouldRedrawBatteryIcon = true;
+			batteryStrength = MEDIUM;
+			displayWarning.BITStatus &= ~rcLowBat;
+		}
+		else if ( (batteryVoltage > 4.0) )
+		{
+			shouldRedrawBatteryIcon = true;
+			batteryStrength = STRONG;
+			displayWarning.BITStatus &= ~rcLowBat;
 		}
 	}
-	if ((rcLinkStatus.UplinkRSSIAnt1 == 0xFF) && (rcLinkStatus.UplinkRSSIAnt2 == 0xFF))
+	if ( (rcLinkStatus.UplinkRSSIAnt1 == 0xFF) && (rcLinkStatus.UplinkRSSIAnt2 == 0xFF) && (tbsLink != NOSIGNAL) )
 	{
 		isNoSignal = true;
+		shouldRedrawSignalStrengthIcon = true;
+		tbsLink = NOSIGNAL;
 		//Show no signal icon
 	}
-	else if (rcLinkStatus.DownlinkPSRLQ < 50)
+	else if ( (rcLinkStatus.DownlinkPSRLQ <= 50) && (tbsLink != LOW) )
 	{
 		isNoSignal = false;
 		isSignalLow = true;
+		shouldRedrawSignalStrengthIcon = true;
+		tbsLink = LOW;
+	}
+	else if ( (rcLinkStatus.DownlinkPSRLQ > 50) && (rcLinkStatus.DownlinkPSRLQ <= 75) && (tbsLink != MEDIUM) )
+	{
+		isNoSignal = false;
+		isSignalLow = true;
+		shouldRedrawSignalStrengthIcon = true;
+		tbsLink = MEDIUM;
 	}
 	else
 	{
 		isNoSignal = false;
 		isSignalLow = false;
+		shouldRedrawSignalStrengthIcon = true;
+		tbsLink = STRONG;
 	}
 
-	if (currentSmaStatus.smaState == 0x4)
+	if (previousSmaStatus.smaPlatfom != currentSmaStatus.smaPlatfom)
+	{
+		shouldReDrawPlatformIcon = true;
+	}
+
+	if (previousSmaStatus.smaPlatformName != currentSmaStatus.smaPlatformName)
+	{
+		shouldUpdatePlatformText = true;
+	}
+
+	if ( (displayWarning.BITStatus != previousBITStatus) || ( ((currentSmaStatus.batteryStrength == LOW) || (currentSmaStatus.batteryStrength == EMPTY)) && (shouldRedrawBatteryIcon) ) )
+	{
+		displayWarning.displayWarning = true;
+	}
+	else
+	{
+		displayWarning.displayWarning = false;
+	}
+
+	if (previousSmaStatus.isAutoPilotConnected != currentSmaStatus.isAutoPilotConnected)
+	{
+		shouldReDrawAutoPilotIcon = true;
+	}
+
+	if (previousSmaStatus.safeairTriggerMode != currentSmaStatus.safeairTriggerMode)
+	{
+		shouldReDrawTriggerModeIcon = true;
+	}
+
+
+
+	if ( (currentSmaStatus.smaState == 0x4) && (previousSmaStatus.smaState != UNKNOWN) )
 	{
 		//Sound SMA Error
-		previousSMAState = 0x04;
+		previousSmaStatus.smaState = UNKNOWN;
+		shouldUpdateSatusText = true;
 	}
-	else if (currentSmaStatus.smaState == 0x03)
+	else if ( (currentSmaStatus.smaState == 0x05) && (previousSmaStatus.smaState != MAINTENANCE) )
+	{
+		//Sound SMA Maintenance?
+		previousSmaStatus.smaState = MAINTENANCE;
+		shouldUpdateSatusText = true;
+	}
+	else if ( (currentSmaStatus.smaState == 0x03) && (previousSmaStatus.smaState != TRIGGERED) )
 	{
 		//Sound SMA triggered
-		previousSMAState = 0x03;
+		previousSmaStatus.smaState = TRIGGERED;
+		shouldUpdateSatusText = true;
 	}
-	else if ((currentSmaStatus.smaState == 0x02) && (previousSMAState != 0x02))
+	else if ( (currentSmaStatus.smaState == 0x02) && (previousSmaStatus.smaState != ARMED) )
 	{
 		//Sound SMA Armed
-		previousSMAState = 0x02;
+		previousSmaStatus.smaState = ARMED;
+		shouldUpdateSatusText = true;
 	}
-	else if ((currentSmaStatus.smaState == 0x01) && (previousSMAState != 0x01))
+	else if ( (currentSmaStatus.smaState == 0x01) && (previousSmaStatus.smaState != IDLE) )
 	{
 		if (isBuzzerCycleEnded)
 		{
 			//Sound SMA Disarmed
-			previousSMAState = 0x01;
+			previousSmaStatus.smaState = IDLE;
+			shouldUpdateSatusText = true;
 		}
 	}
 	else if (currentSmaStatus.batteryVoltage < 3.8)
