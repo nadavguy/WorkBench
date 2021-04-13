@@ -22,7 +22,7 @@ extern uint32_t previousLogIndex;
 extern uint32_t lastFileSizeCheck;
 
 extern bool createNewLogFile(void);
-extern void logData(char *dataToLog, bool forceToDisplay, bool displayOnly);
+extern void logData(char *dataToLog, bool doNotShowOnDisplay, bool displayOnly, bool doNotDisplayTime);
 extern uint32_t getCurrentLogSize(void);
 extern void monitorLogSize(void);
 //extern void writeLogHeader(void);

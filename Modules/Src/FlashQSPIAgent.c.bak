@@ -773,4 +773,6 @@ void flashInit(void)
 
 	total_sectors = (getFreeFs->n_fatent - 2) * getFreeFs->csize;
 	free_sectors = free_clusters * getFreeFs->csize;
+	free_kb = (float)free_sectors*(float)(SECTOR_SIZE)/1048576;
+	total_kb = (float)total_sectors*(float)(SECTOR_SIZE)/1048576;
 }

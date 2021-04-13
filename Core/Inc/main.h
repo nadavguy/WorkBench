@@ -96,7 +96,7 @@ extern bool isEmptyBattery;
 extern bool isUSBConnected;
 extern bool isSignalLow;
 extern bool isNoSignal;
-extern bool shouldUpdateSatusText;
+extern bool shouldUpdateStatusText;
 extern bool shouldRedrawBatteryIcon;
 extern bool shouldRedrawSignalStrengthIcon;
 extern bool shouldDrawRedAlertIcon;

@@ -73,22 +73,25 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-char terminalBuffer[1024] = {0};
+char terminalBuffer[terminalRXBufferSize] = {0};
+//char *ttt;
 
 float fwVersion = 1.00;
-float buildID = 1.09;
+float buildID = 1.10;
 
 SYSTEMState rcState = PREINIT;
+//SYSTEMState previousSMAState = PREINIT;
+//SYSTEMState currentSMAState = PREINIT;
 
 bool isLowBattery = false;
 bool isEmptyBattery = false;
 bool isUSBConnected = false;
 bool isSignalLow = false;
 bool isNoSignal = false;
-bool shouldUpdateSatusText = true;
+bool shouldUpdateStatusText = true;
 bool shouldRedrawBatteryIcon = true;
 bool shouldRedrawSignalStrengthIcon = true;
-bool shouldDrawRedAlertIcon = true;
+bool shouldDrawRedAlertIcon = false;
 bool shouldReDrawPlatformIcon = true;
 bool shouldUpdatePlatformText = true;
 bool shouldReDrawAutoPilotIcon = true;
@@ -107,6 +110,8 @@ SIGNALStrength batteryStrength = NOSIGNAL;
 tWarning displayWarning;
 
 float batteryVoltage = 4.2;
+
+uint32_t lastScreenUpdate = 0;
 
 /* USER CODE END PV */
 
@@ -161,52 +166,114 @@ int main(void)
   MX_TIM2_Init();
   MX_BlueNRG_2_Init();
   /* USER CODE BEGIN 2 */
-	HAL_Delay(5000);
-	CheckButtons();
+  HAL_GPIO_WritePin(BuzzerGPIO, BuzzerPIN, 1);
+  HAL_Delay(5000);
+  CheckButtons();
 
-	QSPI_Init();
-	flashInit();
-	createNewLogFile();
+  QSPI_Init();
+  flashInit();
+  createNewLogFile();
 
-	ee_init1((pU32)&ee, sizeof(ee));
-	if (!ee_validate1())
-	{
-		sprintf(terminalBuffer, "EEPROM1 Error, set default values");
-		logData(terminalBuffer, true, false);
-		ee_save1();
-	}
+  ee_init1((pU32)&ee, sizeof(ee));
+  if (!ee_validate1())
+  {
+	  sprintf(terminalBuffer,"EEPROM1 Error, set default values");
+	  logData(terminalBuffer, true, false, false);
+	  ee_save1();
 
-	rcState = INIT;
-	initBuzzerPatterns();
-	setBuzzerPattern(testBuzzerPattern);
-	printRCConfiguration(false);
-	//  createPingMessage();
-	/* Things ToDo*/
-	// Add Flash Support
-	//  LCD_1in8_test();
-	// screenInit();
-	// HAL_Delay(1000);
-	// screenClear();
+  }
+
+  rcState = INIT;
+  initBuzzerPatterns();
+//  setBuzzerPattern(testBuzzerPattern);
+  printRCConfiguration(false);
+  screenInit();
+
+  screenClear();
+
+//  previousBluetoothImage = gImage_Bluetooth_Disconnected;
+//  previousPlatformImage = gImage_Multicopter;
+//  previousAutoPilotImage = gImage_AutoPilot_Disconnected;
+//  previousTriggerModeImage = gImage_SafeAir_Manual_Trigger;
+//  previousSignalImage = gImage_Signal_RedNone;
+//  previousBatteryImage = gImage_Battery_RedAlert;
+
+//  Paint_DrawDeltaImage(gImage_Bluetooth_Connected, previousBluetoothImage, HorizontalBluetoothX, HorizontalBluetoothY, iconWidth, iconHeight);
+
+  screenUpdate(false);
+
+//  Paint_DrawImage(gImage_Multicopter, 1 + 0, 0, 24, 24);
+//
+//  Paint_DrawImage(gImage_AutoPilot_Disconnected, 1+ 26, 0, 24, 24);
+//
+//  Paint_DrawImage(gImage_Bluetooth_Disconnected, 1+ 52, 0, 24, 24);
+//
+//  Paint_DrawImage(gImage_SafeAir_Auto_Trigger, 1+ 78, 0, 24, 24);
+//
+//  Paint_DrawImage(gImage_Signal_RedNone, 1+ 106, 0, 24, 24);
+//
+//  Paint_DrawImage(gImage_Battery_RedAlert, 1+ 132, 0, 24, 24);
+//
+//  centeredString(80, 30, "SafeAir M200 Pro", BLACK);
+//
+//  Paint_DrawImage(gImage_Parachute_24, 0, 48, 24, 24);
+//  Paint_DrawImage(gImage_Parachute_24, 136, 48, 24, 24);
+//  centeredString(80, 56, "Critical angle", RED);
+//
+//  Paint_DrawImage(gImage_WarningRed_Icon_24, 26, 80, 24, 24);
+//  Paint_DrawString_EN(50, 80, "Warning Text", &Font12, WHITE, BLACK);
+//
+////  Paint_DrawImage(gImage_Altitude_24, 0, 104, 24, 24);
+////  Paint_DrawString_EN(24, 104+2, "Alt[m]", &Font8, WHITE, BLACK);
+////  Paint_DrawString_EN(24, 116+2, "999.9", &Font8, WHITE, BLACK);
+////
+////  Paint_DrawImage(gImage_Location_Off, 24 + 6 * 5, 104, 24, 24);
+////  Paint_DrawString_EN(24*2 + 6 * 5, 104+2, "Lat", &Font8, WHITE, BLACK);
+////  Paint_DrawString_EN(24*2 + 6 * 5, 116+2, "Lon",  &Font8, WHITE, BLACK);
+////  Paint_DrawString_EN(24*2 + 6 * 5 + 4 * 5, 104+2, "-179.99999", &Font8, WHITE, BLACK);
+////    Paint_DrawString_EN(24*2 + 6 * 5 + 4 * 5, 116+2, "+179.12345", &Font8, WHITE, BLACK);
+//  Paint_DrawImage(gImage_SafeAir_Logo_59_9, 0, 110, 59, 9);
+//  Paint_DrawImage(gImage_Battery_Full_Standing, 59, 104, 24, 24);
+//  Paint_DrawString_EN(78, 110, "100%", &Font12, WHITE, BLACK);
+//  Paint_DrawImage(gImage_Altitude_24, 106, 104, 24, 24);
+//  Paint_DrawString_EN(101+24, 104+2, "Alt[m]", &Font8, WHITE, BLACK);
+//  Paint_DrawString_EN(101+24, 116+2, "999.9", &Font8, WHITE, BLACK);
+//  while (1)
+//  {
+//	  HAL_Delay(1000);
+//	  Paint_ClearWindows(26, 80, 26 + 24, 80 + 24, WHITE);
+//	  HAL_Delay(1000);
+//	  Paint_DrawImage(gImage_WarningRed_Icon_24, 26, 80, 24, 24);
+//  }
+
+//  createPingMessage();
+  nextPattern = &noBuzzerPattern;
+  setBuzzerPattern(*nextPattern);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-	while (1)
-	{
-		CheckButtons();
-		sendChannelMessageToTBS();
-		updateRCState();
-		updateBuzzerStatus();
-		monitorLogSize();
-		if (isUSBConnected)
-		{
-			readUSBData();
-		}
+  while (1)
+  {
+	  CheckButtons();
+	  sendChannelMessageToTBS();
+	  updateRCState();
+	  if (HAL_GetTick() - lastScreenUpdate > 100)
+	  {
+		  screenUpdate(true);
+		  lastScreenUpdate = HAL_GetTick();
+	  }
+	  updateBuzzerStatus();
+	  monitorLogSize();
+	  if (isUSBConnected)
+	  {
+		  readUSBData();
+	  }
     /* USER CODE END WHILE */
 
-  MX_BlueNRG_2_Process();
+//  MX_BlueNRG_2_Process();
     /* USER CODE BEGIN 3 */
-	}
+  }
   /* USER CODE END 3 */
 }
 
@@ -286,13 +353,16 @@ void updateRCState(void)
 		rcState = INIT;
 	}
 
-	if  ( (isUSBConnected) && (batteryStrength != CHARGING) )
+	if  ( (isUSBConnected) )
 	{
-		isLowBattery = false;
-		isEmptyBattery = false;
-		shouldRedrawBatteryIcon = true;
-		batteryStrength = CHARGING;
-		displayWarning.BITStatus &= ~rcLowBat;
+		if ( (batteryStrength != CHARGING) )
+		{
+			isLowBattery = false;
+			isEmptyBattery = false;
+			shouldRedrawBatteryIcon = true;
+			batteryStrength = CHARGING;
+			displayWarning.BITStatus &= ~rcLowBat;
+		}
 		//Show charging symbol
 	}
 	else
@@ -318,7 +388,7 @@ void updateRCState(void)
 			batteryStrength = MEDIUM;
 			displayWarning.BITStatus &= ~rcLowBat;
 		}
-		else if ( (batteryVoltage > 4.0) )
+		else if ( (batteryVoltage > 4.0) && (batteryStrength != STRONG))
 		{
 			shouldRedrawBatteryIcon = true;
 			batteryStrength = STRONG;
@@ -346,7 +416,7 @@ void updateRCState(void)
 		shouldRedrawSignalStrengthIcon = true;
 		tbsLink = MEDIUM;
 	}
-	else
+	else if ( (rcLinkStatus.DownlinkPSRLQ > 75) && (tbsLink != STRONG) )
 	{
 		isNoSignal = false;
 		isSignalLow = false;
@@ -358,15 +428,24 @@ void updateRCState(void)
 	{
 		shouldReDrawPlatformIcon = true;
 	}
+	else
+	{
+		shouldReDrawPlatformIcon = false;
+	}
 
 	if (previousSmaStatus.smaPlatformName != currentSmaStatus.smaPlatformName)
 	{
 		shouldUpdatePlatformText = true;
 	}
+	else
+	{
+		shouldUpdatePlatformText = false;
+	}
 
 	if ( (displayWarning.BITStatus != previousBITStatus) || ( ((currentSmaStatus.batteryStrength == LOW) || (currentSmaStatus.batteryStrength == EMPTY)) && (shouldRedrawBatteryIcon) ) )
 	{
 		displayWarning.displayWarning = true;
+		shouldDrawRedAlertIcon = true;
 	}
 	else
 	{
@@ -377,10 +456,18 @@ void updateRCState(void)
 	{
 		shouldReDrawAutoPilotIcon = true;
 	}
+	else
+	{
+		shouldReDrawAutoPilotIcon = false;
+	}
 
 	if (previousSmaStatus.safeairTriggerMode != currentSmaStatus.safeairTriggerMode)
 	{
 		shouldReDrawTriggerModeIcon = true;
+	}
+	else
+	{
+		shouldReDrawTriggerModeIcon = false;
 	}
 
 
@@ -389,33 +476,35 @@ void updateRCState(void)
 	{
 		//Sound SMA Error
 		previousSmaStatus.smaState = UNKNOWN;
-		shouldUpdateSatusText = true;
+		shouldUpdateStatusText = true;
 	}
 	else if ( (currentSmaStatus.smaState == 0x05) && (previousSmaStatus.smaState != MAINTENANCE) )
 	{
 		//Sound SMA Maintenance?
 		previousSmaStatus.smaState = MAINTENANCE;
-		shouldUpdateSatusText = true;
+		shouldUpdateStatusText = true;
 	}
 	else if ( (currentSmaStatus.smaState == 0x03) && (previousSmaStatus.smaState != TRIGGERED) )
 	{
 		//Sound SMA triggered
 		previousSmaStatus.smaState = TRIGGERED;
-		shouldUpdateSatusText = true;
+		shouldUpdateStatusText = true;
 	}
 	else if ( (currentSmaStatus.smaState == 0x02) && (previousSmaStatus.smaState != ARMED) )
 	{
 		//Sound SMA Armed
 		previousSmaStatus.smaState = ARMED;
-		shouldUpdateSatusText = true;
+		nextPattern = &armedBuzzerPattern;
+		shouldUpdateStatusText = true;
 	}
 	else if ( (currentSmaStatus.smaState == 0x01) && (previousSmaStatus.smaState != IDLE) )
 	{
 		if (isBuzzerCycleEnded)
 		{
 			//Sound SMA Disarmed
+			nextPattern = &idleBuzzerPattern;
 			previousSmaStatus.smaState = IDLE;
-			shouldUpdateSatusText = true;
+			shouldUpdateStatusText = true;
 		}
 	}
 	else if (currentSmaStatus.batteryVoltage < 3.8)
@@ -441,6 +530,22 @@ void updateRCState(void)
 	{
 		//Sound nothing
 	}
+	setBuzzerPattern(*nextPattern);
+
+		if (shouldUpdateStatusText  || shouldReDrawTriggerModeIcon || shouldReDrawAutoPilotIcon || shouldRedrawBatteryIcon
+				|| shouldUpdatePlatformText || shouldReDrawPlatformIcon
+				|| shouldDrawRedAlertIcon)
+		{
+			sprintf(terminalBuffer,"SmartAir state: %d, trigger mode: %d",
+					currentSmaStatus.smaState, currentSmaStatus.triggerMode);
+			logData(terminalBuffer, false, false, false);
+			sprintf(terminalBuffer,"SmartAir Battery: %6.3f",currentSmaStatus.batteryVoltage);
+			logData(terminalBuffer, false, false, false);
+			sprintf(terminalBuffer,"SmartAir Altitude: %6.3f, Acceleration: %6.3f",
+					currentSmaStatus.Altitude, currentSmaStatus.Acceleration);
+			logData(terminalBuffer, false, false, false);
+		}
+
 }
 /* USER CODE END 4 */
 

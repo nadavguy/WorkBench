@@ -27,6 +27,7 @@ uint16_t previousBITStatus = 0;
 uint32_t lastCRSFChannelMessage = 0;
 uint32_t lastLoggedLinkMessage = 0;
 uint32_t lastLoggedSafeAirStatusMessage = 0;
+uint32_t lastReceivedDroneDataMessage = 0;
 
 tRC_LINK rcLinkStatus;
 tSMA_Status previousSmaStatus;
@@ -129,14 +130,15 @@ void sendMessageToRC(void)
 void sendChannelMessageToTBS(void)
 {
 //	uint16_t R = 0;
-	if ( HAL_GetTick() - lastCRSFChannelMessage > 6)
+	if ( (HAL_GetTick() - lastCRSFChannelMessage > 6) /*&& (HAL_GetTick() - lastReceivedDroneDataMessage < 200) */)
 	{
 		memset(rcChannelsFrame, 0, 26);
 		createCrossfireChannelsFrame(rcChannelsFrame, channelPWMValues);
 		HAL_UART_Transmit_IT(&TBS_UART, rcChannelsFrame, 26);
 		lastCRSFChannelMessage = HAL_GetTick();
 	}
-	else if ( ( HAL_GetTick() - lastCRSFChannelMessage <= 6)  && (( HAL_GetTick() - lastCRSFChannelMessage > 1)) )
+	else if ( ( (HAL_GetTick() - lastCRSFChannelMessage <= 6)  && ( HAL_GetTick() - lastCRSFChannelMessage > 1) )
+			/*|| (HAL_GetTick() - lastReceivedDroneDataMessage >= 200) */)
 	{
 		HAL_UART_Receive_DMA(&TBS_UART, tbsRXArray,TBS_RX_BUFFER);
 		HAL_Delay(2);
@@ -235,34 +237,27 @@ bool parseTBSMessage(void)
 			rcLinkStatus.DownlinkSNR = localRxArray[i + 12];
 			i = i + 12;
 			localRet = true;
-			if (HAL_GetTick() - lastLoggedLinkMessage > 100)
-			{
-				sprintf(terminalBuffer,"Uplink RSSI1: %d, RSSI2: %d, LQ: %d, SNR: %d",
-						rcLinkStatus.UplinkRSSIAnt1, rcLinkStatus.UplinkRSSIAnt2, rcLinkStatus.UplinkPSRLQ,
-						rcLinkStatus.UplinkSNR);
-				logData(terminalBuffer, true, false, false);
-				sprintf(terminalBuffer,"Uplink Diversity: %d, RFMode: %d, TX: %d",
-						rcLinkStatus.DiversityActiveAntena, rcLinkStatus.RFMode,
-						rcLinkStatus.UplinkTXPower);
-				logData(terminalBuffer, true, false, false);
-				sprintf(terminalBuffer,"Downlink RSSI: %d, LQ: %d, SNR: %d",
-						rcLinkStatus.DownlinkRSSI, rcLinkStatus.DownlinkPSRLQ,
-						rcLinkStatus.DownlinkSNR);
-				logData(terminalBuffer, true, false, false);
-				lastLoggedLinkMessage = HAL_GetTick();
-			}
+			logRCLinkStatus(false);
 		}
 		crc = crc8(&localRxArray[i + 2], 0x1B-1);
 		if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x1B) && (localRxArray[i + 2] == 0xDD) && (TBS_RX_BUFFER - i >= 0x1B)
 				&& (crc == localRxArray[i + 0x1B + 1]))
 		{
 			previousSmaStatus = currentSmaStatus;
-			currentSmaStatus.batteryVoltage = localRxArray[i + 3] / 10.0;
+			previousBITStatus = displayWarning.BITStatus;
+
+			currentSmaStatus.batteryVoltage = fmin(localRxArray[i + 3] / 50.0 + 0.05, 4.2);
 			currentSmaStatus.smaState = localRxArray[i + 4];
 			currentSmaStatus.triggerMode = localRxArray[i + 5] - 1;
-			currentSmaStatus.Altitude = (localRxArray[i + 6] * 256 + localRxArray[i + 7] + 28000)/10.0;
+			currentSmaStatus.Altitude = ((int16_t)(localRxArray[i + 6] * 256) + localRxArray[i + 7] + 28000)/10.0;
 			currentSmaStatus.Acceleration = (localRxArray[i + 8] * 256 + localRxArray[i + 9])/100.0;
 			currentSmaStatus.BITStatus = localRxArray[i + 10] * 256 + localRxArray[i + 11];
+
+//			abs(previousSmaStatus.batteryVoltage - currentSmaStatus.batteryVoltage) > 0.05 ) && (HAL_GetTick() - lastBatteryRefresh > 30000)
+			if (abs(previousSmaStatus.batteryVoltage - currentSmaStatus.batteryVoltage) > 0.05 )
+			{
+				shouldRenderBatteryPercent = true;
+			}
 
 			if (localRxArray[i + 12] == 1)
 			{
@@ -295,7 +290,6 @@ bool parseTBSMessage(void)
 			}
 			i = i + 0x1B - 1;
 
-			previousBITStatus = currentSmaStatus.BITStatus;
 			if (currentSmaStatus.BITStatus & 0x01)
 			{
 				displayWarning.BITStatus |= smaFlashError;
@@ -395,39 +389,7 @@ bool parseTBSMessage(void)
 				currentSmaStatus.safeairTriggerMode = AUTO;
 			}
 
-//			if (currentSmaStatus.smaState == 1)
-//			{
-//				currentSMAState = IDLE;
-//			}
-//			else if (currentSmaStatus.smaState == 2)
-//			{
-//				currentSMAState = ARMED;
-//			}
-//			else if (currentSmaStatus.smaState == 3)
-//			{
-//				currentSMAState = TRIGGERED;
-//			}
-//			else if (currentSmaStatus.smaState == 4)
-//			{
-//				currentSMAState = UNKNOWN;
-//			}
-//			else if (currentSmaStatus.smaState == 5)
-//			{
-//				currentSMAState = MAINTENANCE;
-//			}
-//			else if (currentSmaStatus.smaState == 6)
-//			{
-//				currentSMAState = AUTOCALIBRATION;
-//			}
-
-//			sprintf(terminalBuffer,"SmartAir state: %d, trigger mode: %d",
-//					currentSmaStatus.smaState, currentSmaStatus.triggerMode);
-//			logData(terminalBuffer, false, false, false);
-//			sprintf(terminalBuffer,"SmartAir Battery: %6.3f",currentSmaStatus.batteryVoltage);
-//			logData(terminalBuffer, false, false, false);
-//			sprintf(terminalBuffer,"SmartAir Altitude: %6.3f, Acceleration: %6.3f",
-//					currentSmaStatus.Altitude, currentSmaStatus.Acceleration);
-//			logData(terminalBuffer, false, false, false);
+			lastReceivedDroneDataMessage = HAL_GetTick();
 		}
 		else if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x1B) && (localRxArray[i + 2] == 0xDD) && (TBS_RX_BUFFER - i >= 0x1B)
 				&& (crc != localRxArray[i + 0x1B + 1]))

@@ -169,12 +169,12 @@ eCI_RESULT func_importFile(void)
 	      res = f_gets(terminalBuffer, terminalRXBufferSize, &fileToRead);
 	      if (res != 0x00)
 	      {
-	    	  logData(terminalBuffer, true, false, true);
+	    	  logData(terminalBuffer, false, true, true);
 	      }
 	      else
 	      {
 	        _endFile = true;
-	        logData("\r\nEOF", true, false, true);
+	        logData("EOF", false, true, true);
 	      }
 	    }
 	  }
@@ -197,6 +197,7 @@ eCI_RESULT func_dir(void)
     	f_findnext(&dp1, &fno1);
     }
     f_closedir(&dp1);
+    logData("EOD", false, true, true);
 	return CI_OK;
 }
 

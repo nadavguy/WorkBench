@@ -32,6 +32,10 @@ extern tBuzzer_Pattern testBuzzerPattern;
 extern tBuzzer_Pattern idleBuzzerPattern;
 extern tBuzzer_Pattern armedBuzzerPattern;
 extern tBuzzer_Pattern noBuzzerPattern;
+extern tBuzzer_Pattern noTelemetryPattern;
+extern tBuzzer_Pattern lowTelemetryPattern;
+extern tBuzzer_Pattern lowRCBatteryPattern;
+extern tBuzzer_Pattern triggeredSafeAirPattern;
 
 extern bool isBuzzerCycleEnded;
 
