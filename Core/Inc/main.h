@@ -30,8 +30,6 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f7xx_hal.h"
 
-#include "hci_tl_interface.h"
-#include "custom.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h> //printf()
@@ -131,12 +129,12 @@ extern void updateRCState(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define GPIO_LeftButton_Pin GPIO_PIN_3
+#define GPIO_LeftButton_GPIO_Port GPIOE
+#define GPIO_RightButton_Pin GPIO_PIN_4
+#define GPIO_RightButton_GPIO_Port GPIOE
 #define AntiTamper_Pin GPIO_PIN_13
 #define AntiTamper_GPIO_Port GPIOC
-#define SPI2_MOSI___BLE_Pin GPIO_PIN_1
-#define SPI2_MOSI___BLE_GPIO_Port GPIOC
-#define SPI2_MISO___BLE_Pin GPIO_PIN_2
-#define SPI2_MISO___BLE_GPIO_Port GPIOC
 #define GPIO_WakeUp_Pin GPIO_PIN_0
 #define GPIO_WakeUp_GPIO_Port GPIOA
 #define ADC1_3_3V_Pin GPIO_PIN_1
@@ -155,22 +153,22 @@ extern void updateRCState(void);
 #define GPIO_DC___LCD_GPIO_Port GPIOC
 #define GPIO_RST___LCD_Pin GPIO_PIN_5
 #define GPIO_RST___LCD_GPIO_Port GPIOC
-#define GPIO_BLE___EXTI_Pin GPIO_PIN_7
-#define GPIO_BLE___EXTI_GPIO_Port GPIOE
-#define GPIO_BLE___CS_Pin GPIO_PIN_8
-#define GPIO_BLE___CS_GPIO_Port GPIOE
+#define GPIO_BLE___AppOrConfig_Pin GPIO_PIN_8
+#define GPIO_BLE___AppOrConfig_GPIO_Port GPIOE
 #define GPIO_TriggerButton_Pin GPIO_PIN_9
 #define GPIO_TriggerButton_GPIO_Port GPIOE
 #define GPIO_BLE___Reset_Pin GPIO_PIN_10
 #define GPIO_BLE___Reset_GPIO_Port GPIOE
 #define GPIO_ArmButton_Pin GPIO_PIN_11
 #define GPIO_ArmButton_GPIO_Port GPIOE
-#define SPI2_SCK___BLE_Pin GPIO_PIN_13
-#define SPI2_SCK___BLE_GPIO_Port GPIOB
+#define USART3_RX___BLE_Pin GPIO_PIN_11
+#define USART3_RX___BLE_GPIO_Port GPIOB
 #define USART1_TX___TBS_Pin GPIO_PIN_14
 #define USART1_TX___TBS_GPIO_Port GPIOB
 #define USART1_RX___TBS_Pin GPIO_PIN_15
 #define USART1_RX___TBS_GPIO_Port GPIOB
+#define USART3_TX___BLE_Pin GPIO_PIN_8
+#define USART3_TX___BLE_GPIO_Port GPIOD
 #define GPIO_CS___LCD_Pin GPIO_PIN_6
 #define GPIO_CS___LCD_GPIO_Port GPIOC
 #define USB_DM___White_Wire_Pin GPIO_PIN_11
@@ -179,10 +177,16 @@ extern void updateRCState(void);
 #define USB_DP___Green_Wire_GPIO_Port GPIOA
 #define TIM2_CH1___BL_LCD_Pin GPIO_PIN_15
 #define TIM2_CH1___BL_LCD_GPIO_Port GPIOA
-#define USART2_TX___BLE_VCP_Pin GPIO_PIN_5
-#define USART2_TX___BLE_VCP_GPIO_Port GPIOD
-#define USART2_RX___BLE_VCP_Pin GPIO_PIN_6
-#define USART2_RX___BLE_VCP_GPIO_Port GPIOD
+#define GPIO_UpButton_Pin GPIO_PIN_3
+#define GPIO_UpButton_GPIO_Port GPIOD
+#define GPIO_DownButton_Pin GPIO_PIN_4
+#define GPIO_DownButton_GPIO_Port GPIOD
+#define USART2_TX___Retrofit_Pin GPIO_PIN_5
+#define USART2_TX___Retrofit_GPIO_Port GPIOD
+#define USART2_RX___Retrofit_Pin GPIO_PIN_6
+#define USART2_RX___Retrofit_GPIO_Port GPIOD
+#define GPIO_ApproveButton_Pin GPIO_PIN_7
+#define GPIO_ApproveButton_GPIO_Port GPIOD
 #define GPIO_Buzzer_Pin GPIO_PIN_0
 #define GPIO_Buzzer_GPIO_Port GPIOE
 #define GPIO_ChargeEN_Pin GPIO_PIN_1

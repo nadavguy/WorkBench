@@ -69,7 +69,7 @@
 #define USBD_PID_FS     22336
 #define USBD_PRODUCT_STRING_FS     "Parazero RC comPort"
 #define USBD_CONFIGURATION_STRING_FS     "CDC Config"
-//#define USBD_INTERFACE_STRING_FS     "CDC Interface"
+#define USBD_INTERFACE_STRING_FS     "CDC Interface"
 
 #define USB_SIZ_BOS_DESC            0x0C
 
