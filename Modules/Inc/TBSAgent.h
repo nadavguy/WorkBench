@@ -92,6 +92,9 @@ extern uint8_t tbsPingMessage[8];
 extern uint16_t previousBITStatus;
 extern uint32_t lastCRSFChannelMessage;
 extern uint32_t lastLoggedLinkMessage;
+extern uint32_t lastReceivedLinkMessage;
+
+extern bool isTBSDisconnected;
 
 extern tRC_LINK rcLinkStatus;
 extern tSMA_Status previousSmaStatus;

@@ -50,16 +50,19 @@
 #define HorizontalWarningIconY 80
 
 #define HorizontalWarningTextX HorizontalWarningIconX + 24
-#define HorizontalWarningTextY HorizontalWarningIconY
+#define HorizontalWarningTextY HorizontalWarningIconY + 8
 
 #define HorizontalSafeAirLogo599IconX 1
 #define HorizontalSafeAirLogo599IconY 110
 
-#define HorizontalSafeAirBatteryIconX 60
-#define HorizontalSafeAirBatteryIconY 104
+#define HorizontalSafeAirLogo7411IconX 1
+#define HorizontalSafeAirLogo7411IconY 108
+
+#define HorizontalSafeAirBatteryIconX 75
+#define HorizontalSafeAirBatteryIconY 101
 
 #define HorizontalSafeAirBatteryTextX 78
-#define HorizontalSafeAirBatteryTextY 110
+#define HorizontalSafeAirBatteryTextY 120
 
 #define HorizontalAltitudeIconX 106
 #define HorizontalAltitudeIconY HorizontalSafeAirBatteryIconY
@@ -76,6 +79,10 @@ extern const unsigned char *previousAutoPilotImage;
 extern const unsigned char *previousTriggerModeImage;
 extern const unsigned char *previousSignalImage;
 extern const unsigned char *previousBatteryImage;
+
+extern bool shouldRenderBatteryPercent;
+
+extern uint32_t lastBITStatusChange;
 
 extern void screenInit(void);
 extern void screenClear(void);

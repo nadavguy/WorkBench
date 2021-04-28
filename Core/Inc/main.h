@@ -40,21 +40,30 @@ extern "C" {
 #include <stdbool.h>
 #include <math.h>
 
-#include "str_util.h"
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <math.h>
+
 #include "TypeDefs.h"
-#include "Common.h"
-#include "ci_func.h"
+#include "str_util.h"
+#include "TimeHelper.h"
+#include "MenuHelper.h"
+
+#include "LogAgent.h"
 #include "cmd_interp.h"
 #include "ConfigParams.h"
-#include "PushButton.h"
-#include "TBSAgent.h"
-#include "LogAgent.h"
-#include "TimeHelper.h"
-#include "TerminalAgent.h"
-#include "ScreenAgent.h"
 #include "ConfigurationHelper.h"
 #include "TBSAgent.h"
+#include "ScreenAgent.h"
+#include "PushButton.h"
 #include "BuzzerAgent.h"
+#include "TerminalAgent.h"
+#include "ymodem.h"
+#include "Common.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -92,6 +101,7 @@ extern float buildID;
 extern bool isLowBattery;
 extern bool isEmptyBattery;
 extern bool isUSBConnected;
+extern bool isMSCMode;
 extern bool isSignalLow;
 extern bool isNoSignal;
 extern bool shouldUpdateStatusText;
@@ -105,20 +115,17 @@ extern bool shouldReDrawBluetoothIcon;
 extern bool shouldReDrawTriggerModeIcon;
 extern bool shouldClearDisplayedWarning;
 
-//extern SYSTEMConnectionStatus autoPilotConnection;
 extern SYSTEMConnectionStatus bluetoothConnection;
-//extern PLATFORMType safeairPlatform;
+
 extern SIGNALStrength tbsLink;
-//extern SIGNALStrength batteryStrength;
+
 extern SYSTEMState rcState;
 extern LINKType linkType;
 extern tWarning displayWarning;
-//extern TRIGGERMode safeairTriggerMode;
-//extern TRIGGERReason smaTriggerReason;
 
-//extern SYSTEMState previousSMAState;
-//extern SYSTEMState currentSMAState;
 extern SYSTEMState desiredSMAState;
+
+extern tCURSOR_DATA currentCursorPosition;
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
@@ -153,6 +160,10 @@ extern void updateRCState(void);
 #define GPIO_DC___LCD_GPIO_Port GPIOC
 #define GPIO_RST___LCD_Pin GPIO_PIN_5
 #define GPIO_RST___LCD_GPIO_Port GPIOC
+#define TIM3_CH3___BL_LCD_Pin GPIO_PIN_0
+#define TIM3_CH3___BL_LCD_GPIO_Port GPIOB
+#define GPIO_3_3Mux_Stat_Pin GPIO_PIN_1
+#define GPIO_3_3Mux_Stat_GPIO_Port GPIOB
 #define GPIO_BLE___AppOrConfig_Pin GPIO_PIN_8
 #define GPIO_BLE___AppOrConfig_GPIO_Port GPIOE
 #define GPIO_TriggerButton_Pin GPIO_PIN_9
@@ -161,30 +172,28 @@ extern void updateRCState(void);
 #define GPIO_BLE___Reset_GPIO_Port GPIOE
 #define GPIO_ArmButton_Pin GPIO_PIN_11
 #define GPIO_ArmButton_GPIO_Port GPIOE
-#define USART3_RX___BLE_Pin GPIO_PIN_11
-#define USART3_RX___BLE_GPIO_Port GPIOB
-#define USART1_TX___TBS_Pin GPIO_PIN_14
-#define USART1_TX___TBS_GPIO_Port GPIOB
-#define USART1_RX___TBS_Pin GPIO_PIN_15
-#define USART1_RX___TBS_GPIO_Port GPIOB
+#define USART_TX___TBS_Pin GPIO_PIN_14
+#define USART_TX___TBS_GPIO_Port GPIOB
+#define USART_RX___TBS_Pin GPIO_PIN_15
+#define USART_RX___TBS_GPIO_Port GPIOB
 #define USART3_TX___BLE_Pin GPIO_PIN_8
 #define USART3_TX___BLE_GPIO_Port GPIOD
+#define USART3_RX___BLE_Pin GPIO_PIN_9
+#define USART3_RX___BLE_GPIO_Port GPIOD
 #define GPIO_CS___LCD_Pin GPIO_PIN_6
 #define GPIO_CS___LCD_GPIO_Port GPIOC
 #define USB_DM___White_Wire_Pin GPIO_PIN_11
 #define USB_DM___White_Wire_GPIO_Port GPIOA
 #define USB_DP___Green_Wire_Pin GPIO_PIN_12
 #define USB_DP___Green_Wire_GPIO_Port GPIOA
-#define TIM2_CH1___BL_LCD_Pin GPIO_PIN_15
-#define TIM2_CH1___BL_LCD_GPIO_Port GPIOA
 #define GPIO_UpButton_Pin GPIO_PIN_3
 #define GPIO_UpButton_GPIO_Port GPIOD
 #define GPIO_DownButton_Pin GPIO_PIN_4
 #define GPIO_DownButton_GPIO_Port GPIOD
-#define USART2_TX___Retrofit_Pin GPIO_PIN_5
-#define USART2_TX___Retrofit_GPIO_Port GPIOD
-#define USART2_RX___Retrofit_Pin GPIO_PIN_6
-#define USART2_RX___Retrofit_GPIO_Port GPIOD
+#define USART_TX___Retrofit_Pin GPIO_PIN_5
+#define USART_TX___Retrofit_GPIO_Port GPIOD
+#define USART_RX___Retrofit_Pin GPIO_PIN_6
+#define USART_RX___Retrofit_GPIO_Port GPIOD
 #define GPIO_ApproveButton_Pin GPIO_PIN_7
 #define GPIO_ApproveButton_GPIO_Port GPIOD
 #define GPIO_Buzzer_Pin GPIO_PIN_0

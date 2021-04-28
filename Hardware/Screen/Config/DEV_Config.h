@@ -49,8 +49,8 @@
 #define DEV_CS_PIN		CS_GPIO_Port,CS_Pin
 #define DEV_BL_PIN		TIM2->CCR2
 #define DEV_SPI			hspi1
-#define DEV_BL_CH		TIM_CHANNEL_2
-#define DEV_BL_TIM		htim2
+#define DEV_BL_CH		TIM_CHANNEL_3
+#define DEV_BL_TIM		htim3
 
 /**
  * GPIO read and write

@@ -47,7 +47,7 @@ void CheckButtons(void)
 	{
 		if ( (armButtonIsHigh) && (!armButtonIsLow) )
 		{
-			logData("Arm button pressed", false, false);
+			logData("Arm button pressed", false, false, false);
 		}
 		armButtonIsHigh = false;
 		armButtonIsLow = true;
@@ -84,7 +84,7 @@ void CheckButtons(void)
 
 		if ( (!armButtonIsHigh) && (armButtonIsLow) )
 		{
-			logData("Arm button released", false, false);
+			logData("Arm button released", false, false, false);
 		}
 
 		armButtonIsHigh = true;
@@ -100,7 +100,7 @@ void CheckButtons(void)
 	{
 		if ( (triggerButtonIsHigh) && (!triggerButtonIsLow) )
 		{
-			logData("Trigger button pressed", false, false);
+			logData("Trigger button pressed", false, false, false);
 		}
 		triggerButtonIsHigh = false;
 		triggerButtonIsLow = true;
@@ -137,7 +137,7 @@ void CheckButtons(void)
 
 		if ( (!triggerButtonIsHigh) && (triggerButtonIsLow) )
 		{
-			logData("Trigger button released", false, false);
+			logData("Trigger button released", false, false, false);
 		}
 
 		triggerButtonIsHigh = true;

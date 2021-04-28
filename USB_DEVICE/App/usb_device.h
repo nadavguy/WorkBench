@@ -33,7 +33,7 @@
 #include "usbd_def.h"
 
 /* USER CODE BEGIN INCLUDE */
-#include "usbd_cdc_if.h"
+#define COMMANDSMAXSIZE 64
 /* USER CODE END INCLUDE */
 
 /** @addtogroup USBD_OTG_DRIVER
@@ -65,10 +65,7 @@
  * -- Insert your variables declaration here --
  */
 /* USER CODE BEGIN VARIABLES */
-extern USBD_HandleTypeDef hUsbDeviceFS;
 
-extern uint8_t usbRXArray[APP_RX_DATA_SIZE];
-extern uint8_t usbTXArray[APP_TX_DATA_SIZE];
 /* USER CODE END VARIABLES */
 /**
   * @}

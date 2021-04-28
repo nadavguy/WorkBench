@@ -20,11 +20,8 @@ OBJCOPY_BIN :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
-BlueNRG_2/App \
-BlueNRG_2/Target \
 Core/Src \
 Core/Startup \
-Drivers/BSP/custom \
 Drivers/STM32F7xx_HAL_Driver/Src \
 FATFS/App \
 FATFS/Target \
@@ -36,10 +33,6 @@ Hardware/Screen/GUI_DEV \
 Hardware/Screen/LCD \
 Hardware/Screen/example \
 Hardware/Screen/image \
-Middlewares/ST/BlueNRG-2/hci \
-Middlewares/ST/BlueNRG-2/hci/controller \
-Middlewares/ST/BlueNRG-2/hci/hci_tl_patterns/Basic \
-Middlewares/ST/BlueNRG-2/utils \
 Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src \
 Middlewares/ST/STM32_USB_Device_Library/Core/Src \
 Middlewares/Third_Party/FatFs/src \

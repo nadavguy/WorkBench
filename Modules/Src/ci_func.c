@@ -147,7 +147,7 @@ eCI_RESULT func_backLight(void)
 
 eCI_RESULT func_massStorage(void)
 {
-
+	isMSCMode = true;
 	MX_MSC_DEVICE_Init();
 	return CI_OK;
 }
