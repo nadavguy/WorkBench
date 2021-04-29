@@ -18,6 +18,11 @@ uint16_t triggerButtonPreviousValue = 0;
 
 GPIO_PinState armPinState;
 GPIO_PinState triggerPinState;
+GPIO_PinState upPinState;
+GPIO_PinState downPinState;
+GPIO_PinState okPinState;
+GPIO_PinState leftPinState;
+GPIO_PinState rightPinState;
 
 uint32_t armButtonPressStart = 0;
 uint32_t armButtonPressCycleStart = 0;
@@ -25,6 +30,10 @@ uint32_t armButtonPressDurationmSec[5] = {0};
 uint32_t triggerButtonPressStart = 0;
 uint32_t triggerButtonPressCycleStart = 0;
 uint32_t triggerButtonPressDurationmSec[5] = {0};
+uint32_t lastOkButtonPress = 0;
+uint32_t lastDownButtonPress = 0;
+uint32_t lastUpButtonPress = 0;
+
 
 bool armButtonIsHigh = true;
 bool armButtonIsLow = false;
@@ -37,6 +46,10 @@ void CheckButtons(void)
 	/*Get Buttons State */
 	armPinState = HAL_GPIO_ReadPin(armGPIO, armPIN);
 	triggerPinState = HAL_GPIO_ReadPin(triggerGPIO, triggerPIN);
+	upPinState = HAL_GPIO_ReadPin(upGPIO, upPIN);
+	downPinState = HAL_GPIO_ReadPin(downGPIO, downPIN);
+	okPinState = HAL_GPIO_ReadPin(okGPIO, okPIN);
+
 	if ( (rcState == PREINIT) && (armPinState == GPIO_PIN_RESET) )
 	{
 		rcState = MAINTENANCE;
@@ -199,5 +212,141 @@ void CheckButtons(void)
 			}
 		}
 	}
-	//		SetRGB(250, 0, 0);
+
+	if ( (currentSmaStatus.smaState != ARMED) && (currentSmaStatus.smaState != TRIGGERED) )
+	{
+		if ( (okPinState == GPIO_PIN_RESET) && (!isMenuDisplayed) && (HAL_GetTick() - lastOkButtonPress > 100))
+		{
+			isMenuDisplayed = true;
+			shouldRenderMenu = true;
+			shouldClearScreen = true;
+			currentCursorPosition.currentPageID = 1;
+			currentCursorPosition.cursorPosition = 0;
+			lastOkButtonPress = HAL_GetTick();
+			menuDrawDirection = FULL;
+		}
+		else if ( (okPinState == GPIO_PIN_RESET) && (isMenuDisplayed) && (!isItemDisplayed) && (HAL_GetTick() - lastOkButtonPress > 100) )
+		{
+			shouldClearScreen = true;
+			itemDrawDirection = FULL;
+			updateSelection();
+			lastOkButtonPress = HAL_GetTick();
+			menuDrawDirection = FULL;
+		}
+		else if ( (okPinState == GPIO_PIN_RESET) && (isMenuDisplayed) && (isItemDisplayed) && (HAL_GetTick() - lastOkButtonPress > 100) )
+		{
+			shouldClearScreen = false;
+			if (currentCursorPosition.cursorPosition == 0x2)
+			{
+				currentCursorPosition.cursorPosition = VALUE;
+				itemDrawDirection = RIGHT;
+			}
+			else if (currentCursorPosition.cursorPosition == 0x3)
+			{
+				currentCursorPosition.cursorPosition = MULTIPLIER;
+				itemDrawDirection = RIGHT;
+			}
+			else if (currentCursorPosition.cursorPosition == VALUE)
+			{
+				currentCursorPosition.cursorPosition = 0x2;
+				itemDrawDirection = LEFT;
+			}
+			else if (currentCursorPosition.cursorPosition == MULTIPLIER)
+			{
+				currentCursorPosition.cursorPosition = 0x3;
+				itemDrawDirection = LEFT;
+			}
+			updateSelection();
+			lastOkButtonPress = HAL_GetTick();
+
+		}
+		else if ( (downPinState == GPIO_PIN_RESET) && (isMenuDisplayed) && (!isItemDisplayed) && (HAL_GetTick() - lastDownButtonPress > 100) )
+		{
+			shouldRenderMenu = true;
+			shouldClearScreen = false;
+			currentCursorPosition.cursorPosition = fmin(currentCursorPosition.cursorPosition+1,
+					pagesArray[currentCursorPosition.currentPageID].numberOfItemsInPage - 1);
+			lastDownButtonPress = HAL_GetTick();
+			menuDrawDirection = DOWN;
+		}
+		else if ( (downPinState == GPIO_PIN_RESET) && (isItemDisplayed) && (HAL_GetTick() - lastDownButtonPress > 100) )
+		{
+			shouldRenderItem = true;
+			shouldClearScreen = false;
+			if (currentCursorPosition.cursorPosition == 0x2)
+			{
+				currentCursorPosition.cursorPosition = 0x3;
+			}
+			else if (currentCursorPosition.cursorPosition == 0x3)
+			{
+				currentCursorPosition.cursorPosition = 0x4;
+			}
+			else if (currentCursorPosition.cursorPosition == 0x4)
+			{
+				currentCursorPosition.cursorPosition = 0x5;
+			}
+			else if (currentCursorPosition.cursorPosition == 0x5)
+			{
+				currentCursorPosition.cursorPosition = 0x5;
+			}
+			else if (currentCursorPosition.cursorPosition == VALUE)
+			{
+				currentCursorPosition.cursorPosition = VALUE;
+			}
+			else if (currentCursorPosition.cursorPosition == MULTIPLIER)
+			{
+				currentCursorPosition.cursorPosition = MULTIPLIER;
+			}
+//			currentCursorPosition.cursorPosition = fmin (currentCursorPosition.cursorPosition + 1 , 5);
+			updateSelection();
+			lastDownButtonPress = HAL_GetTick();
+			itemDrawDirection = DOWN;
+		}
+		else if ( (upPinState == GPIO_PIN_RESET) && (isMenuDisplayed) && (!isItemDisplayed) && (HAL_GetTick() - lastUpButtonPress > 100) )
+		{
+			shouldRenderMenu = true;
+			shouldClearScreen = false;
+
+			currentCursorPosition.cursorPosition = fmax(currentCursorPosition.cursorPosition - 1 , 0);
+			updateSelection();
+			lastUpButtonPress = HAL_GetTick();
+			menuDrawDirection = UP;
+		}
+		else if ( (upPinState == GPIO_PIN_RESET) && (isItemDisplayed) && (HAL_GetTick() - lastUpButtonPress > 100) )
+		{
+			shouldRenderItem = true;
+			shouldClearScreen = false;
+			if (currentCursorPosition.cursorPosition == 0x2)
+			{
+				currentCursorPosition.cursorPosition = 0x2;
+			}
+			else if (currentCursorPosition.cursorPosition == 0x3)
+			{
+				currentCursorPosition.cursorPosition = 0x2;
+			}
+			else if (currentCursorPosition.cursorPosition == 0x4)
+			{
+				currentCursorPosition.cursorPosition = 0x3;
+			}
+			else if (currentCursorPosition.cursorPosition == 0x5)
+			{
+				currentCursorPosition.cursorPosition = 0x4;
+			}
+			else if (currentCursorPosition.cursorPosition == VALUE)
+			{
+				currentCursorPosition.cursorPosition = VALUE;
+			}
+			else if (currentCursorPosition.cursorPosition == MULTIPLIER)
+			{
+				currentCursorPosition.cursorPosition = MULTIPLIER;
+			}
+			updateSelection();
+			lastUpButtonPress = HAL_GetTick();
+			itemDrawDirection = UP;
+		}
+	}
+	else if ( (currentSmaStatus.smaState == ARMED) && (currentSmaStatus.smaState != TRIGGERED) )
+	{
+		//TODO: force disarm logic
+	}
 }

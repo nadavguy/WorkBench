@@ -109,7 +109,14 @@ static void ee_set_start1(void)
 void ee_init1(pU32 data_base1, uint32_t data_size1)
 {
   ee_ram_base1 = data_base1;
-  ee_size1 = data_size1 / 4;
+  if (data_size1 % 4 == 0)
+  {
+	  ee_size1 = data_size1 / 4;
+  }
+  else
+  {
+	  ee_size1 = data_size1 / 4 + 1;
+  }
   ee_flash_base1 = (pU32)(uint32_t)startAddressEEPROM1;
   ee_set_start1();
 

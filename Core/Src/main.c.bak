@@ -76,7 +76,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.110;
+float buildID = 1.120;
 
 SYSTEMState rcState = PREINIT;
 //SYSTEMState previousSMAState = PREINIT;
@@ -160,11 +160,12 @@ int main(void)
   MX_FATFS_Init();
   MX_QUADSPI_Init();
   MX_SPI1_Init();
-  MX_USART1_UART_Init();
   MX_USB_DEVICE_Init();
   MX_ADC1_Init();
-  MX_USART3_UART_Init();
   MX_TIM3_Init();
+  MX_USART2_UART_Init();
+  MX_USART1_UART_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
   HAL_GPIO_WritePin(BuzzerGPIO, BuzzerPIN, 1);
   HAL_Delay(5000);
@@ -187,7 +188,17 @@ int main(void)
   }
 
   rcState = INIT;
-  initBuzzerPatterns();
+  rcLinkStatus.UplinkRSSIAnt1 = 0xFF;
+  rcLinkStatus.UplinkRSSIAnt2 = 0xFF;
+  tbsLink = NOSIGNAL;
+//  while (tbsLink == NOSIGNAL)
+//  {
+//	  sendChannelMessageToTBS();
+//	  updateRCState();
+//	  //TODO: show waiting for Unit connection
+//	  //Allow operator to override manually
+//  }
+
 
   printRCConfiguration(false);
   screenInit();
@@ -198,6 +209,10 @@ int main(void)
 //  createPingMessage();
   nextPattern = &noBuzzerPattern;
   setBuzzerPattern(*nextPattern);
+
+  currentCursorPosition.cursorPosition = 0;
+  currentCursorPosition.menuDepth = 0;
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -206,6 +221,9 @@ int main(void)
   {
 	  CheckButtons();
 	  sendChannelMessageToTBS();
+	  //TODO: Backward compatibility of SafeAir unit with old FW
+	  // if there is telemetry messages without 0xDD message
+	  // Allow only basic functionality
 	  updateRCState();
 	  if (HAL_GetTick() - lastScreenUpdate > 100)
 	  {
@@ -214,7 +232,7 @@ int main(void)
 	  }
 	  updateBuzzerStatus();
 	  monitorLogSize();
-	  if (isUSBConnected)
+	  if ( (isUSBConnected) && (!isMSCMode) )
 	  {
 		  readUSBData();
 	  }
@@ -280,7 +298,7 @@ void SystemClock_Config(void)
                               |RCC_PERIPHCLK_USART2|RCC_PERIPHCLK_USART3
                               |RCC_PERIPHCLK_CLK48;
   PeriphClkInitStruct.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
-  PeriphClkInitStruct.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
+  PeriphClkInitStruct.Usart2ClockSelection = RCC_USART2CLKSOURCE_SYSCLK;
   PeriphClkInitStruct.Usart3ClockSelection = RCC_USART3CLKSOURCE_PCLK1;
   PeriphClkInitStruct.Clk48ClockSelection = RCC_CLK48SOURCE_PLL;
   PeriphClkInitStruct.TIMPresSelection = RCC_TIMPRES_ACTIVATED;
@@ -348,7 +366,17 @@ void updateRCState(void)
 			displayWarning.BITStatus &= ~rcLowBat;
 		}
 	}
-	if ( (rcLinkStatus.UplinkRSSIAnt1 == 0xFF) && (rcLinkStatus.UplinkRSSIAnt2 == 0xFF) )
+
+	if ( (HAL_GetTick() - lastReceivedLinkMessage > 3000) && (!isTBSDisconnected) )
+	{
+		isNoSignal = true;
+		shouldRedrawSignalStrengthIcon = true;
+		tbsLink = NOSIGNAL;
+		isTBSDisconnected = true;
+		sprintf(terminalBuffer,"No connection with TBS TX");
+		logData(terminalBuffer, true, false, false);
+	}
+	else if ( (rcLinkStatus.UplinkRSSIAnt1 == 0xFF) && (rcLinkStatus.UplinkRSSIAnt2 == 0xFF) )
 	{
 		if (tbsLink != NOSIGNAL)
 		{

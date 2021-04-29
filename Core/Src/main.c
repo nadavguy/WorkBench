@@ -76,7 +76,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.120;
+float buildID = 1.130;
 
 SYSTEMState rcState = PREINIT;
 //SYSTEMState previousSMAState = PREINIT;
@@ -169,10 +169,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_GPIO_WritePin(BuzzerGPIO, BuzzerPIN, 1);
   HAL_Delay(5000);
-  initMenuPages();
-  initMenuItems();
-  initBuzzerPatterns();
-  CheckButtons();
+
 
   QSPI_Init();
   flashInit();
@@ -184,23 +181,21 @@ int main(void)
 	  sprintf(terminalBuffer,"EEPROM1 Error, set default values");
 	  logData(terminalBuffer, true, false, false);
 	  ee_save1();
-
   }
+
+  initMenuPages();
+  initMenuItems();
+  initPopupMessages();
+  initBuzzerPatterns();
+  CheckButtons();
 
   rcState = INIT;
   rcLinkStatus.UplinkRSSIAnt1 = 0xFF;
   rcLinkStatus.UplinkRSSIAnt2 = 0xFF;
   tbsLink = NOSIGNAL;
-//  while (tbsLink == NOSIGNAL)
-//  {
-//	  sendChannelMessageToTBS();
-//	  updateRCState();
-//	  //TODO: show waiting for Unit connection
-//	  //Allow operator to override manually
-//  }
-
 
   printRCConfiguration(false);
+
   screenInit();
 
   screenClear();
@@ -212,7 +207,32 @@ int main(void)
 
   currentCursorPosition.cursorPosition = 0;
   currentCursorPosition.menuDepth = 0;
+  if (tbsLink == NOSIGNAL)
+  {
+	  memcpy(&popupToShow, &noConnectionMessage, sizeof(popupToShow));
+	  shouldRenderPopup = true;
+	  screenUpdate(false);
+	  while ( (tbsLink == NOSIGNAL) )
+	  {
+		  if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 1000) )
+		  {
+			  break;
+		  }
+		  if ( (popupToShow.isQuestion) && (okButtonPressDuration >= 1000) && (popupDrawDirection == DOWN))
+		  {
+			  break;
+		  }
+		  sendChannelMessageToTBS();
+		  updateRCState();
+		  CheckButtons();
+		  HAL_Delay(50);
+		  screenUpdate(false);
+	  }
 
+	  screenClear();
+	  setFullDisplay();
+	  screenUpdate(false);
+  }
   /* USER CODE END 2 */
 
   /* Infinite loop */

@@ -82,6 +82,9 @@
 #define HorizontalMenuRectangleWidth 114
 #define HorizontalMenuRectangleHeight 14
 
+#define HorizontalQuestionRectangleHeight 86
+#define HorizontalPopupRectangleHeight HorizontalQuestionRectangleHeight + HorizontalMenuRectangleHeight
+
 extern const unsigned char *previousBluetoothImage;
 extern const unsigned char *previousPlatformImage;
 extern const unsigned char *previousAutoPilotImage;
@@ -95,13 +98,23 @@ extern bool isMenuDisplayed;
 extern bool shouldClearScreen;
 extern bool shouldRenderItem;
 extern bool isItemDisplayed;
+extern bool isParameterUpdateRequired;
+extern bool shouldRenderPopup;
+extern bool isPopupDisplayed;
 
 extern uint32_t lastBITStatusChange;
 
+extern tUINT8_ITEM uint8Item;
 extern tUINT16_ITEM uint16Item;
+extern tUINT32_ITEM uint32Item;
+
+extern tSTRING_ITEM stringItem;
 
 extern MENUDRAWType menuDrawDirection;
 extern MENUDRAWType itemDrawDirection;
+extern MENUDRAWType popupDrawDirection;
+
+extern tPOPUP popupToShow;
 
 extern void screenInit(void);
 extern void screenClear(void);
@@ -109,6 +122,8 @@ extern void centeredString(uint16_t XCenterstart, uint16_t Ystart, const char * 
 extern void screenUpdate(bool drawDeltaImage);
 extern void drawMenu(bool clearScreen, MENUDRAWType howToDraw);
 extern void drawItem(bool clearScreen, MENUDRAWType howToDraw);
+extern void drawPopup(void);
+extern void setFullDisplay(void);
 
 
 #endif /* SRC_SCREENAGENT_H_ */

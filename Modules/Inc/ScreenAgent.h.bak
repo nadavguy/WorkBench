@@ -13,6 +13,9 @@
 #define iconWidth 24
 #define iconHeight 24
 
+#define HorizontalDisplayCenterWidth 80
+#define HorizontalDisplayCenterHeight 64
+
 #define HorizontalLogoX 0
 #define HorizontalLogoY 0
 
@@ -73,6 +76,12 @@
 #define HorizontalAltitudeText2X HorizontalAltitudeIconX - 5 + 24
 #define HorizontalAltitudeText2Y HorizontalSafeAirBatteryIconY + 2 + 12
 
+#define HorizontalMenuRectangleStartX 24
+#define HorizontalMenuRectangleStartY 12
+
+#define HorizontalMenuRectangleWidth 114
+#define HorizontalMenuRectangleHeight 14
+
 extern const unsigned char *previousBluetoothImage;
 extern const unsigned char *previousPlatformImage;
 extern const unsigned char *previousAutoPilotImage;
@@ -81,13 +90,25 @@ extern const unsigned char *previousSignalImage;
 extern const unsigned char *previousBatteryImage;
 
 extern bool shouldRenderBatteryPercent;
+extern bool shouldRenderMenu;
+extern bool isMenuDisplayed;
+extern bool shouldClearScreen;
+extern bool shouldRenderItem;
+extern bool isItemDisplayed;
 
 extern uint32_t lastBITStatusChange;
 
+extern tUINT16_ITEM uint16Item;
+
+extern MENUDRAWType menuDrawDirection;
+extern MENUDRAWType itemDrawDirection;
+
 extern void screenInit(void);
 extern void screenClear(void);
-extern void centeredString(uint16_t XCenterstart, uint16_t Ystart, const char * pString, uint16_t textColor, uint16_t backgroundColor);
+extern void centeredString(uint16_t XCenterstart, uint16_t Ystart, const char * pString, uint16_t textColor, uint16_t backgroundColor, uint8_t numberOfCharactersToClear);
 extern void screenUpdate(bool drawDeltaImage);
+extern void drawMenu(bool clearScreen, MENUDRAWType howToDraw);
+extern void drawItem(bool clearScreen, MENUDRAWType howToDraw);
 
 
 #endif /* SRC_SCREENAGENT_H_ */
