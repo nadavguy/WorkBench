@@ -52,6 +52,8 @@ extern "C" {
 #include "str_util.h"
 #include "TimeHelper.h"
 #include "MenuHelper.h"
+#include "ItemHelper.h"
+#include "PopupHelper.h"
 
 #include "LogAgent.h"
 #include "cmd_interp.h"
@@ -114,6 +116,9 @@ extern bool shouldReDrawAutoPilotIcon;
 extern bool shouldReDrawBluetoothIcon;
 extern bool shouldReDrawTriggerModeIcon;
 extern bool shouldClearDisplayedWarning;
+extern bool forceDisarmEnabled;
+extern bool formatSDEnabled;
+extern bool waitForAckResponse;
 
 extern SYSTEMConnectionStatus bluetoothConnection;
 
@@ -140,6 +145,8 @@ extern void updateRCState(void);
 #define GPIO_LeftButton_GPIO_Port GPIOE
 #define GPIO_RightButton_Pin GPIO_PIN_4
 #define GPIO_RightButton_GPIO_Port GPIOE
+#define GPIO_ArmButton_Pin GPIO_PIN_5
+#define GPIO_ArmButton_GPIO_Port GPIOE
 #define AntiTamper_Pin GPIO_PIN_13
 #define AntiTamper_GPIO_Port GPIOC
 #define GPIO_WakeUp_Pin GPIO_PIN_0
@@ -170,8 +177,6 @@ extern void updateRCState(void);
 #define GPIO_TriggerButton_GPIO_Port GPIOE
 #define GPIO_BLE___Reset_Pin GPIO_PIN_10
 #define GPIO_BLE___Reset_GPIO_Port GPIOE
-#define GPIO_ArmButton_Pin GPIO_PIN_11
-#define GPIO_ArmButton_GPIO_Port GPIOE
 #define USART_TX___TBS_Pin GPIO_PIN_14
 #define USART_TX___TBS_GPIO_Port GPIOB
 #define USART_RX___TBS_Pin GPIO_PIN_15

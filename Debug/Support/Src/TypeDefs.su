@@ -1,5 +1,5 @@
 TypeDefs.c:23:10:ee_validate_data	32	static
 TypeDefs.c:102:13:ee_set_start1	4	static
 TypeDefs.c:109:6:ee_init1	16	static
-TypeDefs.c:122:6:ee_save1	8	static
-TypeDefs.c:152:6:ee_erase_sector1	8	static
+TypeDefs.c:129:6:ee_save1	8	static
+TypeDefs.c:159:6:ee_erase_sector1	8	static

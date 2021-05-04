@@ -17,6 +17,7 @@
 uint8_t tbsRXArray[TBS_RX_BUFFER] = {0};
 uint8_t rcChannelsFrame[26] = {0};
 uint8_t tbsPingMessage[8] = {0}; //C8	4	0x28	0x00	0xEA	0x00	0xEA
+uint8_t safeairConfigurationFrame[29] = {0};
 
 uint8_t IdleMessageArray[26] = {0xC8, 0x18, 0x16, 0xAC, 0x60, 0x05, 0x2B, 0x58, 0xC1, 0x0A, 0x56, 0xB0, 0x82, 0x15, 0xAC, 0x60, 0x05, 0x2B, 0x58, 0xC1, 0x0A, 0x56, 0xB0, 0x82, 0x15, 0x5B};
 uint8_t TriggerMessageArray[26] = {0xC8, 0x18, 0x16, 0xA4, 0x26, 0x35, 0xA9, 0x49, 0x4D, 0x6A, 0x52, 0x93, 0x9A, 0xD4, 0xA4, 0x26, 0x35, 0xA9, 0x49, 0x4D, 0x6A, 0x52, 0x93, 0x9A, 0xD4, 0x64};
@@ -29,6 +30,9 @@ uint32_t lastLoggedLinkMessage = 0;
 uint32_t lastLoggedSafeAirStatusMessage = 0;
 uint32_t lastReceivedDroneDataMessage = 0;
 uint32_t lastReceivedLinkMessage = 0;
+uint32_t configurationMessageCounter = 0;
+uint32_t configurationMessageCounterReceived = 0;
+uint32_t lastConfigurationMessageSent = 0;
 
 bool isTBSDisconnected = false;
 
@@ -146,6 +150,7 @@ void sendChannelMessageToTBS(void)
 		HAL_UART_Receive_DMA(&TBS_UART, tbsRXArray,TBS_RX_BUFFER);
 		HAL_Delay(2);
 		parseTBSMessage();
+		sendSafeAirConfigurationMessage();
 //		char test[1024] = "";
 //		logData((char *)"TBS RX: ", true, true);
 //		for (int i = 0 ; i < 64 ; i ++)
@@ -238,7 +243,7 @@ bool parseTBSMessage(void)
 			rcLinkStatus.DownlinkRSSI = localRxArray[i + 10];
 			rcLinkStatus.DownlinkPSRLQ = localRxArray[i + 11];
 			rcLinkStatus.DownlinkSNR = localRxArray[i + 12];
-			i = i + 12;
+			i = i + 0x0c - 1;
 			localRet = true;
 			logRCLinkStatus(false);
 			lastReceivedLinkMessage = HAL_GetTick();
@@ -246,7 +251,7 @@ bool parseTBSMessage(void)
 		}
 		crc = crc8(&localRxArray[i + 2], 0x1B-1);
 		if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x1B) && (localRxArray[i + 2] == 0xDD) && (TBS_RX_BUFFER - i >= 0x1B)
-				&& (crc == localRxArray[i + 0x1B + 1]))
+				&& (crc == localRxArray[i + 0x1B + 1]) )
 		{
 			previousSmaStatus = currentSmaStatus;
 			previousBITStatus = displayWarning.BITStatus;
@@ -399,7 +404,19 @@ bool parseTBSMessage(void)
 		else if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x1B) && (localRxArray[i + 2] == 0xDD) && (TBS_RX_BUFFER - i >= 0x1B)
 				&& (crc != localRxArray[i + 0x1B + 1]))
 		{
-			int a= 1;
+//			i = i + 0x1B - 1;
+		}
+		crc = crc8(&localRxArray[i + 2], 0x06-1);
+		if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x06) && (localRxArray[i + 2] == 0xCA) && (TBS_RX_BUFFER - i >= 0x06)
+				&& (crc == localRxArray[i + 0x06 + 1]) )
+		{
+			configurationMessageCounterReceived = (uint32_t)((localRxArray[i + 3] << 24) + (localRxArray[i + 4] << 16) + (localRxArray[i + 5] << 8) + localRxArray[i + 6]);
+			i = i + 0x06 - 1;
+		}
+		else if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x06) && (localRxArray[i + 2] == 0xCA) && (TBS_RX_BUFFER - i >= 0x06)
+				&& (crc != localRxArray[i + 0x06 + 1]) )
+		{
+//			i = i + 0x06 - 1;
 		}
 		i++;
 	}
@@ -443,5 +460,47 @@ void createPingMessage(void)
 //		memset(test, 0, 1024);
 		memset(tbsRXArray, 0, 256);
 		Counter++;
+	}
+}
+
+void sendSafeAirConfigurationMessage(void)
+{
+	if ( (configurationMessageCounter != configurationMessageCounterReceived) && ( HAL_GetTick() - lastConfigurationMessageSent > 1000 ) )
+	{
+		safeairConfigurationFrame[0] = MODULE_ADDRESS; // Change to P2P value
+		safeairConfigurationFrame[1] = 0x1B; // len
+		safeairConfigurationFrame[2] = 0xDC; // OpCode
+		safeairConfigurationFrame[3] = (uint8_t)(((uint32_t)(configurationMessageCounter & 0xff000000))>>24); // Message ID Highest Byte
+		safeairConfigurationFrame[4] = (uint8_t)(((uint32_t)(configurationMessageCounter & 0x00ff0000))>>16);
+		safeairConfigurationFrame[5] = (uint8_t)(((uint32_t)(configurationMessageCounter & 0x0000ff00))>>8);
+		safeairConfigurationFrame[6] = (uint8_t)(((uint32_t)(configurationMessageCounter & 0x000000ff))); // Message ID Lowest Byte
+		safeairConfigurationFrame[7] = safeairConfiguration.armMode;
+		safeairConfigurationFrame[8] = safeairConfiguration.triggerMode;
+		safeairConfigurationFrame[9] = safeairConfiguration.platformType;
+		safeairConfigurationFrame[10] = safeairConfiguration.state;
+		safeairConfigurationFrame[11] = safeairConfiguration.forceDisarm;
+		safeairConfigurationFrame[12] = safeairConfiguration.formatSD;
+		safeairConfigurationFrame[13] = (uint8_t)((uint16_t)((safeairConfiguration.MTD) & 0xff00)>>8); // MTD High Byte
+		safeairConfigurationFrame[14] = (uint8_t)((uint16_t)((safeairConfiguration.MTD) & 0x00ff)); // MTD Low Byte
+		safeairConfigurationFrame[15] = 0x00; //
+		safeairConfigurationFrame[16] = 0x00; //
+		safeairConfigurationFrame[17] = 0x00; //
+		safeairConfigurationFrame[18] = 0x00; //
+		safeairConfigurationFrame[19] = 0x00; //
+		safeairConfigurationFrame[20] = 0x00; //
+		safeairConfigurationFrame[21] = 0x00; //
+		safeairConfigurationFrame[22] = 0x00; //
+		safeairConfigurationFrame[23] = 0x00; //
+		safeairConfigurationFrame[24] = 0x00; //
+		safeairConfigurationFrame[25] = 0x00; //
+		safeairConfigurationFrame[26] = 0x00; //
+		safeairConfigurationFrame[27] = 0x00; //
+		safeairConfigurationFrame[28] = crc8(&safeairConfigurationFrame[2], safeairConfigurationFrame[1]-1); //crc
+
+//		uint8_t len = tbsRXArray[1];
+//			uint8_t crc = crc8(&tbsRXArray[2], len-1);
+
+		HAL_UART_Transmit_IT(&TBS_UART, safeairConfigurationFrame, 29);
+		lastConfigurationMessageSent = HAL_GetTick();
 	}
 }

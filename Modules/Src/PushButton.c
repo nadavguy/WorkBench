@@ -167,6 +167,19 @@ void CheckButtons(void)
 		}
 	}
 
+	if ( (okPinState == GPIO_PIN_SET) /*&& (isPopupDisplayed)*/ )
+	{
+		lastOkButtonUnpress = HAL_GetTick();
+		okButtonPressDuration = 0;
+	}
+	else
+	{
+		if (HAL_GetTick() - lastOkButtonUnpress > 100)
+		{
+			okButtonPressDuration = HAL_GetTick() - lastOkButtonUnpress;
+		}
+	}
+
 	/* Act Upon Received Pattern */
 	if ( (armButtonIsHigh) && (triggerButtonIsHigh) )
 	{
@@ -378,21 +391,35 @@ void CheckButtons(void)
 				popupDrawDirection = UP;
 			}
 		}
-		if ( (okPinState == GPIO_PIN_SET) /*&& (isPopupDisplayed)*/ )
-		{
-			lastOkButtonUnpress = HAL_GetTick();
-			okButtonPressDuration = 0;
-		}
-		else
-		{
-			if (HAL_GetTick() - lastOkButtonUnpress > 100)
-			{
-				okButtonPressDuration = HAL_GetTick() - lastOkButtonUnpress;
-			}
-		}
+//		if ( (okPinState == GPIO_PIN_SET) /*&& (isPopupDisplayed)*/ )
+//		{
+//			lastOkButtonUnpress = HAL_GetTick();
+//			okButtonPressDuration = 0;
+//		}
+//		else
+//		{
+//			if (HAL_GetTick() - lastOkButtonUnpress > 100)
+//			{
+//				okButtonPressDuration = HAL_GetTick() - lastOkButtonUnpress;
+//			}
+//		}
 	}
 	else if ( (currentSmaStatus.smaState == ARMED) && (currentSmaStatus.smaState != TRIGGERED) )
 	{
 		//TODO: force disarm logic
+		if ( (!isPopupDisplayed) && (okButtonPressDuration > 1000) )
+		{
+			isPopupDisplayed = true;
+			shouldRenderPopup = true;
+			memcpy(&popupToShow, &safeairForceDisarmMessage, sizeof(popupToShow));
+			screenUpdate(false);
+		}
+//		if ( (isPopupDisplayed) && (okButtonPressDuration > 1000) )
+//		{
+//			isPopupDisplayed = true;
+//			shouldRenderPopup = true;
+//			memcpy(&popupToShow, &safeairForceDisarmMessage, sizeof(popupToShow));
+//			screenUpdate(false);
+//		}
 	}
 }

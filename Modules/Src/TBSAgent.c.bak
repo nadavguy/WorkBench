@@ -28,6 +28,9 @@ uint32_t lastCRSFChannelMessage = 0;
 uint32_t lastLoggedLinkMessage = 0;
 uint32_t lastLoggedSafeAirStatusMessage = 0;
 uint32_t lastReceivedDroneDataMessage = 0;
+uint32_t lastReceivedLinkMessage = 0;
+
+bool isTBSDisconnected = false;
 
 tRC_LINK rcLinkStatus;
 tSMA_Status previousSmaStatus;
@@ -238,6 +241,8 @@ bool parseTBSMessage(void)
 			i = i + 12;
 			localRet = true;
 			logRCLinkStatus(false);
+			lastReceivedLinkMessage = HAL_GetTick();
+			isTBSDisconnected = false;
 		}
 		crc = crc8(&localRxArray[i + 2], 0x1B-1);
 		if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x1B) && (localRxArray[i + 2] == 0xDD) && (TBS_RX_BUFFER - i >= 0x1B)

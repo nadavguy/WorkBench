@@ -18,6 +18,8 @@ tUINT16_ITEM brightnessItem;
 tSTRING_ITEM triggerModeItem;
 
 tPOPUP noConnectionMessage;
+tPOPUP safeairForceDisarmMessage;
+
 
 uint32_t itemIDtoUpdate = 0;
 
@@ -56,6 +58,15 @@ void initMenuPages(void)
 
 	pagesArray[1] = MainPage;
 	pagesArray[2] = TestPage;
+
+	safeairConfiguration.MTD = 0;
+	safeairConfiguration.armMode = 0;
+	safeairConfiguration.forceDisarm = 0;
+	safeairConfiguration.formatSD = 0;
+	safeairConfiguration.loggingMode = 0;
+	safeairConfiguration.platformType = 0;
+	safeairConfiguration.state = 0;
+	safeairConfiguration.triggerMode = 0;
 }
 
 void initMenuItems(void)
@@ -66,6 +77,7 @@ void initMenuItems(void)
 	brightnessItem.startValue = ee.backLight;
 	brightnessItem.deltaMultiplier = 1;
 	brightnessItem.numberOfItemsInPage = 6;
+	brightnessItem.parameterPointer = 0x00;
 	memcpy(&brightnessItem.itemsArray[0],"Brightness",strlen("Brightness"));
 	memcpy(&brightnessItem.itemsArray[1],"Units: [uSec]",strlen("Units: [uSec]"));
 	memcpy(&brightnessItem.itemsArray[2],"Value",strlen("Value"));
@@ -88,6 +100,7 @@ void initMenuItems(void)
 	triggerModeItem.numberOfValuesInArray = 2;
 	memcpy(&triggerModeItem.valuesArray[0],"Manual",strlen("Manual"));
 	memcpy(&triggerModeItem.valuesArray[1],"Auto  ",strlen("Auto  "));
+	triggerModeItem.parameterPointer = (uint32_t)&safeairConfiguration.triggerMode;
 }
 
 void initPopupMessages(void)
@@ -101,6 +114,16 @@ void initPopupMessages(void)
 	memcpy(&noConnectionMessage.itemsArray[3],"be overwritten",strlen("be overwritten"));
 	memcpy(&noConnectionMessage.itemsArray[4],"Cancel",strlen("Cancel"));
 	memcpy(&noConnectionMessage.itemsArray[5],"OK (Long Press)",strlen("OK (Long Press)"));
+
+	safeairForceDisarmMessage.popupID = 2;
+	safeairForceDisarmMessage.numberOfItemsInPopup = 5;
+	safeairForceDisarmMessage.isQuestion = true;
+	memcpy(&safeairForceDisarmMessage.itemsArray[0],"Force Disarm",strlen("Force Disarm"));
+	memcpy(&safeairForceDisarmMessage.itemsArray[1],"SafeAir unit?,",strlen("SafeAir unit?"));
+	memcpy(&safeairForceDisarmMessage.itemsArray[2],"Are you sure?",strlen("Are you sure?"));
+//	memcpy(&safeairForceDisarmMessage.itemsArray[3],"be overwritten",strlen("be overwritten"));
+	memcpy(&safeairForceDisarmMessage.itemsArray[3],"Cancel",strlen("Cancel"));
+	memcpy(&safeairForceDisarmMessage.itemsArray[4],"OK (Long Press)",strlen("OK (Long Press)"));
 }
 
 void updateSelection(void)
@@ -118,6 +141,7 @@ void updateSelection(void)
 		shouldRedrawBatteryIcon = true;
 		shouldUpdatePlatformText = true;
 		shouldUpdateStatusText = true;
+		setFullDisplay();
 		screenClear();
 		screenUpdate(false);
 	}
@@ -179,8 +203,18 @@ void updateSelection(void)
 		else if ( (currentCursorPosition.cursorPosition == 0x05)
 				&& (currentCursorPosition.currentPageID == 0x00) && (isMenuDisplayed) && (!isItemDisplayed) )
 		{
-			memcpy((uint32_t *)pagesArray[currentCursorPosition.previousPageID[currentCursorPosition.menuDepth -1]].
-					nextCellIDArray[currentCursorPosition.previousPageCursorPosition[currentCursorPosition.menuDepth -1]], &uint16Item,  sizeof(tUINT16_ITEM));
+			if ( pagesArray[currentCursorPosition.previousPageID[currentCursorPosition.menuDepth - 1]].
+					cellTypeArray[currentCursorPosition.previousPageCursorPosition[currentCursorPosition.menuDepth - 1]] == UINT16_ITEM )
+			{
+				memcpy((uint32_t *)pagesArray[currentCursorPosition.previousPageID[currentCursorPosition.menuDepth -1]].
+						nextCellIDArray[currentCursorPosition.previousPageCursorPosition[currentCursorPosition.menuDepth -1]], &uint16Item,  sizeof(tUINT16_ITEM));
+			}
+			else if (pagesArray[currentCursorPosition.previousPageID[currentCursorPosition.menuDepth - 1]].
+					cellTypeArray[currentCursorPosition.previousPageCursorPosition[currentCursorPosition.menuDepth - 1]] == STRING_ITEM)
+			{
+				memcpy((uint32_t *)pagesArray[currentCursorPosition.previousPageID[currentCursorPosition.menuDepth -1]].
+						nextCellIDArray[currentCursorPosition.previousPageCursorPosition[currentCursorPosition.menuDepth -1]], &stringItem,  sizeof(tSTRING_ITEM));
+			}
 			currentCursorPosition.cursorPosition = currentCursorPosition.previousPageCursorPosition[currentCursorPosition.menuDepth -1];
 			currentCursorPosition.currentPageID = currentCursorPosition.previousPageID[currentCursorPosition.menuDepth - 1];
 			currentCursorPosition.menuDepth--;
@@ -204,5 +238,9 @@ void updateSelectedParameter(void)
 	else if (itemIDtoUpdate == 2)
 	{
 		//Send to Sma - How to Block if SMA not connected
+		safeairConfiguration.triggerMode = stringItem.startValue + 1;
+//		sendSafeAirConfigurationMessage();
+		configurationMessageCounter++;
+//		memset(stringItem, 0, sizeof(stringItem));
 	}
 }

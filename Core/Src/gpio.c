@@ -59,15 +59,21 @@ void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOE, GPIO_BLE___AppOrConfig_Pin|GPIO_BLE___Reset_Pin|GPIO_Buzzer_Pin|GPIO_ChargeEN_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : PEPin PEPin PEPin PEPin */
-  GPIO_InitStruct.Pin = GPIO_LeftButton_Pin|GPIO_RightButton_Pin|GPIO_TriggerButton_Pin|GPIO_ArmButton_Pin;
+  /*Configure GPIO pins : PEPin PEPin PEPin */
+  GPIO_InitStruct.Pin = GPIO_LeftButton_Pin|GPIO_RightButton_Pin|GPIO_TriggerButton_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PE5 PE6 PE7 PE12
+  /*Configure GPIO pin : PtPin */
+  GPIO_InitStruct.Pin = GPIO_ArmButton_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIO_ArmButton_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PE6 PE7 PE11 PE12
                            PE13 PE14 PE15 */
-  GPIO_InitStruct.Pin = GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_12
+  GPIO_InitStruct.Pin = GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_11|GPIO_PIN_12
                           |GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_NOPULL;

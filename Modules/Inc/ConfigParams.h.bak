@@ -12,13 +12,13 @@ typedef struct sEE_DATA
 {
 //	float vibration;
 //	uint8_t vibrationRelevatAxis;
-	uint8_t debugLevel;
 	uint16_t armPWMOffValue;
 	uint16_t armPWMOnValue;
 	uint16_t triggerPWMOffValue;
 	uint16_t triggerPWMOnValue;
-	uint8_t linkType;
 	uint16_t backLight;
+	uint8_t linkType;
+	uint8_t debugLevel;
 }tEE_DATA;
 
 extern tEE_DATA ee;

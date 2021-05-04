@@ -54,6 +54,8 @@ MENUDRAWType popupDrawDirection = FULL;
 
 tPOPUP popupToShow;
 
+uint8_t testImage[40960] = {0xFF};
+
 void screenInit(void)
 {
 	DEV_Module_Init();
@@ -671,7 +673,7 @@ void screenUpdate(bool drawDeltaImage)
 
 		if ( (shouldRenderBatteryPercent) || (HAL_GetTick() - lastBatteryRefresh > 60000) ) //|| (lastBatteryRefresh == 0)
 		{
-			renderSafeAirBatteryPercent();
+//			renderSafeAirBatteryPercent();
 			//	  Paint_DrawString_EN(HorizontalAltitudeText1X, HorizontalAltitudeText1Y, "Alt[m]", &Font8, WHITE, BLACK);
 			//TODO: Clear text before updating, generate value dynamically
 			//	  Paint_DrawString_EN(HorizontalAltitudeText2X, HorizontalAltitudeText2Y, "999.9", &Font8, WHITE, BLACK);
@@ -850,4 +852,20 @@ void setFullDisplay(void)
 	shouldRenderPopup = false;
 	shouldRenderItem = false;
 	shouldRenderMenu = false;
+}
+
+void updateNextFrame(void)
+{
+		memset(testImage,0xFF,40960);
+		for (int i = 0 ; i < 128 ; i++)
+		{
+			memcpy(&testImage[320 * i + 32], &gImage_Logo[256 * i], 256);
+		}
+
+	//	for (int i = 0 ; i < 128 ; i++)
+	//	{
+	////		LCD_1IN8_SetCursor (0, i);
+	//		HAL_SPI_Transmit(&DEV_SPI, (uint8_t *)&testImage[320 * (i)], 320, 1500);
+	//	}
+		HAL_SPI_Transmit(&DEV_SPI, (uint8_t *)testImage, 40960, 1500);
 }

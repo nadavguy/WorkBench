@@ -76,7 +76,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.130;
+float buildID = 1.140;
 
 SYSTEMState rcState = PREINIT;
 //SYSTEMState previousSMAState = PREINIT;
@@ -98,6 +98,9 @@ bool shouldReDrawAutoPilotIcon = true;
 bool shouldReDrawBluetoothIcon = true;
 bool shouldReDrawTriggerModeIcon = true;
 bool shouldClearDisplayedWarning = true;
+bool forceDisarmEnabled = false;
+bool formatSDEnabled = false;
+bool waitForAckResponse = false;
 
 
 SYSTEMConnectionStatus bluetoothConnection = DISCONNECTED;
@@ -210,28 +213,29 @@ int main(void)
   if (tbsLink == NOSIGNAL)
   {
 	  memcpy(&popupToShow, &noConnectionMessage, sizeof(popupToShow));
-	  shouldRenderPopup = true;
-	  screenUpdate(false);
-	  while ( (tbsLink == NOSIGNAL) )
-	  {
-		  if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 1000) )
-		  {
-			  break;
-		  }
-		  if ( (popupToShow.isQuestion) && (okButtonPressDuration >= 1000) && (popupDrawDirection == DOWN))
-		  {
-			  break;
-		  }
-		  sendChannelMessageToTBS();
-		  updateRCState();
-		  CheckButtons();
-		  HAL_Delay(50);
-		  screenUpdate(false);
-	  }
-
-	  screenClear();
-	  setFullDisplay();
-	  screenUpdate(false);
+	  waitForPopupInput();
+//	  shouldRenderPopup = true;
+//	  screenUpdate(false);
+//	  while ( (tbsLink == NOSIGNAL) )
+//	  {
+//		  if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 1000) )
+//		  {
+//			  break;
+//		  }
+//		  if ( (popupToShow.isQuestion) && (okButtonPressDuration >= 1000) && (popupDrawDirection == DOWN))
+//		  {
+//			  break;
+//		  }
+//		  sendChannelMessageToTBS();
+//		  updateRCState();
+//		  CheckButtons();
+//		  HAL_Delay(1);
+//		  screenUpdate(false);
+//	  }
+//
+//	  screenClear();
+//	  setFullDisplay();
+//	  screenUpdate(false);
   }
   /* USER CODE END 2 */
 
@@ -240,6 +244,7 @@ int main(void)
   while (1)
   {
 	  CheckButtons();
+	  waitForPopupInput();
 	  sendChannelMessageToTBS();
 	  //TODO: Backward compatibility of SafeAir unit with old FW
 	  // if there is telemetry messages without 0xDD message
