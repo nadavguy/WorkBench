@@ -58,7 +58,7 @@ static void LCD_1IN8_WriteData_16Bit(uint16_t Data)
     //LCD_1IN8_CS_1;
 }*/
 
-void LCD_1IN8_WriteData_NLen16Bit(uint16_t Data,uint32_t DataLen)
+static void LCD_1IN8_WriteData_NLen16Bit(uint16_t Data,uint32_t DataLen)
 {
     uint32_t i;
     LCD_1IN8_DC_1;
@@ -181,15 +181,12 @@ void LCD_1IN8_SetGramScanWay(LCD_1IN8_SCAN_DIR Scan_dir)
     sLCD_1IN8_DIS.LCD_1IN8_Scan_Dir = Scan_dir;
 
 	//Get GRAM and LCD width and height
-	if(Scan_dir == L2R_U2D || Scan_dir == L2R_D2U || Scan_dir == R2L_U2D || Scan_dir == R2L_D2U)
-	{
+	if(Scan_dir == L2R_U2D || Scan_dir == L2R_D2U || Scan_dir == R2L_U2D || Scan_dir == R2L_D2U){
 		sLCD_1IN8_DIS.LCD_1IN8_Dis_Column	= LCD_1IN8_HEIGHT ;
-		sLCD_1IN8_DIS.LCD_1IN8_Dis_Page = LCD_1IN8_WIDTH ;
+		sLCD_1IN8_DIS.LCD_1IN8_Dis_Page = LCD_1IN8_WIDTH ;		
 		sLCD_1IN8_DIS.LCD_1IN8_X_Adjust = LCD_1IN8_X;
 		sLCD_1IN8_DIS.LCD_1IN8_Y_Adjust = LCD_1IN8_Y;
-	}
-	else
-	{
+	}else{
 		sLCD_1IN8_DIS.LCD_1IN8_Dis_Column	= LCD_1IN8_WIDTH ;
 		sLCD_1IN8_DIS.LCD_1IN8_Dis_Page = LCD_1IN8_HEIGHT ;	
 		sLCD_1IN8_DIS.LCD_1IN8_X_Adjust = LCD_1IN8_Y;
@@ -316,18 +313,9 @@ parameter:
 ********************************************************************************/
 void LCD_1IN8_DrawPaint ( POINT Xpoint, POINT Ypoint, COLOR Color )
 {
-    if ( ( Xpoint <= sLCD_1IN8_DIS.LCD_1IN8_Dis_Column ) && ( Ypoint <= sLCD_1IN8_DIS.LCD_1IN8_Dis_Page ) )
-    {
-    	if (!renderCompleteFrame)
-    	{
-    		LCD_1IN8_SetCursor (Xpoint, Ypoint);
-    		LCD_1IN8_SetColor ( Color , 1 , 1);
-    	}
-    	else
-    	{
-    		nextFrameToDraw[(SCREEN_WIDTH * Ypoint + Xpoint) * 2] = (uint8_t)((Color & 0xFF00) >> 8 );
-    		nextFrameToDraw[(SCREEN_WIDTH * Ypoint + Xpoint) * 2 + 1] = (uint8_t)((Color & 0x00FF));
-    	}
+    if ( ( Xpoint <= sLCD_1IN8_DIS.LCD_1IN8_Dis_Column ) && ( Ypoint <= sLCD_1IN8_DIS.LCD_1IN8_Dis_Page ) ) {
+        LCD_1IN8_SetCursor (Xpoint, Ypoint);
+        LCD_1IN8_SetColor ( Color , 1 , 1);
     }
 }
 
@@ -355,11 +343,11 @@ function:
 void LCD_1IN8_Clear(COLOR  Color)
 {
     UWORD i,j;
-    LCD_1IN8_SetWindows(0, 0, sLCD_1IN8_DIS.LCD_1IN8_Dis_Column, sLCD_1IN8_DIS.LCD_1IN8_Dis_Page);
+    LCD_1IN8_SetWindows(0, 0, LCD_1IN8_WIDTH, LCD_1IN8_HEIGHT);
     LCD_1IN8_DC_1;
-    for(i=0;i<sLCD_1IN8_DIS.LCD_1IN8_Dis_Column;i++)
+    for(i=0;i<LCD_1IN8_HEIGHT;i++)
 	{
-		for(j=0;j<sLCD_1IN8_DIS.LCD_1IN8_Dis_Page;j++)
+		for(j=0;j<LCD_1IN8_WIDTH;j++)
 		{
 			//LCD_1IN8_WriteData_NLen16Bit(Image[i*LCD_1IN8_WIDTH+j],1);
 			DEV_SPI_WRITE( (uint8_t)(Color & 0XFF) );

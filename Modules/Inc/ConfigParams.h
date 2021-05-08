@@ -19,6 +19,7 @@ typedef struct sEE_DATA
 	uint16_t backLight;
 	uint8_t linkType;
 	uint8_t debugLevel;
+	uint8_t screenOreintation;
 }tEE_DATA;
 
 
@@ -45,6 +46,7 @@ extern tEEV_U16 EEV_TriggerPWMOffValue;
 extern tEEV_U16 EEV_TriggerPWMOnValue;
 extern tEEV_U08 EEV_LinkType;
 extern tEEV_U16 EEV_Backlight;
+extern tEEV_U08 EEV_ScreenOrientation;
 
 extern bool ee_validate1(void);
 

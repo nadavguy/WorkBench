@@ -27,7 +27,7 @@ void updateUint8Item(MENUDRAWType howToDraw)
 					HorizontalMenuRectangleStartX+HorizontalMenuRectangleWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i + 1),
 					BLACK, DOT_PIXEL_1X1, DRAW_FILL_EMPTY );
 			centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
-					uint8Item.itemsArray[i], BLACK, WHITE, 16, Font12);
+					uint8Item.itemsArray[i], BLACK, WHITE, 16);
 		}
 		if ( (i >= 2) && (i < uint8Item.numberOfItemsInPage - 2) )
 		{
@@ -230,12 +230,12 @@ void updateUint8Item(MENUDRAWType howToDraw)
 				if (currentCursorPosition.cursorPosition == i)
 				{
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
-							uint8Item.itemsArray[i], BLACK, LGRAY, 16, Font12);
+							uint8Item.itemsArray[i], BLACK, LGRAY, 16);
 				}
 				else
 				{
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
-							uint8Item.itemsArray[i], BLACK, WHITE, 16, Font12);
+							uint8Item.itemsArray[i], BLACK, WHITE, 16);
 				}
 			}
 			else if (howToDraw == DOWN)
@@ -243,7 +243,7 @@ void updateUint8Item(MENUDRAWType howToDraw)
 				if ( (currentCursorPosition.cursorPosition == 4) && (i == 4) )
 				{
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
-							uint8Item.itemsArray[i], BLACK, LGRAY, 16, Font12);
+							uint8Item.itemsArray[i], BLACK, LGRAY, 16);
 				}
 				else if ( (currentCursorPosition.cursorPosition == 5) && (i == 5) )
 				{
@@ -252,9 +252,9 @@ void updateUint8Item(MENUDRAWType howToDraw)
 							HorizontalDisplayCenterWidth + strlen(uint8Item.itemsArray[i - 1]) * Font12.Width,
 							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1 + Font12.Height, WHITE);
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1,
-							uint8Item.itemsArray[(i - 1)], BLACK, WHITE, 16, Font12);
+							uint8Item.itemsArray[(i - 1)], BLACK, WHITE, 16);
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
-							uint8Item.itemsArray[i], BLACK, LGRAY, 16, Font12);
+							uint8Item.itemsArray[i], BLACK, LGRAY, 16);
 				}
 			}
 			else if (howToDraw == UP)
@@ -266,7 +266,7 @@ void updateUint8Item(MENUDRAWType howToDraw)
 							HorizontalDisplayCenterWidth + strlen(uint8Item.itemsArray[i]) * Font12.Width /2,
 							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-							uint8Item.itemsArray[(i)], BLACK, WHITE, 16, Font12);
+							uint8Item.itemsArray[(i)], BLACK, WHITE, 16);
 					//						centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
 					//								uint16Item.itemsArray[i], BLACK, LGRAY, 16);
 				}
@@ -277,9 +277,9 @@ void updateUint8Item(MENUDRAWType howToDraw)
 							HorizontalDisplayCenterWidth + strlen(uint8Item.itemsArray[i]) * Font12.Width /2,
 							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-							uint8Item.itemsArray[(i)], BLACK, WHITE, 16, Font12);
+							uint8Item.itemsArray[(i)], BLACK, WHITE, 16);
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1,
-							uint8Item.itemsArray[i - 1], BLACK, LGRAY, 16, Font12);
+							uint8Item.itemsArray[i - 1], BLACK, LGRAY, 16);
 				}
 			}
 		}
@@ -296,7 +296,7 @@ void updateUint16Item(MENUDRAWType howToDraw)
 					HorizontalMenuRectangleStartX+HorizontalMenuRectangleWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i + 1),
 					BLACK, DOT_PIXEL_1X1, DRAW_FILL_EMPTY );
 			centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
-					uint16Item.itemsArray[i], BLACK, WHITE, 16, Font12);
+					uint16Item.itemsArray[i], BLACK, WHITE, 16);
 		}
 		if ( (i >= 2) && (i < uint16Item.numberOfItemsInPage - 2) )
 		{
@@ -525,12 +525,12 @@ void updateUint16Item(MENUDRAWType howToDraw)
 				if (currentCursorPosition.cursorPosition == i)
 				{
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
-							uint16Item.itemsArray[i], BLACK, LGRAY, 16, Font12);
+							uint16Item.itemsArray[i], BLACK, LGRAY, 16);
 				}
 				else
 				{
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
-							uint16Item.itemsArray[i], BLACK, WHITE, 16, Font12);
+							uint16Item.itemsArray[i], BLACK, WHITE, 16);
 				}
 			}
 			else if (howToDraw == DOWN)
@@ -538,7 +538,7 @@ void updateUint16Item(MENUDRAWType howToDraw)
 				if ( (currentCursorPosition.cursorPosition == 4) && (i == 4) )
 				{
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
-							uint16Item.itemsArray[i], BLACK, LGRAY, 16, Font12);
+							uint16Item.itemsArray[i], BLACK, LGRAY, 16);
 				}
 				else if ( (currentCursorPosition.cursorPosition == 5) && (i == 5) )
 				{
@@ -547,9 +547,9 @@ void updateUint16Item(MENUDRAWType howToDraw)
 							HorizontalDisplayCenterWidth + strlen(uint16Item.itemsArray[i - 1]) * Font12.Width,
 							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1 + Font12.Height, WHITE);
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1,
-							uint16Item.itemsArray[(i - 1)], BLACK, WHITE, 16, Font12);
+							uint16Item.itemsArray[(i - 1)], BLACK, WHITE, 16);
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
-							uint16Item.itemsArray[i], BLACK, LGRAY, 16, Font12);
+							uint16Item.itemsArray[i], BLACK, LGRAY, 16);
 				}
 			}
 			else if (howToDraw == UP)
@@ -561,7 +561,7 @@ void updateUint16Item(MENUDRAWType howToDraw)
 							HorizontalDisplayCenterWidth + strlen(uint16Item.itemsArray[i]) * Font12.Width /2,
 							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-							uint16Item.itemsArray[(i)], BLACK, WHITE, 16, Font12);
+							uint16Item.itemsArray[(i)], BLACK, WHITE, 16);
 					//						centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
 					//								uint16Item.itemsArray[i], BLACK, LGRAY, 16);
 				}
@@ -572,9 +572,9 @@ void updateUint16Item(MENUDRAWType howToDraw)
 							HorizontalDisplayCenterWidth + strlen(uint16Item.itemsArray[i]) * Font12.Width /2,
 							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-							uint16Item.itemsArray[(i)], BLACK, WHITE, 16, Font12);
+							uint16Item.itemsArray[(i)], BLACK, WHITE, 16);
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1,
-							uint16Item.itemsArray[i - 1], BLACK, LGRAY, 16, Font12);
+							uint16Item.itemsArray[i - 1], BLACK, LGRAY, 16);
 				}
 			}
 		}
@@ -591,7 +591,7 @@ void updateUint32Item(MENUDRAWType howToDraw)
 					HorizontalMenuRectangleStartX+HorizontalMenuRectangleWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i + 1),
 					BLACK, DOT_PIXEL_1X1, DRAW_FILL_EMPTY );
 			centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
-					uint32Item.itemsArray[i], BLACK, WHITE, 16, Font12);
+					uint32Item.itemsArray[i], BLACK, WHITE, 16);
 		}
 		if ( (i >= 2) && (i < uint32Item.numberOfItemsInPage - 2) )
 		{
@@ -796,12 +796,12 @@ void updateUint32Item(MENUDRAWType howToDraw)
 				if (currentCursorPosition.cursorPosition == i)
 				{
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
-							uint32Item.itemsArray[i], BLACK, LGRAY, 16, Font12);
+							uint32Item.itemsArray[i], BLACK, LGRAY, 16);
 				}
 				else
 				{
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
-							uint32Item.itemsArray[i], BLACK, WHITE, 16, Font12);
+							uint32Item.itemsArray[i], BLACK, WHITE, 16);
 				}
 			}
 			else if (howToDraw == DOWN)
@@ -809,7 +809,7 @@ void updateUint32Item(MENUDRAWType howToDraw)
 				if ( (currentCursorPosition.cursorPosition == 4) && (i == 4) )
 				{
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
-							uint32Item.itemsArray[i], BLACK, LGRAY, 16, Font12);
+							uint32Item.itemsArray[i], BLACK, LGRAY, 16);
 				}
 				else if ( (currentCursorPosition.cursorPosition == 5) && (i == 5) )
 				{
@@ -818,9 +818,9 @@ void updateUint32Item(MENUDRAWType howToDraw)
 							HorizontalDisplayCenterWidth + strlen(uint32Item.itemsArray[i - 1]) * Font12.Width,
 							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1 + Font12.Height, WHITE);
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1,
-							uint32Item.itemsArray[(i - 1)], BLACK, WHITE, 16, Font12);
+							uint32Item.itemsArray[(i - 1)], BLACK, WHITE, 16);
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
-							uint32Item.itemsArray[i], BLACK, LGRAY, 16, Font12);
+							uint32Item.itemsArray[i], BLACK, LGRAY, 16);
 				}
 			}
 			else if (howToDraw == UP)
@@ -832,7 +832,7 @@ void updateUint32Item(MENUDRAWType howToDraw)
 							HorizontalDisplayCenterWidth + strlen(uint32Item.itemsArray[i]) * Font12.Width /2,
 							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-							uint32Item.itemsArray[(i)], BLACK, WHITE, 16, Font12);
+							uint32Item.itemsArray[(i)], BLACK, WHITE, 16);
 					//						centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
 					//								uint16Item.itemsArray[i], BLACK, LGRAY, 16);
 				}
@@ -843,9 +843,9 @@ void updateUint32Item(MENUDRAWType howToDraw)
 							HorizontalDisplayCenterWidth + strlen(uint32Item.itemsArray[i]) * Font12.Width /2,
 							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-							uint32Item.itemsArray[(i)], BLACK, WHITE, 16, Font12);
+							uint32Item.itemsArray[(i)], BLACK, WHITE, 16);
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1,
-							uint32Item.itemsArray[i - 1], BLACK, LGRAY, 16, Font12);
+							uint32Item.itemsArray[i - 1], BLACK, LGRAY, 16);
 				}
 			}
 		}
@@ -862,7 +862,7 @@ void updateStringItem(MENUDRAWType howToDraw)
 					HorizontalMenuRectangleStartX+HorizontalMenuRectangleWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i + 1),
 					BLACK, DOT_PIXEL_1X1, DRAW_FILL_EMPTY );
 			centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
-					stringItem.itemsArray[i], BLACK, WHITE, 16, Font12);
+					stringItem.itemsArray[i], BLACK, WHITE, 16);
 		}
 		if ( (i >= 2) && (i < stringItem.numberOfItemsInPage - 2) )
 		{
@@ -1052,12 +1052,12 @@ void updateStringItem(MENUDRAWType howToDraw)
 				if (currentCursorPosition.cursorPosition == i)
 				{
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
-							stringItem.itemsArray[i], BLACK, LGRAY, 16, Font12);
+							stringItem.itemsArray[i], BLACK, LGRAY, 16);
 				}
 				else
 				{
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
-							stringItem.itemsArray[i], BLACK, WHITE, 16, Font12);
+							stringItem.itemsArray[i], BLACK, WHITE, 16);
 				}
 			}
 			else if (howToDraw == DOWN)
@@ -1065,7 +1065,7 @@ void updateStringItem(MENUDRAWType howToDraw)
 				if ( (currentCursorPosition.cursorPosition == 4) && (i == 4) )
 				{
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
-							stringItem.itemsArray[i], BLACK, LGRAY, 16, Font12);
+							stringItem.itemsArray[i], BLACK, LGRAY, 16);
 				}
 				else if ( (currentCursorPosition.cursorPosition == 5) && (i == 5) )
 				{
@@ -1074,9 +1074,9 @@ void updateStringItem(MENUDRAWType howToDraw)
 							HorizontalDisplayCenterWidth + strlen(stringItem.itemsArray[i - 1]) * Font12.Width,
 							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1 + Font12.Height, WHITE);
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1,
-							stringItem.itemsArray[(i - 1)], BLACK, WHITE, 16, Font12);
+							stringItem.itemsArray[(i - 1)], BLACK, WHITE, 16);
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
-							stringItem.itemsArray[i], BLACK, LGRAY, 16, Font12);
+							stringItem.itemsArray[i], BLACK, LGRAY, 16);
 				}
 			}
 			else if (howToDraw == UP)
@@ -1088,7 +1088,7 @@ void updateStringItem(MENUDRAWType howToDraw)
 							HorizontalDisplayCenterWidth + strlen(stringItem.itemsArray[i]) * Font12.Width /2,
 							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-							stringItem.itemsArray[(i)], BLACK, WHITE, 16, Font12);
+							stringItem.itemsArray[(i)], BLACK, WHITE, 16);
 					//						centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
 					//								uint16Item.itemsArray[i], BLACK, LGRAY, 16);
 				}
@@ -1099,9 +1099,9 @@ void updateStringItem(MENUDRAWType howToDraw)
 							HorizontalDisplayCenterWidth + strlen(stringItem.itemsArray[i]) * Font12.Width /2,
 							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-							stringItem.itemsArray[(i)], BLACK, WHITE, 16, Font12);
+							stringItem.itemsArray[(i)], BLACK, WHITE, 16);
 					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1,
-							stringItem.itemsArray[i - 1], BLACK, LGRAY, 16, Font12);
+							stringItem.itemsArray[i - 1], BLACK, LGRAY, 16);
 				}
 			}
 		}

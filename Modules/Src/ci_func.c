@@ -182,6 +182,30 @@ eCI_RESULT func_importFile(void)
 	  return CI_OK;
 }
 
+eCI_RESULT func_screenOrientation(void)
+{
+	if (get_param_count() > 0)
+	{
+		if ( (get_param_int(0) <= 1) && (get_param_int(0) >= 0) )
+		{
+			ee.screenOreintation = get_param_int(0);
+			ee_save1();
+			screenInit();
+			setFullDisplay();
+		}
+
+		if (ee.screenOreintation == 0)
+		{
+			logData("Screen orientation set to Landscape", false, false, false);
+		}
+		else
+		{
+			logData("Screen orientation set to Portrait", false, false, false);
+		}
+	}
+	return CI_OK;
+}
+
 eCI_RESULT func_dir(void)
 {
     FILINFO fno1;
@@ -238,6 +262,7 @@ functionsList cases [] =
 		{ "bklt", func_backLight },
 		{ "msc", func_massStorage },
 		{ "imp", func_importFile },
+		{ "scor", func_screenOrientation },
 		{ "dir" , func_dir },
 		{ "fmt" , func_fmt }
 };

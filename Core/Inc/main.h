@@ -54,6 +54,8 @@ extern "C" {
 #include "MenuHelper.h"
 #include "ItemHelper.h"
 #include "PopupHelper.h"
+#include "FrameHelper.h"
+#include "fonts.h"
 
 #include "LogAgent.h"
 #include "cmd_interp.h"
@@ -119,9 +121,11 @@ extern bool shouldClearDisplayedWarning;
 extern bool forceDisarmEnabled;
 extern bool formatSDEnabled;
 extern bool waitForAckResponse;
+extern bool shouldRedrawSafeAirBatteryIcon;
 
 extern SYSTEMConnectionStatus bluetoothConnection;
 
+extern SIGNALStrength batteryStrength;
 extern SIGNALStrength tbsLink;
 
 extern SYSTEMState rcState;

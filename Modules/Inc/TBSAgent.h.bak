@@ -93,6 +93,9 @@ extern uint16_t previousBITStatus;
 extern uint32_t lastCRSFChannelMessage;
 extern uint32_t lastLoggedLinkMessage;
 extern uint32_t lastReceivedLinkMessage;
+extern uint32_t configurationMessageCounter;
+extern uint32_t configurationMessageCounterReceived;
+extern uint32_t lastConfigurationMessageSent;
 
 extern bool isTBSDisconnected;
 
@@ -108,6 +111,7 @@ uint8_t crc8(const uint8_t *ptr, uint32_t len);
 uint8_t createCrossfireChannelsFrame(uint8_t * frame, int16_t * pulses);
 bool parseTBSMessage(void);
 extern void createPingMessage(void);
+extern void sendSafeAirConfigurationMessage(void);
 
 
 #endif /* INC_TBSAGENT_H_ */

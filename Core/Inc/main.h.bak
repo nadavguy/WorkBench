@@ -52,6 +52,8 @@ extern "C" {
 #include "str_util.h"
 #include "TimeHelper.h"
 #include "MenuHelper.h"
+#include "ItemHelper.h"
+#include "PopupHelper.h"
 
 #include "LogAgent.h"
 #include "cmd_interp.h"
@@ -114,6 +116,9 @@ extern bool shouldReDrawAutoPilotIcon;
 extern bool shouldReDrawBluetoothIcon;
 extern bool shouldReDrawTriggerModeIcon;
 extern bool shouldClearDisplayedWarning;
+extern bool forceDisarmEnabled;
+extern bool formatSDEnabled;
+extern bool waitForAckResponse;
 
 extern SYSTEMConnectionStatus bluetoothConnection;
 

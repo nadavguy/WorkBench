@@ -36,6 +36,8 @@ uint32_t lastConfigurationMessageSent = 0;
 
 bool isTBSDisconnected = false;
 
+char safeAirTailID[11] = "";
+
 tRC_LINK rcLinkStatus;
 tSMA_Status previousSmaStatus;
 tSMA_Status currentSmaStatus;
@@ -266,7 +268,8 @@ bool parseTBSMessage(void)
 //			abs(previousSmaStatus.batteryVoltage - currentSmaStatus.batteryVoltage) > 0.05 ) && (HAL_GetTick() - lastBatteryRefresh > 30000)
 			if (abs(previousSmaStatus.batteryVoltage - currentSmaStatus.batteryVoltage) > 0.05 )
 			{
-				shouldRenderBatteryPercent = true;
+//				shouldRenderBatteryPercent = true;
+				shouldRedrawSafeAirBatteryIcon = true;
 			}
 
 			if (localRxArray[i + 12] == 1)
@@ -275,26 +278,34 @@ bool parseTBSMessage(void)
 			}
 			else if (localRxArray[i + 12] == 2)
 			{
-				currentSmaStatus.smaPlatfom = M300;
+				currentSmaStatus.smaPlatformName = M300;
 			}
 			else if (localRxArray[i + 12] == 3)
 			{
-				currentSmaStatus.smaPlatfom = M600;
+				currentSmaStatus.smaPlatformName = M600;
 			}
 			else if (localRxArray[i + 12] == 4)
 			{
-				currentSmaStatus.smaPlatfom = PHANTOM;
+				currentSmaStatus.smaPlatformName = PHANTOM;
 			}
 			else if (localRxArray[i + 12] == 5)
 			{
-				currentSmaStatus.smaPlatfom = MAVICK;
+				currentSmaStatus.smaPlatformName = MAVIC;
 			}
 
 			if (localRxArray[i + 13] == 1)
 			{
 				currentSmaStatus.smaPlatfom = MULTICOPTER;
 			}
-			else
+			else if (localRxArray[i + 13] == 2)
+			{
+				currentSmaStatus.smaPlatfom = VTOLVERTICAL;
+			}
+			else if (localRxArray[i + 13] == 3)
+			{
+				currentSmaStatus.smaPlatfom = VTOLTRANSITION;
+			}
+			else if (localRxArray[i + 13] == 4)
 			{
 				currentSmaStatus.smaPlatfom = VTOLHORIZONTAL;
 			}

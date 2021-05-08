@@ -247,8 +247,10 @@ parameter:
 void Paint_ClearWindows(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend, UWORD Color)
 {
     UWORD X, Y;
-    for (Y = Ystart; Y < Yend; Y++) {
-        for (X = Xstart; X < Xend; X++) {//8 pixel =  1 byte
+    for (Y = Ystart; Y < Yend; Y++)
+    {
+        for (X = Xstart; X < Xend; X++)
+        {//8 pixel =  1 byte
             Paint_SetPixel(X, Y, Color);
         }
     }
@@ -265,24 +267,32 @@ parameter:
 void Paint_DrawPoint( UWORD Xpoint,       UWORD Ypoint, UWORD Color,
                       DOT_PIXEL Dot_Pixel,DOT_STYLE Dot_FillWay)
 {
-    if (Xpoint > Paint.Width || Ypoint > Paint.Height) {
+    if (Xpoint > Paint.Width || Ypoint > Paint.Height)
+    {
         Debug("Paint_DrawPoint Input exceeds the normal display range\r\n");
         return;
     }
 
     int16_t XDir_Num , YDir_Num;
-    if (Dot_FillWay == DOT_FILL_AROUND) {
-        for (XDir_Num = 0; XDir_Num < 2*Dot_Pixel - 1; XDir_Num++) {
-            for (YDir_Num = 0; YDir_Num < 2 * Dot_Pixel - 1; YDir_Num++) {
+    if (Dot_FillWay == DOT_FILL_AROUND)
+    {
+        for (XDir_Num = 0; XDir_Num < 2*Dot_Pixel - 1; XDir_Num++)
+        {
+            for (YDir_Num = 0; YDir_Num < 2 * Dot_Pixel - 1; YDir_Num++)
+            {
                 if(Xpoint + XDir_Num - Dot_Pixel < 0 || Ypoint + YDir_Num - Dot_Pixel < 0)
                     break;
                 // printf("x = %d, y = %d\r\n", Xpoint + XDir_Num - Dot_Pixel, Ypoint + YDir_Num - Dot_Pixel);
                 Paint_SetPixel(Xpoint + XDir_Num - Dot_Pixel, Ypoint + YDir_Num - Dot_Pixel, Color);
             }
         }
-    } else {
-        for (XDir_Num = 0; XDir_Num <  Dot_Pixel; XDir_Num++) {
-            for (YDir_Num = 0; YDir_Num <  Dot_Pixel; YDir_Num++) {
+    }
+    else
+    {
+        for (XDir_Num = 0; XDir_Num <  Dot_Pixel; XDir_Num++)
+        {
+            for (YDir_Num = 0; YDir_Num <  Dot_Pixel; YDir_Num++)
+            {
                 Paint_SetPixel(Xpoint + XDir_Num - 1, Ypoint + YDir_Num - 1, Color);
             }
         }
@@ -320,23 +330,29 @@ void Paint_DrawLine(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend,
     int Esp = dx + dy;
     char Dotted_Len = 0;
 
-    for (;;) {
+    for (;;)
+    {
         Dotted_Len++;
         //Painted dotted line, 2 point is really virtual
-        if (Line_Style == LINE_STYLE_DOTTED && Dotted_Len % 3 == 0) {
+        if (Line_Style == LINE_STYLE_DOTTED && Dotted_Len % 3 == 0)
+        {
             //Debug("LINE_DOTTED\r\n");
             Paint_DrawPoint(Xpoint, Ypoint, IMAGE_BACKGROUND, Line_width, DOT_STYLE_DFT);
             Dotted_Len = 0;
-        } else {
+        }
+        else
+        {
             Paint_DrawPoint(Xpoint, Ypoint, Color, Line_width, DOT_STYLE_DFT);
         }
-        if (2 * Esp >= dy) {
+        if (2 * Esp >= dy)
+        {
             if (Xpoint == Xend)
                 break;
             Esp += dy;
             Xpoint += XAddway;
         }
-        if (2 * Esp <= dx) {
+        if (2 * Esp <= dx)
+        {
             if (Ypoint == Yend)
                 break;
             Esp += dx;
@@ -364,12 +380,16 @@ void Paint_DrawRectangle( UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend,
         return;
     }
 
-    if (Filled ) {
+    if (Filled )
+    {
         UWORD Ypoint;
-        for(Ypoint = Ystart; Ypoint < Yend; Ypoint++) {
+        for(Ypoint = Ystart; Ypoint < Yend; Ypoint++)
+        {
             Paint_DrawLine(Xstart, Ypoint, Xend, Ypoint, Color ,Line_width, LINE_STYLE_SOLID);
         }
-    } else {
+    }
+    else
+    {
         Paint_DrawLine(Xstart, Ystart, Xend, Ystart, Color ,Line_width, LINE_STYLE_SOLID);
         Paint_DrawLine(Xstart, Ystart, Xstart, Yend, Color ,Line_width, LINE_STYLE_SOLID);
         Paint_DrawLine(Xend, Yend, Xend, Ystart, Color ,Line_width, LINE_STYLE_SOLID);
@@ -461,7 +481,8 @@ void Paint_DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char,
 {
     UWORD Page, Column;
 
-    if (Xpoint > Paint.Width || Ypoint > Paint.Height) {
+    if (Xpoint > Paint.Width || Ypoint > Paint.Height)
+    {
         Debug("Paint_DrawChar Input exceeds the normal display range\r\n");
         return;
     }
@@ -469,29 +490,68 @@ void Paint_DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char,
     uint32_t Char_Offset = (Acsii_Char - ' ') * Font->Height * (Font->Width / 8 + (Font->Width % 8 ? 1 : 0));
     const unsigned char *ptr = &Font->table[Char_Offset];
 
-    for (Page = 0; Page < Font->Height; Page ++ ) {
-        for (Column = 0; Column < Font->Width; Column ++ ) {
+    for (Page = 0; Page < Font->Height; Page ++ )
+    {
+        for (Column = 0; Column < Font->Width; Column ++ )
+        {
 
             //To determine whether the font background color and screen background color is consistent
-            if (FONT_BACKGROUND == Color_Background) { //this process is to speed up the scan
+            if (FONT_BACKGROUND == Color_Background)
+            { //this process is to speed up the scan
                 if (*ptr & (0x80 >> (Column % 8)))
-                    Paint_SetPixel(Xpoint + Column, Ypoint + Page, Color_Foreground);
+                {
+//                	if (!renderCompleteFrame)
+//                	{
+                		Paint_SetPixel(Xpoint + Column, Ypoint + Page, Color_Foreground);
+//                	}
+//                	else
+//                	{
+//                		nextFrameToDraw[(Xpoint + Column) * 2 + (Ypoint + Page) * 2 * SCREEN_WIDTH] = (uint8_t)((Color_Foreground & 0xFF00)>>8);
+//                		nextFrameToDraw[(Xpoint + Column) * 2 + (Ypoint + Page) * 2 * SCREEN_WIDTH + 1] = (uint8_t)((Color_Foreground & 0x00FF));
+//                	}
+                }
                     // Paint_DrawPoint(Xpoint + Column, Ypoint + Page, Color_Foreground, DOT_PIXEL_DFT, DOT_STYLE_DFT);
-            } else {
-                if (*ptr & (0x80 >> (Column % 8))) {
-                    Paint_SetPixel(Xpoint + Column, Ypoint + Page, Color_Foreground);
+            }
+            else
+            {
+                if (*ptr & (0x80 >> (Column % 8)))
+                {
+
+//                    if (!renderCompleteFrame)
+//                    {
+                    	Paint_SetPixel(Xpoint + Column, Ypoint + Page, Color_Foreground);
+//                    }
+//                    else
+//                    {
+//                    	nextFrameToDraw[(Xpoint + Column) * 2 + (Ypoint + Page) * 2 * SCREEN_WIDTH] = (uint8_t)((Color_Foreground & 0xFF00)>>8);
+//                    	nextFrameToDraw[(Xpoint + Column) * 2 + (Ypoint + Page) * 2 * SCREEN_WIDTH + 1] = (uint8_t)((Color_Foreground & 0x00FF));
+//                    }
                     // Paint_DrawPoint(Xpoint + Column, Ypoint + Page, Color_Foreground, DOT_PIXEL_DFT, DOT_STYLE_DFT);
-                } else {
-                    Paint_SetPixel(Xpoint + Column, Ypoint + Page, Color_Background);
+                }
+                else
+                {
+//                	if (!renderCompleteFrame)
+//                	{
+                		Paint_SetPixel(Xpoint + Column, Ypoint + Page, Color_Background);
+//                	}
+//                	else
+//                	{
+//                		nextFrameToDraw[(Xpoint + Column) * 2 + (Ypoint + Page) * 2 * SCREEN_WIDTH] = (uint8_t)((Color_Background & 0xFF00)>>8);
+//                		nextFrameToDraw[(Xpoint + Column) * 2 + (Ypoint + Page) * 2 * SCREEN_WIDTH + 1] = (uint8_t)((Color_Background & 0x00FF));
+//                	}
                     // Paint_DrawPoint(Xpoint + Column, Ypoint + Page, Color_Background, DOT_PIXEL_DFT, DOT_STYLE_DFT);
                 }
             }
             //One pixel is 8 bits
             if (Column % 8 == 7)
+            {
                 ptr++;
+            }
         }// Write a line
         if (Font->Width % 8 != 0)
+        {
             ptr++;
+        }
     }// Write all
 }
 

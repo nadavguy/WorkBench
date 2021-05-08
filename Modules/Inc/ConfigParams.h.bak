@@ -21,7 +21,21 @@ typedef struct sEE_DATA
 	uint8_t debugLevel;
 }tEE_DATA;
 
+
+typedef struct sCONFIG_DATA
+{
+	uint16_t MTD;
+	uint8_t armMode;
+	uint8_t triggerMode;
+	uint8_t platformType;
+	uint8_t state;
+	uint8_t forceDisarm;
+	uint8_t formatSD;
+	uint8_t loggingMode;
+}tCONFIG_DATA;
+
 extern tEE_DATA ee;
+extern tCONFIG_DATA safeairConfiguration;
 
 //extern tEEV_FLOAT EEV_Vibrations;
 extern tEEV_U08 EEV_DebugLevel;

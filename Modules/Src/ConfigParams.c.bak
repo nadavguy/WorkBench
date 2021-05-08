@@ -17,6 +17,7 @@ tEEV_U08 EEV_LinkType = {0, 0, 1};
 tEEV_U16 EEV_Backlight = {0, 1000, 1000};
 
 tEE_DATA ee;
+tCONFIG_DATA safeairConfiguration;
 
 uint32_t ee_invalid_counter = 0;
 

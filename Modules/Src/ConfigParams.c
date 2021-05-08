@@ -15,6 +15,7 @@ tEEV_U16 EEV_TriggerPWMOffValue = {1000, 1000, 2000};
 tEEV_U16 EEV_TriggerPWMOnValue = {1000, 2000, 2000};
 tEEV_U08 EEV_LinkType = {0, 0, 1};
 tEEV_U16 EEV_Backlight = {0, 1000, 1000};
+tEEV_U08 EEV_ScreenOrientation = {0, 0, 1};
 
 tEE_DATA ee;
 tCONFIG_DATA safeairConfiguration;
@@ -32,6 +33,7 @@ bool ee_validate1(void)
 	ee_invalid_counter += ee_validate_data(EEV_U16, (pU16)&ee.triggerPWMOnValue, (pEEV_U16)&EEV_TriggerPWMOnValue);
 	ee_invalid_counter += ee_validate_data(EEV_U08, (pU08)&ee.linkType, (pEEV_U08)&EEV_LinkType);
 	ee_invalid_counter += ee_validate_data(EEV_U16, (pU16)&ee.backLight, (pEEV_U16)&EEV_Backlight);
+	ee_invalid_counter += ee_validate_data(EEV_U08, (pU08)&ee.screenOreintation, (pEEV_U08)&EEV_ScreenOrientation);
 
 	return (ee_invalid_counter == 0);
 }

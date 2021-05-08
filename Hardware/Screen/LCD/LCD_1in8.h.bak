@@ -47,7 +47,7 @@ typedef enum {
     D2U_L2R  ,
     D2U_R2L  ,
 } LCD_1IN8_SCAN_DIR;
-#define SCAN_DIR_DFT  L2R_U2D  	//Default scan direction = L2R_U2D
+#define SCAN_DIR_DFT  U2D_R2L  	//Default scan direction = L2R_U2D
 
 /********************************************************************************
 function:
@@ -68,8 +68,7 @@ void LCD_1IN8_Clear(COLOR  Color);
 void LCD_1IN8_Display(UWORD *Image);
 void LCD_1IN8_DisplayWindows(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend, UWORD *Image);
 void LCD_1IN8_DrawPaint ( POINT Xpoint, POINT Ypoint, COLOR Color );
-extern void LCD_1IN8_SetBackLight(UWORD Value);
-extern void LCD_1IN8_WriteData_NLen16Bit(uint16_t Data,uint32_t DataLen);
+void LCD_1IN8_SetBackLight(UWORD Value);
 
 
 void LCD_1IN8_SetGramScanWay(LCD_1IN8_SCAN_DIR Scan_dir);
