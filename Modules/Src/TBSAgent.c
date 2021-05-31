@@ -33,8 +33,12 @@ uint32_t lastReceivedLinkMessage = 0;
 uint32_t configurationMessageCounter = 0;
 uint32_t configurationMessageCounterReceived = 0;
 uint32_t lastConfigurationMessageSent = 0;
+uint32_t safeAirLogID = 0;
+uint32_t safeAirTime = 0;
+uint32_t lastReceivedCRSFMessage = 0;
 
 bool isTBSDisconnected = false;
+bool isTailIDAlreadyReceived = false;
 
 char safeAirTailID[11] = "";
 
@@ -139,20 +143,20 @@ void sendMessageToRC(void)
 void sendChannelMessageToTBS(void)
 {
 //	uint16_t R = 0;
-	if ( (HAL_GetTick() - lastCRSFChannelMessage > 6) /*&& (HAL_GetTick() - lastReceivedDroneDataMessage < 200) */)
+	if ( (HAL_GetTick() - lastCRSFChannelMessage > 20) /*&& (HAL_GetTick() - lastReceivedDroneDataMessage < 200) */)
 	{
 		memset(rcChannelsFrame, 0, 26);
 		createCrossfireChannelsFrame(rcChannelsFrame, channelPWMValues);
 		HAL_UART_Transmit_IT(&TBS_UART, rcChannelsFrame, 26);
 		lastCRSFChannelMessage = HAL_GetTick();
 	}
-	else if ( ( (HAL_GetTick() - lastCRSFChannelMessage <= 6)  && ( HAL_GetTick() - lastCRSFChannelMessage > 1) )
+	else if ( ( (HAL_GetTick() - lastCRSFChannelMessage <= 20)  && ( HAL_GetTick() - lastCRSFChannelMessage > 1) )
 			/*|| (HAL_GetTick() - lastReceivedDroneDataMessage >= 200) */)
 	{
 		HAL_UART_Receive_DMA(&TBS_UART, tbsRXArray,TBS_RX_BUFFER);
 		HAL_Delay(2);
 		parseTBSMessage();
-		sendSafeAirConfigurationMessage();
+		sendSafeAirConfigurationMessage(false);
 //		char test[1024] = "";
 //		logData((char *)"TBS RX: ", true, true);
 //		for (int i = 0 ; i < 64 ; i ++)
@@ -215,7 +219,7 @@ bool parseTBSMessage(void)
 	bool localRet = false;
 
 //	char test[1024] = "";
-//	logData((char *)"TBS RX: ", true, true);
+//	logData((char *)"TBS RX: ", true, true, false);
 //	for (int i = 0 ; i < 128 ; i ++)
 //	{
 //		sprintf(&test[i*3], "-%02x",tbsRXArray[i]);
@@ -224,15 +228,18 @@ bool parseTBSMessage(void)
 //			int y = 1;
 //		}
 //	}
-//	logData(test, true, true);
+//	logData(test, true, true, false);
 //	memset(test, 0, 1024);
 	uint8_t localRxArray[TBS_RX_BUFFER] = {0};
 	memcpy(localRxArray,tbsRXArray,TBS_RX_BUFFER);
 
 	while ( i < TBS_RX_BUFFER - 3)
 	{
-		crc = crc8(&localRxArray[i + 2], 0x0c-1);
-		if ( (localRxArray[i] == 0xea) && (localRxArray[i + 1] == 0x0c) && (localRxArray[i + 2] == 0x14) && (TBS_RX_BUFFER - i >= 0x0c)
+		if (TBS_RX_BUFFER - (i + 2) > 0x0c-1)
+		{
+			crc = crc8(&localRxArray[i + 2], 0x0c-1);
+		}
+		if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x0c) && (localRxArray[i + 2] == 0x14) && (TBS_RX_BUFFER - i >= 0x0c)
 				&& (crc == localRxArray[i + 0x0c + 1]))
 		{
 			rcLinkStatus.UplinkRSSIAnt1 = localRxArray[i + 3];
@@ -249,9 +256,14 @@ bool parseTBSMessage(void)
 			localRet = true;
 			logRCLinkStatus(false);
 			lastReceivedLinkMessage = HAL_GetTick();
+			lastReceivedCRSFMessage = lastReceivedLinkMessage;
 			isTBSDisconnected = false;
 		}
-		crc = crc8(&localRxArray[i + 2], 0x1B-1);
+
+		if (TBS_RX_BUFFER - (i + 2) > 0x1B-1)
+		{
+			crc = crc8(&localRxArray[i + 2], 0x1B-1);
+		}
 		if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x1B) && (localRxArray[i + 2] == 0xDD) && (TBS_RX_BUFFER - i >= 0x1B)
 				&& (crc == localRxArray[i + 0x1B + 1]) )
 		{
@@ -260,13 +272,14 @@ bool parseTBSMessage(void)
 
 			currentSmaStatus.batteryVoltage = fmin(localRxArray[i + 3] / 50.0 + 0.05, 4.2);
 			currentSmaStatus.smaState = localRxArray[i + 4];
-			currentSmaStatus.triggerMode = localRxArray[i + 5] - 1;
+			currentSmaStatus.triggerMode = (localRxArray[i + 5] & 0x0F) - 1;
+			currentSmaStatus.rcMenuLevel = ( (localRxArray[i + 5] & 0xF0) >> 4 ) - 1;
 			currentSmaStatus.Altitude = ((int16_t)(localRxArray[i + 6] * 256) + localRxArray[i + 7] + 28000)/10.0;
 			currentSmaStatus.Acceleration = (localRxArray[i + 8] * 256 + localRxArray[i + 9])/100.0;
 			currentSmaStatus.BITStatus = localRxArray[i + 10] * 256 + localRxArray[i + 11];
 
 //			abs(previousSmaStatus.batteryVoltage - currentSmaStatus.batteryVoltage) > 0.05 ) && (HAL_GetTick() - lastBatteryRefresh > 30000)
-			if (abs(previousSmaStatus.batteryVoltage - currentSmaStatus.batteryVoltage) > 0.05 )
+			if ( abs(previousSmaStatus.batteryVoltage - currentSmaStatus.batteryVoltage) > 0.05 )
 			{
 //				shouldRenderBatteryPercent = true;
 				shouldRedrawSafeAirBatteryIcon = true;
@@ -291,6 +304,10 @@ bool parseTBSMessage(void)
 			else if (localRxArray[i + 12] == 5)
 			{
 				currentSmaStatus.smaPlatformName = MAVIC;
+			}
+			else if (localRxArray[i + 12] == 6)
+			{
+				currentSmaStatus.smaPlatformName = TAILID;
 			}
 
 			if (localRxArray[i + 13] == 1)
@@ -410,25 +427,98 @@ bool parseTBSMessage(void)
 				currentSmaStatus.safeairTriggerMode = AUTO;
 			}
 
+			if (previousSmaStatus.rcMenuLevel != currentSmaStatus.rcMenuLevel)
+			{
+				menuLevel = currentSmaStatus.rcMenuLevel;
+				initMenuPages();
+			}
+
 			lastReceivedDroneDataMessage = HAL_GetTick();
+			lastReceivedCRSFMessage = lastReceivedDroneDataMessage;
 		}
 		else if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x1B) && (localRxArray[i + 2] == 0xDD) && (TBS_RX_BUFFER - i >= 0x1B)
 				&& (crc != localRxArray[i + 0x1B + 1]))
 		{
 //			i = i + 0x1B - 1;
 		}
-		crc = crc8(&localRxArray[i + 2], 0x06-1);
+
+		if (TBS_RX_BUFFER - (i + 2) > 0x06-1)
+		{
+			crc = crc8(&localRxArray[i + 2], 0x06-1);
+		}
 		if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x06) && (localRxArray[i + 2] == 0xCA) && (TBS_RX_BUFFER - i >= 0x06)
 				&& (crc == localRxArray[i + 0x06 + 1]) )
 		{
 			configurationMessageCounterReceived = (uint32_t)((localRxArray[i + 3] << 24) + (localRxArray[i + 4] << 16) + (localRxArray[i + 5] << 8) + localRxArray[i + 6]);
 			i = i + 0x06 - 1;
+			lastReceivedCRSFMessage = HAL_GetTick();
 		}
 		else if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x06) && (localRxArray[i + 2] == 0xCA) && (TBS_RX_BUFFER - i >= 0x06)
 				&& (crc != localRxArray[i + 0x06 + 1]) )
 		{
-//			i = i + 0x06 - 1;
+
 		}
+
+		if ( TBS_RX_BUFFER - (i + 2) > 0x0E - 1 )
+		{
+			crc = crc8(&localRxArray[i + 2], 0x0E - 1);
+		}
+		if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x0E) && (localRxArray[i + 2] == 0xD1) && (TBS_RX_BUFFER - i >= 0x0E)
+				&& (crc == localRxArray[i + 0x0E + 1]) )
+		{
+			safeAirTailID[0] = (char)(localRxArray[i + 3]);
+			safeAirTailID[1] = (char)(localRxArray[i + 4]);
+			safeAirTailID[2] = (char)(localRxArray[i + 5]);
+			safeAirTailID[3] = (char)(localRxArray[i + 6]);
+			safeAirTailID[4] = (char)(localRxArray[i + 7]);
+			safeAirTailID[5] = (char)(localRxArray[i + 8]);
+			safeAirTailID[6] = (char)(localRxArray[i + 9]);
+			safeAirTailID[7] = (char)(localRxArray[i + 10]);
+			safeAirTailID[8] = (char)(localRxArray[i + 11]);
+			safeAirTailID[9] = (char)(localRxArray[i + 12]);
+			safeAirTailID[10] = (char)(localRxArray[i + 13]);
+			if (!isTailIDAlreadyReceived)
+			{
+				isTailIDAlreadyReceived = true;
+				sprintf(terminalBuffer,"Received Tail-ID: %s", safeAirTailID);
+				logData(terminalBuffer, false, false, false);
+			}
+			lastReceivedCRSFMessage = HAL_GetTick();
+			i = i + 0x0E - 1;
+		}
+		else if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x0E) && (localRxArray[i + 2] == 0xD1) && (TBS_RX_BUFFER - i >= 0x0E)
+				&& (crc != localRxArray[i + 0x0E + 1]) )
+		{
+
+		}
+
+		if ( TBS_RX_BUFFER - (i + 2) > 0x0A - 1 )
+		{
+			crc = crc8(&localRxArray[i + 2], 0x0A - 1);
+		}
+		if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x0A) && (localRxArray[i + 2] == 0xED) && (TBS_RX_BUFFER - i >= 0x0A)
+				&& (crc == localRxArray[i + 0x0A + 1]) )
+		{
+			uint32_t previousSafeAirTime = safeAirTime;
+			safeAirLogID = (uint32_t)((localRxArray[i + 3] << 24) + (localRxArray[i + 4] << 16) + (localRxArray[i + 5] << 8) + localRxArray[i + 6]);
+			safeAirTime = (uint32_t)((localRxArray[i + 7] << 24) + (localRxArray[i + 8] << 16) + (localRxArray[i + 9] << 8) + localRxArray[i + 10]);
+			if (safeAirTime != previousSafeAirTime)
+			{
+				sprintf(terminalBuffer,"Received Log ID: %ld", safeAirLogID);
+				logData(terminalBuffer, false, false, false);
+
+				sprintf(terminalBuffer,"Current SafeAir time: %ld", safeAirTime);
+				logData(terminalBuffer, false, false, false);
+			}
+			i = i + 0x0A - 1;
+			lastReceivedCRSFMessage = HAL_GetTick();
+		}
+		else if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x0A) && (localRxArray[i + 2] == 0xED) && (TBS_RX_BUFFER - i >= 0x0A)
+				&& (crc != localRxArray[i + 0x0A + 1]) )
+		{
+
+		}
+
 		i++;
 	}
 	memset(tbsRXArray, 0, TBS_RX_BUFFER);
@@ -474,9 +564,9 @@ void createPingMessage(void)
 	}
 }
 
-void sendSafeAirConfigurationMessage(void)
+void sendSafeAirConfigurationMessage(bool includeTimeInMessage)
 {
-	if ( (configurationMessageCounter != configurationMessageCounterReceived) && ( HAL_GetTick() - lastConfigurationMessageSent > 1000 ) )
+	if ( ( (configurationMessageCounter != configurationMessageCounterReceived) && ( HAL_GetTick() - lastConfigurationMessageSent > 1000 ) ) || (includeTimeInMessage) )
 	{
 		safeairConfigurationFrame[0] = MODULE_ADDRESS; // Change to P2P value
 		safeairConfigurationFrame[1] = 0x1B; // len
@@ -489,17 +579,34 @@ void sendSafeAirConfigurationMessage(void)
 		safeairConfigurationFrame[8] = safeairConfiguration.triggerMode;
 		safeairConfigurationFrame[9] = safeairConfiguration.platformType;
 		safeairConfigurationFrame[10] = safeairConfiguration.state;
+		if (forceDisarmEnabled)
+		{
+			safeairConfiguration.forceDisarm = 0x85;
+		}
+		else
+		{
+			safeairConfiguration.forceDisarm = 0x17;
+		}
 		safeairConfigurationFrame[11] = safeairConfiguration.forceDisarm;
+
+		if (formatSDEnabled)
+		{
+			safeairConfiguration.formatSD = 0x85;
+		}
+		else
+		{
+			safeairConfiguration.formatSD = 0x17;
+		}
 		safeairConfigurationFrame[12] = safeairConfiguration.formatSD;
 		safeairConfigurationFrame[13] = (uint8_t)((uint16_t)((safeairConfiguration.MTD) & 0xff00)>>8); // MTD High Byte
 		safeairConfigurationFrame[14] = (uint8_t)((uint16_t)((safeairConfiguration.MTD) & 0x00ff)); // MTD Low Byte
-		safeairConfigurationFrame[15] = 0x00; //
-		safeairConfigurationFrame[16] = 0x00; //
-		safeairConfigurationFrame[17] = 0x00; //
-		safeairConfigurationFrame[18] = 0x00; //
-		safeairConfigurationFrame[19] = 0x00; //
-		safeairConfigurationFrame[20] = 0x00; //
-		safeairConfigurationFrame[21] = 0x00; //
+		safeairConfigurationFrame[15] = includeTimeInMessage * 0x85 + (1 - includeTimeInMessage) * 0x17; //Time Included
+		safeairConfigurationFrame[16] = sDate.Year; //YY
+		safeairConfigurationFrame[17] = sDate.Month; //MM
+		safeairConfigurationFrame[18] = sDate.Date; //DD
+		safeairConfigurationFrame[19] = sTime.Hours; //HH
+		safeairConfigurationFrame[20] = sTime.Minutes; //mm
+		safeairConfigurationFrame[21] = sTime.Seconds; //SS
 		safeairConfigurationFrame[22] = 0x00; //
 		safeairConfigurationFrame[23] = 0x00; //
 		safeairConfigurationFrame[24] = 0x00; //

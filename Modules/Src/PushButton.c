@@ -35,6 +35,7 @@ uint32_t lastDownButtonPress = 0;
 uint32_t lastUpButtonPress = 0;
 uint32_t lastOkButtonUnpress = 0;
 uint32_t okButtonPressDuration = 0;
+uint32_t lastAnyButtonPress = 0;
 
 
 bool armButtonIsHigh = true;
@@ -58,6 +59,12 @@ void CheckButtons(void)
 	if ( (rcState == PREINIT) && (armPinState == GPIO_PIN_RESET) )
 	{
 		rcState = MAINTENANCE;
+	}
+
+	if ( (armPinState == GPIO_PIN_RESET) || (triggerPinState == GPIO_PIN_RESET) || (upPinState == GPIO_PIN_RESET)
+			|| (downPinState == GPIO_PIN_RESET) || (okPinState == GPIO_PIN_RESET) )
+	{
+		lastAnyButtonPress = HAL_GetTick();
 	}
 
 	/*Accumulate Button Press Pattern  */
@@ -233,7 +240,7 @@ void CheckButtons(void)
 
 	if ( (currentSmaStatus.smaState != ARMED) && (currentSmaStatus.smaState != TRIGGERED) )
 	{
-		if ( (okPinState == GPIO_PIN_RESET) && (!isMenuDisplayed) && (!isPopupDisplayed) && (HAL_GetTick() - lastOkButtonPress > 100))
+		if ( (okPinState == GPIO_PIN_RESET) && (!isMenuDisplayed) && (!isPopupDisplayed) && (HAL_GetTick() - lastOkButtonPress > 400))
 		{
 			isMenuDisplayed = true;
 			shouldRenderMenu = true;
@@ -243,7 +250,7 @@ void CheckButtons(void)
 			lastOkButtonPress = HAL_GetTick();
 			menuDrawDirection = FULL;
 		}
-		else if ( (okPinState == GPIO_PIN_RESET) && (isMenuDisplayed) && (!isItemDisplayed) && (HAL_GetTick() - lastOkButtonPress > 100) )
+		else if ( (okPinState == GPIO_PIN_RESET) && (isMenuDisplayed) && (!isItemDisplayed) && (HAL_GetTick() - lastOkButtonPress > 400) )
 		{
 			shouldClearScreen = true;
 			itemDrawDirection = FULL;
@@ -251,7 +258,7 @@ void CheckButtons(void)
 			lastOkButtonPress = HAL_GetTick();
 			menuDrawDirection = FULL;
 		}
-		else if ( (okPinState == GPIO_PIN_RESET) && (isMenuDisplayed) && (isItemDisplayed) && (HAL_GetTick() - lastOkButtonPress > 100) )
+		else if ( (okPinState == GPIO_PIN_RESET) && (isMenuDisplayed) && (isItemDisplayed) && (HAL_GetTick() - lastOkButtonPress > 400) )
 		{
 			shouldClearScreen = false;
 			if (currentCursorPosition.cursorPosition == 0x2)
@@ -293,7 +300,7 @@ void CheckButtons(void)
 			lastOkButtonPress = HAL_GetTick();
 
 		}
-		else if ( (downPinState == GPIO_PIN_RESET) && (isMenuDisplayed) && (!isItemDisplayed) && (HAL_GetTick() - lastDownButtonPress > 100) )
+		else if ( (downPinState == GPIO_PIN_RESET) && (isMenuDisplayed) && (!isItemDisplayed) && (HAL_GetTick() - lastDownButtonPress > 400) )
 		{
 			shouldRenderMenu = true;
 			shouldClearScreen = false;
@@ -302,7 +309,7 @@ void CheckButtons(void)
 			lastDownButtonPress = HAL_GetTick();
 			menuDrawDirection = DOWN;
 		}
-		else if ( (downPinState == GPIO_PIN_RESET) && (isItemDisplayed) && (HAL_GetTick() - lastDownButtonPress > 100) )
+		else if ( (downPinState == GPIO_PIN_RESET) && (isItemDisplayed) && (HAL_GetTick() - lastDownButtonPress > 400) )
 		{
 			shouldRenderItem = true;
 			shouldClearScreen = false;
@@ -334,7 +341,7 @@ void CheckButtons(void)
 			lastDownButtonPress = HAL_GetTick();
 			itemDrawDirection = DOWN;
 		}
-		else if ((downPinState == GPIO_PIN_RESET) && (isPopupDisplayed) && (HAL_GetTick() - lastDownButtonPress > 100))
+		else if ((downPinState == GPIO_PIN_RESET) && (isPopupDisplayed) && (HAL_GetTick() - lastDownButtonPress > 400))
 		{
 			if (popupToShow.isQuestion)
 			{
@@ -342,7 +349,7 @@ void CheckButtons(void)
 				popupDrawDirection = DOWN;
 			}
 		}
-		else if ( (upPinState == GPIO_PIN_RESET) && (isMenuDisplayed) && (!isItemDisplayed) && (HAL_GetTick() - lastUpButtonPress > 100) )
+		else if ( (upPinState == GPIO_PIN_RESET) && (isMenuDisplayed) && (!isItemDisplayed) && (HAL_GetTick() - lastUpButtonPress > 400) )
 		{
 			shouldRenderMenu = true;
 			shouldClearScreen = false;
@@ -351,7 +358,7 @@ void CheckButtons(void)
 			lastUpButtonPress = HAL_GetTick();
 			menuDrawDirection = UP;
 		}
-		else if ( (upPinState == GPIO_PIN_RESET) && (isItemDisplayed) && (HAL_GetTick() - lastUpButtonPress > 100) )
+		else if ( (upPinState == GPIO_PIN_RESET) && (isItemDisplayed) && (HAL_GetTick() - lastUpButtonPress > 400) )
 		{
 			shouldRenderItem = true;
 			shouldClearScreen = false;
@@ -383,7 +390,7 @@ void CheckButtons(void)
 			lastUpButtonPress = HAL_GetTick();
 			itemDrawDirection = UP;
 		}
-		else if ((upPinState == GPIO_PIN_RESET) && (isPopupDisplayed) && (HAL_GetTick() - lastDownButtonPress > 100))
+		else if ((upPinState == GPIO_PIN_RESET) && (isPopupDisplayed) && (HAL_GetTick() - lastDownButtonPress > 400))
 		{
 			if (popupToShow.isQuestion)
 			{

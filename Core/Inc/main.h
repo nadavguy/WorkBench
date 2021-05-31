@@ -32,14 +32,6 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include <stdio.h> //printf()
-#include <string.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include <math.h>
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -68,12 +60,21 @@ extern "C" {
 #include "TerminalAgent.h"
 #include "ymodem.h"
 #include "Common.h"
+#include "BleAgent.h"
+#include "ci_func.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
 
 typedef enum {PWM, DIGITAL} LINKType;
+
+typedef struct sGPSPOSITION
+{
+	float Latitude;
+	float Longitude;
+	float Altitude;
+}tGPSPOSITION;
 
 
 #define smaCritBat		1
@@ -135,6 +136,11 @@ extern tWarning displayWarning;
 extern SYSTEMState desiredSMAState;
 
 extern tCURSOR_DATA currentCursorPosition;
+
+extern RTC_TimeTypeDef sTime;
+extern RTC_DateTypeDef sDate;
+
+extern tGPSPOSITION lastKnownPosition;
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/

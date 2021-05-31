@@ -9,14 +9,21 @@
 #include "DEV_Config.h"
 uint8_t numberOfDisplayedSafeAirIcons = 0;
 
-void createEmptyFrame(void)
+void createEmptyFrame(bool isMenuFrame)
 {
-	memset(nextFrameToDraw,0x00,40960);
-
-	for (int i = 0 ; i < (40960 - SCREEN_WIDTH * STATUSBAR_HEIGHT * 2) /2 ; i++)
+	if (!isMenuFrame)
 	{
-		nextFrameToDraw[(i + SCREEN_WIDTH * STATUSBAR_HEIGHT) * 2] = BACKGROUND_HIGH_BYTE;
-		nextFrameToDraw[(i + SCREEN_WIDTH * STATUSBAR_HEIGHT) * 2 + 1] = BACKGROUND_LOW_BYTE;
+		memset(nextFrameToDraw,0x00,40960);
+
+		for (int i = 0 ; i < (40960 - SCREEN_WIDTH * STATUSBAR_HEIGHT * 2) /2 ; i++)
+		{
+			nextFrameToDraw[(i + SCREEN_WIDTH * STATUSBAR_HEIGHT) * 2] = BACKGROUND_HIGH_BYTE;
+			nextFrameToDraw[(i + SCREEN_WIDTH * STATUSBAR_HEIGHT) * 2 + 1] = BACKGROUND_LOW_BYTE;
+		}
+	}
+	else if (isMenuFrame)
+	{
+		memset(nextFrameToDraw,0xFF,40960);
 	}
 }
 

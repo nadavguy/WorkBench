@@ -24,6 +24,7 @@
 #define okPIN GPIO_PIN_9
 
 extern uint32_t okButtonPressDuration;
+extern uint32_t lastAnyButtonPress;
 
 extern void startButtonsPressDetection();
 extern void updateButtonsValues(uint16_t armCurrentValue, uint16_t triggerCurrentValue);

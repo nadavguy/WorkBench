@@ -34,6 +34,7 @@ typedef struct sMENU_PAGE
 
 typedef struct sUINT8_ITEM
 {
+	uint32_t parameterPointer;
 	uint8_t minValue;
 	uint8_t maxValue;
 	uint8_t startValue;
@@ -47,6 +48,7 @@ typedef struct sUINT8_ITEM
 
 typedef struct sUINT16_ITEM
 {
+	uint32_t parameterPointer;
 	uint16_t minValue;
 	uint16_t maxValue;
 	uint16_t startValue;
@@ -59,6 +61,7 @@ typedef struct sUINT16_ITEM
 
 typedef struct sUINT32_ITEM
 {
+	uint32_t parameterPointer;
 	uint32_t minValue;
 	uint32_t maxValue;
 	uint32_t startValue;
@@ -72,6 +75,7 @@ typedef struct sUINT32_ITEM
 
 typedef struct sINT8_ITEM
 {
+	uint32_t parameterPointer;
 	int8_t minValue;
 	int8_t maxValue;
 	int8_t startValue;
@@ -85,6 +89,7 @@ typedef struct sINT8_ITEM
 
 typedef struct sINT16_ITEM
 {
+	uint32_t parameterPointer;
 	int16_t minValue;
 	int16_t maxValue;
 	int16_t startValue;
@@ -98,6 +103,7 @@ typedef struct sINT16_ITEM
 
 typedef struct sINT32_ITEM
 {
+	uint32_t parameterPointer;
 	int32_t minValue;
 	int32_t maxValue;
 	int32_t startValue;
@@ -111,6 +117,7 @@ typedef struct sINT32_ITEM
 
 typedef struct sFLOAT_ITEM
 {
+	uint32_t parameterPointer;
 	float minValue;
 	float maxValue;
 	float startValue;
@@ -124,6 +131,7 @@ typedef struct sFLOAT_ITEM
 
 typedef struct sSTRING_ITEM
 {
+	uint32_t parameterPointer;
 	uint8_t minValue;
 	uint8_t maxValue;
 	uint8_t startValue;
@@ -149,6 +157,7 @@ extern tMENU_PAGE MainPage;
 extern tMENU_PAGE pagesArray[5];
 
 extern tPOPUP noConnectionMessage;
+extern tPOPUP safeairForceDisarmMessage;
 
 extern tUINT16_ITEM brightnessItem;
 extern tSTRING_ITEM triggerModeItem;

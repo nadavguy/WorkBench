@@ -217,25 +217,35 @@ HAL_StatusTypeDef Serial_PutByte6( uint8_t param )
 
 
 unsigned char lrotate(unsigned char val, int n)
-{  unsigned int t,i;
-   t = val;
-   for(i = 0; i<n;i++)
-   {   t = t <<1;
-	   if ((t&256)) { t = t | 1; }
-   }
-   return t;
+{
+	unsigned int t,i;
+	t = val;
+	for(i = 0; i < n; i++)
+	{
+		t = t <<1;
+		if ((t&256))
+		{
+			t = t | 1;
+		}
+	}
+	return t;
 }
 
 unsigned char rrotate(unsigned char val, int n)
-{  unsigned int t,i;
-   t = val;
-   t =  t <<8;
-   for(i = 0; i<n;i++)
-   {   t = t >>1;
-	   if ((t&128)) { t = t | 32768; }
-   }
-   t =  t >>8;
-   return t;
+{
+	unsigned int t,i;
+	t = val;
+	t =  t <<8;
+	for(i = 0; i<n;i++)
+	{
+		t = t >>1;
+		if ((t&128))
+		{
+			t = t | 32768;
+		}
+	}
+	t =  t >>8;
+	return t;
 }
 
 /* Private functions ---------------------------------------------------------*/

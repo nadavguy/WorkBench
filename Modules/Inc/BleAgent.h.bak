@@ -1,0 +1,15 @@
+/*
+ * BleAgent.h
+ *
+ *  Created on: May 11, 2021
+ *      Author: gilad
+ */
+
+#ifndef INC_BLEAGENT_H_
+#define INC_BLEAGENT_H_
+
+extern bool isBLEOn;
+
+
+
+#endif /* INC_BLEAGENT_H_ */

@@ -181,7 +181,7 @@ USBD_StorageTypeDef USBD_Storage_Interface_fops_FS =
 int8_t STORAGE_Init_FS(uint8_t lun)
 {
   /* USER CODE BEGIN 2 */
-	DSTATUS stat = RES_OK;
+//	DSTATUS stat = RES_OK;
 //	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_RESET); // QSPI WP High
 	//		HAL_Delay(1);
 	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_SET); // QSPI WP High

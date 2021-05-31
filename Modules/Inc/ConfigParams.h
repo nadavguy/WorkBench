@@ -17,6 +17,7 @@ typedef struct sEE_DATA
 	uint16_t triggerPWMOffValue;
 	uint16_t triggerPWMOnValue;
 	uint16_t backLight;
+	uint16_t motorDelayValue;
 	uint8_t linkType;
 	uint8_t debugLevel;
 	uint8_t screenOreintation;

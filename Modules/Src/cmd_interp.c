@@ -207,7 +207,7 @@ uint32_t parse(char* s)
       s = skip_chars(s);
     }
   }
-  funcTable(CommandsArray);
+  uint8_t ret = funcTable(CommandsArray);
   if (!ee_validate1())
   {
 
@@ -223,7 +223,7 @@ uint32_t parse(char* s)
   // {
   //   return CI_COMMAND_ERROR;
   // }
-  return 0;
+  return ret;
 }
 //-----------------------------------------------------------------------------
 

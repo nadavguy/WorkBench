@@ -31,7 +31,10 @@ void printRCConfiguration(bool toDisplayOnly)
     sprintf(terminalBuffer, "Debug Level.........................[N/A].DBG: %d [%d/%d/%d]",
             ee.debugLevel, EEV_DebugLevel.min, EEV_DebugLevel.std, EEV_DebugLevel.max);
     logData(terminalBuffer, false, toDisplayOnly, false);
-//    logData("Bitmap: 1 - M4 Debug Data, 2 - BMI160 (Acc & Gyro),  4 - BMM150 (Mag)", false, toDisplayOnly);
+    sprintf(terminalBuffer, "Screen Orientation.................[N/A].SCOR: %d [%d/%d/%d]",
+                ee.screenOreintation, EEV_ScreenOrientation.min, EEV_ScreenOrientation.std, EEV_ScreenOrientation.max);
+        logData(terminalBuffer, false, toDisplayOnly, false);
+    logData("Enum: 0 - Landscape, 1 - Portrait", false, toDisplayOnly, false);
 
     // sprintf(term_buffer, "\r\n<External Applications>");
     logData("", false, toDisplayOnly, false);

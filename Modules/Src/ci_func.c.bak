@@ -157,7 +157,7 @@ eCI_RESULT func_importFile(void)
 	  char *res = 0;
 //	  uint16_t slen = 0;
 	  bool _endFile = false;
-	  char *fn = get_param_str(0);
+//	  char *fn = get_param_str(0);
 	  FIL fileToRead;
 //	  f_close(&fileToRead);
 	  char fullFileName[64] = "";
@@ -180,6 +180,30 @@ eCI_RESULT func_importFile(void)
 	  }
 	  f_close(&fileToRead);
 	  return CI_OK;
+}
+
+eCI_RESULT func_screenOrientation(void)
+{
+	if (get_param_count() > 0)
+	{
+		if ( (get_param_int(0) <= 1) && (get_param_int(0) >= 0) )
+		{
+			ee.screenOreintation = get_param_int(0);
+			ee_save1();
+			screenInit();
+			setFullDisplay();
+		}
+
+		if (ee.screenOreintation == 0)
+		{
+			logData("Screen orientation set to Landscape", false, false, false);
+		}
+		else
+		{
+			logData("Screen orientation set to Portrait", false, false, false);
+		}
+	}
+	return CI_OK;
 }
 
 eCI_RESULT func_dir(void)
@@ -238,6 +262,7 @@ functionsList cases [] =
 		{ "bklt", func_backLight },
 		{ "msc", func_massStorage },
 		{ "imp", func_importFile },
+		{ "scor", func_screenOrientation },
 		{ "dir" , func_dir },
 		{ "fmt" , func_fmt }
 };

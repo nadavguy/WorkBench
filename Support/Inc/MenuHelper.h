@@ -13,6 +13,7 @@
 
 typedef enum {PAGE, UINT8_ITEM, UINT16_ITEM, UINT32_ITEM, INT8_ITEM, INT16_ITEM, INT32_ITEM, FLOAT_ITEM, STRING_ITEM, BACK, CLOSE, VALUE, MULTIPLIER, POPUP} CELLType;
 typedef enum {UP, DOWN, FULL, LEFT, RIGHT} MENUDRAWType;
+typedef enum {BASIC, OEM, DEVELOPER } MENULEVELType;
 
 typedef struct sCURSOR_DATA
 {
@@ -152,6 +153,8 @@ typedef struct sPOPUP
 	char itemsArray[MAX_ITEMS_IN_PAGE][MAX_CHARACTERS_IN_ITEM];
 	bool isQuestion;
 }tPOPUP;
+
+extern MENULEVELType menuLevel;
 
 extern tMENU_PAGE MainPage;
 extern tMENU_PAGE pagesArray[5];

@@ -76,7 +76,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.140;
+float buildID = 1.160;
 
 SYSTEMState rcState = PREINIT;
 //SYSTEMState previousSMAState = PREINIT;
@@ -101,6 +101,8 @@ bool shouldClearDisplayedWarning = true;
 bool forceDisarmEnabled = false;
 bool formatSDEnabled = false;
 bool waitForAckResponse = false;
+bool shouldRedrawSafeAirBatteryIcon = true;
+
 
 
 SYSTEMConnectionStatus bluetoothConnection = DISCONNECTED;
@@ -202,8 +204,24 @@ int main(void)
   screenInit();
 
   screenClear();
-  screenUpdate(false);
+  renderCompleteFrame = true;
+  createEmptyFrame(false);
+//  while(true)
+//  {
+//	  for (int j = -24 ; j < 20 ; j ++)
+//	  {
+//		  createEmptyFrame();
+//		  addImageToNextFrame(gImage_battery_Two_Thirds_90_24_24, 24, 24, 104, 0);
+//		  addImageToNextFrame(gImage_Battery_Two_Thirds_90_30_30, 30, 30, 95, 85);
+//		  centeredString(64, 28, "1X2IL-345F6", BLACK, BACKGROUND, 10, Font16);
+//		  addRectangleToFrame(0, 45, 128, 45 + Font12.Height + 4,GREEN);
+//		  centeredString(64, 47, "Calibration", WHITE, GREEN, 11, Font12);
+//		  HAL_SPI_Transmit(&DEV_SPI, (uint8_t *)nextFrameToDraw, 40960, 1500);
+//		  HAL_Delay(30);
+//	  }
+//  }
 
+//  screenUpdate(false);
 //  createPingMessage();
   nextPattern = &noBuzzerPattern;
   setBuzzerPattern(*nextPattern);
@@ -214,29 +232,17 @@ int main(void)
   {
 	  memcpy(&popupToShow, &noConnectionMessage, sizeof(popupToShow));
 	  waitForPopupInput();
-//	  shouldRenderPopup = true;
-//	  screenUpdate(false);
-//	  while ( (tbsLink == NOSIGNAL) )
-//	  {
-//		  if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 1000) )
-//		  {
-//			  break;
-//		  }
-//		  if ( (popupToShow.isQuestion) && (okButtonPressDuration >= 1000) && (popupDrawDirection == DOWN))
-//		  {
-//			  break;
-//		  }
-//		  sendChannelMessageToTBS();
-//		  updateRCState();
-//		  CheckButtons();
-//		  HAL_Delay(1);
-//		  screenUpdate(false);
-//	  }
-//
-//	  screenClear();
-//	  setFullDisplay();
-//	  screenUpdate(false);
   }
+
+  /* Debug Init */
+  memcpy(safeAirTailID,"1X2IL-345F6",11);
+  createEmptyFrame(false);
+  setFullDisplay();
+//  numberOfDisplayedSafeAirIcons = 1 * isAutoPilotDisplayed + 1 * isPlatformDisplayed +
+//		  1 * isTriggerModeDisplayed + 1 * isSafeAirBatteryDisplayed;
+//  setIconPositionOnScreen();
+  screenUpdate(false);
+  updateNextFrame();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -250,10 +256,21 @@ int main(void)
 	  // if there is telemetry messages without 0xDD message
 	  // Allow only basic functionality
 	  updateRCState();
-	  if (HAL_GetTick() - lastScreenUpdate > 100)
+	  if (!renderCompleteFrame)
 	  {
+		  if (HAL_GetTick() - lastScreenUpdate > 100)
+		  {
+			  screenUpdate(true);
+			  lastScreenUpdate = HAL_GetTick();
+		  }
+	  }
+	  else
+	  {
+//		  numberOfDisplayedSafeAirIcons = 1 * isAutoPilotDisplayed + 1 * isPlatformDisplayed +
+//				  1 * isTriggerModeDisplayed + 1 * isSafeAirBatteryDisplayed;
+//		  setIconPositionOnScreen();
 		  screenUpdate(true);
-		  lastScreenUpdate = HAL_GetTick();
+		  updateNextFrame();
 	  }
 	  updateBuzzerStatus();
 	  monitorLogSize();
@@ -456,7 +473,7 @@ void updateRCState(void)
 	}
 
 	if ( ( ((displayWarning.BITStatus != previousBITStatus) && (displayWarning.BITStatus != 0x00)) ||
-			( ((currentSmaStatus.batteryStrength == LOW) || (currentSmaStatus.batteryStrength == EMPTY)) && (shouldRedrawBatteryIcon) ) )
+			( ((batteryStrength == LOW) || (batteryStrength == EMPTY)) && (shouldRedrawBatteryIcon) ) )
 			&& (currentSmaStatus.smaState != TRIGGERED) )
 	{
 		displayWarning.displayWarning = true;

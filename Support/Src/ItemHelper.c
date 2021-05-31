@@ -19,25 +19,48 @@ uint8_t stringMultiplierArray[1] = {1};
 
 void updateUint8Item(MENUDRAWType howToDraw)
 {
+	uint8_t MenuRectangleStartX = 0;
+	uint8_t MenuRectangleStartY = 0;
+	uint8_t MenuRectangleHeight = 0;
+	uint8_t MenuRectangleWidth = 0;
+	uint8_t DisplayCenterWidth = 0;
+
+	if (isPortrait)
+	{
+		MenuRectangleStartX = VerticalMenuRectangleStartX;
+		MenuRectangleStartY = VerticalMenuRectangleStartY;
+		MenuRectangleHeight = VerticalMenuRectangleHeight;
+		MenuRectangleWidth = VerticalMenuRectangleWidth;
+		DisplayCenterWidth = VerticalDisplayCenterWidth;
+	}
+	else
+	{
+		MenuRectangleStartX = HorizontalMenuRectangleStartX;
+		MenuRectangleStartY = HorizontalMenuRectangleStartY;
+		MenuRectangleHeight = HorizontalMenuRectangleHeight;
+		MenuRectangleWidth = HorizontalMenuRectangleWidth;
+		DisplayCenterWidth = HorizontalDisplayCenterWidth;
+	}
+
 	for (int i = 0; i < uint8Item.numberOfItemsInPage ; i++)
 	{
 		if  ( (i < 2) && (howToDraw == FULL) )
 		{
-			Paint_DrawRectangle( HorizontalMenuRectangleStartX, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i,
-					HorizontalMenuRectangleStartX+HorizontalMenuRectangleWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i + 1),
+			Paint_DrawRectangle( MenuRectangleStartX, MenuRectangleStartY + MenuRectangleHeight * i,
+					MenuRectangleStartX + MenuRectangleWidth, MenuRectangleStartY + MenuRectangleHeight * (i + 1),
 					BLACK, DOT_PIXEL_1X1, DRAW_FILL_EMPTY );
-			centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
+			centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * i + 1,
 					uint8Item.itemsArray[i], BLACK, WHITE, 16, Font12);
 		}
 		if ( (i >= 2) && (i < uint8Item.numberOfItemsInPage - 2) )
 		{
 			if (howToDraw == FULL)
 			{
-				Paint_DrawRectangle( HorizontalMenuRectangleStartX, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i,
-						HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth / 2, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i + 1),
+				Paint_DrawRectangle( MenuRectangleStartX, MenuRectangleStartY + MenuRectangleHeight * i,
+						MenuRectangleStartX + MenuRectangleWidth / 2, MenuRectangleStartY + MenuRectangleHeight * (i + 1),
 						BLACK, DOT_PIXEL_1X1, DRAW_FILL_EMPTY );
-				Paint_DrawRectangle( HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth / 2, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i,
-						HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i + 1),
+				Paint_DrawRectangle( MenuRectangleStartX + MenuRectangleWidth / 2, MenuRectangleStartY + MenuRectangleHeight * i,
+						MenuRectangleStartX + MenuRectangleWidth, MenuRectangleStartY + MenuRectangleHeight * (i + 1),
 						BLACK, DOT_PIXEL_1X1, DRAW_FILL_EMPTY );
 			}
 
@@ -49,35 +72,35 @@ void updateUint8Item(MENUDRAWType howToDraw)
 				{
 					if ( (howToDraw == LEFT) || (howToDraw == FULL) )
 					{
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN( MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								uint8Item.itemsArray[i], &Font12, LGRAY,  BLACK);
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth / 2 + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth / 2 + 1 + strlen(uint8Item.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows(MenuRectangleStartX + MenuRectangleWidth / 2 + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + MenuRectangleWidth / 2 + 1 + strlen(uint8Item.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN( MenuRectangleStartX + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, WHITE,  BLACK);
 					}
 					else if (howToDraw == DOWN)
 					{
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + 1 + strlen(uint8Item.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows( MenuRectangleStartX + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + 1 + strlen(uint8Item.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN( MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								uint8Item.itemsArray[i], &Font12, WHITE,  BLACK);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN( MenuRectangleStartX + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, WHITE,  BLACK);
 					}
 					else if (howToDraw == UP)
 					{
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + 1 + strlen(uint8Item.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows( MenuRectangleStartX + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + 1 + strlen(uint8Item.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN( MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								uint8Item.itemsArray[i], &Font12, LGRAY,  BLACK);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN( MenuRectangleStartX + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, WHITE,  BLACK);
 					}
 
@@ -86,13 +109,13 @@ void updateUint8Item(MENUDRAWType howToDraw)
 				{
 					if (howToDraw == RIGHT)
 					{
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + 1 + strlen(uint8Item.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows( MenuRectangleStartX + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + 1 + strlen(uint8Item.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN( MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								uint8Item.itemsArray[i], &Font12, WHITE,  BLACK);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN( MenuRectangleStartX + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, LGRAY,  BLACK);
 					}
 					else if (howToDraw == DOWN)
@@ -106,26 +129,26 @@ void updateUint8Item(MENUDRAWType howToDraw)
 							uint8Item.startValue = uint8Item.minValue;
 						}
 						sprintf(localString,"%03d",uint8Item.startValue);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN( MenuRectangleStartX + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, LGRAY,  BLACK);
 					}
 					else if (howToDraw == UP)
 					{
 						uint8Item.startValue = fmin(uint8Item.startValue + uint8Item.deltaMultiplier, uint8Item.maxValue * 1.0);
 						sprintf(localString,"%03d",uint8Item.startValue);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN( MenuRectangleStartX + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, LGRAY,  BLACK);
 					}
 				}
 				else
 				{
-					Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-							HorizontalMenuRectangleStartX + 1 + strlen(uint8Item.itemsArray[i]) * Font12.Width,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-					Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+					Paint_ClearWindows( MenuRectangleStartX + 1,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+							MenuRectangleStartX + 1 + strlen(uint8Item.itemsArray[i]) * Font12.Width,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+					Paint_DrawString_EN( MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 							uint8Item.itemsArray[i], &Font12, WHITE,  BLACK);
-					Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+					Paint_DrawString_EN( MenuRectangleStartX + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 							localString, &Font12, WHITE,  BLACK);
 				}
 			}
@@ -138,35 +161,35 @@ void updateUint8Item(MENUDRAWType howToDraw)
 				{
 					if ( (howToDraw == LEFT) || (howToDraw == FULL) )
 					{
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN( MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								uint8Item.itemsArray[i], &Font12, LGRAY,  BLACK);
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth / 2 + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth / 2 + 1 + strlen(uint8Item.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows( MenuRectangleStartX + MenuRectangleWidth / 2 + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + MenuRectangleWidth / 2 + 1 + strlen(uint8Item.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN( MenuRectangleStartX + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, WHITE,  BLACK);
 					}
 					else if (howToDraw == DOWN)
 					{
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + 1 + strlen(uint8Item.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows( MenuRectangleStartX + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + 1 + strlen(uint8Item.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN( MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								uint8Item.itemsArray[i], &Font12, LGRAY,  BLACK);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN( MenuRectangleStartX + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, WHITE,  BLACK);
 					}
 					else if (howToDraw == UP)
 					{
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + 1 + strlen(uint8Item.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows(MenuRectangleStartX + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + 1 + strlen(uint8Item.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN( MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								uint8Item.itemsArray[i], &Font12, LGRAY,  BLACK);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN( MenuRectangleStartX + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, WHITE,  BLACK);
 					}
 				}
@@ -174,13 +197,13 @@ void updateUint8Item(MENUDRAWType howToDraw)
 				{
 					if (howToDraw == RIGHT)
 					{
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + 1 + strlen(uint8Item.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows( MenuRectangleStartX + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + 1 + strlen(uint8Item.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN( MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								uint8Item.itemsArray[i], &Font12, WHITE,  BLACK);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN( MenuRectangleStartX + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, LGRAY,  BLACK);
 					}
 					else if (howToDraw == DOWN)
@@ -195,7 +218,7 @@ void updateUint8Item(MENUDRAWType howToDraw)
 						}
 						uint8Item.deltaMultiplier = uint8MultiplierArray[multiplierIndex];
 						sprintf(localString,"%03d",uint8Item.deltaMultiplier);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN( MenuRectangleStartX + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, LGRAY,  BLACK);
 					}
 					else if (howToDraw == UP)
@@ -203,19 +226,19 @@ void updateUint8Item(MENUDRAWType howToDraw)
 						multiplierIndex = fmin(multiplierIndex + 1, 7);
 						uint8Item.deltaMultiplier = uint8MultiplierArray[multiplierIndex];
 						sprintf(localString,"%03d",uint8Item.deltaMultiplier);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN( MenuRectangleStartX + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, LGRAY,  BLACK);
 					}
 				}
 				else
 				{
-					Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-							HorizontalMenuRectangleStartX + 1 + strlen(uint8Item.itemsArray[i]) * Font12.Width,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-					Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+					Paint_ClearWindows( MenuRectangleStartX + 1,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+							MenuRectangleStartX + 1 + strlen(uint8Item.itemsArray[i]) * Font12.Width,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+					Paint_DrawString_EN( MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 							uint8Item.itemsArray[i], &Font12, WHITE,  BLACK);
-					Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+					Paint_DrawString_EN( MenuRectangleStartX + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 							localString, &Font12, WHITE,  BLACK);
 				}
 			}
@@ -224,17 +247,17 @@ void updateUint8Item(MENUDRAWType howToDraw)
 		{
 			if (howToDraw == FULL)
 			{
-				Paint_DrawRectangle( HorizontalMenuRectangleStartX, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i,
-						HorizontalMenuRectangleStartX+HorizontalMenuRectangleWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i + 1),
+				Paint_DrawRectangle( MenuRectangleStartX, MenuRectangleStartY + MenuRectangleHeight * i,
+						MenuRectangleStartX + MenuRectangleWidth, MenuRectangleStartY + MenuRectangleHeight * (i + 1),
 						BLACK, DOT_PIXEL_1X1, DRAW_FILL_EMPTY );
 				if (currentCursorPosition.cursorPosition == i)
 				{
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
+					centeredString( DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * i + 1,
 							uint8Item.itemsArray[i], BLACK, LGRAY, 16, Font12);
 				}
 				else
 				{
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
+					centeredString( DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * i + 1,
 							uint8Item.itemsArray[i], BLACK, WHITE, 16, Font12);
 				}
 			}
@@ -242,18 +265,18 @@ void updateUint8Item(MENUDRAWType howToDraw)
 			{
 				if ( (currentCursorPosition.cursorPosition == 4) && (i == 4) )
 				{
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
+					centeredString( DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * i + 1,
 							uint8Item.itemsArray[i], BLACK, LGRAY, 16, Font12);
 				}
 				else if ( (currentCursorPosition.cursorPosition == 5) && (i == 5) )
 				{
-					Paint_ClearWindows(HorizontalDisplayCenterWidth,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1,
-							HorizontalDisplayCenterWidth + strlen(uint8Item.itemsArray[i - 1]) * Font12.Width,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1 + Font12.Height, WHITE);
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1,
+					Paint_ClearWindows( DisplayCenterWidth,
+							MenuRectangleStartY + MenuRectangleHeight * (i - 1) + 1,
+							DisplayCenterWidth + strlen(uint8Item.itemsArray[i - 1]) * Font12.Width,
+							MenuRectangleStartY + MenuRectangleHeight * (i - 1) + 1 + Font12.Height, WHITE);
+					centeredString( DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * (i - 1) + 1,
 							uint8Item.itemsArray[(i - 1)], BLACK, WHITE, 16, Font12);
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
+					centeredString( DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * i + 1,
 							uint8Item.itemsArray[i], BLACK, LGRAY, 16, Font12);
 				}
 			}
@@ -261,24 +284,24 @@ void updateUint8Item(MENUDRAWType howToDraw)
 			{
 				if ( (currentCursorPosition.cursorPosition == 3) && (i == 4) )
 				{
-					Paint_ClearWindows(HorizontalDisplayCenterWidth - strlen(uint8Item.itemsArray[i]) * Font12.Width / 2,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-							HorizontalDisplayCenterWidth + strlen(uint8Item.itemsArray[i]) * Font12.Width /2,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+					Paint_ClearWindows(DisplayCenterWidth - strlen(uint8Item.itemsArray[i]) * Font12.Width / 2,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+							DisplayCenterWidth + strlen(uint8Item.itemsArray[i]) * Font12.Width /2,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+					centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 							uint8Item.itemsArray[(i)], BLACK, WHITE, 16, Font12);
 					//						centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
 					//								uint16Item.itemsArray[i], BLACK, LGRAY, 16);
 				}
 				else if ( (currentCursorPosition.cursorPosition == 4) && (i == 5) )
 				{
-					Paint_ClearWindows(HorizontalDisplayCenterWidth - strlen(uint8Item.itemsArray[i]) * Font12.Width / 2,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-							HorizontalDisplayCenterWidth + strlen(uint8Item.itemsArray[i]) * Font12.Width /2,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+					Paint_ClearWindows( DisplayCenterWidth - strlen(uint8Item.itemsArray[i]) * Font12.Width / 2,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+							DisplayCenterWidth + strlen(uint8Item.itemsArray[i]) * Font12.Width /2,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+					centeredString( DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 							uint8Item.itemsArray[(i)], BLACK, WHITE, 16, Font12);
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1,
+					centeredString( DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * (i - 1) + 1,
 							uint8Item.itemsArray[i - 1], BLACK, LGRAY, 16, Font12);
 				}
 			}
@@ -288,25 +311,49 @@ void updateUint8Item(MENUDRAWType howToDraw)
 
 void updateUint16Item(MENUDRAWType howToDraw)
 {
+
+	uint8_t MenuRectangleStartX = 0;
+	uint8_t MenuRectangleStartY = 0;
+	uint8_t MenuRectangleHeight = 0;
+	uint8_t MenuRectangleWidth = 0;
+	uint8_t DisplayCenterWidth = 0;
+
+	if (isPortrait)
+	{
+		MenuRectangleStartX = VerticalMenuRectangleStartX;
+		MenuRectangleStartY = VerticalMenuRectangleStartY;
+		MenuRectangleHeight = VerticalMenuRectangleHeight;
+		MenuRectangleWidth = VerticalMenuRectangleWidth;
+		DisplayCenterWidth = VerticalDisplayCenterWidth;
+	}
+	else
+	{
+		MenuRectangleStartX = HorizontalMenuRectangleStartX;
+		MenuRectangleStartY = HorizontalMenuRectangleStartY;
+		MenuRectangleHeight = HorizontalMenuRectangleHeight;
+		MenuRectangleWidth = HorizontalMenuRectangleWidth;
+		DisplayCenterWidth = HorizontalDisplayCenterWidth;
+	}
+
 	for (int i = 0; i < uint16Item.numberOfItemsInPage ; i++)
 	{
 		if  ( (i < 2) && (howToDraw == FULL) )
 		{
-			Paint_DrawRectangle( HorizontalMenuRectangleStartX, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i,
-					HorizontalMenuRectangleStartX+HorizontalMenuRectangleWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i + 1),
+			Paint_DrawRectangle( MenuRectangleStartX, MenuRectangleStartY + MenuRectangleHeight * i,
+					MenuRectangleStartX + MenuRectangleWidth, MenuRectangleStartY + MenuRectangleHeight * (i + 1),
 					BLACK, DOT_PIXEL_1X1, DRAW_FILL_EMPTY );
-			centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
+			centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * i + 1,
 					uint16Item.itemsArray[i], BLACK, WHITE, 16, Font12);
 		}
 		if ( (i >= 2) && (i < uint16Item.numberOfItemsInPage - 2) )
 		{
 			if (howToDraw == FULL)
 			{
-				Paint_DrawRectangle( HorizontalMenuRectangleStartX, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i,
-						HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth / 2, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i + 1),
+				Paint_DrawRectangle( MenuRectangleStartX, MenuRectangleStartY + MenuRectangleHeight * i,
+						MenuRectangleStartX + MenuRectangleWidth / 2, MenuRectangleStartY + MenuRectangleHeight * (i + 1),
 						BLACK, DOT_PIXEL_1X1, DRAW_FILL_EMPTY );
-				Paint_DrawRectangle( HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth / 2, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i,
-						HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i + 1),
+				Paint_DrawRectangle( MenuRectangleStartX + MenuRectangleWidth / 2, MenuRectangleStartY + MenuRectangleHeight * i,
+						MenuRectangleStartX + MenuRectangleWidth, MenuRectangleStartY + MenuRectangleHeight * (i + 1),
 						BLACK, DOT_PIXEL_1X1, DRAW_FILL_EMPTY );
 			}
 
@@ -318,35 +365,35 @@ void updateUint16Item(MENUDRAWType howToDraw)
 				{
 					if ( (howToDraw == LEFT) || (howToDraw == FULL) )
 					{
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								uint16Item.itemsArray[i], &Font12, LGRAY,  BLACK);
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth / 2 + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth / 2 + 1 + strlen(uint16Item.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows(MenuRectangleStartX + MenuRectangleWidth / 2 + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + MenuRectangleWidth / 2 + 1 + strlen(uint16Item.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, WHITE,  BLACK);
 					}
 					else if (howToDraw == DOWN)
 					{
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + 1 + strlen(uint16Item.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows(MenuRectangleStartX + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + 1 + strlen(uint16Item.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								uint16Item.itemsArray[i], &Font12, WHITE,  BLACK);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, WHITE,  BLACK);
 					}
 					else if (howToDraw == UP)
 					{
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + 1 + strlen(uint16Item.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows(MenuRectangleStartX + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + 1 + strlen(uint16Item.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								uint16Item.itemsArray[i], &Font12, LGRAY,  BLACK);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, WHITE,  BLACK);
 					}
 
@@ -355,13 +402,13 @@ void updateUint16Item(MENUDRAWType howToDraw)
 				{
 					if (howToDraw == RIGHT)
 					{
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + 1 + strlen(uint16Item.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows(MenuRectangleStartX + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + 1 + strlen(uint16Item.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								uint16Item.itemsArray[i], &Font12, WHITE,  BLACK);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, LGRAY,  BLACK);
 					}
 					else if (howToDraw == DOWN)
@@ -376,26 +423,26 @@ void updateUint16Item(MENUDRAWType howToDraw)
 						}
 
 						sprintf(localString,"%04d",uint16Item.startValue);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, LGRAY,  BLACK);
 					}
 					else if (howToDraw == UP)
 					{
 						uint16Item.startValue = fmin(uint16Item.startValue + uint16Item.deltaMultiplier, uint16Item.maxValue * 1.0);
 						sprintf(localString,"%04d",uint16Item.startValue);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, LGRAY,  BLACK);
 					}
 				}
 				else
 				{
-					Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-							HorizontalMenuRectangleStartX + 1 + strlen(uint16Item.itemsArray[i]) * Font12.Width,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-					Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+					Paint_ClearWindows(MenuRectangleStartX + 1,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+							MenuRectangleStartX + 1 + strlen(uint16Item.itemsArray[i]) * Font12.Width,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+					Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 							uint16Item.itemsArray[i], &Font12, WHITE,  BLACK);
-					Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+					Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 							localString, &Font12, WHITE,  BLACK);
 				}
 			}
@@ -408,35 +455,35 @@ void updateUint16Item(MENUDRAWType howToDraw)
 				{
 					if ( (howToDraw == LEFT) || (howToDraw == FULL) )
 					{
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								uint16Item.itemsArray[i], &Font12, LGRAY,  BLACK);
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth / 2 + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth / 2 + 1 + strlen(uint16Item.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows(MenuRectangleStartX + MenuRectangleWidth / 2 + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + MenuRectangleWidth / 2 + 1 + strlen(uint16Item.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, WHITE,  BLACK);
 					}
 					else if (howToDraw == DOWN)
 					{
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + 1 + strlen(uint16Item.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows(MenuRectangleStartX + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + 1 + strlen(uint16Item.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								uint16Item.itemsArray[i], &Font12, LGRAY,  BLACK);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, WHITE,  BLACK);
 					}
 					else if (howToDraw == UP)
 					{
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + 1 + strlen(uint16Item.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows(MenuRectangleStartX + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + 1 + strlen(uint16Item.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								uint16Item.itemsArray[i], &Font12, LGRAY,  BLACK);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, WHITE,  BLACK);
 					}
 				}
@@ -444,13 +491,13 @@ void updateUint16Item(MENUDRAWType howToDraw)
 				{
 					if (howToDraw == RIGHT)
 					{
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + 1 + strlen(uint16Item.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows(MenuRectangleStartX + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + 1 + strlen(uint16Item.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								uint16Item.itemsArray[i], &Font12, WHITE,  BLACK);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, LGRAY,  BLACK);
 					}
 					else if (howToDraw == DOWN)
@@ -465,7 +512,7 @@ void updateUint16Item(MENUDRAWType howToDraw)
 						}
 						uint16Item.deltaMultiplier = uint16MultiplierArray[multiplierIndex];
 						sprintf(localString,"%04d",uint16Item.deltaMultiplier);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, LGRAY,  BLACK);
 					}
 					else if (howToDraw == UP)
@@ -473,7 +520,7 @@ void updateUint16Item(MENUDRAWType howToDraw)
 						multiplierIndex = fmin(multiplierIndex + 1, 7);
 						uint16Item.deltaMultiplier = uint16MultiplierArray[multiplierIndex];
 						sprintf(localString,"%04d",uint16Item.deltaMultiplier);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, LGRAY,  BLACK);
 					}
 					//						if (howToDraw == RIGHT)
@@ -501,13 +548,13 @@ void updateUint16Item(MENUDRAWType howToDraw)
 				}
 				else
 				{
-					Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-							HorizontalMenuRectangleStartX + 1 + strlen(uint16Item.itemsArray[i]) * Font12.Width,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-					Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+					Paint_ClearWindows(MenuRectangleStartX + 1,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+							MenuRectangleStartX + 1 + strlen(uint16Item.itemsArray[i]) * Font12.Width,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+					Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 							uint16Item.itemsArray[i], &Font12, WHITE,  BLACK);
-					Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+					Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 							localString, &Font12, WHITE,  BLACK);
 				}
 			}
@@ -519,17 +566,17 @@ void updateUint16Item(MENUDRAWType howToDraw)
 		{
 			if (howToDraw == FULL)
 			{
-				Paint_DrawRectangle( HorizontalMenuRectangleStartX, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i,
-						HorizontalMenuRectangleStartX+HorizontalMenuRectangleWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i + 1),
+				Paint_DrawRectangle( MenuRectangleStartX, MenuRectangleStartY + MenuRectangleHeight * i,
+						MenuRectangleStartX + MenuRectangleWidth, MenuRectangleStartY + MenuRectangleHeight * (i + 1),
 						BLACK, DOT_PIXEL_1X1, DRAW_FILL_EMPTY );
 				if (currentCursorPosition.cursorPosition == i)
 				{
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
+					centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * i + 1,
 							uint16Item.itemsArray[i], BLACK, LGRAY, 16, Font12);
 				}
 				else
 				{
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
+					centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * i + 1,
 							uint16Item.itemsArray[i], BLACK, WHITE, 16, Font12);
 				}
 			}
@@ -537,18 +584,18 @@ void updateUint16Item(MENUDRAWType howToDraw)
 			{
 				if ( (currentCursorPosition.cursorPosition == 4) && (i == 4) )
 				{
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
+					centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * i + 1,
 							uint16Item.itemsArray[i], BLACK, LGRAY, 16, Font12);
 				}
 				else if ( (currentCursorPosition.cursorPosition == 5) && (i == 5) )
 				{
-					Paint_ClearWindows(HorizontalDisplayCenterWidth,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1,
-							HorizontalDisplayCenterWidth + strlen(uint16Item.itemsArray[i - 1]) * Font12.Width,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1 + Font12.Height, WHITE);
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1,
+					Paint_ClearWindows(DisplayCenterWidth,
+							MenuRectangleStartY + MenuRectangleHeight * (i - 1) + 1,
+							DisplayCenterWidth + strlen(uint16Item.itemsArray[i - 1]) * Font12.Width,
+							MenuRectangleStartY + MenuRectangleHeight * (i - 1) + 1 + Font12.Height, WHITE);
+					centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * (i - 1) + 1,
 							uint16Item.itemsArray[(i - 1)], BLACK, WHITE, 16, Font12);
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
+					centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * i + 1,
 							uint16Item.itemsArray[i], BLACK, LGRAY, 16, Font12);
 				}
 			}
@@ -556,24 +603,24 @@ void updateUint16Item(MENUDRAWType howToDraw)
 			{
 				if ( (currentCursorPosition.cursorPosition == 3) && (i == 4) )
 				{
-					Paint_ClearWindows(HorizontalDisplayCenterWidth - strlen(uint16Item.itemsArray[i]) * Font12.Width / 2,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-							HorizontalDisplayCenterWidth + strlen(uint16Item.itemsArray[i]) * Font12.Width /2,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+					Paint_ClearWindows(DisplayCenterWidth - strlen(uint16Item.itemsArray[i]) * Font12.Width / 2,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+							DisplayCenterWidth + strlen(uint16Item.itemsArray[i]) * Font12.Width /2,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+					centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 							uint16Item.itemsArray[(i)], BLACK, WHITE, 16, Font12);
 					//						centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
 					//								uint16Item.itemsArray[i], BLACK, LGRAY, 16);
 				}
 				else if ( (currentCursorPosition.cursorPosition == 4) && (i == 5) )
 				{
-					Paint_ClearWindows(HorizontalDisplayCenterWidth - strlen(uint16Item.itemsArray[i]) * Font12.Width / 2,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-							HorizontalDisplayCenterWidth + strlen(uint16Item.itemsArray[i]) * Font12.Width /2,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+					Paint_ClearWindows(DisplayCenterWidth - strlen(uint16Item.itemsArray[i]) * Font12.Width / 2,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+							DisplayCenterWidth + strlen(uint16Item.itemsArray[i]) * Font12.Width /2,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+					centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 							uint16Item.itemsArray[(i)], BLACK, WHITE, 16, Font12);
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1,
+					centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * (i - 1) + 1,
 							uint16Item.itemsArray[i - 1], BLACK, LGRAY, 16, Font12);
 				}
 			}
@@ -583,25 +630,48 @@ void updateUint16Item(MENUDRAWType howToDraw)
 
 void updateUint32Item(MENUDRAWType howToDraw)
 {
+	uint8_t MenuRectangleStartX = 0;
+	uint8_t MenuRectangleStartY = 0;
+	uint8_t MenuRectangleHeight = 0;
+	uint8_t MenuRectangleWidth = 0;
+	uint8_t DisplayCenterWidth = 0;
+
+	if (isPortrait)
+	{
+		MenuRectangleStartX = VerticalMenuRectangleStartX;
+		MenuRectangleStartY = VerticalMenuRectangleStartY;
+		MenuRectangleHeight = VerticalMenuRectangleHeight;
+		MenuRectangleWidth = VerticalMenuRectangleWidth;
+		DisplayCenterWidth = VerticalDisplayCenterWidth;
+	}
+	else
+	{
+		MenuRectangleStartX = HorizontalMenuRectangleStartX;
+		MenuRectangleStartY = HorizontalMenuRectangleStartY;
+		MenuRectangleHeight = HorizontalMenuRectangleHeight;
+		MenuRectangleWidth = HorizontalMenuRectangleWidth;
+		DisplayCenterWidth = HorizontalDisplayCenterWidth;
+	}
+
 	for (int i = 0; i < uint32Item.numberOfItemsInPage ; i++)
 	{
 		if  ( (i < 2) && (howToDraw == FULL) )
 		{
-			Paint_DrawRectangle( HorizontalMenuRectangleStartX, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i,
-					HorizontalMenuRectangleStartX+HorizontalMenuRectangleWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i + 1),
+			Paint_DrawRectangle( MenuRectangleStartX, MenuRectangleStartY + MenuRectangleHeight * i,
+					MenuRectangleStartX + MenuRectangleWidth, MenuRectangleStartY + MenuRectangleHeight * (i + 1),
 					BLACK, DOT_PIXEL_1X1, DRAW_FILL_EMPTY );
-			centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
+			centeredString( DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * i + 1,
 					uint32Item.itemsArray[i], BLACK, WHITE, 16, Font12);
 		}
 		if ( (i >= 2) && (i < uint32Item.numberOfItemsInPage - 2) )
 		{
 			if (howToDraw == FULL)
 			{
-				Paint_DrawRectangle( HorizontalMenuRectangleStartX, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i,
-						HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth / 2, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i + 1),
+				Paint_DrawRectangle( MenuRectangleStartX, MenuRectangleStartY + MenuRectangleHeight * i,
+						MenuRectangleStartX + MenuRectangleWidth / 2, MenuRectangleStartY + MenuRectangleHeight * (i + 1),
 						BLACK, DOT_PIXEL_1X1, DRAW_FILL_EMPTY );
-				Paint_DrawRectangle( HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth / 2, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i,
-						HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i + 1),
+				Paint_DrawRectangle( MenuRectangleStartX + MenuRectangleWidth / 2, MenuRectangleStartY + MenuRectangleHeight * i,
+						MenuRectangleStartX + MenuRectangleWidth, MenuRectangleStartY + MenuRectangleHeight * (i + 1),
 						BLACK, DOT_PIXEL_1X1, DRAW_FILL_EMPTY );
 			}
 
@@ -613,35 +683,35 @@ void updateUint32Item(MENUDRAWType howToDraw)
 				{
 					if ( (howToDraw == LEFT) || (howToDraw == FULL) )
 					{
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN( MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								uint32Item.itemsArray[i], &Font12, LGRAY,  BLACK);
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth / 2 + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth / 2 + 1 + strlen(uint32Item.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows( MenuRectangleStartX + MenuRectangleWidth / 2 + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + MenuRectangleWidth / 2 + 1 + strlen(uint32Item.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN( MenuRectangleStartX + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, WHITE,  BLACK);
 					}
 					else if (howToDraw == DOWN)
 					{
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + 1 + strlen(uint32Item.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows(MenuRectangleStartX + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + 1 + strlen(uint32Item.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								uint32Item.itemsArray[i], &Font12, WHITE,  BLACK);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, WHITE,  BLACK);
 					}
 					else if (howToDraw == UP)
 					{
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + 1 + strlen(uint32Item.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows(MenuRectangleStartX + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + 1 + strlen(uint32Item.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								uint32Item.itemsArray[i], &Font12, LGRAY,  BLACK);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, WHITE,  BLACK);
 					}
 
@@ -650,13 +720,13 @@ void updateUint32Item(MENUDRAWType howToDraw)
 				{
 					if (howToDraw == RIGHT)
 					{
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + 1 + strlen(uint32Item.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows(MenuRectangleStartX + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + 1 + strlen(uint32Item.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								uint32Item.itemsArray[i], &Font12, WHITE,  BLACK);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, LGRAY,  BLACK);
 					}
 					else if (howToDraw == DOWN)
@@ -671,26 +741,26 @@ void updateUint32Item(MENUDRAWType howToDraw)
 						}
 
 						sprintf(localString,"%05ld",uint32Item.startValue);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, LGRAY,  BLACK);
 					}
 					else if (howToDraw == UP)
 					{
 						uint32Item.startValue = fmin(uint32Item.startValue + uint32Item.deltaMultiplier, uint32Item.maxValue * 1.0);
 						sprintf(localString,"%05ld",uint32Item.startValue);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, LGRAY,  BLACK);
 					}
 				}
 				else
 				{
-					Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-							HorizontalMenuRectangleStartX + 1 + strlen(uint32Item.itemsArray[i]) * Font12.Width,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-					Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+					Paint_ClearWindows(MenuRectangleStartX + 1,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+							MenuRectangleStartX + 1 + strlen(uint32Item.itemsArray[i]) * Font12.Width,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+					Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 							uint32Item.itemsArray[i], &Font12, WHITE,  BLACK);
-					Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+					Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 							localString, &Font12, WHITE,  BLACK);
 				}
 			}
@@ -703,35 +773,35 @@ void updateUint32Item(MENUDRAWType howToDraw)
 				{
 					if ( (howToDraw == LEFT) || (howToDraw == FULL) )
 					{
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								uint32Item.itemsArray[i], &Font12, LGRAY,  BLACK);
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth / 2 + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth / 2 + 1 + strlen(uint32Item.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows(MenuRectangleStartX + MenuRectangleWidth / 2 + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + MenuRectangleWidth / 2 + 1 + strlen(uint32Item.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, WHITE,  BLACK);
 					}
 					else if (howToDraw == DOWN)
 					{
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + 1 + strlen(uint32Item.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows(MenuRectangleStartX + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + 1 + strlen(uint32Item.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								uint32Item.itemsArray[i], &Font12, LGRAY,  BLACK);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, WHITE,  BLACK);
 					}
 					else if (howToDraw == UP)
 					{
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + 1 + strlen(uint32Item.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows(MenuRectangleStartX + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + 1 + strlen(uint32Item.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								uint32Item.itemsArray[i], &Font12, LGRAY,  BLACK);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, WHITE,  BLACK);
 					}
 				}
@@ -739,13 +809,13 @@ void updateUint32Item(MENUDRAWType howToDraw)
 				{
 					if (howToDraw == RIGHT)
 					{
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + 1 + strlen(uint32Item.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows(MenuRectangleStartX + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + 1 + strlen(uint32Item.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								uint32Item.itemsArray[i], &Font12, WHITE,  BLACK);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, LGRAY,  BLACK);
 					}
 					else if (howToDraw == DOWN)
@@ -761,7 +831,7 @@ void updateUint32Item(MENUDRAWType howToDraw)
 						}
 						uint32Item.deltaMultiplier = uint32MultiplierArray[multiplierIndex];
 						sprintf(localString,"%04ld",uint32Item.deltaMultiplier);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, LGRAY,  BLACK);
 					}
 					else if (howToDraw == UP)
@@ -769,19 +839,19 @@ void updateUint32Item(MENUDRAWType howToDraw)
 						multiplierIndex = fmin(multiplierIndex + 1, 7);
 						uint32Item.deltaMultiplier = uint32MultiplierArray[multiplierIndex];
 						sprintf(localString,"%04ld",uint32Item.deltaMultiplier);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, LGRAY,  BLACK);
 					}
 				}
 				else
 				{
-					Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-							HorizontalMenuRectangleStartX + 1 + strlen(uint32Item.itemsArray[i]) * Font12.Width,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-					Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+					Paint_ClearWindows(MenuRectangleStartX + 1,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+							MenuRectangleStartX + 1 + strlen(uint32Item.itemsArray[i]) * Font12.Width,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+					Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 							uint32Item.itemsArray[i], &Font12, WHITE,  BLACK);
-					Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+					Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 							localString, &Font12, WHITE,  BLACK);
 				}
 			}
@@ -790,17 +860,17 @@ void updateUint32Item(MENUDRAWType howToDraw)
 		{
 			if (howToDraw == FULL)
 			{
-				Paint_DrawRectangle( HorizontalMenuRectangleStartX, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i,
-						HorizontalMenuRectangleStartX+HorizontalMenuRectangleWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i + 1),
+				Paint_DrawRectangle( MenuRectangleStartX, MenuRectangleStartY + MenuRectangleHeight * i,
+						MenuRectangleStartX+MenuRectangleWidth, MenuRectangleStartY + MenuRectangleHeight * (i + 1),
 						BLACK, DOT_PIXEL_1X1, DRAW_FILL_EMPTY );
 				if (currentCursorPosition.cursorPosition == i)
 				{
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
+					centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * i + 1,
 							uint32Item.itemsArray[i], BLACK, LGRAY, 16, Font12);
 				}
 				else
 				{
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
+					centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * i + 1,
 							uint32Item.itemsArray[i], BLACK, WHITE, 16, Font12);
 				}
 			}
@@ -808,18 +878,18 @@ void updateUint32Item(MENUDRAWType howToDraw)
 			{
 				if ( (currentCursorPosition.cursorPosition == 4) && (i == 4) )
 				{
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
+					centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * i + 1,
 							uint32Item.itemsArray[i], BLACK, LGRAY, 16, Font12);
 				}
 				else if ( (currentCursorPosition.cursorPosition == 5) && (i == 5) )
 				{
-					Paint_ClearWindows(HorizontalDisplayCenterWidth,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1,
-							HorizontalDisplayCenterWidth + strlen(uint32Item.itemsArray[i - 1]) * Font12.Width,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1 + Font12.Height, WHITE);
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1,
+					Paint_ClearWindows(DisplayCenterWidth,
+							MenuRectangleStartY + MenuRectangleHeight * (i - 1) + 1,
+							DisplayCenterWidth + strlen(uint32Item.itemsArray[i - 1]) * Font12.Width,
+							MenuRectangleStartY + MenuRectangleHeight * (i - 1) + 1 + Font12.Height, WHITE);
+					centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * (i - 1) + 1,
 							uint32Item.itemsArray[(i - 1)], BLACK, WHITE, 16, Font12);
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
+					centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * i + 1,
 							uint32Item.itemsArray[i], BLACK, LGRAY, 16, Font12);
 				}
 			}
@@ -827,24 +897,24 @@ void updateUint32Item(MENUDRAWType howToDraw)
 			{
 				if ( (currentCursorPosition.cursorPosition == 3) && (i == 4) )
 				{
-					Paint_ClearWindows(HorizontalDisplayCenterWidth - strlen(uint32Item.itemsArray[i]) * Font12.Width / 2,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-							HorizontalDisplayCenterWidth + strlen(uint32Item.itemsArray[i]) * Font12.Width /2,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+					Paint_ClearWindows(DisplayCenterWidth - strlen(uint32Item.itemsArray[i]) * Font12.Width / 2,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+							DisplayCenterWidth + strlen(uint32Item.itemsArray[i]) * Font12.Width /2,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+					centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 							uint32Item.itemsArray[(i)], BLACK, WHITE, 16, Font12);
 					//						centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
 					//								uint16Item.itemsArray[i], BLACK, LGRAY, 16);
 				}
 				else if ( (currentCursorPosition.cursorPosition == 4) && (i == 5) )
 				{
-					Paint_ClearWindows(HorizontalDisplayCenterWidth - strlen(uint32Item.itemsArray[i]) * Font12.Width / 2,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-							HorizontalDisplayCenterWidth + strlen(uint32Item.itemsArray[i]) * Font12.Width /2,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+					Paint_ClearWindows(DisplayCenterWidth - strlen(uint32Item.itemsArray[i]) * Font12.Width / 2,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+							DisplayCenterWidth + strlen(uint32Item.itemsArray[i]) * Font12.Width /2,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+					centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 							uint32Item.itemsArray[(i)], BLACK, WHITE, 16, Font12);
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1,
+					centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * (i - 1) + 1,
 							uint32Item.itemsArray[i - 1], BLACK, LGRAY, 16, Font12);
 				}
 			}
@@ -854,25 +924,48 @@ void updateUint32Item(MENUDRAWType howToDraw)
 
 void updateStringItem(MENUDRAWType howToDraw)
 {
+	uint8_t MenuRectangleStartX = 0;
+	uint8_t MenuRectangleStartY = 0;
+	uint8_t MenuRectangleHeight = 0;
+	uint8_t MenuRectangleWidth = 0;
+	uint8_t DisplayCenterWidth = 0;
+
+	if (isPortrait)
+	{
+		MenuRectangleStartX = VerticalMenuRectangleStartX;
+		MenuRectangleStartY = VerticalMenuRectangleStartY;
+		MenuRectangleHeight = VerticalMenuRectangleHeight;
+		MenuRectangleWidth = VerticalMenuRectangleWidth;
+		DisplayCenterWidth = VerticalDisplayCenterWidth;
+	}
+	else
+	{
+		MenuRectangleStartX = HorizontalMenuRectangleStartX;
+		MenuRectangleStartY = HorizontalMenuRectangleStartY;
+		MenuRectangleHeight = HorizontalMenuRectangleHeight;
+		MenuRectangleWidth = HorizontalMenuRectangleWidth;
+		DisplayCenterWidth = HorizontalDisplayCenterWidth;
+	}
+
 	for (int i = 0; i < stringItem.numberOfItemsInPage ; i++)
 	{
 		if  ( (i < 2) && (howToDraw == FULL) )
 		{
-			Paint_DrawRectangle( HorizontalMenuRectangleStartX, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i,
-					HorizontalMenuRectangleStartX+HorizontalMenuRectangleWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i + 1),
+			Paint_DrawRectangle( MenuRectangleStartX, MenuRectangleStartY + MenuRectangleHeight * i,
+					MenuRectangleStartX + MenuRectangleWidth, MenuRectangleStartY + MenuRectangleHeight * (i + 1),
 					BLACK, DOT_PIXEL_1X1, DRAW_FILL_EMPTY );
-			centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
+			centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * i + 1,
 					stringItem.itemsArray[i], BLACK, WHITE, 16, Font12);
 		}
 		if ( (i >= 2) && (i < stringItem.numberOfItemsInPage - 2) )
 		{
 			if (howToDraw == FULL)
 			{
-				Paint_DrawRectangle( HorizontalMenuRectangleStartX, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i,
-						HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth / 2, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i + 1),
+				Paint_DrawRectangle( MenuRectangleStartX, MenuRectangleStartY + MenuRectangleHeight * i,
+						MenuRectangleStartX + MenuRectangleWidth / 2, MenuRectangleStartY + MenuRectangleHeight * (i + 1),
 						BLACK, DOT_PIXEL_1X1, DRAW_FILL_EMPTY );
-				Paint_DrawRectangle( HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth / 2, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i,
-						HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i + 1),
+				Paint_DrawRectangle( MenuRectangleStartX + MenuRectangleWidth / 2, MenuRectangleStartY + MenuRectangleHeight * i,
+						MenuRectangleStartX + MenuRectangleWidth, MenuRectangleStartY + MenuRectangleHeight * (i + 1),
 						BLACK, DOT_PIXEL_1X1, DRAW_FILL_EMPTY );
 			}
 
@@ -884,35 +977,35 @@ void updateStringItem(MENUDRAWType howToDraw)
 				{
 					if ( (howToDraw == LEFT) || (howToDraw == FULL) )
 					{
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								stringItem.itemsArray[i], &Font12, LGRAY,  BLACK);
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth / 2 + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth / 2 + 1 + strlen(stringItem.valuesArray[stringItem.startValue]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows(MenuRectangleStartX + MenuRectangleWidth / 2 + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + MenuRectangleWidth / 2 + 1 + strlen(stringItem.valuesArray[stringItem.startValue]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								stringItem.valuesArray[stringItem.startValue], &Font12, WHITE,  BLACK);
 					}
 					else if (howToDraw == DOWN)
 					{
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + 1 + strlen(stringItem.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows(MenuRectangleStartX + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + 1 + strlen(stringItem.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								stringItem.itemsArray[i], &Font12, WHITE,  BLACK);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								stringItem.valuesArray[stringItem.startValue], &Font12, WHITE,  BLACK);
 					}
 					else if (howToDraw == UP)
 					{
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + 1 + strlen(stringItem.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows(MenuRectangleStartX + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + 1 + strlen(stringItem.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								stringItem.itemsArray[i], &Font12, LGRAY,  BLACK);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								stringItem.valuesArray[stringItem.startValue], &Font12, WHITE,  BLACK);
 					}
 
@@ -921,39 +1014,39 @@ void updateStringItem(MENUDRAWType howToDraw)
 				{
 					if (howToDraw == RIGHT)
 					{
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + 1 + strlen(stringItem.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows(MenuRectangleStartX + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + 1 + strlen(stringItem.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								stringItem.itemsArray[i], &Font12, WHITE,  BLACK);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								stringItem.valuesArray[stringItem.startValue], &Font12, LGRAY,  BLACK);
 					}
 					else if (howToDraw == DOWN)
 					{
 						stringItem.startValue = fmax(stringItem.startValue - stringItem.deltaMultiplier, stringItem.minValue * 1.0);
 //						sprintf(localString,"%05d",stringItem.startValue);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								stringItem.valuesArray[stringItem.startValue], &Font12, LGRAY,  BLACK);
 					}
 					else if (howToDraw == UP)
 					{
 						stringItem.startValue = fmin(stringItem.startValue + stringItem.deltaMultiplier, stringItem.maxValue * 1.0);
 //						sprintf(localString,"%05d",stringItem.startValue);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								stringItem.valuesArray[stringItem.startValue], &Font12, LGRAY,  BLACK);
 					}
 				}
 				else
 				{
-					Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-							HorizontalMenuRectangleStartX + 1 + strlen(stringItem.itemsArray[i]) * Font12.Width,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-					Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+					Paint_ClearWindows(MenuRectangleStartX + 1,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+							MenuRectangleStartX + 1 + strlen(stringItem.itemsArray[i]) * Font12.Width,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+					Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 							stringItem.itemsArray[i], &Font12, WHITE,  BLACK);
-					Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+					Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 							stringItem.valuesArray[stringItem.startValue], &Font12, WHITE,  BLACK);
 				}
 			}
@@ -966,35 +1059,35 @@ void updateStringItem(MENUDRAWType howToDraw)
 				{
 					if ( (howToDraw == LEFT) || (howToDraw == FULL) )
 					{
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								stringItem.itemsArray[i], &Font12, LGRAY,  BLACK);
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth / 2 + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + HorizontalMenuRectangleWidth / 2 + 1 + strlen(stringItem.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows(MenuRectangleStartX + MenuRectangleWidth / 2 + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + MenuRectangleWidth / 2 + 1 + strlen(stringItem.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, WHITE,  BLACK);
 					}
 					else if (howToDraw == DOWN)
 					{
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + 1 + strlen(stringItem.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows(MenuRectangleStartX + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + 1 + strlen(stringItem.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								stringItem.itemsArray[i], &Font12, LGRAY,  BLACK);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, WHITE,  BLACK);
 					}
 					else if (howToDraw == UP)
 					{
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + 1 + strlen(stringItem.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows(MenuRectangleStartX + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + 1 + strlen(stringItem.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								stringItem.itemsArray[i], &Font12, LGRAY,  BLACK);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, WHITE,  BLACK);
 					}
 				}
@@ -1002,13 +1095,13 @@ void updateStringItem(MENUDRAWType howToDraw)
 				{
 					if (howToDraw == RIGHT)
 					{
-						Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-								HorizontalMenuRectangleStartX + 1 + strlen(stringItem.itemsArray[i]) * Font12.Width,
-								HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_ClearWindows(MenuRectangleStartX + 1,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+								MenuRectangleStartX + 1 + strlen(stringItem.itemsArray[i]) * Font12.Width,
+								MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+						Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								stringItem.itemsArray[i], &Font12, WHITE,  BLACK);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, LGRAY,  BLACK);
 					}
 					else if (howToDraw == DOWN)
@@ -1017,7 +1110,7 @@ void updateStringItem(MENUDRAWType howToDraw)
 						multiplierIndex = 0;
 						stringItem.deltaMultiplier = stringMultiplierArray[multiplierIndex];
 						sprintf(localString,"%d",stringItem.deltaMultiplier);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, LGRAY,  BLACK);
 					}
 					else if (howToDraw == UP)
@@ -1025,19 +1118,19 @@ void updateStringItem(MENUDRAWType howToDraw)
 						multiplierIndex = fmin(multiplierIndex + 1, 7);
 						stringItem.deltaMultiplier = stringMultiplierArray[multiplierIndex];
 //						sprintf(localString,"%04d",stringItem.deltaMultiplier);
-						Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+						Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 								localString, &Font12, LGRAY,  BLACK);
 					}
 				}
 				else
 				{
-					Paint_ClearWindows(HorizontalMenuRectangleStartX + 1,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-							HorizontalMenuRectangleStartX + 1 + strlen(stringItem.itemsArray[i]) * Font12.Width,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-					Paint_DrawString_EN(HorizontalMenuRectangleStartX + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+					Paint_ClearWindows(MenuRectangleStartX + 1,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+							MenuRectangleStartX + 1 + strlen(stringItem.itemsArray[i]) * Font12.Width,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+					Paint_DrawString_EN(MenuRectangleStartX + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 							stringItem.itemsArray[i], &Font12, WHITE,  BLACK);
-					Paint_DrawString_EN(HorizontalMenuRectangleStartX  + HorizontalMenuRectangleWidth / 2 + 1, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+					Paint_DrawString_EN(MenuRectangleStartX  + MenuRectangleWidth / 2 + 1, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 							localString, &Font12, WHITE,  BLACK);
 				}
 			}
@@ -1046,17 +1139,17 @@ void updateStringItem(MENUDRAWType howToDraw)
 		{
 			if (howToDraw == FULL)
 			{
-				Paint_DrawRectangle( HorizontalMenuRectangleStartX, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i,
-						HorizontalMenuRectangleStartX+HorizontalMenuRectangleWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i + 1),
+				Paint_DrawRectangle( MenuRectangleStartX, MenuRectangleStartY + MenuRectangleHeight * i,
+						MenuRectangleStartX+MenuRectangleWidth, MenuRectangleStartY + MenuRectangleHeight * (i + 1),
 						BLACK, DOT_PIXEL_1X1, DRAW_FILL_EMPTY );
 				if (currentCursorPosition.cursorPosition == i)
 				{
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
+					centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * i + 1,
 							stringItem.itemsArray[i], BLACK, LGRAY, 16, Font12);
 				}
 				else
 				{
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
+					centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * i + 1,
 							stringItem.itemsArray[i], BLACK, WHITE, 16, Font12);
 				}
 			}
@@ -1064,18 +1157,18 @@ void updateStringItem(MENUDRAWType howToDraw)
 			{
 				if ( (currentCursorPosition.cursorPosition == 4) && (i == 4) )
 				{
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
+					centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * i + 1,
 							stringItem.itemsArray[i], BLACK, LGRAY, 16, Font12);
 				}
 				else if ( (currentCursorPosition.cursorPosition == 5) && (i == 5) )
 				{
-					Paint_ClearWindows(HorizontalDisplayCenterWidth,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1,
-							HorizontalDisplayCenterWidth + strlen(stringItem.itemsArray[i - 1]) * Font12.Width,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1 + Font12.Height, WHITE);
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1,
+					Paint_ClearWindows(DisplayCenterWidth,
+							MenuRectangleStartY + MenuRectangleHeight * (i - 1) + 1,
+							DisplayCenterWidth + strlen(stringItem.itemsArray[i - 1]) * Font12.Width,
+							MenuRectangleStartY + MenuRectangleHeight * (i - 1) + 1 + Font12.Height, WHITE);
+					centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * (i - 1) + 1,
 							stringItem.itemsArray[(i - 1)], BLACK, WHITE, 16, Font12);
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
+					centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * i + 1,
 							stringItem.itemsArray[i], BLACK, LGRAY, 16, Font12);
 				}
 			}
@@ -1083,24 +1176,24 @@ void updateStringItem(MENUDRAWType howToDraw)
 			{
 				if ( (currentCursorPosition.cursorPosition == 3) && (i == 4) )
 				{
-					Paint_ClearWindows(HorizontalDisplayCenterWidth - strlen(stringItem.itemsArray[i]) * Font12.Width / 2,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-							HorizontalDisplayCenterWidth + strlen(stringItem.itemsArray[i]) * Font12.Width /2,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+					Paint_ClearWindows(DisplayCenterWidth - strlen(stringItem.itemsArray[i]) * Font12.Width / 2,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+							DisplayCenterWidth + strlen(stringItem.itemsArray[i]) * Font12.Width /2,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+					centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 							stringItem.itemsArray[(i)], BLACK, WHITE, 16, Font12);
-					//						centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * i + 1,
+					//						centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * i + 1,
 					//								uint16Item.itemsArray[i], BLACK, LGRAY, 16);
 				}
 				else if ( (currentCursorPosition.cursorPosition == 4) && (i == 5) )
 				{
-					Paint_ClearWindows(HorizontalDisplayCenterWidth - strlen(stringItem.itemsArray[i]) * Font12.Width / 2,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
-							HorizontalDisplayCenterWidth + strlen(stringItem.itemsArray[i]) * Font12.Width /2,
-							HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i) + 1,
+					Paint_ClearWindows(DisplayCenterWidth - strlen(stringItem.itemsArray[i]) * Font12.Width / 2,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
+							DisplayCenterWidth + strlen(stringItem.itemsArray[i]) * Font12.Width /2,
+							MenuRectangleStartY + MenuRectangleHeight * (i) + 1 + Font12.Height, WHITE);
+					centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * (i) + 1,
 							stringItem.itemsArray[(i)], BLACK, WHITE, 16, Font12);
-					centeredString(HorizontalDisplayCenterWidth, HorizontalMenuRectangleStartY + HorizontalMenuRectangleHeight * (i - 1) + 1,
+					centeredString(DisplayCenterWidth, MenuRectangleStartY + MenuRectangleHeight * (i - 1) + 1,
 							stringItem.itemsArray[i - 1], BLACK, LGRAY, 16, Font12);
 				}
 			}

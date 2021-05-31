@@ -13,6 +13,9 @@
 #define statusBarIconWidth 24
 #define statusBarIconHeight 24
 
+#define safeAirBarIconWidth 30
+#define safeAirBarIconHeight 30
+
 #define HorizontalDisplayCenterWidth 80
 #define HorizontalDisplayCenterHeight 64
 
@@ -85,6 +88,93 @@
 #define HorizontalQuestionRectangleHeight 86
 #define HorizontalPopupRectangleHeight HorizontalQuestionRectangleHeight + HorizontalMenuRectangleHeight
 
+
+
+
+
+
+
+#define VerticalDisplayCenterWidth 64
+#define VerticalDisplayCenterHeight 80
+
+#define VerticalBluetoothX 56
+#define VerticalBluetoothY 1
+
+#define VerticalTBSSignalX 80
+#define VerticalTBSSignalY 1
+
+#define VerticalBatteryX 104
+#define VerticalBatteryY 1
+
+#define VerticalLogoX 0
+#define VerticalLogoY 0
+
+#define VerticalSafeAirBatteryX 78
+#define VerticalSafeAirBatteryY 92
+
+#define VerticalPltfomTypeX 1
+#define VerticalPltfomTypeY VerticalSafeAirBatteryY
+
+#define VerticalAutoPilotX 1 + 26
+#define VerticalAutoPilotY VerticalSafeAirBatteryY
+
+#define VerticalTriggerModeX 1 + 78
+#define VerticalTriggerModeY VerticalSafeAirBatteryY
+
+#define VerticalSystemTextX VerticalDisplayCenterWidth
+#define VerticalSystemTextY 28
+
+#define VerticalParachute1X 0
+#define VerticalParachute1Y 48
+
+#define VerticalParachute2X 136
+#define VerticalParachute2Y VerticalParachute1Y
+
+#define VerticalSystemStatusTextX VerticalDisplayCenterWidth
+#define VerticalSystemStatusTextY 47
+
+#define VerticalWarningIconX 1
+#define VerticalWarningIconY 80
+
+#define VerticalWarningTextX VerticalDisplayCenterWidth
+#define VerticalWarningTextY 70
+
+#define VerticalSafeAirLogo599IconX 1
+#define VerticalSafeAirLogo599IconY 110
+
+#define VerticalSafeAirLogo7411IconX 1
+#define VerticalSafeAirLogo7411IconY 108
+
+#define VerticalSafeAirBatteryIconX 75
+#define VerticalSafeAirBatteryIconY 101
+
+#define VerticalAltitudeIconX 106
+#define VerticalAltitudeIconY VerticalSafeAirBatteryIconY
+
+#define VerticalAltitudeText1X VerticalAltitudeIconX - 5 + 24
+#define VerticalAltitudeText1Y VerticalSafeAirBatteryIconY + 2
+
+#define VerticalAltitudeText2X VerticalAltitudeIconX - 5 + 24
+#define VerticalAltitudeText2Y VerticalSafeAirBatteryIconY + 2 + 12
+
+#define VerticalMenuRectangleStartX 2
+#define VerticalMenuRectangleStartY 12
+
+#define VerticalMenuRectangleWidth 124
+#define VerticalMenuRectangleHeight 14
+
+#define VerticalQuestionRectangleHeight 86
+#define VerticalPopupRectangleHeight VerticalQuestionRectangleHeight + VerticalMenuRectangleHeight
+
+typedef struct sIMAGE_DATA
+{
+	uint32_t imagePointer;
+	uint16_t imageID;
+	uint8_t width;
+	uint8_t height;
+	bool isDisplayed;
+}tIMAGE_DATA;
+
 extern const unsigned char *previousBluetoothImage;
 extern const unsigned char *previousPlatformImage;
 extern const unsigned char *previousAutoPilotImage;
@@ -101,8 +191,18 @@ extern bool isItemDisplayed;
 extern bool isParameterUpdateRequired;
 extern bool shouldRenderPopup;
 extern bool isPopupDisplayed;
+extern bool isPortrait;
+extern bool renderCompleteFrame;
+extern bool isBluetoothDisplayed;
+extern bool isAutoPilotDisplayed;
+extern bool isPlatformDisplayed;
+extern bool isTriggerModeDisplayed;
+extern bool isSafeAirBatteryDisplayed;
+extern bool isAltitudeDisplayed;
+extern bool isGPSPositionDisplayed;
 
 extern uint32_t lastBITStatusChange;
+extern uint32_t lastFrameDisplayed;
 
 extern tUINT8_ITEM uint8Item;
 extern tUINT16_ITEM uint16Item;
@@ -116,14 +216,19 @@ extern MENUDRAWType popupDrawDirection;
 
 extern tPOPUP popupToShow;
 
+extern tIMAGE_DATA statusBarImageArray[5];
+
+extern uint8_t nextFrameToDraw[40960];
+
 extern void screenInit(void);
 extern void screenClear(void);
-extern void centeredString(uint16_t XCenterstart, uint16_t Ystart, const char * pString, uint16_t textColor, uint16_t backgroundColor, uint8_t numberOfCharactersToClear);
+extern void centeredString(uint16_t XCenterstart, uint16_t Ystart, const char * pString, uint16_t textColor, uint16_t backgroundColor, uint8_t numberOfCharactersToClear, sFONT localFont);
 extern void screenUpdate(bool drawDeltaImage);
 extern void drawMenu(bool clearScreen, MENUDRAWType howToDraw);
 extern void drawItem(bool clearScreen, MENUDRAWType howToDraw);
 extern void drawPopup(void);
 extern void setFullDisplay(void);
+extern void setIconPositionOnScreen(void);
 
 
 #endif /* SRC_SCREENAGENT_H_ */

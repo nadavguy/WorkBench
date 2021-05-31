@@ -13,8 +13,8 @@
 #define statusBarIconWidth 24
 #define statusBarIconHeight 24
 
-#define safeAirBarIconWidth 24
-#define safeAirBarIconHeight 24
+#define safeAirBarIconWidth 30
+#define safeAirBarIconHeight 30
 
 #define HorizontalDisplayCenterWidth 80
 #define HorizontalDisplayCenterHeight 64
@@ -157,10 +157,10 @@
 #define VerticalAltitudeText2X VerticalAltitudeIconX - 5 + 24
 #define VerticalAltitudeText2Y VerticalSafeAirBatteryIconY + 2 + 12
 
-#define VerticalMenuRectangleStartX 24
+#define VerticalMenuRectangleStartX 2
 #define VerticalMenuRectangleStartY 12
 
-#define VerticalMenuRectangleWidth 114
+#define VerticalMenuRectangleWidth 124
 #define VerticalMenuRectangleHeight 14
 
 #define VerticalQuestionRectangleHeight 86
@@ -203,6 +203,7 @@ extern bool isGPSPositionDisplayed;
 
 extern uint32_t lastBITStatusChange;
 extern uint32_t lastFrameDisplayed;
+extern uint32_t lastFullFrameDisplayed;
 
 extern tUINT8_ITEM uint8Item;
 extern tUINT16_ITEM uint16Item;

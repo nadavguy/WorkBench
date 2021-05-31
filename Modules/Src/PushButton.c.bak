@@ -167,6 +167,19 @@ void CheckButtons(void)
 		}
 	}
 
+	if ( (okPinState == GPIO_PIN_SET) /*&& (isPopupDisplayed)*/ )
+	{
+		lastOkButtonUnpress = HAL_GetTick();
+		okButtonPressDuration = 0;
+	}
+	else
+	{
+		if (HAL_GetTick() - lastOkButtonUnpress > 100)
+		{
+			okButtonPressDuration = HAL_GetTick() - lastOkButtonUnpress;
+		}
+	}
+
 	/* Act Upon Received Pattern */
 	if ( (armButtonIsHigh) && (triggerButtonIsHigh) )
 	{
@@ -220,7 +233,7 @@ void CheckButtons(void)
 
 	if ( (currentSmaStatus.smaState != ARMED) && (currentSmaStatus.smaState != TRIGGERED) )
 	{
-		if ( (okPinState == GPIO_PIN_RESET) && (!isMenuDisplayed) && (!isPopupDisplayed) && (HAL_GetTick() - lastOkButtonPress > 100))
+		if ( (okPinState == GPIO_PIN_RESET) && (!isMenuDisplayed) && (!isPopupDisplayed) && (HAL_GetTick() - lastOkButtonPress > 400))
 		{
 			isMenuDisplayed = true;
 			shouldRenderMenu = true;
@@ -230,7 +243,7 @@ void CheckButtons(void)
 			lastOkButtonPress = HAL_GetTick();
 			menuDrawDirection = FULL;
 		}
-		else if ( (okPinState == GPIO_PIN_RESET) && (isMenuDisplayed) && (!isItemDisplayed) && (HAL_GetTick() - lastOkButtonPress > 100) )
+		else if ( (okPinState == GPIO_PIN_RESET) && (isMenuDisplayed) && (!isItemDisplayed) && (HAL_GetTick() - lastOkButtonPress > 400) )
 		{
 			shouldClearScreen = true;
 			itemDrawDirection = FULL;
@@ -238,7 +251,7 @@ void CheckButtons(void)
 			lastOkButtonPress = HAL_GetTick();
 			menuDrawDirection = FULL;
 		}
-		else if ( (okPinState == GPIO_PIN_RESET) && (isMenuDisplayed) && (isItemDisplayed) && (HAL_GetTick() - lastOkButtonPress > 100) )
+		else if ( (okPinState == GPIO_PIN_RESET) && (isMenuDisplayed) && (isItemDisplayed) && (HAL_GetTick() - lastOkButtonPress > 400) )
 		{
 			shouldClearScreen = false;
 			if (currentCursorPosition.cursorPosition == 0x2)
@@ -280,7 +293,7 @@ void CheckButtons(void)
 			lastOkButtonPress = HAL_GetTick();
 
 		}
-		else if ( (downPinState == GPIO_PIN_RESET) && (isMenuDisplayed) && (!isItemDisplayed) && (HAL_GetTick() - lastDownButtonPress > 100) )
+		else if ( (downPinState == GPIO_PIN_RESET) && (isMenuDisplayed) && (!isItemDisplayed) && (HAL_GetTick() - lastDownButtonPress > 400) )
 		{
 			shouldRenderMenu = true;
 			shouldClearScreen = false;
@@ -289,7 +302,7 @@ void CheckButtons(void)
 			lastDownButtonPress = HAL_GetTick();
 			menuDrawDirection = DOWN;
 		}
-		else if ( (downPinState == GPIO_PIN_RESET) && (isItemDisplayed) && (HAL_GetTick() - lastDownButtonPress > 100) )
+		else if ( (downPinState == GPIO_PIN_RESET) && (isItemDisplayed) && (HAL_GetTick() - lastDownButtonPress > 400) )
 		{
 			shouldRenderItem = true;
 			shouldClearScreen = false;
@@ -321,7 +334,7 @@ void CheckButtons(void)
 			lastDownButtonPress = HAL_GetTick();
 			itemDrawDirection = DOWN;
 		}
-		else if ((downPinState == GPIO_PIN_RESET) && (isPopupDisplayed) && (HAL_GetTick() - lastDownButtonPress > 100))
+		else if ((downPinState == GPIO_PIN_RESET) && (isPopupDisplayed) && (HAL_GetTick() - lastDownButtonPress > 400))
 		{
 			if (popupToShow.isQuestion)
 			{
@@ -329,7 +342,7 @@ void CheckButtons(void)
 				popupDrawDirection = DOWN;
 			}
 		}
-		else if ( (upPinState == GPIO_PIN_RESET) && (isMenuDisplayed) && (!isItemDisplayed) && (HAL_GetTick() - lastUpButtonPress > 100) )
+		else if ( (upPinState == GPIO_PIN_RESET) && (isMenuDisplayed) && (!isItemDisplayed) && (HAL_GetTick() - lastUpButtonPress > 400) )
 		{
 			shouldRenderMenu = true;
 			shouldClearScreen = false;
@@ -338,7 +351,7 @@ void CheckButtons(void)
 			lastUpButtonPress = HAL_GetTick();
 			menuDrawDirection = UP;
 		}
-		else if ( (upPinState == GPIO_PIN_RESET) && (isItemDisplayed) && (HAL_GetTick() - lastUpButtonPress > 100) )
+		else if ( (upPinState == GPIO_PIN_RESET) && (isItemDisplayed) && (HAL_GetTick() - lastUpButtonPress > 400) )
 		{
 			shouldRenderItem = true;
 			shouldClearScreen = false;
@@ -370,7 +383,7 @@ void CheckButtons(void)
 			lastUpButtonPress = HAL_GetTick();
 			itemDrawDirection = UP;
 		}
-		else if ((upPinState == GPIO_PIN_RESET) && (isPopupDisplayed) && (HAL_GetTick() - lastDownButtonPress > 100))
+		else if ((upPinState == GPIO_PIN_RESET) && (isPopupDisplayed) && (HAL_GetTick() - lastDownButtonPress > 400))
 		{
 			if (popupToShow.isQuestion)
 			{
@@ -378,21 +391,35 @@ void CheckButtons(void)
 				popupDrawDirection = UP;
 			}
 		}
-		if ( (okPinState == GPIO_PIN_SET) /*&& (isPopupDisplayed)*/ )
-		{
-			lastOkButtonUnpress = HAL_GetTick();
-			okButtonPressDuration = 0;
-		}
-		else
-		{
-			if (HAL_GetTick() - lastOkButtonUnpress > 100)
-			{
-				okButtonPressDuration = HAL_GetTick() - lastOkButtonUnpress;
-			}
-		}
+//		if ( (okPinState == GPIO_PIN_SET) /*&& (isPopupDisplayed)*/ )
+//		{
+//			lastOkButtonUnpress = HAL_GetTick();
+//			okButtonPressDuration = 0;
+//		}
+//		else
+//		{
+//			if (HAL_GetTick() - lastOkButtonUnpress > 100)
+//			{
+//				okButtonPressDuration = HAL_GetTick() - lastOkButtonUnpress;
+//			}
+//		}
 	}
 	else if ( (currentSmaStatus.smaState == ARMED) && (currentSmaStatus.smaState != TRIGGERED) )
 	{
 		//TODO: force disarm logic
+		if ( (!isPopupDisplayed) && (okButtonPressDuration > 1000) )
+		{
+			isPopupDisplayed = true;
+			shouldRenderPopup = true;
+			memcpy(&popupToShow, &safeairForceDisarmMessage, sizeof(popupToShow));
+			screenUpdate(false);
+		}
+//		if ( (isPopupDisplayed) && (okButtonPressDuration > 1000) )
+//		{
+//			isPopupDisplayed = true;
+//			shouldRenderPopup = true;
+//			memcpy(&popupToShow, &safeairForceDisarmMessage, sizeof(popupToShow));
+//			screenUpdate(false);
+//		}
 	}
 }

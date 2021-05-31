@@ -496,7 +496,7 @@ void Paint_DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char,
         {
 
             //To determine whether the font background color and screen background color is consistent
-            if (FONT_BACKGROUND == Color_Background)
+            if (false) // FONT_BACKGROUND == Color_Background
             { //this process is to speed up the scan
                 if (*ptr & (0x80 >> (Column % 8)))
                 {

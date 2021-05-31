@@ -28,7 +28,7 @@
 #define TBS_RX_BUFFER				128
 
 
-typedef enum {NOPLATFORM, M200, M300, M600, PHANTOM, MAVICK} PLATFORMName;
+typedef enum {NOPLATFORM, M200, M300, M600, PHANTOM, MAVIC, TAILID} PLATFORMName;
 
 typedef enum {MULTICOPTER, VTOLHORIZONTAL, VTOLTRANSITION, VTOLVERTICAL} PLATFORMType;
 
@@ -73,6 +73,7 @@ typedef struct sSMA_Status
 	TRIGGERMode safeairTriggerMode;
 	SIGNALStrength batteryStrength;
 	TRIGGERReason smaTriggerReason;
+	MENULEVELType rcMenuLevel;
 }tSMA_Status;
 
 typedef struct sWarning
@@ -96,8 +97,13 @@ extern uint32_t lastReceivedLinkMessage;
 extern uint32_t configurationMessageCounter;
 extern uint32_t configurationMessageCounterReceived;
 extern uint32_t lastConfigurationMessageSent;
+extern uint32_t safeAirLogID;
+extern uint32_t safeAirTime;
 
 extern bool isTBSDisconnected;
+extern bool isTailIDAlreadyReceived;
+
+extern char safeAirTailID[11];
 
 extern tRC_LINK rcLinkStatus;
 extern tSMA_Status previousSmaStatus;

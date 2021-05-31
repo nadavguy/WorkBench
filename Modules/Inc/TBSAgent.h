@@ -73,6 +73,7 @@ typedef struct sSMA_Status
 	TRIGGERMode safeairTriggerMode;
 	SIGNALStrength batteryStrength;
 	TRIGGERReason smaTriggerReason;
+	MENULEVELType rcMenuLevel;
 }tSMA_Status;
 
 typedef struct sWarning
@@ -96,8 +97,12 @@ extern uint32_t lastReceivedLinkMessage;
 extern uint32_t configurationMessageCounter;
 extern uint32_t configurationMessageCounterReceived;
 extern uint32_t lastConfigurationMessageSent;
+extern uint32_t safeAirLogID;
+extern uint32_t safeAirTime;
+extern uint32_t lastReceivedCRSFMessage;
 
 extern bool isTBSDisconnected;
+extern bool isTailIDAlreadyReceived;
 
 extern char safeAirTailID[11];
 
@@ -113,7 +118,7 @@ uint8_t crc8(const uint8_t *ptr, uint32_t len);
 uint8_t createCrossfireChannelsFrame(uint8_t * frame, int16_t * pulses);
 bool parseTBSMessage(void);
 extern void createPingMessage(void);
-extern void sendSafeAirConfigurationMessage(void);
+extern void sendSafeAirConfigurationMessage(bool includeTimeInMessage);
 
 
 #endif /* INC_TBSAGENT_H_ */

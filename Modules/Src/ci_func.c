@@ -157,7 +157,7 @@ eCI_RESULT func_importFile(void)
 	  char *res = 0;
 //	  uint16_t slen = 0;
 	  bool _endFile = false;
-	  char *fn = get_param_str(0);
+//	  char *fn = get_param_str(0);
 	  FIL fileToRead;
 //	  f_close(&fileToRead);
 	  char fullFileName[64] = "";
@@ -202,6 +202,87 @@ eCI_RESULT func_screenOrientation(void)
 		{
 			logData("Screen orientation set to Portrait", false, false, false);
 		}
+	}
+	return CI_OK;
+}
+
+eCI_RESULT func_setDateTime(void)
+{
+  int year = 0, month = 0, day = 0, hour = 0, minute = 0, second = 0;
+
+//  if (!SessionUnlocked)
+//  {
+//    return CI_COMMAND_ERROR;
+//  }
+  if (get_param_count() > 0)
+  {
+    sprintf(terminalBuffer, "Received Date & Time:\'%s\'", get_param_str(0));
+    logData(terminalBuffer, false, false, false);
+
+    sscanf(get_param_str(0), "%02d/%02d/%02d %02d:%02d:%02d", &year, &month, &day, &hour, &minute, &second);
+
+    if ( (year >= 0) && (year <= 99) && (hour >= 0) && (hour < 24) &&
+    		(minute >= 0) && (minute < 60) && (day > 0) && (day < 32) && (month > 0) && (month < 13) && (second >= 0) && (second < 60) )
+    {
+    	sendSafeAirConfigurationMessage(true);
+//    	L_hour = hour;
+//    	L_min = minute;
+//    	L_sec = second;
+//    	L_ms = 0;
+//    	L_month = month;
+//    	L_day = day;
+//    	L_year = 2000 + year;
+//
+    	sTime.Hours = hour;
+    	sTime.Minutes = minute;
+    	sTime.Seconds = second;
+//    	sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
+//    	sTime.StoreOperation = RTC_STOREOPERATION_RESET;
+//    	if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN) != HAL_OK)
+//    	{
+//    		_Error_Handler(__FILE__, __LINE__);
+//    	}
+//    	sDate.WeekDay = RTC_WEEKDAY_MONDAY;
+    	sDate.Month = month;
+    	sDate.Date = day;
+    	sDate.Year = year;
+//
+//    	if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BIN) != HAL_OK)
+//    	{
+//    		_Error_Handler(__FILE__, __LINE__);
+//    	}
+//    	HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR1, 0x32F4);
+//
+//    	ee2.TimeSinceLastLogSync = 0;
+    	//ee_save2();
+    	sendSafeAirConfigurationMessage(true);
+    }
+    else
+    {
+    	sprintf(terminalBuffer, "Wrong date time:\'%s\'",get_param_str(0));
+    	logData(terminalBuffer, false, false, false);
+    }
+  }
+
+  return (CI_OK);
+}
+
+eCI_RESULT func_gpsLocation(void)
+{
+	if (get_param_count() == 3)
+	{
+		lastKnownPosition.Latitude = get_param_float(0);
+		lastKnownPosition.Longitude = get_param_float(1);
+		lastKnownPosition.Altitude = get_param_float(3);
+
+		sprintf(terminalBuffer, "Received GPS position - Lat: %4.6f Long: %4.6f Alt: %5.1f",get_param_float(0), get_param_float(1), get_param_float(2));
+		logData(terminalBuffer, false, false, false);
+
+	}
+	else
+	{
+		sprintf(terminalBuffer, "Received partial GPS position");
+		logData(terminalBuffer, false, false, false);
 	}
 	return CI_OK;
 }
@@ -263,6 +344,8 @@ functionsList cases [] =
 		{ "msc", func_massStorage },
 		{ "imp", func_importFile },
 		{ "scor", func_screenOrientation },
+		{ "dtm", func_setDateTime},
+		{ "gps", func_gpsLocation},
 		{ "dir" , func_dir },
 		{ "fmt" , func_fmt }
 };
