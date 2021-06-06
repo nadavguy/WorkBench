@@ -57,9 +57,9 @@ uint8_t QSPI_Init(void)
 {
 	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_SET); // QSPI WP High
 	HAL_Delay(1);
-	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET); // QSPI RST High
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_RESET); // QSPI RST High
 	HAL_Delay(1);
-	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET); // QSPI RST High
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_SET); // QSPI RST High
 	HAL_Delay(2);
 	/* Configuration of the dummy cycles on QSPI memory side */
 	if (QSPI_DummyCyclesCfg(&hqspi) != HAL_OK)
@@ -388,28 +388,28 @@ uint8_t QSPI_ResetFlash(void)
 
 uint8_t QSPI_DeleteFlash(void)
 {
-  QSPI_CommandTypeDef s_command;
+	QSPI_CommandTypeDef s_command;
 
-  QSPI_WriteEnable();
-  /* Enable write operations */
-  s_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
-  s_command.Instruction = 0x60; // ok
-  s_command.AddressMode = QSPI_ADDRESS_NONE;
-  s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
-  s_command.DataMode = QSPI_DATA_1_LINE;
-  s_command.DummyCycles = 0;
-  s_command.NbData = 1;
-  s_command.DdrMode = QSPI_DDR_MODE_DISABLE;
-  s_command.DdrHoldHalfCycle = QSPI_DDR_HHC_ANALOG_DELAY;
-  s_command.SIOOMode = QSPI_SIOO_INST_EVERY_CMD;
+	QSPI_WriteEnable();
+	/* Enable write operations */
+	s_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
+	s_command.Instruction = 0x60; // ok
+	s_command.AddressMode = QSPI_ADDRESS_NONE;
+	s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+	s_command.DataMode = QSPI_DATA_NONE;
+	s_command.DummyCycles = 0;
+	//  s_command.NbData = 1;
+	s_command.DdrMode = QSPI_DDR_MODE_DISABLE;
+	s_command.DdrHoldHalfCycle = QSPI_DDR_HHC_ANALOG_DELAY;
+	s_command.SIOOMode = QSPI_SIOO_INST_EVERY_CMD;
 
-  if (HAL_QSPI_Command(&hqspi, &s_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
-  {
-    return HAL_ERROR;
-  }
-    HAL_Delay(40);
+	if (HAL_QSPI_Command(&hqspi, &s_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+	{
+		return HAL_ERROR;
+	}
+	HAL_Delay(40);
 
-  return HAL_OK;
+	return HAL_OK;
 }
 /**
   * @brief  This function read the SR of the memory and wait the EOP.

@@ -32,14 +32,6 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include <stdio.h> //printf()
-#include <string.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include <math.h>
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -76,6 +68,13 @@ extern "C" {
 /* USER CODE BEGIN ET */
 
 typedef enum {PWM, DIGITAL} LINKType;
+
+typedef struct sGPSPOSITION
+{
+	float Latitude;
+	float Longitude;
+	float Altitude;
+}tGPSPOSITION;
 
 
 #define smaCritBat		1
@@ -137,6 +136,11 @@ extern tWarning displayWarning;
 extern SYSTEMState desiredSMAState;
 
 extern tCURSOR_DATA currentCursorPosition;
+
+extern RTC_TimeTypeDef sTime;
+extern RTC_DateTypeDef sDate;
+
+extern tGPSPOSITION lastKnownPosition;
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
@@ -213,12 +217,12 @@ extern void updateRCState(void);
 #define GPIO_ChargeEN_GPIO_Port GPIOE
 /* USER CODE BEGIN Private defines */
 
-#define DC_Pin GPIO_PIN_14
-#define DC_GPIO_Port GPIOB
-#define RST_Pin GPIO_PIN_13
-#define RST_GPIO_Port GPIOB
-#define CS_Pin GPIO_PIN_15
-#define CS_GPIO_Port GPIOB
+#define DC_Pin GPIO_PIN_4
+#define DC_GPIO_Port GPIOC
+#define RST_Pin GPIO_PIN_5
+#define RST_GPIO_Port GPIOC
+#define CS_Pin GPIO_PIN_6
+#define CS_GPIO_Port GPIOC
 
 /* USER CODE END Private defines */
 

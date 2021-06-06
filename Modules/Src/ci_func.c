@@ -36,7 +36,7 @@ eCI_RESULT func_updateRCVersion(void)
 
 eCI_RESULT func_versionReport(void)
 {
-	sprintf(terminalBuffer,"RC Firmware version: %6.2f, BuildID: %6.2f",fwVersion, buildID);
+	sprintf(terminalBuffer,"RC Firmware Version: %2.2f, BuildID: %2.2f, Configuration: %2.2f",fwVersion, buildID, ee.configuration);
 	logData(terminalBuffer, false, true, false);
 	return CI_OK;
 }
@@ -154,32 +154,37 @@ eCI_RESULT func_massStorage(void)
 
 eCI_RESULT func_importFile(void)
 {
-	  char *res = 0;
-//	  uint16_t slen = 0;
-	  bool _endFile = false;
-//	  char *fn = get_param_str(0);
-	  FIL fileToRead;
-//	  f_close(&fileToRead);
-	  char fullFileName[64] = "";
-	  sprintf(fullFileName, "%s",get_param_str(0));
-	  if (f_open(&fileToRead, fullFileName, FA_READ) == FR_OK)
-	  {
-	    while (!_endFile)
-	    {
-	      res = f_gets(terminalBuffer, terminalRXBufferSize, &fileToRead);
-	      if (res != 0x00)
-	      {
-	    	  logData(terminalBuffer, false, true, true);
-	      }
-	      else
-	      {
-	        _endFile = true;
-	        logData("EOF", false, true, true);
-	      }
-	    }
-	  }
-	  f_close(&fileToRead);
-	  return CI_OK;
+	char *res = 0;
+	//	  uint16_t slen = 0;
+	bool _endFile = false;
+	//	  char *fn = get_param_str(0);
+	FIL fileToRead;
+	//	  f_close(&fileToRead);
+	char fullFileName[64] = "";
+	sprintf(fullFileName, "%s",get_param_str(0));
+	if (f_open(&fileToRead, fullFileName, FA_READ) == FR_OK)
+	{
+		while (!_endFile)
+		{
+			char lTerminalBuffer[4096] = {0};
+			res = f_gets(lTerminalBuffer, 4096, &fileToRead);
+			if (res != 0x00)
+			{
+				logData(lTerminalBuffer, false, true, true);
+			}
+			else
+			{
+				_endFile = true;
+				for (int i = 0 ; i < 3 ; i++)
+				{
+					logData("RC EOF", false, true, true);
+					HAL_Delay(10);
+				}
+			}
+		}
+	}
+	f_close(&fileToRead);
+	return CI_OK;
 }
 
 eCI_RESULT func_screenOrientation(void)
@@ -287,6 +292,37 @@ eCI_RESULT func_gpsLocation(void)
 	return CI_OK;
 }
 
+eCI_RESULT func_bleConnected(void)
+{
+	ee.bluetoothStatus = 1;
+	bluetoothConnection = CONNECTED;
+	ee_save1();
+	return CI_OK;
+}
+
+eCI_RESULT func_openNewLogFile(void)
+{
+//	if (!SessionUnlocked)
+//	{
+//		return CI_COMMAND_ERROR;
+//	}
+	createNewLogFile();
+	logData("Received external command to create a new log file", false, false, false);
+	return CI_NO_UART_ACK;
+}
+
+eCI_RESULT func_closeCurrentLogFile(void) // Do file close
+{
+//  if (!SessionUnlocked)
+//  {
+//    return CI_COMMAND_ERROR;
+//  }
+	logData("Received external command to close log file", false, false, false);
+	closeLogFile();
+//  PRINT(SessionUnlocked);
+  return CI_NO_UART_ACK;
+}
+
 eCI_RESULT func_dir(void)
 {
     FILINFO fno1;
@@ -302,7 +338,7 @@ eCI_RESULT func_dir(void)
     	f_findnext(&dp1, &fno1);
     }
     f_closedir(&dp1);
-    logData("EOD", false, true, true);
+    logData("dir EOD", false, true, true);
 	return CI_OK;
 }
 
@@ -313,10 +349,14 @@ eCI_RESULT func_fmt(void)
 	f_sync(&USERFile);
 	f_close(&USERFile);
 
-	if (f_mkfs("\\", FM_FAT, 0, buffer, sizeof(buffer)) != FR_OK)
-	{
-		//TODO: Add screen indication for faulty Flash
-	}
+	uint8_t ret = QSPI_DeleteFlash();
+	flashInit();
+	createNewLogFile();
+
+//	if (f_mkfs("\\", FM_FAT, 0, buffer, sizeof(buffer)) != FR_OK)
+//	{
+//		//TODO: Add screen indication for faulty Flash
+//	}
 	return CI_OK;
 }
 
@@ -346,6 +386,10 @@ functionsList cases [] =
 		{ "scor", func_screenOrientation },
 		{ "dtm", func_setDateTime},
 		{ "gps", func_gpsLocation},
+		{ "%CON", func_bleConnected},
+//		{ "%DIS", func_bleConnected},
+		{ "FOR", func_openNewLogFile},
+		{ "FC", func_closeCurrentLogFile},
 		{ "dir" , func_dir },
 		{ "fmt" , func_fmt }
 };

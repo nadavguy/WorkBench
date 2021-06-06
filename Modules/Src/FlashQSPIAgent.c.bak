@@ -57,9 +57,9 @@ uint8_t QSPI_Init(void)
 {
 	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_SET); // QSPI WP High
 	HAL_Delay(1);
-	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET); // QSPI RST High
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_RESET); // QSPI RST High
 	HAL_Delay(1);
-	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET); // QSPI RST High
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_SET); // QSPI RST High
 	HAL_Delay(2);
 	/* Configuration of the dummy cycles on QSPI memory side */
 	if (QSPI_DummyCyclesCfg(&hqspi) != HAL_OK)
@@ -775,4 +775,6 @@ void flashInit(void)
 	free_sectors = free_clusters * getFreeFs->csize;
 	free_kb = (float)free_sectors*(float)(SECTOR_SIZE)/1048576;
 	total_kb = (float)total_sectors*(float)(SECTOR_SIZE)/1048576;
+
+	deleteLogs();
 }

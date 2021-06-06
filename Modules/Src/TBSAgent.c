@@ -21,6 +21,7 @@ uint8_t safeairConfigurationFrame[29] = {0};
 
 uint8_t IdleMessageArray[26] = {0xC8, 0x18, 0x16, 0xAC, 0x60, 0x05, 0x2B, 0x58, 0xC1, 0x0A, 0x56, 0xB0, 0x82, 0x15, 0xAC, 0x60, 0x05, 0x2B, 0x58, 0xC1, 0x0A, 0x56, 0xB0, 0x82, 0x15, 0x5B};
 uint8_t TriggerMessageArray[26] = {0xC8, 0x18, 0x16, 0xA4, 0x26, 0x35, 0xA9, 0x49, 0x4D, 0x6A, 0x52, 0x93, 0x9A, 0xD4, 0xA4, 0x26, 0x35, 0xA9, 0x49, 0x4D, 0x6A, 0x52, 0x93, 0x9A, 0xD4, 0x64};
+uint8_t messagesMissed = 0;
 
 int16_t channelPWMValues[16] = {((1000 - 1500) * 8 / 5 + 992)};
 uint16_t previousBITStatus = 0;
@@ -143,20 +144,23 @@ void sendMessageToRC(void)
 void sendChannelMessageToTBS(void)
 {
 //	uint16_t R = 0;
-	if ( (HAL_GetTick() - lastCRSFChannelMessage > 20) /*&& (HAL_GetTick() - lastReceivedDroneDataMessage < 200) */)
+	if ( (HAL_GetTick() - lastCRSFChannelMessage > 8) && (messagesMissed < 100))
 	{
 		memset(rcChannelsFrame, 0, 26);
 		createCrossfireChannelsFrame(rcChannelsFrame, channelPWMValues);
 		HAL_UART_Transmit_IT(&TBS_UART, rcChannelsFrame, 26);
+//		HAL_UART_Transmit_IT(&TBS_UART, "Test 1\r\n", strlen("Test 1\r\n"));
 		lastCRSFChannelMessage = HAL_GetTick();
+		messagesMissed++;
 	}
-	else if ( ( (HAL_GetTick() - lastCRSFChannelMessage <= 20)  && ( HAL_GetTick() - lastCRSFChannelMessage > 1) )
-			/*|| (HAL_GetTick() - lastReceivedDroneDataMessage >= 200) */)
+	else if ( ( (HAL_GetTick() - lastCRSFChannelMessage <= 8)  && ( HAL_GetTick() - lastCRSFChannelMessage > 1) )
+			|| messagesMissed >= 100)
 	{
 		HAL_UART_Receive_DMA(&TBS_UART, tbsRXArray,TBS_RX_BUFFER);
 		HAL_Delay(2);
 		parseTBSMessage();
 		sendSafeAirConfigurationMessage(false);
+		messagesMissed = 0;
 //		char test[1024] = "";
 //		logData((char *)"TBS RX: ", true, true);
 //		for (int i = 0 ; i < 64 ; i ++)
@@ -232,6 +236,11 @@ bool parseTBSMessage(void)
 //	memset(test, 0, 1024);
 	uint8_t localRxArray[TBS_RX_BUFFER] = {0};
 	memcpy(localRxArray,tbsRXArray,TBS_RX_BUFFER);
+
+//	if (strlen(localRxArray) > 0)
+//	{
+// 		int a= 1;
+//	}
 
 	while ( i < TBS_RX_BUFFER - 3)
 	{

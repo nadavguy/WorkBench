@@ -68,7 +68,7 @@ void updateBuzzerStatus(void)
     }
     else
     {
-    	HAL_GPIO_WritePin(BuzzerGPIO, BuzzerPIN, 1-currentPattern.patternOnOff[buzzerPhase - 1]);
+    	HAL_GPIO_WritePin(BuzzerGPIO, BuzzerPIN, currentPattern.patternOnOff[buzzerPhase - 1]);
     }
 }
 

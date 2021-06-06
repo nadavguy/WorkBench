@@ -25,7 +25,9 @@ extern bool createNewLogFile(void);
 extern void logData(char *dataToLog, bool doNotShowOnDisplay, bool displayOnly, bool doNotDisplayTime);
 extern uint32_t getCurrentLogSize(void);
 extern void monitorLogSize(void);
-//extern void writeLogHeader(void);
+extern void logRCLinkStatus(bool forceLog);
+extern void writeLogHeaders(void);
+extern void deleteLogs(void);
 
 
 #endif /* INC_LOGAGENT_H_ */

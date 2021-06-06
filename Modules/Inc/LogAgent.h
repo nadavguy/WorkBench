@@ -28,6 +28,7 @@ extern void monitorLogSize(void);
 extern void logRCLinkStatus(bool forceLog);
 extern void writeLogHeaders(void);
 extern void deleteLogs(void);
+extern void closeLogFile(void);
 
 
 #endif /* INC_LOGAGENT_H_ */

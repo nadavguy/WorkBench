@@ -1182,7 +1182,7 @@ void setFullDisplay(void)
 {
 	shouldRedrawBatteryIcon = true;
 	shouldRedrawSignalStrengthIcon = true;
-	shouldReDrawBluetoothIcon = false;
+	shouldReDrawBluetoothIcon = isBLEOn;
 
 	shouldUpdatePlatformText = true;
 

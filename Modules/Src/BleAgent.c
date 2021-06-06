@@ -12,6 +12,18 @@ bool isBLEOn = true;
 
 uint8_t bleRXArray[BLE_RX_BUFFER] = {0};
 
+void initBLE(void)
+{
+	if (ee.bluetoothStatus == 0)
+	{
+		isBLEOn = false;
+	}
+	else
+	{
+		isBLEOn = true;
+	}
+}
+
 void checkBLEMessages(void)
 {
 	if (isBLEOn)

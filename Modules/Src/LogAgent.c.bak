@@ -46,20 +46,6 @@ void logData(char *dataToLog, bool doNotShowOnDisplay, bool displayOnly, bool do
     		CDC_Transmit_FS((uint8_t*)localString, strlen(localString));
     	}
     }
-    uint32_t logFileSize = 0;  // ftell(logFileHandler);
-    if (logFileSize > MAX_LOG_SIZE )
-    {
-//        sprintf(localString, "%s, Closing current log file\r\n", CT());
-//        fwrite(localString, strlen(localString) + 1, 1, logFileHandler);
-//        fflush(logFileHandler);
-//        fclose(logFileHandler);
-//
-//        //TODO: rename previous file name to have start and end time
-//        if (!createNewLogFile())
-//        {
-//            printf("Log file creation failed\n");
-//        }
-    }
 }
 
 bool createNewLogFile(void)
@@ -112,6 +98,8 @@ bool createNewLogFile(void)
     sprintf(currentLogFilename,"LOG_%05ld.CSV", previousLogIndex+1);
     FS_ret = f_open(&USERFile, currentLogFilename, FA_CREATE_ALWAYS | FA_WRITE);
 
+    writeLogHeaders();
+
     return localret;
 }
 
@@ -147,4 +135,69 @@ void monitorLogSize(void)
 		}
 		lastFileSizeCheck = HAL_GetTick();
 	}
+}
+
+void logRCLinkStatus(bool forceLog)
+{
+	if ( (HAL_GetTick() - lastLoggedLinkMessage > 5000) || (forceLog) )
+	{
+//		sprintf(terminalBuffer,"Uplink RSSI1: %d, RSSI2: %d, LQ: %d, SNR: %d",
+//				rcLinkStatus.UplinkRSSIAnt1, rcLinkStatus.UplinkRSSIAnt2, rcLinkStatus.UplinkPSRLQ,
+//				rcLinkStatus.UplinkSNR);
+//		logData(terminalBuffer, true, false, false);
+//		sprintf(terminalBuffer,"Uplink Diversity: %d, RFMode: %d, TX: %d",
+//				rcLinkStatus.DiversityActiveAntena, rcLinkStatus.RFMode,
+//				rcLinkStatus.UplinkTXPower);
+//		logData(terminalBuffer, true, false, false);
+//		sprintf(terminalBuffer,"Downlink RSSI: %d, LQ: %d, SNR: %d",
+//				rcLinkStatus.DownlinkRSSI, rcLinkStatus.DownlinkPSRLQ,
+//				rcLinkStatus.DownlinkSNR);
+//		logData(terminalBuffer, true, false, false);
+
+		sprintf(terminalBuffer,"LNK, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d",
+				rcLinkStatus.UplinkRSSIAnt1, rcLinkStatus.UplinkRSSIAnt2, rcLinkStatus.UplinkPSRLQ, rcLinkStatus.UplinkSNR,
+				rcLinkStatus.DiversityActiveAntena, rcLinkStatus.RFMode, rcLinkStatus.UplinkTXPower, rcLinkStatus.DownlinkRSSI,
+				rcLinkStatus.DownlinkPSRLQ, rcLinkStatus.DownlinkSNR);
+		logData(terminalBuffer, true, false, false);
+		lastLoggedLinkMessage = HAL_GetTick();
+	}
+}
+
+void writeLogHeaders(void)
+{
+	sprintf(terminalBuffer,"LNK, UL-RSSI1, UL-RSSI2, UL-PSRLQ, UL-SNR, DA-Ant, RFMode, UL-TxPWR, DL-RSSI, DL-PSRLQ, DL_SNR");
+	logData(terminalBuffer, true, false, false);
+	sprintf(terminalBuffer,"SMA, State, TriggerMode, Battery[V], Altitude[m], Acceleration[m/Sec^2]");
+	logData(terminalBuffer, true, false, false);
+}
+
+void deleteLogs(void)
+{
+	FILINFO fno1;
+	DIR dp1;
+	FATFS *getFreeFs;
+	DWORD free_clusters, free_sectors, total_sectors;
+
+	FS_ret = f_getfree("\\", &free_clusters, &getFreeFs);
+	total_sectors = (getFreeFs->n_fatent - 2) * getFreeFs->csize;
+	free_sectors = free_clusters * getFreeFs->csize;
+	free_kb = (float)free_sectors*(float)(SECTOR_SIZE)/1048576;
+	total_kb = (float)total_sectors*(float)(SECTOR_SIZE)/1048576;
+
+	f_opendir(&dp1, "\\");
+	f_findfirst(&dp1, &fno1, "\\", "LOG_*");
+
+	while( (fno1.fname[0] != 0) && (free_kb <= 10) )
+	{
+		sprintf(terminalBuffer,"Deleted log: %s",fno1.fname);
+		logData(terminalBuffer, false, false, false);
+		FS_ret = f_unlink(&fno1.fname[0]);
+		f_findnext(&dp1, &fno1);
+		FS_ret = f_getfree("\\", &free_clusters, &getFreeFs);
+		total_sectors = (getFreeFs->n_fatent - 2) * getFreeFs->csize;
+		free_sectors = free_clusters * getFreeFs->csize;
+		free_kb = (float)free_sectors*(float)(SECTOR_SIZE)/1048576;
+	}
+	f_closedir(&dp1);
+	logData("EOD", false, true, true);
 }

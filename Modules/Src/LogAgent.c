@@ -41,6 +41,10 @@ void logData(char *dataToLog, bool doNotShowOnDisplay, bool displayOnly, bool do
     else if (!displayOnly || !doNotShowOnDisplay)
     {
     	f_write(&USERFile, localString, strlen(localString), &BytesWritten);
+    	if (BytesWritten < strlen(localString))
+    	{
+    		int a= 1;
+    	}
     	if (!doNotShowOnDisplay)
     	{
     		CDC_Transmit_FS((uint8_t*)localString, strlen(localString));
@@ -121,6 +125,13 @@ uint32_t getCurrentLogSize(void)
     return 0;
 }
 
+void closeLogFile(void)
+{
+	sprintf(terminalBuffer, "Closing current log file");
+	logData(terminalBuffer, false, false, false);
+	f_close(&USERFile);
+}
+
 void monitorLogSize(void)
 {
 	if (HAL_GetTick() - lastFileSizeCheck > 10000)
@@ -128,9 +139,7 @@ void monitorLogSize(void)
 		f_sync(&USERFile);
 		if (getCurrentLogSize() > MAX_LOG_SIZE)
 		{
-			sprintf(terminalBuffer, "%s, Closing current log file\r\n", CT());
-			logData(terminalBuffer, false, false, false);
-			f_close(&USERFile);
+			closeLogFile();
 			createNewLogFile();
 		}
 		lastFileSizeCheck = HAL_GetTick();

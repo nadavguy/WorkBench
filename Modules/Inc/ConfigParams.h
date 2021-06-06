@@ -21,6 +21,8 @@ typedef struct sEE_DATA
 	uint8_t linkType;
 	uint8_t debugLevel;
 	uint8_t screenOreintation;
+	uint8_t bluetoothStatus;
+	float configuration;
 }tEE_DATA;
 
 

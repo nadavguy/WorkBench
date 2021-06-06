@@ -8,8 +8,8 @@
 #ifndef INC_BUZZERAGENT_H_
 #define INC_BUZZERAGENT_H_
 
-#define BuzzerGPIO GPIOB
-#define BuzzerPIN GPIO_PIN_11
+#define BuzzerGPIO GPIOE
+#define BuzzerPIN GPIO_PIN_0
 
 typedef struct sBuzzer_Pattern
 {

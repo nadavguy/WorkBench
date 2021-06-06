@@ -9,19 +9,19 @@
 #define INC_PUSHBUTTON_H_
 
 #define armGPIO GPIOE
-#define armPIN GPIO_PIN_11
+#define armPIN GPIO_PIN_5
 
 #define triggerGPIO GPIOE
 #define triggerPIN GPIO_PIN_9
 
-#define upGPIO GPIOC
-#define upPIN GPIO_PIN_11
+#define upGPIO GPIOD
+#define upPIN GPIO_PIN_3
 
-#define downGPIO GPIOC
-#define downPIN GPIO_PIN_10
+#define downGPIO GPIOD
+#define downPIN GPIO_PIN_4
 
-#define okGPIO GPIOC
-#define okPIN GPIO_PIN_9
+#define okGPIO GPIOD
+#define okPIN GPIO_PIN_7
 
 extern uint32_t okButtonPressDuration;
 extern uint32_t lastAnyButtonPress;

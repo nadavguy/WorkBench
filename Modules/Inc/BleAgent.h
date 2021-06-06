@@ -15,6 +15,7 @@
 
 extern bool isBLEOn;
 
+extern void initBLE(void);
 extern void checkBLEMessages(void);
 extern void parseBLEMessage(void);
 

@@ -153,6 +153,9 @@ void waitForPopupInput(void)
 					if ( (popupToShow.isQuestion) && (okButtonPressDuration >= 10) && (popupDrawDirection == DOWN))
 					{
 						//Make BLE Active
+						ee.bluetoothStatus = 1;
+						isBLEOn = true;
+						ee_save1();
 						break;
 					}
 					sendChannelMessageToTBS();

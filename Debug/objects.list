@@ -97,6 +97,7 @@
 "Modules/Src/ConfigParams.o"
 "Modules/Src/FlashQSPIAgent.o"
 "Modules/Src/LogAgent.o"
+"Modules/Src/PowerAgent.o"
 "Modules/Src/PushButton.o"
 "Modules/Src/ScreenAgent.o"
 "Modules/Src/TBSAgent.o"

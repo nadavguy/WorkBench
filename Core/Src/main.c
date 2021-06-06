@@ -78,7 +78,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.160;
+float buildID = 1.170;
 
 SYSTEMState rcState = PREINIT;
 //SYSTEMState previousSMAState = PREINIT;
@@ -106,12 +106,15 @@ bool waitForAckResponse = false;
 bool shouldRedrawSafeAirBatteryIcon = true;
 bool isScreenBrightFull = true;
 
-
+uint32_t UID1 = 0;
+uint32_t UID2 = 0;
+uint32_t UID3 = 0;
+uint32_t A[9] = {0};
 
 SYSTEMConnectionStatus bluetoothConnection = DISCONNECTED;
 
 SIGNALStrength tbsLink = NOSIGNAL;
-SIGNALStrength batteryStrength = NOSIGNAL;
+SIGNALStrength batteryStrength = STRONG;
 
 tCURSOR_DATA currentCursorPosition;
 
@@ -136,7 +139,16 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+//void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
+//{
+////	for (int i =0; i<3; i++)
+////	{
+////	  adc[i] = buffer[i];
+////	}
+////
+////	temperature = (((adc[2]*vsense)-.76)/.0025)+25;
+//	int a = 1;
+//}
 /* USER CODE END 0 */
 
 /**
@@ -180,9 +192,38 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART3_UART_Init();
   MX_RTC_Init();
+  MX_ADC2_Init();
+  MX_ADC3_Init();
   /* USER CODE BEGIN 2 */
-  HAL_GPIO_WritePin(BuzzerGPIO, BuzzerPIN, 1);
+  //
+  UID1 = (*(__I uint32_t *) 0x1FF0F420);
+  UID2 = (*(__I uint32_t *) 0x1FF0F424);
+  UID3 = (*(__I uint32_t *) 0x1FF0F428);
   HAL_Delay(5000);
+
+
+//  A[0] = HAL_ADC_Start_IT(&hadc1);
+//  A[1] = HAL_ADC_Start_IT(&hadc2);
+//  A[2] = HAL_ADC_Start_IT(&hadc3);
+//  while (1)
+//  {
+//	  HAL_Delay(1);
+//	  A[3] = HAL_ADC_GetValue(&hadc1);
+//	  A[4] = HAL_ADC_GetValue(&hadc2);
+//	  A[5] = HAL_ADC_GetValue(&hadc3);
+//
+//  }
+//  if (HAL_ADC_PollForConversion(&hadc1, 10) != HAL_OK)
+//  {
+//    /* End Of Conversion flag not set on time */
+//    Error_Handler();
+//  }
+//  else
+//  {
+//    /* ADC conversion completed */
+//    /*##-5- Get the converted value of regular channel  ########################*/
+//    uhADCxConvertedValue = HAL_ADC_GetValue(&hadc1);
+//  }
 
 
   QSPI_Init();
@@ -234,6 +275,8 @@ int main(void)
 //  createPingMessage();
   nextPattern = &noBuzzerPattern;
   setBuzzerPattern(*nextPattern);
+
+  measureVoltages();
 
   currentCursorPosition.cursorPosition = 0;
   currentCursorPosition.menuDepth = 0;
@@ -296,6 +339,7 @@ int main(void)
 //	  }
 
 	  checkBLEMessages();
+	  measureVoltages();
 
     /* USER CODE END WHILE */
 
@@ -407,25 +451,32 @@ void updateRCState(void)
 			shouldRedrawBatteryIcon = true;
 			batteryStrength = EMPTY;
 			displayWarning.BITStatus |= rcLowBat;
+			sprintf(terminalBuffer,"RC Battery is Empty");
+			logData(terminalBuffer, false, false, false);
 		}
 		else if ( (batteryVoltage > 3.6) && (batteryVoltage <= 3.8) && (batteryStrength < LOW))
 		{
 			shouldRedrawBatteryIcon = true;
 			batteryStrength = LOW;
 			displayWarning.BITStatus |= rcLowBat;
-
+			sprintf(terminalBuffer,"RC Battery is Low");
+			logData(terminalBuffer, false, false, false);
 		}
 		else if ( (batteryVoltage > 3.8) && (batteryVoltage <= 4.0) && (batteryStrength < MEDIUM) )
 		{
 			shouldRedrawBatteryIcon = true;
 			batteryStrength = MEDIUM;
 			displayWarning.BITStatus &= ~rcLowBat;
+			sprintf(terminalBuffer,"RC Battery is Partially Full");
+			logData(terminalBuffer, false, false, false);
 		}
 		else if ( (batteryVoltage > 4.0) && (batteryStrength != STRONG))
 		{
 			shouldRedrawBatteryIcon = true;
 			batteryStrength = STRONG;
 			displayWarning.BITStatus &= ~rcLowBat;
+			sprintf(terminalBuffer,"RC Battery is Full");
+			logData(terminalBuffer, false, false, false);
 		}
 	}
 
@@ -635,6 +686,21 @@ void updateRCState(void)
 	}
 
 }
+
+//void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
+//{
+////	for (int i =0; i<3; i++)
+////	{
+////	  adc[i] = buffer[i];
+////	}
+////
+////	temperature = (((adc[2]*vsense)-.76)/.0025)+25;
+//	int a = 1;
+//	a = 2;
+//	  A[3] = HAL_ADC_GetValue(&hadc1);
+//	  A[4] = HAL_ADC_GetValue(&hadc2);
+//	  A[5] = HAL_ADC_GetValue(&hadc3);
+//}
 /* USER CODE END 4 */
 
 /**

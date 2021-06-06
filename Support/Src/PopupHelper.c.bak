@@ -7,6 +7,7 @@
 
 
 #include "main.h"
+#include "usb_device.h"
 
 void waitForPopupInput(void)
 {
@@ -40,7 +41,7 @@ void waitForPopupInput(void)
 			}
 			case 2:
 			{
-				while ( (okButtonPressDuration < 1000) )
+				while ( (okButtonPressDuration < 3000) )
 				{
 					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 1000) )
 					{
@@ -71,7 +72,7 @@ void waitForPopupInput(void)
 			} //End of Force Disarm
 			case 3:
 			{
-				while ( (okButtonPressDuration < 1000) )
+				while ( (okButtonPressDuration < 3000) )
 				{
 					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 1000) )
 					{
@@ -92,7 +93,7 @@ void waitForPopupInput(void)
 			} // End of RC clear storage
 			case 4:
 			{
-				while ( (okButtonPressDuration < 1000) )
+				while ( (okButtonPressDuration < 3000) )
 				{
 					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 1000) )
 					{
@@ -122,7 +123,7 @@ void waitForPopupInput(void)
 			} //End of Clear SafeAir storage
 			case 5:
 			{
-				while ( (okButtonPressDuration < 10) )
+				while ( (okButtonPressDuration < 3000) )
 				{
 					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 10) )
 					{
@@ -143,7 +144,7 @@ void waitForPopupInput(void)
 			} //End of make bluetooth visible
 			case 6:
 			{
-				while ( (okButtonPressDuration < 10) )
+				while ( (okButtonPressDuration < 3000) )
 				{
 					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 10) )
 					{
@@ -162,6 +163,28 @@ void waitForPopupInput(void)
 				}
 				break;
 			} //End of make bluetooth Active
+			case 7:
+			{
+				while ( (okButtonPressDuration < 3000) )
+				{
+					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 10) )
+					{
+						break;
+					}
+					if ( (popupToShow.isQuestion) && (okButtonPressDuration >= 10) && (popupDrawDirection == DOWN))
+					{
+						isMSCMode = true;
+						MX_MSC_DEVICE_Init();
+						break;
+					}
+					sendChannelMessageToTBS();
+					updateRCState();
+					CheckButtons();
+					screenUpdate(false);
+					updateNextFrame();
+				}
+				break;
+			} //End of change to mass storage
 			default:
 			{
 				break;

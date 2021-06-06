@@ -62,6 +62,7 @@ extern "C" {
 #include "Common.h"
 #include "BleAgent.h"
 #include "ci_func.h"
+#include "PowerAgent.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -90,6 +91,8 @@ typedef struct sGPSPOSITION
 #define criticalAngle	1024
 
 #define terminalRXBufferSize 1024
+
+#define MCURefVoltage 3.3
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -100,8 +103,10 @@ typedef struct sGPSPOSITION
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
 extern char terminalBuffer[terminalRXBufferSize];
+
 extern float fwVersion;
 extern float buildID;
+extern float batteryVoltage;
 
 extern bool isLowBattery;
 extern bool isEmptyBattery;
@@ -123,6 +128,11 @@ extern bool forceDisarmEnabled;
 extern bool formatSDEnabled;
 extern bool waitForAckResponse;
 extern bool shouldRedrawSafeAirBatteryIcon;
+
+extern uint32_t UID1;
+extern uint32_t UID2;
+extern uint32_t UID3;
+uint32_t A[9];
 
 extern SYSTEMConnectionStatus bluetoothConnection;
 
@@ -161,12 +171,6 @@ extern void updateRCState(void);
 #define AntiTamper_GPIO_Port GPIOC
 #define GPIO_WakeUp_Pin GPIO_PIN_0
 #define GPIO_WakeUp_GPIO_Port GPIOA
-#define ADC1_3_3V_Pin GPIO_PIN_1
-#define ADC1_3_3V_GPIO_Port GPIOA
-#define ADC1_5_0V_Pin GPIO_PIN_2
-#define ADC1_5_0V_GPIO_Port GPIOA
-#define ADC1_Battery_Pin GPIO_PIN_3
-#define ADC1_Battery_GPIO_Port GPIOA
 #define SPI1_SCK___LCD_Pin GPIO_PIN_5
 #define SPI1_SCK___LCD_GPIO_Port GPIOA
 #define SPI1_MISO___LCD_Pin GPIO_PIN_6
@@ -217,12 +221,12 @@ extern void updateRCState(void);
 #define GPIO_ChargeEN_GPIO_Port GPIOE
 /* USER CODE BEGIN Private defines */
 
-#define DC_Pin GPIO_PIN_14
-#define DC_GPIO_Port GPIOB
-#define RST_Pin GPIO_PIN_13
-#define RST_GPIO_Port GPIOB
-#define CS_Pin GPIO_PIN_15
-#define CS_GPIO_Port GPIOB
+#define DC_Pin GPIO_PIN_4
+#define DC_GPIO_Port GPIOC
+#define RST_Pin GPIO_PIN_5
+#define RST_GPIO_Port GPIOC
+#define CS_Pin GPIO_PIN_6
+#define CS_GPIO_Port GPIOC
 
 /* USER CODE END Private defines */
 
