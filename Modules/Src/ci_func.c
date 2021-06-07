@@ -294,9 +294,7 @@ eCI_RESULT func_gpsLocation(void)
 
 eCI_RESULT func_bleConnected(void)
 {
-	ee.bluetoothStatus = 1;
 	bluetoothConnection = CONNECTED;
-	ee_save1();
 	return CI_OK;
 }
 
@@ -319,6 +317,21 @@ eCI_RESULT func_closeCurrentLogFile(void) // Do file close
 //  }
 	logData("Received external command to close log file", false, false, false);
 	closeLogFile();
+//  PRINT(SessionUnlocked);
+  return CI_NO_UART_ACK;
+}
+
+eCI_RESULT func_bleMode(void)
+{
+//  if (!SessionUnlocked)
+//  {
+//    return CI_COMMAND_ERROR;
+//  }
+	if (get_param_count() > 0)
+	{
+		ee.bluetoothStatus = get_param_int(0);
+		ee_save1();
+	}
 //  PRINT(SessionUnlocked);
   return CI_NO_UART_ACK;
 }
@@ -390,6 +403,7 @@ functionsList cases [] =
 //		{ "%DIS", func_bleConnected},
 		{ "FOR", func_openNewLogFile},
 		{ "FC", func_closeCurrentLogFile},
+		{ "ble", func_bleMode},
 		{ "dir" , func_dir },
 		{ "fmt" , func_fmt }
 };

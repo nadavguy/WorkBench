@@ -13,7 +13,14 @@
 #define BLE_UART					huart3
 #define BLE_RX_BUFFER				128
 
+typedef struct sBLEPARAMS
+{
+	char macAddress[12];
+	char bleName[12];
+}tBLEPARAMS;
+
 extern bool isBLEOn;
+extern tBLEPARAMS bleParameters;
 
 extern void initBLE(void);
 extern void checkBLEMessages(void);

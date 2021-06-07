@@ -327,7 +327,7 @@ void initPopupMessages(void)
 {
 	noConnectionMessage.popupID = 1;
 	noConnectionMessage.numberOfItemsInPopup = 6;
-	noConnectionMessage.isQuestion = true;
+	noConnectionMessage.isQuestion = false;
 	memcpy(&noConnectionMessage.itemsArray[0],"SafeAir unit",strlen("SafeAir unit"));
 	memcpy(&noConnectionMessage.itemsArray[1],"not detected,",strlen("not detected,"));
 	memcpy(&noConnectionMessage.itemsArray[2],"Changes will",strlen("Changes will "));

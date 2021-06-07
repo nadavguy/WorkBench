@@ -78,7 +78,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.170;
+float buildID = 1.180;
 
 SYSTEMState rcState = PREINIT;
 //SYSTEMState previousSMAState = PREINIT;
@@ -201,31 +201,6 @@ int main(void)
   UID3 = (*(__I uint32_t *) 0x1FF0F428);
   HAL_Delay(5000);
 
-
-//  A[0] = HAL_ADC_Start_IT(&hadc1);
-//  A[1] = HAL_ADC_Start_IT(&hadc2);
-//  A[2] = HAL_ADC_Start_IT(&hadc3);
-//  while (1)
-//  {
-//	  HAL_Delay(1);
-//	  A[3] = HAL_ADC_GetValue(&hadc1);
-//	  A[4] = HAL_ADC_GetValue(&hadc2);
-//	  A[5] = HAL_ADC_GetValue(&hadc3);
-//
-//  }
-//  if (HAL_ADC_PollForConversion(&hadc1, 10) != HAL_OK)
-//  {
-//    /* End Of Conversion flag not set on time */
-//    Error_Handler();
-//  }
-//  else
-//  {
-//    /* ADC conversion completed */
-//    /*##-5- Get the converted value of regular channel  ########################*/
-//    uhADCxConvertedValue = HAL_ADC_GetValue(&hadc1);
-//  }
-
-
   QSPI_Init();
   flashInit();
   createNewLogFile();
@@ -256,27 +231,14 @@ int main(void)
   screenClear();
   renderCompleteFrame = true;
   createEmptyFrame(false);
-//  while(true)
-//  {
-//	  for (int j = -24 ; j < 20 ; j ++)
-//	  {
-//		  createEmptyFrame();
-//		  addImageToNextFrame(gImage_battery_Two_Thirds_90_24_24, 24, 24, 104, 0);
-//		  addImageToNextFrame(gImage_Battery_Two_Thirds_90_30_30, 30, 30, 95, 85);
-//		  centeredString(64, 28, "1X2IL-345F6", BLACK, BACKGROUND, 10, Font16);
-//		  addRectangleToFrame(0, 45, 128, 45 + Font12.Height + 4,GREEN);
-//		  centeredString(64, 47, "Calibration", WHITE, GREEN, 11, Font12);
-//		  HAL_SPI_Transmit(&DEV_SPI, (uint8_t *)nextFrameToDraw, 40960, 1500);
-//		  HAL_Delay(30);
-//	  }
-//  }
 
-//  screenUpdate(false);
 //  createPingMessage();
   nextPattern = &noBuzzerPattern;
   setBuzzerPattern(*nextPattern);
 
   measureVoltages();
+
+  initBLE();
 
   currentCursorPosition.cursorPosition = 0;
   currentCursorPosition.menuDepth = 0;
@@ -296,6 +258,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
   while (1)
   {
 	  CheckButtons();
@@ -333,10 +296,8 @@ int main(void)
 	  }
 	  updateBuzzerStatus();
 	  monitorLogSize();
-//	  if ( (isUSBConnected) && (!isMSCMode) )
-//	  {
-		  readUSBData();
-//	  }
+
+	  readUSBData();
 
 	  checkBLEMessages();
 	  measureVoltages();
