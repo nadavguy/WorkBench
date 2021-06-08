@@ -139,7 +139,7 @@ eCI_RESULT func_backLight(void)
 	{
 		ee.backLight = get_param_int(0);
 		ee_save1();
-		sprintf(terminalBuffer,"Backlight value set to: %3.1f per-cent",ee.backLight/10.0);
+		sprintf(terminalBuffer,"Backlight value set to: %3.1f per-cent",ee.backLight*10.0);
 		logData(terminalBuffer, false, false, false);
 	}
 	return CI_OK;

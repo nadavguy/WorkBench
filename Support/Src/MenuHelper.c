@@ -36,6 +36,8 @@ tPOPUP safeAirClearStorageMessage;
 tPOPUP bleMakeVisibleMessage;
 tPOPUP bleDisableMessage;
 tPOPUP massStorageMessage;
+tPOPUP aboutRCMessage;
+tPOPUP aboutBLEMessage;
 
 uint32_t itemIDtoUpdate = 0;
 
@@ -56,30 +58,36 @@ void initMenuPages(void)
 		MainPage.numberOfItemsInPage = 3;
 		memcpy(&MainPage.itemsArray[0],"RC Settings",strlen("RC Settings"));
 		memcpy(&MainPage.itemsArray[1],"SA Settings",strlen("SA Settings"));
-		memcpy(&MainPage.itemsArray[2],"Close menu",strlen("Close menu"));
+		memcpy(&MainPage.itemsArray[2],"About RC",strlen("About RC"));
+		memcpy(&MainPage.itemsArray[3],"Close menu",strlen("Close menu"));
 
 		MainPage.cellTypeArray[0] = PAGE;
 		MainPage.cellTypeArray[1] = PAGE;
-		MainPage.cellTypeArray[2] = CLOSE;
+		MainPage.cellTypeArray[2] = POPUP;
+		MainPage.cellTypeArray[3] = CLOSE;
 
 		MainPage.nextCellIDArray[0] = 2;
 		MainPage.nextCellIDArray[1] = 3;
-		MainPage.nextCellIDArray[2] = 0;
+		MainPage.nextCellIDArray[2] = (uint32_t)&aboutRCMessage;
+		MainPage.nextCellIDArray[3] = 0;
 	}
 	else
 	{
 		MainPage.numberOfItemsInPage = 2;
 		memcpy(&MainPage.itemsArray[0],"RC Settings",strlen("RC Settings"));
 //		memcpy(&MainPage.itemsArray[1],"SA Settings",strlen("SA Settings"));
-		memcpy(&MainPage.itemsArray[1],"Close menu",strlen("Close menu"));
+		memcpy(&MainPage.itemsArray[1],"About RC",strlen("About RC"));
+		memcpy(&MainPage.itemsArray[2],"Close menu",strlen("Close menu"));
 
 		MainPage.cellTypeArray[0] = PAGE;
 //		MainPage.cellTypeArray[1] = PAGE;
-		MainPage.cellTypeArray[1] = CLOSE;
+		MainPage.cellTypeArray[1] = POPUP;
+		MainPage.cellTypeArray[2] = CLOSE;
 
 		MainPage.nextCellIDArray[0] = 2;
 //		MainPage.nextCellIDArray[1] = 3;
-		MainPage.nextCellIDArray[1] = 0;
+		MainPage.nextCellIDArray[1] = (uint32_t)&aboutRCMessage;
+		MainPage.nextCellIDArray[2] = 0;
 	}
 
 	rcSettingsPage.pageID = 2;
@@ -156,19 +164,19 @@ void initMenuPages(void)
 	blueToothSettingsPage.numberOfItemsInPage = 5;
 	memcpy(&blueToothSettingsPage.itemsArray[0],"Make visible",strlen("Make visible"));
 	memcpy(&blueToothSettingsPage.itemsArray[1],"Disable BLE",strlen("Disable BLE"));
-//	memcpy(&blueToothSettingsPage.itemsArray[2],"Clear Storage",strlen("Clear Storage"));
-	memcpy(&blueToothSettingsPage.itemsArray[2],"Back",strlen("Back"));
-	memcpy(&blueToothSettingsPage.itemsArray[3],"Close menu",strlen("Close menu"));
+	memcpy(&blueToothSettingsPage.itemsArray[2],"About BLE",strlen("About BLE"));
+	memcpy(&blueToothSettingsPage.itemsArray[3],"Back",strlen("Back"));
+	memcpy(&blueToothSettingsPage.itemsArray[4],"Close menu",strlen("Close menu"));
 	blueToothSettingsPage.cellTypeArray[0] = POPUP;
 	blueToothSettingsPage.cellTypeArray[1] = POPUP;
-//	blueToothSettingsPage.cellTypeArray[2] = POPUP;
-	blueToothSettingsPage.cellTypeArray[2] = BACK;
-	blueToothSettingsPage.cellTypeArray[3] = CLOSE;
+	blueToothSettingsPage.cellTypeArray[2] = POPUP;
+	blueToothSettingsPage.cellTypeArray[3] = BACK;
+	blueToothSettingsPage.cellTypeArray[4] = CLOSE;
 	blueToothSettingsPage.nextCellIDArray[0] = (uint32_t)&bleMakeVisibleMessage;
 	blueToothSettingsPage.nextCellIDArray[1] = (uint32_t)&bleDisableMessage;
-//	blueToothSettingsPage.nextCellIDArray[2] = (uint32_t)&rcClearStorageMessage;
-	blueToothSettingsPage.nextCellIDArray[2] = 0;
+	blueToothSettingsPage.nextCellIDArray[2] = (uint32_t)&aboutBLEMessage;
 	blueToothSettingsPage.nextCellIDArray[3] = 0;
+	blueToothSettingsPage.nextCellIDArray[4] = 0;
 
 
 	pagesArray[1] = MainPage;
@@ -394,6 +402,26 @@ void initPopupMessages(void)
 	//	memcpy(&safeairForceDisarmMessage.itemsArray[3],"be overwritten",strlen("be overwritten"));
 	memcpy(&massStorageMessage.itemsArray[2],"No",strlen("No"));
 	memcpy(&massStorageMessage.itemsArray[3],"Yes",strlen("Yes"));
+
+	aboutRCMessage.popupID = 8;
+	aboutRCMessage.numberOfItemsInPopup = 5;
+	aboutRCMessage.isQuestion = false;
+	sprintf(aboutRCMessage.itemsArray[0],"FW: %1.2f", fwVersion);
+	sprintf(aboutRCMessage.itemsArray[1],"BuildID: %1.2f", buildID);
+	sprintf(aboutRCMessage.itemsArray[2],"Config: %1.2f", ee.configuration);
+	//	memcpy(&safeairForceDisarmMessage.itemsArray[3],"be overwritten",strlen("be overwritten"));
+	memcpy(&aboutRCMessage.itemsArray[3],"No",strlen("No"));
+	memcpy(&aboutRCMessage.itemsArray[4],"Yes",strlen("Yes"));
+
+	aboutBLEMessage.popupID = 9;
+	aboutBLEMessage.numberOfItemsInPopup = 5;
+	aboutBLEMessage.isQuestion = false;
+	sprintf(aboutBLEMessage.itemsArray[0],"MAC: %s", bleParameters.macAddress);
+	sprintf(aboutBLEMessage.itemsArray[1],"Name:");
+	sprintf(aboutBLEMessage.itemsArray[2],"%s", bleParameters.bleName);
+	//	memcpy(&safeairForceDisarmMessage.itemsArray[3],"be overwritten",strlen("be overwritten"));
+	memcpy(&aboutBLEMessage.itemsArray[3],"No",strlen("No"));
+	memcpy(&aboutBLEMessage.itemsArray[4],"Yes",strlen("Yes"));
 }
 
 void updateSelection(void)
@@ -532,7 +560,7 @@ void updateSelectedParameter(void)
 	if (itemIDtoUpdate == 1)
 	{
 		ee.backLight = brightnessItem.startValue;
-		LCD_1IN8_SetBackLight(ee.backLight);
+		LCD_1IN8_SetBackLight(ee.backLight * 100);
 		ee_save1();
 	}
 	else if (itemIDtoUpdate == 2)

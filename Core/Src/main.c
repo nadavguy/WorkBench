@@ -78,7 +78,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.190;
+float buildID = 1.200;
 
 SYSTEMState rcState = PREINIT;
 //SYSTEMState previousSMAState = PREINIT;
@@ -625,7 +625,7 @@ void updateRCState(void)
 	}
 	else if ( (!isScreenBrightFull) && (HAL_GetTick() - lastAnyButtonPress < 2000) )
 	{
-		LCD_1IN8_SetBackLight(ee.backLight);
+		LCD_1IN8_SetBackLight(ee.backLight * 100);
 		isScreenBrightFull = true;
 	}
 
