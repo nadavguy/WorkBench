@@ -78,7 +78,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.180;
+float buildID = 1.190;
 
 SYSTEMState rcState = PREINIT;
 //SYSTEMState previousSMAState = PREINIT;
@@ -188,12 +188,12 @@ int main(void)
   MX_USB_DEVICE_Init();
   MX_ADC1_Init();
   MX_TIM3_Init();
-  MX_USART2_UART_Init();
   MX_USART1_UART_Init();
   MX_USART3_UART_Init();
   MX_RTC_Init();
   MX_ADC2_Init();
   MX_ADC3_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   //
   UID1 = (*(__I uint32_t *) 0x1FF0F420);
