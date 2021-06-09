@@ -123,6 +123,7 @@ tWarning displayWarning;
 float batteryVoltage = 4.2;
 
 uint32_t lastScreenUpdate = 0;
+uint32_t lastLogEntry = 0;
 
 RTC_TimeTypeDef sTime;
 RTC_DateTypeDef sDate;
@@ -629,8 +630,8 @@ void updateRCState(void)
 		isScreenBrightFull = true;
 	}
 
-	if (shouldUpdateStatusText  || shouldReDrawTriggerModeIcon || shouldReDrawAutoPilotIcon || shouldRedrawBatteryIcon
-			|| shouldUpdatePlatformText || shouldReDrawPlatformIcon ) // || shouldDrawRedAlertIcon
+	if ( (shouldUpdateStatusText  || shouldReDrawTriggerModeIcon || shouldReDrawAutoPilotIcon || shouldRedrawBatteryIcon
+			|| shouldUpdatePlatformText || shouldReDrawPlatformIcon ) && (HAL_GetTick() - lastLogEntry > 50) )// || shouldDrawRedAlertIcon
 	{
 //		sprintf(terminalBuffer,"SmartAir state: %d, trigger mode: %d",
 //				currentSmaStatus.smaState, currentSmaStatus.triggerMode);
@@ -644,6 +645,7 @@ void updateRCState(void)
 		sprintf(terminalBuffer,"SMA, %d, %d, %6.3f, %6.3f, %6.3f",currentSmaStatus.smaState, currentSmaStatus.triggerMode,
 				currentSmaStatus.batteryVoltage, currentSmaStatus.Altitude, currentSmaStatus.Acceleration);
 		logData(terminalBuffer, true, false, false);
+		lastLogEntry = HAL_GetTick();
 	}
 
 }

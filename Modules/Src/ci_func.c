@@ -30,7 +30,7 @@ eCI_RESULT func_updateRCVersion(void)
 	prepFlash();
 	FS_ret = f_open(&USERFile, "IAP.bin", FA_READ);
 //	FS_ret = f_read(&USERFile, &FileReadBuffer, sizeof(FileReadBuffer), &br);
-	while (f_read(&USERFile, &FileReadBuffer, sizeof(FileReadBuffer), &br) == HAL_OK)
+	while ( (f_read(&USERFile, &FileReadBuffer, sizeof(FileReadBuffer), &br) == HAL_OK) && (br > 0) )
 	{
 		writeData(writeAddress, (uint32_t *)FileReadBuffer, br);
 		writeAddress = writeAddress + br;
@@ -387,6 +387,7 @@ eCI_RESULT func_fmt(void)
 	f_close(&USERFile);
 
 	uint8_t ret = QSPI_DeleteFlash();
+	QSPI_Init();
 	flashInit();
 	createNewLogFile();
 
