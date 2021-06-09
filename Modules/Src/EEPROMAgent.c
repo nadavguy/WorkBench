@@ -227,7 +227,7 @@ uint32_t writeData(uint32_t startAddress, uint32_t* data, uint32_t data_length)
 		}
 		else
 		{
-			uint32_t er = HAL_FLASH_GetError();
+//			uint32_t er = HAL_FLASH_GetError();
 			return (1);
 		}
 	}
@@ -235,28 +235,28 @@ uint32_t writeData(uint32_t startAddress, uint32_t* data, uint32_t data_length)
 	return (0);
 }
 
-tEE_DATA readData(uint32_t startAddress)
-{
-	tEE_DATA localEE;
-	uint32_t localeeptr = &localEE;
-
-	for(int i = 0; i< sizeof(localEE)/4;i++)
-	{
-		*(uint32_t *)localeeptr = *(uint32_t *)startAddress;
-		localeeptr = localeeptr + 4;
-		startAddress = startAddress + 4;
-	}
-	return localEE;
-}
+//tEE_DATA readData(uint32_t startAddress)
+//{
+//	tEE_DATA localEE;
+//	uint32_t localeeptr = &localEE;
+//
+//	for(int i = 0; i< sizeof(localEE)/4;i++)
+//	{
+//		*(uint32_t *)localeeptr = *(uint32_t *)startAddress;
+//		localeeptr = localeeptr + 4;
+//		startAddress = startAddress + 4;
+//	}
+//	return localEE;
+//}
 
 void reallocateData(uint32_t oldAddress, uint32_t newAddress)
 {
-	tEE_DATA localEE = readData(oldAddress);
-	prepFlash();
-	setFlashParams(localFlashParams.addDelayBeforeFlashOps, newAddress, localFlashParams.voltageLevel);
-	prepFlash();
-	uint32_t* data = &localEE;
-	writeData(newAddress,data,sizeof(localEE));
+//	tEE_DATA localEE = readData(oldAddress);
+//	prepFlash();
+//	setFlashParams(localFlashParams.addDelayBeforeFlashOps, newAddress, localFlashParams.voltageLevel);
+//	prepFlash();
+//	uint32_t* data = &localEE;
+//	writeData(newAddress,data,sizeof(localEE));
 }
 
 void setFlashParams(bool addDelay,uint32_t startaddress, uint32_t voltageLevel)

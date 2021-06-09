@@ -22,17 +22,17 @@ eCI_RESULT func_debug(void)
 
 eCI_RESULT func_updateRCVersion(void)
 {
-	uint32_t br = 0;
+	unsigned int br = 0;
 	uint32_t writeAddress = 0;
 	localFlashParams.startAddress = 0x8000000;
 	localFlashParams.voltageLevel = FLASH_VOLTAGE_RANGE_3;
 	writeAddress = localFlashParams.startAddress;
 	prepFlash();
-	FS_ret = f_open(&USERFile, "SmartAir_NANO_IAP.bin", FA_READ);
+	FS_ret = f_open(&USERFile, "IAP.bin", FA_READ);
 //	FS_ret = f_read(&USERFile, &FileReadBuffer, sizeof(FileReadBuffer), &br);
 	while (f_read(&USERFile, &FileReadBuffer, sizeof(FileReadBuffer), &br) == HAL_OK)
 	{
-		writeData(writeAddress, FileReadBuffer, br);
+		writeData(writeAddress, (uint32_t *)FileReadBuffer, br);
 		writeAddress = writeAddress + br;
 	}
 //	HAL_UART_DMAStop(&huart1);
@@ -349,6 +349,17 @@ eCI_RESULT func_bleMode(void)
   return CI_NO_UART_ACK;
 }
 
+eCI_RESULT func_bootloaderMode(void)
+{
+//  if (!SessionUnlocked)
+//  {
+//    return CI_COMMAND_ERROR;
+//  }
+	NVIC_SystemReset();
+//  PRINT(SessionUnlocked);
+  return CI_NO_UART_ACK;
+}
+
 eCI_RESULT func_dir(void)
 {
     FILINFO fno1;
@@ -417,6 +428,7 @@ functionsList cases [] =
 		{ "FOR", func_openNewLogFile},
 		{ "FC", func_closeCurrentLogFile},
 		{ "ble", func_bleMode},
+		{ "fwu", func_bootloaderMode},
 		{ "dir" , func_dir },
 		{ "fmt" , func_fmt }
 };
