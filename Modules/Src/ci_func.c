@@ -22,6 +22,19 @@ eCI_RESULT func_debug(void)
 
 eCI_RESULT func_updateRCVersion(void)
 {
+	unsigned int br = 0;
+	uint32_t writeAddress = 0;
+	localFlashParams.startAddress = 0x8000000;
+	localFlashParams.voltageLevel = FLASH_VOLTAGE_RANGE_3;
+	writeAddress = localFlashParams.startAddress;
+	prepFlash();
+	FS_ret = f_open(&USERFile, "IAP.bin", FA_READ);
+//	FS_ret = f_read(&USERFile, &FileReadBuffer, sizeof(FileReadBuffer), &br);
+	while ( (f_read(&USERFile, &FileReadBuffer, sizeof(FileReadBuffer), &br) == HAL_OK) && (br > 0) )
+	{
+		writeData(writeAddress, (uint32_t *)FileReadBuffer, br);
+		writeAddress = writeAddress + br;
+	}
 //	HAL_UART_DMAStop(&huart1);
 //
 //	SerialDownload(true);
@@ -336,12 +349,23 @@ eCI_RESULT func_bleMode(void)
   return CI_NO_UART_ACK;
 }
 
+eCI_RESULT func_bootloaderMode(void)
+{
+//  if (!SessionUnlocked)
+//  {
+//    return CI_COMMAND_ERROR;
+//  }
+	NVIC_SystemReset();
+//  PRINT(SessionUnlocked);
+  return CI_NO_UART_ACK;
+}
+
 eCI_RESULT func_dir(void)
 {
     FILINFO fno1;
     DIR dp1;
     f_opendir(&dp1, "\\");
-    f_findfirst(&dp1, &fno1, "\\", "LOG_*");
+    f_findfirst(&dp1, &fno1, "\\", "*");
 
     while( (fno1.fname[0] != 0) )
     {
@@ -363,6 +387,7 @@ eCI_RESULT func_fmt(void)
 	f_close(&USERFile);
 
 	uint8_t ret = QSPI_DeleteFlash();
+	QSPI_Init();
 	flashInit();
 	createNewLogFile();
 
@@ -404,6 +429,7 @@ functionsList cases [] =
 		{ "FOR", func_openNewLogFile},
 		{ "FC", func_closeCurrentLogFile},
 		{ "ble", func_bleMode},
+		{ "fwu", func_bootloaderMode},
 		{ "dir" , func_dir },
 		{ "fmt" , func_fmt }
 };

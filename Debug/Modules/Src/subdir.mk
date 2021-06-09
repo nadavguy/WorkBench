@@ -8,6 +8,7 @@ C_SRCS += \
 ../Modules/Src/BleAgent.c \
 ../Modules/Src/BuzzerAgent.c \
 ../Modules/Src/ConfigParams.c \
+../Modules/Src/EEPROMAgent.c \
 ../Modules/Src/FlashQSPIAgent.c \
 ../Modules/Src/LogAgent.c \
 ../Modules/Src/PowerAgent.c \
@@ -21,6 +22,7 @@ OBJS += \
 ./Modules/Src/BleAgent.o \
 ./Modules/Src/BuzzerAgent.o \
 ./Modules/Src/ConfigParams.o \
+./Modules/Src/EEPROMAgent.o \
 ./Modules/Src/FlashQSPIAgent.o \
 ./Modules/Src/LogAgent.o \
 ./Modules/Src/PowerAgent.o \
@@ -34,6 +36,7 @@ C_DEPS += \
 ./Modules/Src/BleAgent.d \
 ./Modules/Src/BuzzerAgent.d \
 ./Modules/Src/ConfigParams.d \
+./Modules/Src/EEPROMAgent.d \
 ./Modules/Src/FlashQSPIAgent.d \
 ./Modules/Src/LogAgent.d \
 ./Modules/Src/PowerAgent.d \

@@ -568,7 +568,7 @@ void createPingMessage(void)
 //		}
 //		logData(test, true, true);
 //		memset(test, 0, 1024);
-		memset(tbsRXArray, 0, 256);
+		memset(tbsRXArray, 0, TBS_RX_BUFFER);
 		Counter++;
 	}
 }

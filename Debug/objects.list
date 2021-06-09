@@ -95,6 +95,7 @@
 "Modules/Src/BleAgent.o"
 "Modules/Src/BuzzerAgent.o"
 "Modules/Src/ConfigParams.o"
+"Modules/Src/EEPROMAgent.o"
 "Modules/Src/FlashQSPIAgent.o"
 "Modules/Src/LogAgent.o"
 "Modules/Src/PowerAgent.o"

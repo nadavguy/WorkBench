@@ -55,7 +55,7 @@ void initMenuPages(void)
 	MainPage.pageID = 1;
 	if ( (menuLevel == DEVELOPER) || (menuLevel == OEM) )
 	{
-		MainPage.numberOfItemsInPage = 3;
+		MainPage.numberOfItemsInPage = 4;
 		memcpy(&MainPage.itemsArray[0],"RC Settings",strlen("RC Settings"));
 		memcpy(&MainPage.itemsArray[1],"SA Settings",strlen("SA Settings"));
 		memcpy(&MainPage.itemsArray[2],"About RC",strlen("About RC"));
@@ -73,7 +73,7 @@ void initMenuPages(void)
 	}
 	else
 	{
-		MainPage.numberOfItemsInPage = 2;
+		MainPage.numberOfItemsInPage = 3;
 		memcpy(&MainPage.itemsArray[0],"RC Settings",strlen("RC Settings"));
 //		memcpy(&MainPage.itemsArray[1],"SA Settings",strlen("SA Settings"));
 		memcpy(&MainPage.itemsArray[1],"About RC",strlen("About RC"));
