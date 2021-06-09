@@ -33,9 +33,12 @@ void initBLE(void)
 		HAL_UART_Transmit(&BLE_UART, (uint8_t *)lt, 2, 100);
 		HAL_Delay(20);
 		checkBLEMessages();
-		sprintf(lt,"SN,ParaZero_RC\r");
-		HAL_UART_Transmit(&BLE_UART, (uint8_t *)lt, 15, 100);  //SN,MyDevice
-		checkBLEMessages();
+		if (!strcmp(bleParameters.macAddress, "ParaZero_RC"))
+		{
+			sprintf(lt,"SN,ParaZero_RC\r");
+			HAL_UART_Transmit(&BLE_UART, (uint8_t *)lt, 15, 100);  //SN,MyDevice
+			checkBLEMessages();
+		}
 		sprintf(lt,"---\r");
 		HAL_UART_Transmit(&BLE_UART, (uint8_t *)lt, 4, 100);
 	}

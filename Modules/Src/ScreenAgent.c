@@ -100,7 +100,7 @@ void screenInit(void)
 {
 	isPortrait = (bool)ee.screenOreintation;
 	DEV_Module_Init();
-	LCD_1IN8_SetBackLight(ee.backLight);
+	LCD_1IN8_SetBackLight(ee.backLight * 100);
 	if (isPortrait)
 	{
 		LCD_1IN8_Init(L2R_U2D);
