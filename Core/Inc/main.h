@@ -63,6 +63,7 @@ extern "C" {
 #include "BleAgent.h"
 #include "ci_func.h"
 #include "PowerAgent.h"
+#include "EEPROMAgent.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

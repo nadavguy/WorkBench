@@ -22,6 +22,19 @@ eCI_RESULT func_debug(void)
 
 eCI_RESULT func_updateRCVersion(void)
 {
+	uint32_t br = 0;
+	uint32_t writeAddress = 0;
+	localFlashParams.startAddress = 0x8000000;
+	localFlashParams.voltageLevel = FLASH_VOLTAGE_RANGE_3;
+	writeAddress = localFlashParams.startAddress;
+	prepFlash();
+	FS_ret = f_open(&USERFile, "SmartAir_NANO_IAP.bin", FA_READ);
+//	FS_ret = f_read(&USERFile, &FileReadBuffer, sizeof(FileReadBuffer), &br);
+	while (f_read(&USERFile, &FileReadBuffer, sizeof(FileReadBuffer), &br) == HAL_OK)
+	{
+		writeData(writeAddress, FileReadBuffer, br);
+		writeAddress = writeAddress + br;
+	}
 //	HAL_UART_DMAStop(&huart1);
 //
 //	SerialDownload(true);
@@ -341,7 +354,7 @@ eCI_RESULT func_dir(void)
     FILINFO fno1;
     DIR dp1;
     f_opendir(&dp1, "\\");
-    f_findfirst(&dp1, &fno1, "\\", "LOG_*");
+    f_findfirst(&dp1, &fno1, "\\", "*");
 
     while( (fno1.fname[0] != 0) )
     {
