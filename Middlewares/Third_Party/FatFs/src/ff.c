@@ -3502,7 +3502,7 @@ FRESULT f_open (
 }
 
 
-
+bool EndOfSector = false;
 
 /*-----------------------------------------------------------------------*/
 /* Read File                                                             */
@@ -3531,8 +3531,19 @@ FRESULT f_read (
 	if (btr > remain) btr = (UINT)remain;		/* Truncate btr by remaining bytes */
 
 	for ( ;  btr;								/* Repeat until all data read */
-		rbuff += rcnt, fp->fptr += rcnt, *br += rcnt, btr -= rcnt) {
-		if (fp->fptr % SS(fs) == 0) {			/* On the sector boundary? */
+		rbuff += rcnt, fp->fptr += rcnt, *br += rcnt, btr -= rcnt) 
+		{
+		if ( ((fp->fptr % SS(fp)) == 4095) && (fp->fptr >0))
+            {
+                EndOfSector = true;
+            }
+			else
+			{
+				EndOfSector = false;
+			}
+			
+            if (fp->fptr % SS(fs) == 0) 
+			{			/* On the sector boundary? */
 			csect = (UINT)(fp->fptr / SS(fs) & (fs->csize - 1));	/* Sector offset in the cluster */
 			if (csect == 0) {					/* On the cluster boundary? */
 				if (fp->fptr == 0) {			/* On the top of the file? */
@@ -3592,8 +3603,11 @@ FRESULT f_read (
 #if _FS_TINY
 		if (move_window(fs, fp->sect) != FR_OK) ABORT(fs, FR_DISK_ERR);	/* Move sector window */
 		mem_cpy(rbuff, fs->win + fp->fptr % SS(fs), rcnt);	/* Extract partial sector */
-#else
-		mem_cpy(rbuff, fp->buf + fp->fptr % SS(fs), rcnt);	/* Extract partial sector */
+#else			
+			if (!EndOfSector) // Do not read last byte of sector
+			{
+				mem_cpy(rbuff, fp->buf + fp->fptr % SS(fs), rcnt);	/* Extract partial sector */
+			}
 #endif
 	}
 
@@ -3620,7 +3634,8 @@ FRESULT f_write (
 	DWORD clst, sect;
 	UINT wcnt, cc, csect;
 	const BYTE *wbuff = (const BYTE*)buff;
-
+	const BYTE JunkBuff = { 0x23 }; // Added junk byte for last byte in sector that is not read correctly
+	bool WriteJunk = false;
 
 	*bw = 0;	/* Clear write byte counter */
 	res = validate(&fp->obj, &fs);			/* Check validity of the file object */
@@ -3706,13 +3721,38 @@ FRESULT f_write (
 			fp->sect = sect;
 		}
 		wcnt = SS(fs) - (UINT)fp->fptr % SS(fs);	/* Number of bytes left in the sector */
-		if (wcnt > btw) wcnt = btw;					/* Clip it by btw if needed */
+		//BytesLeftInSector = wcnt;
+		if (wcnt > btw) 
+        {
+        	wcnt = btw;					/* Clip it by btw if needed */
+			WriteJunk = false;
+		}
+        else if ((wcnt <= btw) && (wcnt > 1)) // fix last byte not read from flash drive
+        {
+            wcnt = wcnt-1;
+			WriteJunk = false;
+        }
+        else if (wcnt == 1)
+        {
+			WriteJunk = true;
+        }
+
 #if _FS_TINY
 		if (move_window(fs, fp->sect) != FR_OK) ABORT(fs, FR_DISK_ERR);	/* Move sector window */
 		mem_cpy(fs->win + fp->fptr % SS(fs), wbuff, wcnt);	/* Fit data to the sector */
 		fs->wflag = 1;
 #else
-		mem_cpy(fp->buf + fp->fptr % SS(fs), wbuff, wcnt);	/* Fit data to the sector */
+		if (!(WriteJunk))
+        {
+          mem_cpy(fp->buf + fp->fptr % SS(fs), wbuff, wcnt);	/* Fit data to the sector */
+        }
+        else // fix last byte not read from flash drive, write junk to last byte
+        {
+          mem_cpy(fp->buf + fp->fptr % SS(fs), &JunkBuff, wcnt);
+          wcnt = 0;
+          fp->fptr = fp->fptr + 1;
+        }
+        
 		fp->flag |= FA_DIRTY;
 #endif
 	}
@@ -5886,10 +5926,17 @@ TCHAR* f_gets (
 #else						/* Read a character without conversion */
 		f_read(fp, s, 1, &rc);
 		if (rc != 1) break;
-		c = s[0];
+        if (!EndOfSector)
+        {
+          c = s[0];
+        }
 #endif
 		if (_USE_STRFUNC == 2 && c == '\r') continue;	/* Strip '\r' */
-		*p++ = c;
+		
+        if (!EndOfSector)
+        {
+          *p++ = c;
+        }
 		n++;
 		if (c == '\n') break;		/* Break on EOL */
 	}
