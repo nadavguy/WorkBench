@@ -21,6 +21,9 @@ extern bool sessionUnlocked;
 extern uint32_t previousLogIndex;
 extern uint32_t lastFileSizeCheck;
 
+extern float free_kb;
+extern float total_kb;
+
 extern bool createNewLogFile(void);
 extern void logData(char *dataToLog, bool doNotShowOnDisplay, bool displayOnly, bool doNotDisplayTime);
 extern uint32_t getCurrentLogSize(void);
