@@ -80,7 +80,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.210;
+float buildID = 1.220;
 
 SYSTEMState rcState = PREINIT;
 //SYSTEMState previousSMAState = PREINIT;
@@ -107,6 +107,7 @@ bool formatSDEnabled = false;
 bool waitForAckResponse = false;
 bool shouldRedrawSafeAirBatteryIcon = true;
 bool isScreenBrightFull = true;
+bool shouldDrawSafeAirAltitude = true;
 
 uint32_t UID1 = 0;
 uint32_t UID2 = 0;

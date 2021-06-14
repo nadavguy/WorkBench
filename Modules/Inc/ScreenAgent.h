@@ -122,7 +122,7 @@
 #define VerticalTriggerModeY VerticalSafeAirBatteryY
 
 #define VerticalSystemTextX VerticalDisplayCenterWidth
-#define VerticalSystemTextY 28
+#define VerticalSystemTextY 30
 
 #define VerticalParachute1X 0
 #define VerticalParachute1Y 48
@@ -166,6 +166,13 @@
 #define VerticalQuestionRectangleHeight 86
 #define VerticalPopupRectangleHeight VerticalQuestionRectangleHeight + VerticalMenuRectangleHeight
 
+#define VerticalSafeAirLineStartX 5
+#define VerticalSafeAirLineEndX 123
+#define VerticalSafeAirLineY 128
+
+#define VerticalAltitudeOrGPSX 5
+#define	VerticalAltitudeOrGPSY 132
+
 typedef struct sIMAGE_DATA
 {
 	uint32_t imagePointer;
@@ -200,6 +207,10 @@ extern bool isTriggerModeDisplayed;
 extern bool isSafeAirBatteryDisplayed;
 extern bool isAltitudeDisplayed;
 extern bool isGPSPositionDisplayed;
+
+extern uint8_t LineStartX;
+extern uint8_t LineEndX;
+extern uint8_t LineY;
 
 extern uint32_t lastBITStatusChange;
 extern uint32_t lastFrameDisplayed;

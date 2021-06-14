@@ -6,6 +6,7 @@
  */
 
 #include "main.h"
+#include "GUI_Paint.h"
 #include "DEV_Config.h"
 uint8_t numberOfDisplayedSafeAirIcons = 0;
 
@@ -20,6 +21,8 @@ void createEmptyFrame(bool isMenuFrame)
 			nextFrameToDraw[(i + SCREEN_WIDTH * STATUSBAR_HEIGHT) * 2] = BACKGROUND_HIGH_BYTE;
 			nextFrameToDraw[(i + SCREEN_WIDTH * STATUSBAR_HEIGHT) * 2 + 1] = BACKGROUND_LOW_BYTE;
 		}
+
+		Paint_DrawLine(LineStartX, LineY, LineEndX, LineY, BLACK, DOT_PIXEL_1X1, LINE_STYLE_SOLID);
 	}
 	else if (isMenuFrame)
 	{

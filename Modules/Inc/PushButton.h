@@ -23,6 +23,8 @@
 #define okGPIO GPIOD
 #define okPIN GPIO_PIN_7
 
+extern GPIO_PinState triggerPinState;
+
 extern uint32_t okButtonPressDuration;
 extern uint32_t lastAnyButtonPress;
 

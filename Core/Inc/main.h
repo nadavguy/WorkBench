@@ -131,6 +131,7 @@ extern bool forceDisarmEnabled;
 extern bool formatSDEnabled;
 extern bool waitForAckResponse;
 extern bool shouldRedrawSafeAirBatteryIcon;
+extern bool shouldDrawSafeAirAltitude;
 
 extern uint32_t UID1;
 extern uint32_t UID2;

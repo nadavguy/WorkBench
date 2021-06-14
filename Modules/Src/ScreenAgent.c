@@ -27,6 +27,7 @@ const unsigned char *previousTriggerModeImage;
 const unsigned char *previousSignalImage;
 const unsigned char *previousBatteryImage;
 const unsigned char *previousRCBatteryImage;
+const unsigned char *previousAltitudeOrGPSImage;
 
 bool shouldRenderBatteryPercent = false;
 bool shouldRenderMenu = false;
@@ -73,6 +74,11 @@ uint8_t WarningIconX = 0;
 uint8_t WarningIconY = 0;
 uint8_t WarningTextX = 0;
 uint8_t WarningTextY = 0;
+uint8_t LineStartX = 0;
+uint8_t LineEndX = 0;
+uint8_t LineY = 0;
+uint8_t AltitudeOrGPSX = 0;
+uint8_t AltitudeOrGPSY = 0;
 
 uint32_t lastBatteryRefresh = 0;
 uint32_t lastBITStatusChange = 0;
@@ -890,6 +896,22 @@ void redrawPlatformIcon(bool drawDeltaImage)
 	}
 }
 
+void drawAltitudeIcon(bool drawDeltaImage)
+{
+
+	if (!drawDeltaImage)
+	{
+		Paint_DrawImage(gImage_Altitude, AltitudeOrGPSX, AltitudeOrGPSY, statusBarIconWidth, statusBarIconHeight);
+	}
+	else
+	{
+		Paint_DrawDeltaImage(gImage_Altitude, previousAltitudeOrGPSImage,
+				AltitudeOrGPSX, AltitudeOrGPSY, statusBarIconWidth, statusBarIconHeight);
+	}
+	previousAltitudeOrGPSImage = gImage_Altitude;
+
+}
+
 void screenUpdate(bool drawDeltaImage)
 {
 	numberOfDisplayedSafeAirIcons = 1 * isAutoPilotDisplayed + 1 * isPlatformDisplayed +
@@ -951,6 +973,22 @@ void screenUpdate(bool drawDeltaImage)
 		{
 			renderSafeAirBattery(drawDeltaImage);
 			shouldRedrawSafeAirBatteryIcon = false;
+		}
+
+		if ( (shouldDrawSafeAirAltitude) )
+		{
+			char localText[12] = "";
+			if ((currentSmaStatus.smaState != ARMED) && (currentSmaStatus.smaState != TRIGGERED))
+			{
+				sprintf(localText, "%06.1f m", 0.0);
+			}
+			else
+			{
+				sprintf(localText, "%06.1f m", currentSmaStatus.Altitude);
+			}
+ 			centeredString(74, 138, localText, BLACK, BACKGROUND, 14, Font16);
+			drawAltitudeIcon(drawDeltaImage);
+			shouldDrawSafeAirAltitude = false;
 		}
 
 //		if (!drawDeltaImage)
@@ -1193,6 +1231,7 @@ void setFullDisplay(void)
 	shouldReDrawPlatformIcon = false;
 	shouldReDrawTriggerModeIcon = true;
 	shouldRedrawSafeAirBatteryIcon = true;
+	shouldDrawSafeAirAltitude = true;
 
 	shouldClearDisplayedWarning = false;
 	isPopupDisplayed = false;
@@ -1227,6 +1266,13 @@ void setIconPositionOnScreen(void)
 
 		WarningTextX = VerticalWarningTextX;
 		WarningTextY = VerticalWarningTextY;
+
+		LineStartX = VerticalSafeAirLineStartX;
+		LineEndX = VerticalSafeAirLineEndX;
+		LineY = VerticalSafeAirLineY;
+
+		AltitudeOrGPSX = VerticalAltitudeOrGPSX;
+		AltitudeOrGPSY = VerticalAltitudeOrGPSY;
 
 
 		SafeAirBatteryX = (numberOfDisplayedSafeAirIcons /2 - 1 ) * safeAirBarIconWidth + VerticalDisplayCenterWidth;//VerticalSafeAirBatteryX;

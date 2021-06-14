@@ -11,6 +11,7 @@
 
 extern const unsigned char gImage_Location_On[];
 extern const unsigned char gImage_Location_Off[];
+extern const unsigned char gImage_Altitude[];
 
 
 #endif /* SCREEN_IMAGE_LOCATIONIMAGES_H_ */

@@ -145,7 +145,7 @@ void sendMessageToRC(void)
 void sendChannelMessageToTBS(void)
 {
 //	uint16_t R = 0;
-	if ( (HAL_GetTick() - lastCRSFChannelMessage > 8) && (messagesMissed < 33))
+	if ( (HAL_GetTick() - lastCRSFChannelMessage > 8) && ( (messagesMissed < 5) || (triggerPinState == GPIO_PIN_RESET) ) )
 	{
 		memset(rcChannelsFrame, 0, 26);
 		createCrossfireChannelsFrame(rcChannelsFrame, channelPWMValues);
@@ -155,7 +155,7 @@ void sendChannelMessageToTBS(void)
 		messagesMissed++;
 	}
 	else if ( ( (HAL_GetTick() - lastCRSFChannelMessage <= 8)  && ( HAL_GetTick() - lastCRSFChannelMessage > 1) )
-			|| messagesMissed >= 33)
+			|| messagesMissed >= 5)
 	{
 		HAL_UART_Receive_DMA(&TBS_UART, tbsRXArray,TBS_RX_BUFFER);
 		HAL_Delay(2);
