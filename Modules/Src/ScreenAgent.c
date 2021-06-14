@@ -1015,11 +1015,13 @@ void screenUpdate(bool drawDeltaImage)
 		{
 			drawMenu(shouldClearScreen, menuDrawDirection);
 			shouldRenderMenu = false;
+			lastReceivedCRSFMessage = HAL_GetTick();
 		}
 		if (shouldRenderItem)
 		{
 			drawItem(false, itemDrawDirection);
 			shouldRenderItem = false;
+			lastReceivedCRSFMessage = HAL_GetTick();
 		}
 
 	} // End of is Menu displayed
@@ -1027,6 +1029,7 @@ void screenUpdate(bool drawDeltaImage)
 	{
 		drawPopup();
 		shouldRenderPopup = false;
+		lastReceivedCRSFMessage = HAL_GetTick();
 	}
 }
 
