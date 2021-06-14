@@ -305,7 +305,7 @@ void initMenuItems(void)
 	safeairStateItem.startValue = 3;
 	safeairStateItem.deltaMultiplier = 1;
 	safeairStateItem.numberOfItemsInPage = 6;
-	memcpy(&safeairStateItem.itemsArray[0],"Platform Type",strlen("Platform Type"));
+	memcpy(&safeairStateItem.itemsArray[0],"SA state",strlen("SA state"));
 	memcpy(&safeairStateItem.itemsArray[1],"Units: [N/A]",strlen("Units: [N/A]"));
 	memcpy(&safeairStateItem.itemsArray[2],"Value",strlen("Value"));
 	memcpy(&safeairStateItem.itemsArray[3],"Delta",strlen("Delta"));
