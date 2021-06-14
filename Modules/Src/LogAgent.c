@@ -7,13 +7,16 @@
 
 #include "main.h"
 #include "LogAgent.h"
-#include "FlashQSPIAgent.h"
+//#include "FlashQSPIAgent.h"
 #include "usbd_cdc_if.h"
 #include "fatfs.h"
 
 bool sessionUnlocked = true;
 uint32_t previousLogIndex = 0;
 uint32_t lastFileSizeCheck = 0;
+
+float free_kb = 0;
+float total_kb = 0;
 
 char currentLogFilename[64] = "";
 char FileReadBuffer[1024] = "";
@@ -36,15 +39,15 @@ void logData(char *dataToLog, bool doNotShowOnDisplay, bool displayOnly, bool do
     //TODO: disable sessionUnlocked and replace with debugLevel
     if (displayOnly)
     {
-        CDC_Transmit_FS((uint8_t*)localString, strlen(localString));
+    	CDC_Transmit_FS((uint8_t*)localString, strlen(localString));
     }
     else if (!displayOnly || !doNotShowOnDisplay)
     {
     	f_write(&USERFile, localString, strlen(localString), &BytesWritten);
-    	if (BytesWritten < strlen(localString))
-    	{
-    		int a= 1;
-    	}
+//    	if (BytesWritten < strlen(localString))
+//    	{
+//    		int a= 1;
+//    	}
     	if (!doNotShowOnDisplay)
     	{
     		CDC_Transmit_FS((uint8_t*)localString, strlen(localString));
@@ -58,7 +61,7 @@ bool createNewLogFile(void)
     char localIndex[6] = "";
 	unsigned int br = 0;
 
-    FS_ret = f_open(&USERFile, "Index.txt", FA_READ);
+	FRESULT FS_ret = f_open(&USERFile, "Index.txt", FA_READ);
     FS_ret = f_read(&USERFile, &FileReadBuffer, sizeof(FileReadBuffer), &br);
 
 	if (FS_ret != FR_OK)
@@ -187,11 +190,11 @@ void deleteLogs(void)
 	FATFS *getFreeFs;
 	DWORD free_clusters, free_sectors, total_sectors;
 
-	FS_ret = f_getfree("\\", &free_clusters, &getFreeFs);
+	f_getfree("\\", &free_clusters, &getFreeFs);
 	total_sectors = (getFreeFs->n_fatent - 2) * getFreeFs->csize;
 	free_sectors = free_clusters * getFreeFs->csize;
-	free_kb = (float)free_sectors*(float)(SECTOR_SIZE)/1048576;
-	total_kb = (float)total_sectors*(float)(SECTOR_SIZE)/1048576;
+	free_kb = (float)free_sectors*(float)(W25Q128FV_SUBSECTOR_SIZE)/1048576;
+	total_kb = (float)total_sectors*(float)(W25Q128FV_SUBSECTOR_SIZE)/1048576;
 
 	f_opendir(&dp1, "\\");
 	f_findfirst(&dp1, &fno1, "\\", "LOG_*");
@@ -200,12 +203,12 @@ void deleteLogs(void)
 	{
 		sprintf(terminalBuffer,"Deleted log: %s",fno1.fname);
 		logData(terminalBuffer, false, false, false);
-		FS_ret = f_unlink(&fno1.fname[0]);
+		f_unlink(&fno1.fname[0]);
 		f_findnext(&dp1, &fno1);
-		FS_ret = f_getfree("\\", &free_clusters, &getFreeFs);
+		f_getfree("\\", &free_clusters, &getFreeFs);
 		total_sectors = (getFreeFs->n_fatent - 2) * getFreeFs->csize;
 		free_sectors = free_clusters * getFreeFs->csize;
-		free_kb = (float)free_sectors*(float)(SECTOR_SIZE)/1048576;
+		free_kb = (float)free_sectors*(float)(W25Q128FV_SUBSECTOR_SIZE)/1048576;
 	}
 	f_closedir(&dp1);
 	logData("EOD", false, true, true);

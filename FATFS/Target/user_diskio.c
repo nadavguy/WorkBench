@@ -36,7 +36,9 @@
 /* Includes ------------------------------------------------------------------*/
 #include <string.h>
 #include "ff_gen_drv.h"
-#include "FlashQSPIAgent.h"
+//#include "FlashQSPIAgent.h"
+#include "stm32746g_qspi.h"
+#include "w25q128fv.h"
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 
@@ -122,10 +124,10 @@ DRESULT USER_read (
 )
 {
   /* USER CODE BEGIN READ */
-	uint32_t SecAdd = sector * SECTOR_SIZE;
-	uint32_t Size = count * SECTOR_SIZE;
+	uint32_t SecAdd = sector * W25Q128FV_SUBSECTOR_SIZE;
+	uint32_t Size = count * W25Q128FV_SUBSECTOR_SIZE;
 
-	if(QSPI_Read((uint8_t*)buff, (uint32_t)SecAdd, (uint32_t) Size ) ==  HAL_OK)
+	if(BSP_QSPI_Read((uint8_t*)buff, (uint32_t)SecAdd, (uint32_t) Size ) ==  HAL_OK)
 	{
 		return RES_OK;
 	}
@@ -156,17 +158,17 @@ DRESULT USER_write (
   /* USER CODE BEGIN WRITE */
   /* USER CODE HERE */
 	DSector = sector;
-	SecAdd = sector * SECTOR_SIZE;
-	Size = count * SECTOR_SIZE;
+	SecAdd = sector * W25Q128FV_SUBSECTOR_SIZE;
+	Size = count * W25Q128FV_SUBSECTOR_SIZE;
 	for(uint16_t i = 0; i< count; i++)
 	{
-		if(QSPI_Erase_Sector4K(SecAdd + (i * SECTOR_SIZE)) != HAL_OK)
+		if(BSP_QSPI_Erase_Block(SecAdd + (i * W25Q128FV_SUBSECTOR_SIZE)) != HAL_OK)
 		{
 			return RES_ERROR;
 		}
 	}
 
-	if(QSPI_Write((uint8_t *)buff, SecAdd, Size) != HAL_OK)
+	if(BSP_QSPI_Write((uint8_t *)buff, SecAdd, Size) != HAL_OK)
 	{
 		return RES_ERROR;
 	}
@@ -203,13 +205,13 @@ DRESULT USER_ioctl (
 
 		/* Get number of sectors on the disk (DWORD) */
 	case GET_SECTOR_COUNT :
-		*(DWORD*)buff = 4096; //SDRAM_DEVICE_SIZE / BLOCK_SIZE;
+		*(DWORD*)buff = W25Q128FV_SUBSECTOR_SIZE; //SDRAM_DEVICE_SIZE / BLOCK_SIZE;
 		res = RES_OK;
 		break;
 
 		/* Get R/W sector size (WORD) */
 	case GET_SECTOR_SIZE :
-		*(WORD*)buff = SECTOR_SIZE;
+		*(WORD*)buff = W25Q128FV_SUBSECTOR_SIZE;
 		res = RES_OK;
 		break;
 

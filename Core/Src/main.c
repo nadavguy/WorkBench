@@ -37,7 +37,7 @@
 #include "stdint.h"
 #include "math.h"
 #include "ff.h"
-#include "FlashQSPIAgent.h"
+//#include "FlashQSPIAgent.h"
 #include "PushButton.h"
 #include "TBSAgent.h"
 #include "GUI_Paint.h"
@@ -52,7 +52,9 @@
 #include "BluetoothImages.h"
 #include "PlatformImages.h"
 #include "LCD_Test.h"
-#include "FlashQSPIAgent.h"
+//#include "FlashQSPIAgent.h"
+#include "stm32746g_qspi.h"
+#include "w25q128fv.h"
 #include "LCD_1in8.h"
 /* USER CODE END Includes */
 
@@ -124,6 +126,8 @@ float batteryVoltage = 4.2;
 
 uint32_t lastScreenUpdate = 0;
 uint32_t lastLogEntry = 0;
+
+unsigned int BytesWritten = 0;
 
 RTC_TimeTypeDef sTime;
 RTC_DateTypeDef sDate;
@@ -200,10 +204,118 @@ int main(void)
   UID1 = (*(__I uint32_t *) 0x1FF0F420);
   UID2 = (*(__I uint32_t *) 0x1FF0F424);
   UID3 = (*(__I uint32_t *) 0x1FF0F428);
+
+//  QSPI_CommandTypeDef s_command;
+//  uint8_t pData[3];
+
+	/*##-1- Initialize W25Q128FV  ###########################################*/
+	BSP_QSPI_Init();
+
+//	/*##-2-Read Device ID Test    ###########################################*/
+//	/* Read Manufacture/Device ID */
+//	s_command.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
+//	s_command.Instruction       = READ_ID_CMD;
+//	s_command.AddressMode       = QSPI_ADDRESS_1_LINE;
+//	s_command.AddressSize       = QSPI_ADDRESS_24_BITS;
+//	s_command.Address           = 0x000000;
+//	s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+//	s_command.DataMode          = QSPI_DATA_1_LINE;
+//	s_command.DummyCycles       = 0;
+//	s_command.NbData            = 2;
+//	s_command.DdrMode           = QSPI_DDR_MODE_DISABLE;
+//	s_command.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
+//	s_command.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
+//
+//	if (HAL_QSPI_Command(&hqspi, &s_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+//	{
+//		Error_Handler();
+//	}
+//	if (HAL_QSPI_Receive(&hqspi, pData, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+//	{
+//		Error_Handler();
+//	}
+//	printf("SPI  I/0 Read Device ID : 0x%2X 0x%2X\r\n",pData[0],pData[1]);
+//
+//
+//	/* Read Manufacture/Device ID Dual I/O*/
+//	s_command.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
+//	s_command.Instruction       = DUAL_READ_ID_CMD;
+//	s_command.AddressMode       = QSPI_ADDRESS_2_LINES;
+//	s_command.AddressSize       = QSPI_ADDRESS_24_BITS;
+//	s_command.Address           = 0x000000;
+//	s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_2_LINES;
+//	s_command.AlternateBytesSize= QSPI_ALTERNATE_BYTES_8_BITS;
+//	s_command.AlternateBytes    = 0;
+//	s_command.DataMode          = QSPI_DATA_2_LINES;
+//	s_command.DummyCycles       = 0;
+//	s_command.NbData            = 4;
+//	s_command.DdrMode           = QSPI_DDR_MODE_DISABLE;
+//	s_command.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
+//	s_command.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
+//
+//	if (HAL_QSPI_Command(&hqspi, &s_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+//	{
+//		Error_Handler();
+//	}
+//	if (HAL_QSPI_Receive(&hqspi, pData, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+//	{
+//		Error_Handler();
+//	}
+//	printf("Dual I/O Read Device ID : 0x%2X 0x%2X\r\n",pData[0],pData[1]);
+//
+//	/* Read Manufacture/Device ID Quad I/O*/
+//	s_command.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
+//	s_command.Instruction       = QUAD_READ_ID_CMD;
+//	s_command.AddressMode       = QSPI_ADDRESS_4_LINES;
+//	s_command.AddressSize       = QSPI_ADDRESS_24_BITS;
+//	s_command.Address           = 0x000000;
+//	s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_4_LINES;
+//	s_command.AlternateBytesSize= QSPI_ALTERNATE_BYTES_8_BITS;
+//	s_command.AlternateBytes    = 0x00;
+//	s_command.DataMode          = QSPI_DATA_4_LINES;
+//	s_command.DummyCycles       = 4;
+//	s_command.NbData            = 2;
+//	s_command.DdrMode           = QSPI_DDR_MODE_DISABLE;
+//	s_command.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
+//	s_command.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
+//
+//	if (HAL_QSPI_Command(&hqspi, &s_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+//	{
+//		Error_Handler();
+//	}
+//	if (HAL_QSPI_Receive(&hqspi, pData, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+//	{
+//		Error_Handler();
+//	}
+//	printf("Quad I/O Read Device ID : 0x%2X 0x%2X\r\n",pData[0],pData[1]);
+//
+//	/* Read JEDEC ID */
+//	s_command.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
+//	s_command.Instruction       = READ_JEDEC_ID_CMD;
+//	s_command.AddressMode       = QSPI_ADDRESS_NONE;
+//	s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+//	s_command.DataMode          = QSPI_DATA_1_LINE;
+//	s_command.DummyCycles       = 0;
+//	s_command.NbData            = 3;
+//	s_command.DdrMode           = QSPI_DDR_MODE_DISABLE;
+//	s_command.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
+//	s_command.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
+//
+//	if (HAL_QSPI_Command(&hqspi, &s_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+//	{
+//		Error_Handler();
+//	}
+//	if (HAL_QSPI_Receive(&hqspi, pData, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+//	{
+//		Error_Handler();
+//	}
+//	printf("Read JEDEC ID :  0x%2X 0x%2X 0x%2X\r\n\r\n",pData[0],pData[1],pData[2]);
+
   HAL_Delay(5000);
 
-  QSPI_Init();
-  flashInit();
+//  QSPI_Init();
+//  flashInit();
+  fileSystemInit();
   createNewLogFile();
 
   ee_init1((pU32)&ee, sizeof(ee));

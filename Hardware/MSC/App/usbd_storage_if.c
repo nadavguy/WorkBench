@@ -23,7 +23,9 @@
 #include "usbd_storage_if.h"
 
 /* USER CODE BEGIN INCLUDE */
-#include "FlashQSPIAgent.h"
+//#include "FlashQSPIAgent.h"
+#include "stm32746g_qspi.h"
+#include "w25q128fv.h"
 #include "diskio.h"
 #include "ff_gen_drv.h"
 #include "user_diskio.h"
@@ -204,8 +206,8 @@ int8_t STORAGE_Init_FS(uint8_t lun)
 int8_t STORAGE_GetCapacity_FS(uint8_t lun, uint32_t *block_num, uint16_t *block_size)
 {
   /* USER CODE BEGIN 3 */
-  *block_num  = SECTOR_SIZE;
-  *block_size = SECTOR_SIZE;
+  *block_num  = W25Q128FV_SUBSECTOR_SIZE;
+  *block_size = W25Q128FV_SUBSECTOR_SIZE;
   return (USBD_OK);
   /* USER CODE END 3 */
 }

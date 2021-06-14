@@ -5,7 +5,7 @@
  *      Author: nadav
  */
 #include "main.h"
-#include "FlashQSPIAgent.h"
+//#include "FlashQSPIAgent.h"
 
 void printRCConfiguration(bool toDisplayOnly)
 {
@@ -20,14 +20,14 @@ void printRCConfiguration(bool toDisplayOnly)
     logData("-----------------System configuration----------------", false, toDisplayOnly, false);
 
 
-    logData("", false, toDisplayOnly, false);
-    logData("<Storage>", false, toDisplayOnly, false);
-    sprintf(terminalBuffer,"Total storage volume: %6.2f MB", total_kb);
-    logData(terminalBuffer, false, toDisplayOnly, false);
-    sprintf(terminalBuffer,"Free storage volume: %6.2f MB", free_kb);
-    logData(terminalBuffer, false, toDisplayOnly, false);
-    sprintf(terminalBuffer,"Current log filename: %s", currentLogFilename);
-    logData(terminalBuffer, false, toDisplayOnly, false);
+   logData("", false, toDisplayOnly, false);
+   logData("<Storage>", false, toDisplayOnly, false);
+   sprintf(terminalBuffer,"Total storage volume: %6.2f MB", total_kb);
+   logData(terminalBuffer, false, toDisplayOnly, false);
+   sprintf(terminalBuffer,"Free storage volume: %6.2f MB", free_kb);
+   logData(terminalBuffer, false, toDisplayOnly, false);
+   sprintf(terminalBuffer,"Current log filename: %s", currentLogFilename);
+   logData(terminalBuffer, false, toDisplayOnly, false);
 
     logData("----------------- EEPROM Saved Data ----------------", false, toDisplayOnly, false);
     sprintf(terminalBuffer, "Debug Level..........................[N/A].DBG: %d [%d/%d/%d]",

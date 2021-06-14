@@ -2,7 +2,7 @@
 #include "usart.h"
 #include "ff.h"
 #include "fatfs.h"
-#include "FlashQSPIAgent.h"
+//#include "FlashQSPIAgent.h"
 #include "usb_device.h"
 
 
@@ -28,13 +28,13 @@ eCI_RESULT func_updateRCVersion(void)
 	localFlashParams.voltageLevel = FLASH_VOLTAGE_RANGE_3;
 	writeAddress = localFlashParams.startAddress;
 	prepFlash();
-	FS_ret = f_open(&USERFile, "IAP.bin", FA_READ);
-//	FS_ret = f_read(&USERFile, &FileReadBuffer, sizeof(FileReadBuffer), &br);
-	while ( (f_read(&USERFile, &FileReadBuffer, sizeof(FileReadBuffer), &br) == FR_OK) && (br > 0) )
-	{
-		writeData(writeAddress, (uint32_t *)FileReadBuffer, br);
-		writeAddress = writeAddress + br;
-	}
+//	FS_ret = f_open(&USERFile, "IAP.bin", FA_READ);
+////	FS_ret = f_read(&USERFile, &FileReadBuffer, sizeof(FileReadBuffer), &br);
+//	while ( (f_read(&USERFile, &FileReadBuffer, sizeof(FileReadBuffer), &br) == FR_OK) && (br > 0) )
+//	{
+//		writeData(writeAddress, (uint32_t *)FileReadBuffer, br);
+//		writeAddress = writeAddress + br;
+//	}
 //	HAL_UART_DMAStop(&huart1);
 //
 //	SerialDownload(true);
@@ -366,10 +366,10 @@ eCI_RESULT func_fmt(void)
 	f_sync(&USERFile);
 	f_close(&USERFile);
 
-	uint8_t ret = QSPI_DeleteFlash();
-	QSPI_Init();
-	flashInit();
-	createNewLogFile();
+//	uint8_t ret = QSPI_DeleteFlash();
+//	QSPI_Init();
+//	flashInit();
+//	createNewLogFile();
 
 //	if (f_mkfs("\\", FM_FAT, 0, buffer, sizeof(buffer)) != FR_OK)
 //	{

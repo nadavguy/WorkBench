@@ -64,6 +64,8 @@ extern "C" {
 #include "ci_func.h"
 #include "PowerAgent.h"
 #include "EEPROMAgent.h"
+#include "stm32746g_qspi.h"
+#include "w25q128fv.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -134,6 +136,8 @@ extern uint32_t UID1;
 extern uint32_t UID2;
 extern uint32_t UID3;
 uint32_t A[9];
+
+extern unsigned int BytesWritten;
 
 extern SYSTEMConnectionStatus bluetoothConnection;
 
