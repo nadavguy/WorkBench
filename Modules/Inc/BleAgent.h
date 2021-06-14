@@ -11,7 +11,8 @@
 #include "main.h"
 #include "usart.h"
 #define BLE_UART					huart3
-#define BLE_RX_BUFFER				128
+#define BLE_RX_BUFFER				256
+#define BLE_TX_BUFFER				32
 
 typedef struct sBLEPARAMS
 {

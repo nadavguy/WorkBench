@@ -11,6 +11,7 @@
 bool isBLEOn = true;
 
 uint8_t bleRXArray[BLE_RX_BUFFER] = {0};
+char bleTXArray[BLE_TX_BUFFER] = {0};
 
 tBLEPARAMS bleParameters;
 
@@ -33,12 +34,14 @@ void initBLE(void)
 		HAL_UART_Transmit(&BLE_UART, (uint8_t *)lt, 2, 100);
 		HAL_Delay(20);
 		checkBLEMessages();
-		if (!strcmp(bleParameters.macAddress, "ParaZero_RC"))
-		{
+//		if (!strcmp(bleParameters.macAddress, "ParaZero_RC2"))
+//		{
 			sprintf(lt,"SN,ParaZero_RC\r");
 			HAL_UART_Transmit(&BLE_UART, (uint8_t *)lt, 15, 100);  //SN,MyDevice
 			checkBLEMessages();
-		}
+//		}
+		sprintf(lt,"A\r");
+		HAL_UART_Transmit(&BLE_UART, (uint8_t *)lt, 2, 100);
 		sprintf(lt,"---\r");
 		HAL_UART_Transmit(&BLE_UART, (uint8_t *)lt, 4, 100);
 	}
@@ -69,7 +72,12 @@ void checkBLEMessages(void)
 
 		if ( (strlen((char *)localRxArray) > 0) && (rcState != INIT) )
 		{
-			parse((char *)localRxArray);
+			uint8_t ret = parse((char *)localRxArray);
+			if (ret == 1)
+			{
+				sprintf(bleTXArray,"BLE OK");
+				HAL_UART_Transmit(&BLE_UART, (uint8_t *)bleTXArray,BLE_TX_BUFFER,20);
+			}
 			memset(bleRXArray,0,BLE_RX_BUFFER);
 		}
 		else if ( (strlen((char *)localRxArray) > 0) && (rcState == INIT) )

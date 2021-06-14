@@ -305,7 +305,7 @@ void HAL_PCD_ConnectCallback(PCD_HandleTypeDef *hpcd)
 #endif /* USE_HAL_PCD_REGISTER_CALLBACKS */
 {
   USBD_LL_DevConnected((USBD_HandleTypeDef*)hpcd->pData);
-    /* USER CODE BEGIN 6 */
+	/* USER CODE BEGIN 6 */
   isUSBConnected = true;
   HAL_GPIO_WritePin(ChargeEnableGPIO, ChargeEnablePIN, GPIO_PIN_RESET);
 	/* USER CODE END 6 */
@@ -323,7 +323,7 @@ void HAL_PCD_DisconnectCallback(PCD_HandleTypeDef *hpcd)
 #endif /* USE_HAL_PCD_REGISTER_CALLBACKS */
 {
   USBD_LL_DevDisconnected((USBD_HandleTypeDef*)hpcd->pData);
-    /* USER CODE BEGIN 7 */
+	/* USER CODE BEGIN 7 */
   HAL_GPIO_WritePin(ChargeEnableGPIO, ChargeEnablePIN, GPIO_PIN_SET);
   isUSBConnected = false;
 	/* USER CODE END 7 */

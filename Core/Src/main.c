@@ -78,7 +78,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.200;
+float buildID = 1.210;
 
 SYSTEMState rcState = PREINIT;
 //SYSTEMState previousSMAState = PREINIT;
@@ -160,7 +160,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 #ifdef __USE_BOOT_LOADER__
-  SCB->VTOR = 0x8020000; /* NVIC Vector Table Relocation in Internal FLASH */
+//  SCB->VTOR = 0x8020000; /* NVIC Vector Table Relocation in Internal FLASH */
 #endif
   /* USER CODE END 1 */
 
@@ -189,12 +189,12 @@ int main(void)
   MX_USB_DEVICE_Init();
   MX_ADC1_Init();
   MX_TIM3_Init();
+  MX_USART2_UART_Init();
   MX_USART1_UART_Init();
   MX_USART3_UART_Init();
   MX_RTC_Init();
   MX_ADC2_Init();
   MX_ADC3_Init();
-  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   //
   UID1 = (*(__I uint32_t *) 0x1FF0F420);
@@ -406,7 +406,7 @@ void updateRCState(void)
 	}
 	else
 	{
-		if ( (batteryVoltage <= 3.6) && (batteryStrength < EMPTY))
+		if ( (batteryVoltage <= 3.5) && (batteryStrength < EMPTY))
 		{
 			isLowBattery = true;
 			isEmptyBattery = true;
@@ -416,7 +416,7 @@ void updateRCState(void)
 			sprintf(terminalBuffer,"RC Battery is Empty");
 			logData(terminalBuffer, false, false, false);
 		}
-		else if ( (batteryVoltage > 3.6) && (batteryVoltage <= 3.8) && (batteryStrength < LOW))
+		else if ( (batteryVoltage > 3.5) && (batteryVoltage <= 3.65) && (batteryStrength < LOW))
 		{
 			shouldRedrawBatteryIcon = true;
 			batteryStrength = LOW;
@@ -424,7 +424,7 @@ void updateRCState(void)
 			sprintf(terminalBuffer,"RC Battery is Low");
 			logData(terminalBuffer, false, false, false);
 		}
-		else if ( (batteryVoltage > 3.8) && (batteryVoltage <= 4.0) && (batteryStrength < MEDIUM) )
+		else if ( (batteryVoltage > 3.65) && (batteryVoltage <= 3.9) && (batteryStrength < MEDIUM) )
 		{
 			shouldRedrawBatteryIcon = true;
 			batteryStrength = MEDIUM;
@@ -432,7 +432,7 @@ void updateRCState(void)
 			sprintf(terminalBuffer,"RC Battery is Partially Full");
 			logData(terminalBuffer, false, false, false);
 		}
-		else if ( (batteryVoltage > 4.0) && (batteryStrength != STRONG))
+		else if ( (batteryVoltage > 3.9) && (batteryStrength != STRONG))
 		{
 			shouldRedrawBatteryIcon = true;
 			batteryStrength = STRONG;
@@ -620,13 +620,13 @@ void updateRCState(void)
 
 	if ( (isScreenBrightFull) && (HAL_GetTick() - lastAnyButtonPress > 120000) )
 	{
-		LCD_1IN8_SetBackLight(20);
+		LCD_1IN8_SetBackLight(2000);
 //		LCD_1IN8_SetBackLight(ee.backLight);
 		isScreenBrightFull = false;
 	}
 	else if ( (!isScreenBrightFull) && (HAL_GetTick() - lastAnyButtonPress < 2000) )
 	{
-		LCD_1IN8_SetBackLight(ee.backLight * 100);
+		LCD_1IN8_SetBackLight(ee.backLight * 2000);
 		isScreenBrightFull = true;
 	}
 

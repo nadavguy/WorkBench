@@ -40,6 +40,7 @@ uint32_t lastReceivedCRSFMessage = 0;
 
 bool isTBSDisconnected = false;
 bool isTailIDAlreadyReceived = false;
+bool shouldAddTimeToConfigurationMessage = false;
 
 char safeAirTailID[11] = "";
 
@@ -144,7 +145,7 @@ void sendMessageToRC(void)
 void sendChannelMessageToTBS(void)
 {
 //	uint16_t R = 0;
-	if ( (HAL_GetTick() - lastCRSFChannelMessage > 8) && (messagesMissed < 100))
+	if ( (HAL_GetTick() - lastCRSFChannelMessage > 8) && (messagesMissed < 33))
 	{
 		memset(rcChannelsFrame, 0, 26);
 		createCrossfireChannelsFrame(rcChannelsFrame, channelPWMValues);
@@ -154,12 +155,12 @@ void sendChannelMessageToTBS(void)
 		messagesMissed++;
 	}
 	else if ( ( (HAL_GetTick() - lastCRSFChannelMessage <= 8)  && ( HAL_GetTick() - lastCRSFChannelMessage > 1) )
-			|| messagesMissed >= 100)
+			|| messagesMissed >= 33)
 	{
 		HAL_UART_Receive_DMA(&TBS_UART, tbsRXArray,TBS_RX_BUFFER);
 		HAL_Delay(2);
 		parseTBSMessage();
-		sendSafeAirConfigurationMessage(false);
+		sendSafeAirConfigurationMessage(shouldAddTimeToConfigurationMessage);
 		messagesMissed = 0;
 //		char test[1024] = "";
 //		logData((char *)"TBS RX: ", true, true);
@@ -438,7 +439,7 @@ bool parseTBSMessage(void)
 
 			if (previousSmaStatus.rcMenuLevel != currentSmaStatus.rcMenuLevel)
 			{
-				menuLevel = currentSmaStatus.rcMenuLevel;
+				menuLevel = currentSmaStatus.rcMenuLevel + 1;
 				initMenuPages();
 			}
 
@@ -459,6 +460,11 @@ bool parseTBSMessage(void)
 				&& (crc == localRxArray[i + 0x06 + 1]) )
 		{
 			configurationMessageCounterReceived = (uint32_t)((localRxArray[i + 3] << 24) + (localRxArray[i + 4] << 16) + (localRxArray[i + 5] << 8) + localRxArray[i + 6]);
+			if (configurationMessageCounter == configurationMessageCounterReceived)
+			{
+				shouldAddTimeToConfigurationMessage = false;
+				waitForAckResponse = false;
+			}
 			i = i + 0x06 - 1;
 			lastReceivedCRSFMessage = HAL_GetTick();
 		}
@@ -607,16 +613,16 @@ void sendSafeAirConfigurationMessage(bool includeTimeInMessage)
 			safeairConfiguration.formatSD = 0x17;
 		}
 		safeairConfigurationFrame[12] = safeairConfiguration.formatSD;
-		safeairConfigurationFrame[13] = (uint8_t)((uint16_t)((safeairConfiguration.MTD) & 0xff00)>>8); // MTD High Byte
-		safeairConfigurationFrame[14] = (uint8_t)((uint16_t)((safeairConfiguration.MTD) & 0x00ff)); // MTD Low Byte
-		safeairConfigurationFrame[15] = includeTimeInMessage * 0x85 + (1 - includeTimeInMessage) * 0x17; //Time Included
-		safeairConfigurationFrame[16] = sDate.Year; //YY
-		safeairConfigurationFrame[17] = sDate.Month; //MM
-		safeairConfigurationFrame[18] = sDate.Date; //DD
-		safeairConfigurationFrame[19] = sTime.Hours; //HH
-		safeairConfigurationFrame[20] = sTime.Minutes; //mm
-		safeairConfigurationFrame[21] = sTime.Seconds; //SS
-		safeairConfigurationFrame[22] = 0x00; //
+		safeairConfigurationFrame[13] = safeairConfiguration.loggingMode;
+		safeairConfigurationFrame[14] = (uint8_t)((uint16_t)((safeairConfiguration.MTD) & 0xff00)>>8); // MTD High Byte
+		safeairConfigurationFrame[15] = (uint8_t)((uint16_t)((safeairConfiguration.MTD) & 0x00ff)); // MTD Low Byte
+		safeairConfigurationFrame[16] = includeTimeInMessage * 0x85 + (1 - includeTimeInMessage) * 0x17; //Time Included
+		safeairConfigurationFrame[17] = sDate.Year; //YY
+		safeairConfigurationFrame[18] = sDate.Month; //MM
+		safeairConfigurationFrame[19] = sDate.Date; //DD
+		safeairConfigurationFrame[20] = sTime.Hours; //HH
+		safeairConfigurationFrame[21] = sTime.Minutes; //mm
+		safeairConfigurationFrame[22] = sTime.Seconds; //SS
 		safeairConfigurationFrame[23] = 0x00; //
 		safeairConfigurationFrame[24] = 0x00; //
 		safeairConfigurationFrame[25] = 0x00; //

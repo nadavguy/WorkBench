@@ -103,6 +103,7 @@ extern uint32_t lastReceivedCRSFMessage;
 
 extern bool isTBSDisconnected;
 extern bool isTailIDAlreadyReceived;
+extern bool shouldAddTimeToConfigurationMessage;
 
 extern char safeAirTailID[11];
 

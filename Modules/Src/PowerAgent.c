@@ -27,7 +27,7 @@ void measureVoltages(void)
 		//	  previousVoltages = currentVoltages;
 		memcpy(previousVoltages, currentVoltages, sizeof(currentVoltages));
 
-		//	  HAL_Delay(1);
+//		HAL_Delay(1);
 		currentMeasurementValue[0] = HAL_ADC_GetValue(&hadc1);
 		currentMeasurementValue[1] = HAL_ADC_GetValue(&hadc2);
 		currentMeasurementValue[2] = HAL_ADC_GetValue(&hadc3);

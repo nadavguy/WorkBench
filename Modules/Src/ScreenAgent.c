@@ -100,7 +100,7 @@ void screenInit(void)
 {
 	isPortrait = (bool)ee.screenOreintation;
 	DEV_Module_Init();
-	LCD_1IN8_SetBackLight(ee.backLight * 100);
+	LCD_1IN8_SetBackLight(ee.backLight * 2000);
 	if (isPortrait)
 	{
 		LCD_1IN8_Init(L2R_U2D);
@@ -300,28 +300,29 @@ void updateStatusText(void)
 {
 	if (currentSmaStatus.smaState == TRIGGERED)
 	{
-		Paint_DrawImage(gImage_Parachute_24, Parachute1X, Parachute1Y, 24, 24);
-		Paint_DrawImage(gImage_Parachute_24, Parachute2X, Parachute2Y, 24, 24);
+//		Paint_DrawImage(gImage_Parachute_24, Parachute1X, Parachute1Y, 24, 24);
+//		Paint_DrawImage(gImage_Parachute_24, Parachute2X, Parachute2Y, 24, 24);
 //		centeredString(HorizontalSystemStatusTextX, HorizontalSystemStatusTextY, "TRIGGERED", BLACK, RED);
+		addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, RED);
 		if (displayWarning.BITStatus & 0x40)
 		{
-			centeredString(SystemStatusTextX, SystemStatusTextY, "Manual Trigger", RED, WHITE, 14, Font12);
+			centeredString(SystemStatusTextX, SystemStatusTextY, "Manual Trigger", WHITE, RED, 14, Font12);
 		}
 		else if (displayWarning.BITStatus & 0x80)
 		{
-			centeredString(SystemStatusTextX, SystemStatusTextY, "GeoFencing", RED, WHITE, 14, Font12);
+			centeredString(SystemStatusTextX, SystemStatusTextY, "GeoFencing", WHITE, RED, 14, Font12);
 		}
 		else if (displayWarning.BITStatus & 0x100)
 		{
-			centeredString(SystemStatusTextX, SystemStatusTextY, "AutoPilot", RED, WHITE, 14, Font12);
+			centeredString(SystemStatusTextX, SystemStatusTextY, "AutoPilot", WHITE, RED, 14, Font12);
 		}
 		else if (displayWarning.BITStatus & 0x200)
 		{
-			centeredString(SystemStatusTextX, SystemStatusTextY, "Freefall", RED, WHITE, 14, Font12);
+			centeredString(SystemStatusTextX, SystemStatusTextY, "Freefall", WHITE, RED, 14, Font12);
 		}
 		else if (displayWarning.BITStatus & 0x400)
 		{
-			centeredString(SystemStatusTextX, SystemStatusTextY, "Critical Angle", RED, WHITE, 14, Font12);
+			centeredString(SystemStatusTextX, SystemStatusTextY, "Critical Angle", WHITE, RED, 14, Font12);
 		}
 	}
 	else if ((currentSmaStatus.smaState == IDLE) && (!displayWarning.displayWarning) && (displayWarning.BITStatus == 0))

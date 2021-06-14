@@ -210,6 +210,10 @@ extern void updateRCState(void);
 #define GPIO_UpButton_GPIO_Port GPIOD
 #define GPIO_DownButton_Pin GPIO_PIN_4
 #define GPIO_DownButton_GPIO_Port GPIOD
+#define USART_TX___Retrofit_Pin GPIO_PIN_5
+#define USART_TX___Retrofit_GPIO_Port GPIOD
+#define USART_RX___Retrofit_Pin GPIO_PIN_6
+#define USART_RX___Retrofit_GPIO_Port GPIOD
 #define GPIO_ApproveButton_Pin GPIO_PIN_7
 #define GPIO_ApproveButton_GPIO_Port GPIOD
 #define GPIO_Buzzer_Pin GPIO_PIN_0

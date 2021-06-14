@@ -7,6 +7,7 @@
 
 #include "main.h"
 uint8_t buzzerPhase = 0;
+uint8_t cycleCounter = 0;
 
 float startBuzzerPhase = 0;
 float currentBuzzerPhase = 0;
@@ -27,7 +28,19 @@ bool isBuzzerCycleEnded = true;
 
 void setBuzzerPattern(tBuzzer_Pattern patternToSet)
 {
-    currentPattern = patternToSet;
+    if (currentPattern.id == 8)
+    {
+    	cycleCounter++;
+    }
+
+    if (cycleCounter >= 5)
+    {
+    	currentPattern = noBuzzerPattern;
+    }
+    else
+    {
+    	currentPattern = patternToSet;
+    }
     buzzerPhase = 0;
 }
 

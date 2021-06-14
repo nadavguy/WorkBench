@@ -213,16 +213,6 @@ uint32_t parse(char* s)
 
   }
 
-  // func = g_ci.cmd_table[cmd_index].pFUNC;
-
-  // if (g_ci.cmd_table[cmd_index].pFUNC != NULL)
-  // {
-  //   return (func());
-  // }
-  // else
-  // {
-  //   return CI_COMMAND_ERROR;
-  // }
   return ret;
 }
 //-----------------------------------------------------------------------------

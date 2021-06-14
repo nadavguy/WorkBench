@@ -93,22 +93,25 @@ void initMenuPages(void)
 	rcSettingsPage.pageID = 2;
 	if (menuLevel == DEVELOPER)
 	{
-		rcSettingsPage.numberOfItemsInPage = 5;
+		rcSettingsPage.numberOfItemsInPage = 6;
 		memcpy(&rcSettingsPage.itemsArray[0],"Brightness",strlen("Brightness"));
 		memcpy(&rcSettingsPage.itemsArray[1],"Mass Storage",strlen("Mass Storage"));
 		memcpy(&rcSettingsPage.itemsArray[2],"Clear Storage",strlen("Clear Storage"));
-		memcpy(&rcSettingsPage.itemsArray[3],"Back",strlen("Back"));
-		memcpy(&rcSettingsPage.itemsArray[4],"Close menu",strlen("Close menu"));
+		memcpy(&rcSettingsPage.itemsArray[3],"BlueTooth",strlen("BlueTooth"));
+		memcpy(&rcSettingsPage.itemsArray[4],"Back",strlen("Back"));
+		memcpy(&rcSettingsPage.itemsArray[5],"Close menu",strlen("Close menu"));
 		rcSettingsPage.cellTypeArray[0] = UINT16_ITEM;
 		rcSettingsPage.cellTypeArray[1] = POPUP;
 		rcSettingsPage.cellTypeArray[2] = POPUP;
-		rcSettingsPage.cellTypeArray[3] = BACK;
-		rcSettingsPage.cellTypeArray[4] = CLOSE;
+		rcSettingsPage.cellTypeArray[3] = PAGE;
+		rcSettingsPage.cellTypeArray[4] = BACK;
+		rcSettingsPage.cellTypeArray[5] = CLOSE;
 		rcSettingsPage.nextCellIDArray[0] = (uint32_t)&brightnessItem;
 		rcSettingsPage.nextCellIDArray[1] = (uint32_t)&massStorageMessage;
 		rcSettingsPage.nextCellIDArray[2] = (uint32_t)&rcClearStorageMessage;
-		rcSettingsPage.nextCellIDArray[3] = 0;
+		rcSettingsPage.nextCellIDArray[3] = 4;
 		rcSettingsPage.nextCellIDArray[4] = 0;
+		rcSettingsPage.nextCellIDArray[5] = 0;
 	}
 	else
 	{
@@ -411,7 +414,7 @@ void initPopupMessages(void)
 	sprintf(aboutRCMessage.itemsArray[2],"Config: %1.2f", ee.configuration);
 	//	memcpy(&safeairForceDisarmMessage.itemsArray[3],"be overwritten",strlen("be overwritten"));
 	memcpy(&aboutRCMessage.itemsArray[3],"No",strlen("No"));
-	memcpy(&aboutRCMessage.itemsArray[4],"Yes",strlen("Yes"));
+	memcpy(&aboutRCMessage.itemsArray[4],"OK",strlen("OK"));
 
 	aboutBLEMessage.popupID = 9;
 	aboutBLEMessage.numberOfItemsInPopup = 5;
@@ -421,7 +424,7 @@ void initPopupMessages(void)
 	sprintf(aboutBLEMessage.itemsArray[2],"%s", bleParameters.bleName);
 	//	memcpy(&safeairForceDisarmMessage.itemsArray[3],"be overwritten",strlen("be overwritten"));
 	memcpy(&aboutBLEMessage.itemsArray[3],"No",strlen("No"));
-	memcpy(&aboutBLEMessage.itemsArray[4],"Yes",strlen("Yes"));
+	memcpy(&aboutBLEMessage.itemsArray[4],"OK",strlen("OK"));
 }
 
 void updateSelection(void)
@@ -560,7 +563,7 @@ void updateSelectedParameter(void)
 	if (itemIDtoUpdate == 1)
 	{
 		ee.backLight = brightnessItem.startValue;
-		LCD_1IN8_SetBackLight(ee.backLight * 100);
+		LCD_1IN8_SetBackLight(ee.backLight * 2000);
 		ee_save1();
 	}
 	else if (itemIDtoUpdate == 2)

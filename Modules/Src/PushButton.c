@@ -417,9 +417,26 @@ void CheckButtons(void)
 		if ( (!isPopupDisplayed) && (okButtonPressDuration > 1000) )
 		{
 			isPopupDisplayed = true;
+			popupDrawDirection = FULL;
 			shouldRenderPopup = true;
 			memcpy(&popupToShow, &safeairForceDisarmMessage, sizeof(popupToShow));
 			screenUpdate(false);
+		}
+		if ((downPinState == GPIO_PIN_RESET) && (isPopupDisplayed) && (HAL_GetTick() - lastDownButtonPress > 400))
+		{
+			if (popupToShow.isQuestion)
+			{
+				shouldRenderPopup = true;
+				popupDrawDirection = DOWN;
+			}
+		}
+		else if ((upPinState == GPIO_PIN_RESET) && (isPopupDisplayed) && (HAL_GetTick() - lastDownButtonPress > 400))
+		{
+			if (popupToShow.isQuestion)
+			{
+				shouldRenderPopup = true;
+				popupDrawDirection = UP;
+			}
 		}
 //		if ( (isPopupDisplayed) && (okButtonPressDuration > 1000) )
 //		{

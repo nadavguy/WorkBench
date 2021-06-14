@@ -51,9 +51,11 @@ void waitForPopupInput(void)
 					{
 						forceDisarmEnabled = true;
 						waitForAckResponse = true;
+						configurationMessageCounter++;
 						break;
 					}
 					sendChannelMessageToTBS();
+					sendSafeAirConfigurationMessage(false);
 					updateRCState();
 					CheckButtons();
 //					HAL_Delay(50);
@@ -67,7 +69,7 @@ void waitForPopupInput(void)
 					CheckButtons();
 				}
 				forceDisarmEnabled = false;
-				waitForAckResponse = false;
+//				waitForAckResponse = false;
 				break;
 			} //End of Force Disarm
 			case 3:
@@ -103,6 +105,7 @@ void waitForPopupInput(void)
 					{
 						formatSDEnabled = true;
 						waitForAckResponse = true;
+						configurationMessageCounter++;
 						break;
 					}
 					sendChannelMessageToTBS();
@@ -118,7 +121,7 @@ void waitForPopupInput(void)
 					CheckButtons();
 				}
 				formatSDEnabled = false;
-				waitForAckResponse = false;
+//				waitForAckResponse = false;
 				break;
 			} //End of Clear SafeAir storage
 			case 5:
@@ -188,6 +191,50 @@ void waitForPopupInput(void)
 				}
 				break;
 			} //End of change to mass storage
+			case 8:
+			{
+				while ( (okButtonPressDuration < 3000) )
+				{
+					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 10) )
+					{
+						break;
+					}
+					if ( (popupToShow.isQuestion) && (okButtonPressDuration >= 10) && (popupDrawDirection == DOWN))
+					{
+
+						break;
+					}
+					sendChannelMessageToTBS();
+					updateRCState();
+					CheckButtons();
+					screenUpdate(false);
+					updateNextFrame();
+				}
+				break;
+			} //End of About RC
+
+			case 9:
+			{
+				while ( (okButtonPressDuration < 3000) )
+				{
+					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 10) )
+					{
+						break;
+					}
+					if ( (popupToShow.isQuestion) && (okButtonPressDuration >= 10) && (popupDrawDirection == DOWN))
+					{
+
+						break;
+					}
+					sendChannelMessageToTBS();
+					updateRCState();
+					CheckButtons();
+					screenUpdate(false);
+					updateNextFrame();
+				}
+				break;
+			} //End of About BLE
+
 			default:
 			{
 				break;
