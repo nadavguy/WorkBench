@@ -15,7 +15,7 @@
 
 extern char logsIndexFile[35];
 extern char currentLogFilename[64];
-extern char FileReadBuffer[1024];
+extern uint8_t FileReadBuffer[1024];
 
 extern bool sessionUnlocked;
 extern uint32_t previousLogIndex;

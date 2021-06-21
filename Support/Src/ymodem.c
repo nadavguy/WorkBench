@@ -6,6 +6,8 @@
 #include "main.h"
 #include "usart.h"
 //#include "menu.h"
+#include "usbd_def.h"
+#include "usb_device.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -48,11 +50,22 @@ static HAL_StatusTypeDef ReceivePacket(uint8_t *p_data, uint32_t *p_length, uint
   uint32_t packet_size = 0;
   HAL_StatusTypeDef status;
   uint8_t char1;
+  bool localTrue = true;
 
   *p_length = 0;
-  status = HAL_UART_Receive(&huart1, &char1, 1, timeout);
+//  status = HAL_UART_Receive(&huart1, &char1, 1, timeout);
+//  USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &usbRXArray[0]);
+//  status = USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+  while (localTrue)
+  {
+	  Serial_PutByte(CRC16);
+	  HAL_Delay(11);
+	  readUSBData();
 
-  if (status == HAL_OK)
+
+  }
+//  char1 = usbRXArray[0];
+  if (status == USBD_OK) //HAL_OK
   {
     switch (char1)
     {

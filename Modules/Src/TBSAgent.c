@@ -238,11 +238,6 @@ bool parseTBSMessage(void)
 	uint8_t localRxArray[TBS_RX_BUFFER] = {0};
 	memcpy(localRxArray,tbsRXArray,TBS_RX_BUFFER);
 
-//	if (strlen(localRxArray) > 0)
-//	{
-// 		int a= 1;
-//	}
-
 	while ( i < TBS_RX_BUFFER - 3)
 	{
 		if (TBS_RX_BUFFER - (i + 2) > 0x0c-1)

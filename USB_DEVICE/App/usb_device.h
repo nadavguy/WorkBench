@@ -52,12 +52,13 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
+ extern uint8_t usbRXArray[2048];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
  uint16_t readUSBData(void);
+ extern uint16_t fastUSBData(void);
  extern void MX_MSC_DEVICE_Init(void);
 /* USER CODE END PFP */
 

@@ -19,7 +19,7 @@ float free_kb = 0;
 float total_kb = 0;
 
 char currentLogFilename[64] = "";
-char FileReadBuffer[1024] = "";
+uint8_t FileReadBuffer[1024] = {0};
 
 void logData(char *dataToLog, bool doNotShowOnDisplay, bool displayOnly, bool doNotDisplayTime)
 {

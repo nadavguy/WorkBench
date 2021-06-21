@@ -78,7 +78,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.240;
+float buildID = 1.250;
 
 SYSTEMState rcState = PREINIT;
 
@@ -152,7 +152,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 #ifdef __USE_BOOT_LOADER__
-//  SCB->VTOR = 0x8020000; /* NVIC Vector Table Relocation in Internal FLASH */
+  SCB->VTOR = 0x8020000; /* NVIC Vector Table Relocation in Internal FLASH */
 #endif
   /* USER CODE END 1 */
 

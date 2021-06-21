@@ -9,6 +9,7 @@
 #include <math.h>
 #include "usart.h"
 #include "Common.h"
+#include "usbd_cdc_if.h"
 
 pFunction JumpToApplication;
 
@@ -169,7 +170,8 @@ void Serial_PutString_(uint8_t *p_string)
   {
     length++;
   }
-  HAL_UART_Transmit(&huart1, p_string, length, TX_TIMEOUT);
+  CDC_Transmit_FS((uint8_t*)p_string, strlen(p_string));
+//  HAL_UART_Transmit(&huart1, p_string, length, TX_TIMEOUT);
 }
 
 /**
@@ -181,11 +183,11 @@ void Serial_PutString_(uint8_t *p_string)
 HAL_StatusTypeDef Serial_PutByte( uint8_t param )
 {
   /* May be timeouted... */
-  if ( huart1.gState == HAL_UART_STATE_TIMEOUT )
-  {
-	  huart1.gState = HAL_UART_STATE_READY;
-  }
-  return HAL_UART_Transmit(&huart1, &param, 1, TX_TIMEOUT);
+//  if ( huart1.gState == HAL_UART_STATE_TIMEOUT )
+//  {
+//	  huart1.gState = HAL_UART_STATE_READY;
+//  }
+  return CDC_Transmit_FS(param, 1);//HAL_UART_Transmit(&huart1, &param, 1, TX_TIMEOUT);
 }
 
 void Serial_PutString6(uint8_t *p_string)

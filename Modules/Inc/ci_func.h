@@ -2,6 +2,7 @@
 #include "cmd_interp.h"
 
 extern bool isReportParametersActive;
+extern bool isInfwUpdateMode;
 
 extern eCI_RESULT func_debug(void);
 extern eCI_RESULT func_updateRCVersion(void);

@@ -4,9 +4,11 @@
 #include "fatfs.h"
 //#include "FlashQSPIAgent.h"
 #include "usb_device.h"
+#include "usbd_cdc_if.h"
 
 
 bool isReportParametersActive = false;
+bool isInfwUpdateMode = false;
 
 eCI_RESULT func_debug(void)
 {
@@ -22,21 +24,48 @@ eCI_RESULT func_debug(void)
 
 eCI_RESULT func_updateRCVersion(void)
 {
-	unsigned int br = 0;
+	uint16_t br = 1;
+	uint16_t previousPackID = 0;
+	uint16_t packID = 0;
 	uint32_t writeAddress = 0;
 	localFlashParams.startAddress = 0x8000000;
 	localFlashParams.voltageLevel = FLASH_VOLTAGE_RANGE_3;
 	writeAddress = localFlashParams.startAddress;
 	prepFlash();
-//	FS_ret = f_open(&USERFile, "IAP.bin", FA_READ);
-////	FS_ret = f_read(&USERFile, &FileReadBuffer, sizeof(FileReadBuffer), &br);
-//	while ( (f_read(&USERFile, &FileReadBuffer, sizeof(FileReadBuffer), &br) == FR_OK) && (br > 0) )
+	memset(usbRXArray, 0 ,2048);
+	isInfwUpdateMode = true;
+	char localString[1] = "C";
+	while (isInfwUpdateMode)
+	{
+		CDC_Transmit_FS((uint8_t*)localString, 1);
+		br = fastUSBData();
+		if (br > 0)
+		{
+			packID = FileReadBuffer[0] * 256 + FileReadBuffer[1];
+			if (packID == previousPackID + 1)
+			{
+				while (0 != writeData(writeAddress, (uint32_t *)&FileReadBuffer[2], 32))
+				{
+					HAL_Delay(25);
+				}
+				previousPackID = packID;
+			}
+			else
+			{
+				int t = 1;
+			}
+//			writeData(writeAddress, (uint32_t *)FileReadBuffer, br);
+			writeAddress = writeAddress + 32;
+			memset(usbRXArray, 0, 64);
+		}
+//		HAL_Delay(2);
+	}
 //	{
-//		writeData(writeAddress, (uint32_t *)FileReadBuffer, br);
-//		writeAddress = writeAddress + br;
+
 //	}
 //	HAL_UART_DMAStop(&huart1);
 //
+
 //	SerialDownload(true);
 //
 //	if(HAL_UART_Receive_DMA(&huart1, (uint8_t *)&aRxBufferCh1, 1 ) != HAL_OK)
