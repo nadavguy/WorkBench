@@ -34,10 +34,10 @@ eCI_RESULT func_updateRCVersion(void)
 	prepFlash();
 	memset(usbRXArray, 0 ,2048);
 	isInfwUpdateMode = true;
-	char localString[1] = "C";
+	char localString[2] = "C\r";
 	while (isInfwUpdateMode)
 	{
-		CDC_Transmit_FS((uint8_t*)localString, 1);
+		CDC_Transmit_FS((uint8_t*)localString, 2);
 		br = fastUSBData();
 		if (br > 0)
 		{
@@ -49,13 +49,13 @@ eCI_RESULT func_updateRCVersion(void)
 					HAL_Delay(25);
 				}
 				previousPackID = packID;
+				writeAddress = writeAddress + 32;
 			}
 			else
 			{
 				int t = 1;
 			}
 //			writeData(writeAddress, (uint32_t *)FileReadBuffer, br);
-			writeAddress = writeAddress + 32;
 			memset(usbRXArray, 0, 64);
 		}
 //		HAL_Delay(2);

@@ -73,8 +73,12 @@ uint16_t readUSBData(void)
 		USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &usbRXArray[0]);
 		USBD_CDC_ReceivePacket(&hUsbDeviceFS);
 		usbBytesRead = strlen((char *)usbRXArray);
+		char * ptr;
+		int    ch = '\r';
 
-		if (usbBytesRead >= 1)
+		ptr = strchr( usbRXArray, ch );
+
+		if ( (usbBytesRead >= 1) && (ptr == NULL) )
 		{
 			//TODO: move before release
 			if ( (usbRXArray[0] == '\r') && (!isInfwUpdateMode) )
