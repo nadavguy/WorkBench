@@ -67,7 +67,7 @@ uint32_t lastUSBDataRead = 0;
 uint16_t readUSBData(void)
 {
 	uint16_t usbBytesRead = 0;
-	if (HAL_GetTick() - lastUSBDataRead >= 10)
+	if ( (HAL_GetTick() - lastUSBDataRead >= 10) && (!isMSCMode) )
 	{
 //		memset(usbRXArray, 0, APP_RX_DATA_SIZE);
 		USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &usbRXArray[0]);
@@ -80,18 +80,26 @@ uint16_t readUSBData(void)
 
 		if ( (usbBytesRead >= 1) && (ptr == NULL) )
 		{
-			//TODO: move before release
-			if ( (usbRXArray[0] == '\r') && (!isInfwUpdateMode) )
-			{
-				parse(localCommand);
-				localCounter = 0;
-				memset(localCommand,0,COMMANDSMAXSIZE);
-			}
-			else
-			{
+//			//TODO: move before release
+//			if ( (usbRXArray[0] == '\r') && (!isInfwUpdateMode) )
+//			{
+//				parse(localCommand);
+//				localCounter = 0;
+//				memset(localCommand,0,COMMANDSMAXSIZE);
+//			}
+//			else
+//			{
 				localCommand[localCounter] = usbRXArray[0];
 				localCounter++;
-			}
+//			}
+			memset(usbRXArray, 0, APP_RX_DATA_SIZE);
+			usbBytesRead = 0;
+		}
+		else if  ( (usbBytesRead > 1) && (!isInfwUpdateMode) && (usbRXArray[0] == '\r') )
+		{
+			parse(localCommand);
+			localCounter = 0;
+			memset(localCommand,0,COMMANDSMAXSIZE);
 			memset(usbRXArray, 0, APP_RX_DATA_SIZE);
 			usbBytesRead = 0;
 		}

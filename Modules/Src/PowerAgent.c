@@ -8,6 +8,7 @@
 
 #include "main.h"
 #include "adc.h"
+#include "LCD_1in8.h"
 
 uint16_t currentMeasurementValue[3] = {0};
 
@@ -21,7 +22,12 @@ bool didCountChargeCycle = false;
 
 void measureVoltages(bool forceMeasurement)
 {
-	if ( (HAL_GetTick() - lastVoltageMeasurement > 60000) || (lastVoltageMeasurement == 0) || (forceMeasurement) )
+	uint32_t localDeltaTime = 60000;
+	if (isChargingMode)
+	{
+		localDeltaTime = 2000;
+	}
+	if ( (HAL_GetTick() - lastVoltageMeasurement > localDeltaTime) || (lastVoltageMeasurement == 0) || (forceMeasurement) )
 	{
 		HAL_GPIO_WritePin(ChargeEnableGPIO, ChargeEnablePIN, GPIO_PIN_SET);
 		HAL_ADC_Start_IT(&hadc1);
@@ -73,6 +79,7 @@ void measureVoltages(bool forceMeasurement)
 				isChargingMode = false;
 				didCountChargeCycle = true;
 				startChargeTime = HAL_GetTick();
+				LCD_1IN8_SetBackLight(ee.backLight * 2000);
 			}
 		}
 	}

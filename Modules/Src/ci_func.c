@@ -2,7 +2,7 @@
 #include "usart.h"
 #include "ff.h"
 #include "fatfs.h"
-//#include "FlashQSPIAgent.h"
+#include "stm32746g_qspi.h"
 #include "usb_device.h"
 #include "usbd_cdc_if.h"
 
@@ -437,10 +437,9 @@ eCI_RESULT func_fmt(void)
 	f_sync(&USERFile);
 	f_close(&USERFile);
 
-//	uint8_t ret = QSPI_DeleteFlash();
-//	QSPI_Init();
-//	flashInit();
-//	createNewLogFile();
+	uint8_t ret = BSP_QSPI_Erase_Chip();
+	fileSystemInit();
+	createNewLogFile();
 
 //	if (f_mkfs("\\", FM_FAT, 0, buffer, sizeof(buffer)) != FR_OK)
 //	{

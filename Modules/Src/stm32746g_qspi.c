@@ -606,6 +606,7 @@ void fileSystemInit(void)
 	} while (FS_ret != FR_OK);
 
 	FS_ret = f_getfree("\\", &free_clusters, &getFreeFs);
+//	FS_ret = f_mkfs("\\", FM_EXFAT, 0, buffer, sizeof(buffer));
 	if (FS_ret != FR_OK)
 	{
 		FS_ret = f_mkfs("\\", FM_FAT, 0, buffer, sizeof(buffer));
