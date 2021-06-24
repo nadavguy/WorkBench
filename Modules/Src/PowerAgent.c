@@ -12,13 +12,16 @@
 uint16_t currentMeasurementValue[3] = {0};
 
 uint32_t lastVoltageMeasurement = 0;
+uint32_t startChargeTime = 0;
 
 float currentVoltages[3] = {3.3, 5 , 4.2};
 float previousVoltages[3] = {3.3, 5 , 4.2};
+bool isChargingMode = false;
+bool didCountChargeCycle = false;
 
-void measureVoltages(void)
+void measureVoltages(bool forceMeasurement)
 {
-	if ( (HAL_GetTick() - lastVoltageMeasurement > 60000) || (lastVoltageMeasurement == 0) )
+	if ( (HAL_GetTick() - lastVoltageMeasurement > 60000) || (lastVoltageMeasurement == 0) || (forceMeasurement) )
 	{
 		HAL_GPIO_WritePin(ChargeEnableGPIO, ChargeEnablePIN, GPIO_PIN_SET);
 		HAL_ADC_Start_IT(&hadc1);
@@ -55,6 +58,22 @@ void measureVoltages(void)
 		if (isUSBConnected)
 		{
 			HAL_GPIO_WritePin(ChargeEnableGPIO, ChargeEnablePIN, GPIO_PIN_RESET);
+			if (currentVoltages[1] < 2)
+			{
+				isChargingMode = true;
+				if ( (HAL_GetTick() - startChargeTime > 45 * 60 * 1000) && (!didCountChargeCycle) && (didCountChargeCycle >= 4.1) )
+				{
+					didCountChargeCycle = true;
+					ee.fullChargeCycles = ee.fullChargeCycles + 1;
+					ee_save1();
+				}
+			}
+			else
+			{
+				isChargingMode = false;
+				didCountChargeCycle = true;
+				startChargeTime = HAL_GetTick();
+			}
 		}
 	}
 }

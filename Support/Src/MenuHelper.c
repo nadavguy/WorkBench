@@ -38,6 +38,7 @@ tPOPUP bleDisableMessage;
 tPOPUP massStorageMessage;
 tPOPUP aboutRCMessage;
 tPOPUP aboutBLEMessage;
+tPOPUP tbsInChargeModeMessage;
 
 uint32_t itemIDtoUpdate = 0;
 
@@ -425,6 +426,16 @@ void initPopupMessages(void)
 	//	memcpy(&safeairForceDisarmMessage.itemsArray[3],"be overwritten",strlen("be overwritten"));
 	memcpy(&aboutBLEMessage.itemsArray[3],"No",strlen("No"));
 	memcpy(&aboutBLEMessage.itemsArray[4],"OK",strlen("OK"));
+
+	tbsInChargeModeMessage.popupID = 10;
+	tbsInChargeModeMessage.numberOfItemsInPopup = 5;
+	tbsInChargeModeMessage.isQuestion = false;
+	memcpy(&tbsInChargeModeMessage.itemsArray[0],"RC in charge",strlen("RC in charge"));
+	memcpy(&tbsInChargeModeMessage.itemsArray[1],"mode, TX module",strlen("mode, TX module"));
+	memcpy(&tbsInChargeModeMessage.itemsArray[2],"is not powered",strlen("is not powered"));
+//	memcpy(&tbsInChargeModeMessage.itemsArray[3],"be overwritten",strlen("be overwritten"));
+	memcpy(&tbsInChargeModeMessage.itemsArray[3],"Cancel",strlen("Cancel"));
+	memcpy(&tbsInChargeModeMessage.itemsArray[4],"OK (Long Press)",strlen("OK (Long Press)"));
 }
 
 void updateSelection(void)
@@ -444,7 +455,7 @@ void updateSelection(void)
 		shouldUpdateStatusText = true;
 		setFullDisplay();
 		screenClear();
-		createEmptyFrame(false);
+		createEmptyFrame(false, true);
 		screenUpdate(false);
 	}
 	else if ( (pagesArray[currentCursorPosition.currentPageID].cellTypeArray[currentCursorPosition.cursorPosition] == BACK)

@@ -17,7 +17,7 @@
 
 extern uint8_t numberOfDisplayedSafeAirIcons;
 
-extern void createEmptyFrame(bool isMenuFrame);
+extern void createEmptyFrame(bool isMenuFrame, bool addStatusBar);
 extern void updateNextFrame(void);
 extern void addImageToNextFrame(const unsigned char *image, uint8_t Height, uint8_t Width, uint8_t Xstart, uint8_t Ystart);
 extern void addRectangleToFrame(uint8_t xStart, uint8_t yStart, uint8_t xEnd, uint8_t yEnd, uint16_t Color);

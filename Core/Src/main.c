@@ -50,6 +50,7 @@
 #include "SafeAirImages.h"
 #include "BluetoothImages.h"
 #include "PlatformImages.h"
+#include "UniqueImages.h"
 #include "LCD_Test.h"
 #include "stm32746g_qspi.h"
 #include "w25q128fv.h"
@@ -78,7 +79,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.260;
+float buildID = 1.270;
 
 SYSTEMState rcState = PREINIT;
 
@@ -123,6 +124,8 @@ float batteryVoltage = 4.2;
 
 uint32_t lastScreenUpdate = 0;
 uint32_t lastLogEntry = 0;
+
+float chargingMaxValue = 0;
 
 unsigned int BytesWritten = 0;
 
@@ -181,12 +184,12 @@ int main(void)
   MX_USB_DEVICE_Init();
   MX_ADC1_Init();
   MX_TIM3_Init();
-  MX_USART2_UART_Init();
   MX_USART1_UART_Init();
   MX_USART3_UART_Init();
   MX_RTC_Init();
   MX_ADC2_Init();
   MX_ADC3_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   //
   UID1 = (*(__I uint32_t *) 0x1FF0F420);
@@ -228,19 +231,25 @@ int main(void)
 
   screenClear();
   renderCompleteFrame = true;
-  createEmptyFrame(false);
+  CheckButtons();
+  createEmptyFrame(false, false);
 
 //  createPingMessage();
   nextPattern = &noBuzzerPattern;
   setBuzzerPattern(*nextPattern);
 
-  measureVoltages();
+  measureVoltages(true);
 
   initBLE();
 
   currentCursorPosition.cursorPosition = 0;
   currentCursorPosition.menuDepth = 0;
-  if (tbsLink == NOSIGNAL)
+  if ( (tbsLink == NOSIGNAL) && (isChargingMode) )
+  {
+	  memcpy(&popupToShow, &tbsInChargeModeMessage, sizeof(popupToShow));
+	  waitForPopupInput();
+  }
+  if ( (tbsLink == NOSIGNAL) && (!isChargingMode) )
   {
 	  memcpy(&popupToShow, &noConnectionMessage, sizeof(popupToShow));
 	  waitForPopupInput();
@@ -255,16 +264,24 @@ int main(void)
 
   while (1)
   {
-	  CheckButtons();
-	  waitForPopupInput();
-	  sendChannelMessageToTBS();
-	  HAL_UART_Receive_DMA(&TBS_UART, tbsRXArray,TBS_RX_BUFFER);
-	  HAL_Delay(2);
-	  parseTBSMessage();
-	  //TODO: Backward compatibility of SafeAir unit with old FW
-	  // if there is telemetry messages without 0xDD message
-	  // Allow only basic functionality
-	  updateRCState();
+	  if (!isChargingMode)
+	  {
+		  CheckButtons();
+		  waitForPopupInput();
+		  sendChannelMessageToTBS();
+		  HAL_UART_Receive_DMA(&TBS_UART, tbsRXArray,TBS_RX_BUFFER);
+		  HAL_Delay(2);
+		  parseTBSMessage();
+		  //TODO: Backward compatibility of SafeAir unit with old FW
+		  // if there is telemetry messages without 0xDD message
+		  // Allow only basic functionality
+		  updateRCState();
+		  monitorLogSize();
+
+		  readUSBData();
+
+		  checkBLEMessages();
+	  }
 	  if (!renderCompleteFrame)
 	  {
 		  if (HAL_GetTick() - lastScreenUpdate > 100)
@@ -275,26 +292,48 @@ int main(void)
 	  }
 	  else
 	  {
-		  if ( (HAL_GetTick() - lastFullFrameDisplayed > 5000) && (!isMenuDisplayed) && (!isPopupDisplayed) )
+		  if (!isChargingMode)
 		  {
-			  createEmptyFrame(false);
-			  setFullDisplay();
-			  screenUpdate(false);
-			  lastFullFrameDisplayed = HAL_GetTick();
+			  if ( (HAL_GetTick() - lastFullFrameDisplayed > 5000) && (!isMenuDisplayed) && (!isPopupDisplayed) )
+			  {
+				  createEmptyFrame(false, true);
+				  setFullDisplay();
+				  screenUpdate(false);
+				  lastFullFrameDisplayed = HAL_GetTick();
+			  }
+			  else
+			  {
+				  screenUpdate(true);
+			  }
 		  }
 		  else
 		  {
-			  screenUpdate(true);
+			  LCD_1IN8_SetBackLight(4000);
+			  createEmptyFrame(false, false);
+//			  screenUpdate(false);
+			  setIconPositionOnScreen();
+			  Paint_DrawImage(gImage_ChargingMode, ChargingModeImageX, ChargingModeImageY, 43, 86);
+			  char localText[12] = "";
+			  chargingMaxValue = fmax(chargingMaxValue, batteryVoltage);
+			  int8_t localPercent = (int8_t)(chargingMaxValue * (142.847) - 500);
+			  if (localPercent > 100)
+			  {
+				  localPercent = 100;
+			  }
+			  else if (localPercent < 0)
+			  {
+				  localPercent = 0;
+			  }
+
+			  sprintf(localText, "%03d%%", localPercent);
+			  centeredString(ChargingModePercentTextX, ChargingModePercentTextY, localText, BLACK, BACKGROUND, 14, Font16);
+			  centeredString(ChargingModePercentTextX, ChargingModeImageY - 24, "Charging", BLACK, BACKGROUND, 14, Font16);
 		  }
 		  updateNextFrame();
 	  }
 	  updateBuzzerStatus();
-	  monitorLogSize();
-
-	  readUSBData();
-
-	  checkBLEMessages();
-	  measureVoltages();
+	  checkChargerMux();
+	  measureVoltages(false);
 
     /* USER CODE END WHILE */
 
@@ -399,7 +438,7 @@ void updateRCState(void)
 	}
 	else
 	{
-		if ( (batteryVoltage <= 3.5) && (batteryStrength < EMPTY))
+		if ( (batteryVoltage <= 3.3) && (batteryStrength < EMPTY))
 		{
 			isLowBattery = true;
 			isEmptyBattery = true;
@@ -409,7 +448,7 @@ void updateRCState(void)
 			sprintf(terminalBuffer,"RC Battery is Empty");
 			logData(terminalBuffer, false, false, false);
 		}
-		else if ( (batteryVoltage > 3.5) && (batteryVoltage <= 3.65) && (batteryStrength < LOW))
+		else if ( (batteryVoltage > 3.3) && (batteryVoltage <= 3.45) && (batteryStrength < LOW))
 		{
 			shouldRedrawBatteryIcon = true;
 			batteryStrength = LOW;
@@ -417,7 +456,7 @@ void updateRCState(void)
 			sprintf(terminalBuffer,"RC Battery is Low");
 			logData(terminalBuffer, false, false, false);
 		}
-		else if ( (batteryVoltage > 3.65) && (batteryVoltage <= 3.9) && (batteryStrength < MEDIUM) )
+		else if ( (batteryVoltage > 3.45) && (batteryVoltage <= 3.8) && (batteryStrength < MEDIUM) )
 		{
 			shouldRedrawBatteryIcon = true;
 			batteryStrength = MEDIUM;
@@ -425,7 +464,7 @@ void updateRCState(void)
 			sprintf(terminalBuffer,"RC Battery is Partially Full");
 			logData(terminalBuffer, false, false, false);
 		}
-		else if ( (batteryVoltage > 3.9) && (batteryStrength != STRONG))
+		else if ( (batteryVoltage > 3.8) && (batteryStrength != STRONG))
 		{
 			shouldRedrawBatteryIcon = true;
 			batteryStrength = STRONG;

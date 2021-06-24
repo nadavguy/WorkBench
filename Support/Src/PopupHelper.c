@@ -41,7 +41,7 @@ void waitForPopupInput(void)
 			}
 			case 2:
 			{
-				while ( (okButtonPressDuration < 3000) )
+				while ( (okButtonPressDuration < 1075) )
 				{
 					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 1000) )
 					{
@@ -74,7 +74,7 @@ void waitForPopupInput(void)
 			} //End of Force Disarm
 			case 3:
 			{
-				while ( (okButtonPressDuration < 3000) )
+				while ( (okButtonPressDuration < 1075) )
 				{
 					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 1000) )
 					{
@@ -95,7 +95,7 @@ void waitForPopupInput(void)
 			} // End of RC clear storage
 			case 4:
 			{
-				while ( (okButtonPressDuration < 3000) )
+				while ( (okButtonPressDuration < 1075) )
 				{
 					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 1000) )
 					{
@@ -126,7 +126,7 @@ void waitForPopupInput(void)
 			} //End of Clear SafeAir storage
 			case 5:
 			{
-				while ( (okButtonPressDuration < 3000) )
+				while ( (okButtonPressDuration < 1075) )
 				{
 					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 10) )
 					{
@@ -147,7 +147,7 @@ void waitForPopupInput(void)
 			} //End of make bluetooth visible
 			case 6:
 			{
-				while ( (okButtonPressDuration < 3000) )
+				while ( (okButtonPressDuration < 1075) )
 				{
 					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 10) )
 					{
@@ -171,7 +171,7 @@ void waitForPopupInput(void)
 			} //End of make bluetooth Active
 			case 7:
 			{
-				while ( (okButtonPressDuration < 3000) )
+				while ( (okButtonPressDuration < 1075) )
 				{
 					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 10) )
 					{
@@ -193,7 +193,7 @@ void waitForPopupInput(void)
 			} //End of change to mass storage
 			case 8:
 			{
-				while ( (okButtonPressDuration < 3000) )
+				while ( (okButtonPressDuration < 1075) )
 				{
 					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 10) )
 					{
@@ -215,7 +215,7 @@ void waitForPopupInput(void)
 
 			case 9:
 			{
-				while ( (okButtonPressDuration < 3000) )
+				while ( (okButtonPressDuration < 1075) )
 				{
 					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 10) )
 					{
@@ -234,6 +234,28 @@ void waitForPopupInput(void)
 				}
 				break;
 			} //End of About BLE
+
+			case 10:
+			{
+
+				while (isChargingMode)
+				{
+					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 1000) )
+					{
+						break;
+					}
+					if ( (popupToShow.isQuestion) && (okButtonPressDuration >= 1000) && (popupDrawDirection == DOWN))
+					{
+						break;
+					}
+					updateRCState();
+					CheckButtons();
+					//					HAL_Delay(50);
+					screenUpdate(false);
+					updateNextFrame();
+				}
+				break;
+			}
 
 			default:
 			{

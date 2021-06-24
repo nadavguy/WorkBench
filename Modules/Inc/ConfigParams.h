@@ -23,6 +23,7 @@ typedef struct sEE_DATA
 	uint8_t screenOreintation;
 	uint8_t bluetoothStatus;
 	float configuration;
+	uint16_t fullChargeCycles;
 }tEE_DATA;
 
 

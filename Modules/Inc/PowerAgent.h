@@ -19,7 +19,9 @@
 #define ChargeEnableGPIO GPIOE
 #define ChargeEnablePIN GPIO_PIN_1
 #define ADCRES 4096
+extern bool isChargingMode;
+extern uint32_t startChargeTime;
 
-extern void measureVoltages(void);
+extern void measureVoltages(bool forceMeasurement);
 
 #endif /* INC_POWERAGENT_H_ */

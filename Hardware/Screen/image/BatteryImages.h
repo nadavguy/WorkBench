@@ -23,5 +23,7 @@ extern const unsigned char gImage_SafeAir_Battery_Low[];
 extern const unsigned char gImage_SafeAir_Battery_Alert[];
 extern const unsigned char gImage_SafeAir_External_Power[];
 
+extern const unsigned char gImage_ChargingMode[];
+
 
 #endif /* SCREEN_IMAGE_BATTERYIMAGES_H_ */

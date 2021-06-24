@@ -23,7 +23,11 @@
 #define okGPIO GPIOD
 #define okPIN GPIO_PIN_7
 
+#define muxGPIO GPIOB
+#define muxPIN GPIO_PIN_1
+
 extern GPIO_PinState triggerPinState;
+extern GPIO_PinState muxPinState;
 
 extern uint32_t okButtonPressDuration;
 extern uint32_t lastAnyButtonPress;
@@ -31,6 +35,7 @@ extern uint32_t lastAnyButtonPress;
 extern void startButtonsPressDetection();
 extern void updateButtonsValues(uint16_t armCurrentValue, uint16_t triggerCurrentValue);
 extern void CheckButtons(void);
+extern void checkChargerMux(void);
 
 
 #endif /* INC_PUSHBUTTON_H_ */

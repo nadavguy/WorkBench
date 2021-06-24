@@ -173,6 +173,12 @@
 #define VerticalAltitudeOrGPSX 5
 #define	VerticalAltitudeOrGPSY 132
 
+#define VerticalChargingModeX 43
+#define VerticalChargingModeY 40
+
+#define VerticalChargingModePercentX 64
+#define VerticalChargingModePercentY 130
+
 typedef struct sIMAGE_DATA
 {
 	uint32_t imagePointer;
@@ -211,6 +217,11 @@ extern bool isGPSPositionDisplayed;
 extern uint8_t LineStartX;
 extern uint8_t LineEndX;
 extern uint8_t LineY;
+
+extern uint8_t ChargingModeImageX;
+extern uint8_t ChargingModeImageY;
+extern uint8_t ChargingModePercentTextX;
+extern uint8_t ChargingModePercentTextY;
 
 extern uint32_t lastBITStatusChange;
 extern uint32_t lastFrameDisplayed;

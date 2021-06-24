@@ -111,8 +111,12 @@ uint16_t fastUSBData(void)
 	uint16_t usbBytesRead = 0;
 
 //	memset(usbRXArray, 0, APP_RX_DATA_SIZE);
-//	USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &usbRXArray[0]);
-	USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+	USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &usbRXArray[0]);
+	uint8_t ret = USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+	if (ret != USBD_OK)
+	{
+		int a = 1;
+	}
 	for (int i = 0 ; i < 1024; i++)
 	{
 		if (usbRXArray[i] != 0)
@@ -123,7 +127,7 @@ uint16_t fastUSBData(void)
 
 	if (usbBytesRead >= 1)
 	{
-		memcpy(&FileReadBuffer, (uint8_t *)usbRXArray, 34);
+		memcpy(&FileReadBuffer, (uint8_t *)usbRXArray, 35);
 //		usbBytesRead = 0;
 		int a = 1;
 		a = a+ 1;

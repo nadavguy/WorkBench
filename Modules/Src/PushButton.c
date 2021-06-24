@@ -10,6 +10,7 @@
 #include "main.h"
 #include "PushButton.h"
 #include "TBSAgent.h"
+#include "UniqueImages.h"
 uint8_t armButtonCycle = 0;
 uint8_t triggerButtonCycle = 0;
 
@@ -23,6 +24,7 @@ GPIO_PinState downPinState;
 GPIO_PinState okPinState;
 GPIO_PinState leftPinState;
 GPIO_PinState rightPinState;
+GPIO_PinState muxPinState;
 
 uint32_t armButtonPressStart = 0;
 uint32_t armButtonPressCycleStart = 0;
@@ -36,6 +38,7 @@ uint32_t lastUpButtonPress = 0;
 uint32_t lastOkButtonUnpress = 0;
 uint32_t okButtonPressDuration = 0;
 uint32_t lastAnyButtonPress = 0;
+uint32_t lastMUXCheck = 0;
 
 
 bool armButtonIsHigh = true;
@@ -60,11 +63,20 @@ void CheckButtons(void)
 	{
 		rcState = MAINTENANCE;
 	}
+	else if ( (rcState == INIT) && (okPinState == GPIO_PIN_RESET) )
+	{
+		checkMMA();
+	}
 
 	if ( (armPinState == GPIO_PIN_RESET) || (triggerPinState == GPIO_PIN_RESET) || (upPinState == GPIO_PIN_RESET)
 			|| (downPinState == GPIO_PIN_RESET) || (okPinState == GPIO_PIN_RESET) )
 	{
 		lastAnyButtonPress = HAL_GetTick();
+	}
+
+	if(!isScreenBrightFull)
+	{
+		return;
 	}
 
 	/*Accumulate Button Press Pattern  */
@@ -445,5 +457,22 @@ void CheckButtons(void)
 //			memcpy(&popupToShow, &safeairForceDisarmMessage, sizeof(popupToShow));
 //			screenUpdate(false);
 //		}
+	}
+}
+
+void checkChargerMux(void)
+{
+	if (HAL_GetTick() - lastMUXCheck > 1000)
+	{
+		muxPinState = HAL_GPIO_ReadPin(muxGPIO, muxPIN);
+		if (muxPinState == GPIO_PIN_SET)
+		{
+//			isChargingMode = true;
+		}
+		else
+		{
+			isChargingMode = false;
+		}
+		lastMUXCheck = HAL_GetTick();
 	}
 }

@@ -161,6 +161,7 @@ extern tMENU_PAGE pagesArray[5];
 
 extern tPOPUP noConnectionMessage;
 extern tPOPUP safeairForceDisarmMessage;
+extern tPOPUP tbsInChargeModeMessage;
 
 extern tUINT16_ITEM brightnessItem;
 extern tSTRING_ITEM triggerModeItem;

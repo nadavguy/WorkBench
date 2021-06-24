@@ -28,34 +28,69 @@ eCI_RESULT func_updateRCVersion(void)
 	uint16_t previousPackID = 0;
 	uint16_t packID = 0;
 	uint32_t writeAddress = 0;
+	uint32_t lastPackSent = 0;
 	localFlashParams.startAddress = 0x8000000;
 	localFlashParams.voltageLevel = FLASH_VOLTAGE_RANGE_3;
 	writeAddress = localFlashParams.startAddress;
 	prepFlash();
 	memset(usbRXArray, 0 ,2048);
 	isInfwUpdateMode = true;
-	char localString[2] = "C\r";
+	char localString[16] = "C\r";
+	CDC_Transmit_FS((uint8_t*)localString, 16);
 	while (isInfwUpdateMode)
 	{
-		CDC_Transmit_FS((uint8_t*)localString, 2);
+		memset(FileReadBuffer,0,1024);
 		br = fastUSBData();
-		if (br > 0)
+		if ( (br > 0) && (FileReadBuffer[0] == 'P') )
 		{
-			packID = FileReadBuffer[0] * 256 + FileReadBuffer[1];
+			packID = FileReadBuffer[1] * 256 + FileReadBuffer[2];
 			if (packID == previousPackID + 1)
 			{
-				while (0 != writeData(writeAddress, (uint32_t *)&FileReadBuffer[2], 32))
-				{
-					HAL_Delay(25);
-				}
+				writeAddress = localFlashParams.startAddress + 32 * (packID -1);
+//				while (0 != writeData(writeAddress, (uint32_t *)&FileReadBuffer[3], 32))
+//				{
+//					HAL_Delay(25);
+//				}
 				previousPackID = packID;
-				writeAddress = writeAddress + 32;
+				sprintf(localString,"P%06d\r",packID);
 			}
 			else
 			{
+				sprintf(localString,"R%06d\r",previousPackID);
 				int t = 1;
 			}
+			if (HAL_GetTick() - lastPackSent > 10)
+			{
+				uint8_t ret = CDC_Transmit_FS((uint8_t*)localString, 16);
+				if (ret != USBD_OK)
+
+				{
+					int a = 1;
+				}
+				lastPackSent = HAL_GetTick();
+			}
 //			writeData(writeAddress, (uint32_t *)FileReadBuffer, br);
+			memset(usbRXArray, 0, 64);
+//			HAL_Delay(2);
+		}
+		else
+		{
+			if ( ( br == 0 ) && (packID == previousPackID) )
+			{
+				sprintf(localString,"P%06d\r",previousPackID);
+			}
+			if (HAL_GetTick() - lastPackSent > 10)
+			{
+				uint8_t ret = CDC_Transmit_FS((uint8_t*)localString, 16);
+				if (ret != USBD_OK)
+
+				{
+					int a = 1;
+				}
+				lastPackSent = HAL_GetTick();
+			}
+//			HAL_Delay(2);
+			//			writeData(writeAddress, (uint32_t *)FileReadBuffer, br);
 			memset(usbRXArray, 0, 64);
 		}
 //		HAL_Delay(2);
@@ -369,6 +404,13 @@ eCI_RESULT func_bootloaderMode(void)
   return CI_NO_UART_ACK;
 }
 
+eCI_RESULT func_showChargeCycles(void)
+{
+	sprintf(terminalBuffer, "Full charge cycles: %d", ee.fullChargeCycles);
+	logData(terminalBuffer, false, true, false);
+	return CI_OK;
+}
+
 eCI_RESULT func_dir(void)
 {
     FILINFO fno1;
@@ -439,6 +481,7 @@ functionsList cases [] =
 		{ "FC", func_closeCurrentLogFile},
 		{ "ble", func_bleMode},
 		{ "fwu", func_bootloaderMode},
+		{ "sfcc", func_showChargeCycles},
 		{ "dir" , func_dir },
 		{ "fmt" , func_fmt }
 };

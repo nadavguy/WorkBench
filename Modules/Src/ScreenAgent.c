@@ -79,6 +79,10 @@ uint8_t LineEndX = 0;
 uint8_t LineY = 0;
 uint8_t AltitudeOrGPSX = 0;
 uint8_t AltitudeOrGPSY = 0;
+uint8_t ChargingModeImageX = 0;
+uint8_t ChargingModeImageY = 0;
+uint8_t ChargingModePercentTextX = 0;
+uint8_t ChargingModePercentTextY = 0;
 
 uint32_t lastBatteryRefresh = 0;
 uint32_t lastBITStatusChange = 0;
@@ -348,6 +352,11 @@ void updateStatusText(void)
 		addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, GRAYBLUE);
 		centeredString(SystemStatusTextX, SystemStatusTextY, "Calibration", WHITE, GRAYBLUE, 14, Font12);
 	}
+	else if (currentSmaStatus.smaState == TESTFLIGHT)
+	{
+		addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, GRAYBLUE);
+		centeredString(SystemStatusTextX, SystemStatusTextY, "Test-Flight", WHITE, DARKBLUE, 14, Font12);
+	}
 	else if (currentSmaStatus.smaState == MAINTENANCE)
 	{
 		addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, CYAN);
@@ -358,7 +367,7 @@ void updateStatusText(void)
 	{
 		if (shouldDrawRedAlertIcon)
 		{
-			if (currentSmaStatus.smaState != ARMED)
+			if  ( (currentSmaStatus.smaState != ARMED) && (displayWarning.BITStatus != 0) )
 			{
 				addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, YELLOW);
 				centeredString(SystemStatusTextX, SystemStatusTextY, "Error", BLACK, YELLOW, 14, Font12);
@@ -1038,7 +1047,7 @@ void drawMenu(bool clearScreen, MENUDRAWType howToDraw)
 	if (clearScreen)
 	{
 		Paint_Clear(WHITE);
-		createEmptyFrame(true);
+		createEmptyFrame(true, false);
 	}
 
 	uint8_t MenuRectangleStartX = 0;
@@ -1104,7 +1113,7 @@ void drawItem(bool clearScreen, MENUDRAWType howToDraw)
 	if ((clearScreen) || (!isItemDisplayed) )
 	{
 		Paint_Clear(WHITE);
-		createEmptyFrame(true);
+		createEmptyFrame(true, false);
 	}
 	if ( pagesArray[currentCursorPosition.previousPageID[currentCursorPosition.menuDepth - 1]].
 			cellTypeArray[currentCursorPosition.previousPageCursorPosition[currentCursorPosition.menuDepth - 1]] == UINT16_ITEM )
@@ -1171,7 +1180,7 @@ void drawPopup(void)
 	if (popupDrawDirection == FULL)
 	{
 		Paint_Clear(WHITE);
-		createEmptyFrame(true);
+		createEmptyFrame(true, false);
 		Paint_DrawRectangle( MenuRectangleStartX, MenuRectangleStartY ,
 				MenuRectangleStartX + MenuRectangleWidth, MenuRectangleStartY + PopupRectangleHeight,
 				BLACK, DOT_PIXEL_1X1, DRAW_FILL_EMPTY );
@@ -1286,6 +1295,11 @@ void setIconPositionOnScreen(void)
 		PlatfomTypeY = VerticalPltfomTypeY;
 		AutoPilotX = (numberOfDisplayedSafeAirIcons /2 - 4 ) * safeAirBarIconWidth + VerticalDisplayCenterWidth;
 		AutoPilotY = VerticalAutoPilotY;
+
+		ChargingModeImageX = VerticalChargingModeX;
+		ChargingModeImageY = VerticalChargingModeX;
+		ChargingModePercentTextX = VerticalChargingModePercentX;
+		ChargingModePercentTextY = VerticalChargingModePercentY;
 	}
 	else
 	{
