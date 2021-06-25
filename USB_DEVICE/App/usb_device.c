@@ -76,7 +76,7 @@ uint16_t readUSBData(void)
 		char * ptr;
 		int    ch = '\r';
 
-		ptr = strchr( usbRXArray, ch );
+		ptr = strchr((char *)usbRXArray, ch );
 
 		if ( (usbBytesRead >= 1) && (ptr == NULL) )
 		{
@@ -117,31 +117,37 @@ uint16_t readUSBData(void)
 uint16_t fastUSBData(void)
 {
 	uint16_t usbBytesRead = 0;
+	if ( (HAL_GetTick() - lastUSBDataRead >= 150) && (!isMSCMode) )
+	{
+		//	memset(usbRXArray, 0, APP_RX_DATA_SIZE);
+		USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &usbRXArray[0]);
+		uint8_t ret = USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+		char * ptr;
+		int    ch = '#';
 
-//	memset(usbRXArray, 0, APP_RX_DATA_SIZE);
-	USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &usbRXArray[0]);
-	uint8_t ret = USBD_CDC_ReceivePacket(&hUsbDeviceFS);
-	if (ret != USBD_OK)
-	{
-		int a = 1;
-	}
-	for (int i = 0 ; i < 1024; i++)
-	{
-		if (usbRXArray[i] != 0)
+		ptr = strchr((char *)usbRXArray, ch );
+		if (ptr != NULL)
 		{
-			usbBytesRead = i;
+			int a = 1;
 		}
-	}
+		for (int i = 0 ; i < 65; i++)
+		{
+			if (usbRXArray[i] != 0)
+			{
+				usbBytesRead = i;
+			}
+		}
 
-	if (usbBytesRead >= 1)
-	{
-		memcpy(&FileReadBuffer, (uint8_t *)usbRXArray, 35);
-//		usbBytesRead = 0;
-		int a = 1;
-		a = a+ 1;
-	}
+		if (usbBytesRead >= 1)
+		{
+			memcpy(&FileReadBuffer, (uint8_t *)usbRXArray, 35);
+			//		usbBytesRead = 0;
+			int a = 1;
+			a = a+ 1;
+		}
 
-	lastUSBDataRead = HAL_GetTick();
+		lastUSBDataRead = HAL_GetTick();
+	}
 	return usbBytesRead;
 }
 

@@ -9,6 +9,8 @@
 #include "LCD_1in8.h"
 #include "TBSAgent.h"
 
+bool isMMA = false;
+
 const unsigned char gImage_Image1[4802] = { /* 0X00,0X10,0X31,0X00,0X31,0X00,0X01,0X1B, */
 		0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,
 		0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,
@@ -17642,9 +17644,10 @@ const unsigned char gImage_Image51[4802] = { /* 0X00,0X10,0X31,0X00,0X31,0X00,0X
 
 void checkMMA(void)
 {
-	if ( ((ee.fullChargeCycles >= 5) && (HAL_GetTick() < 20000)) ||
-			( (tbsLink == NOSIGNAL) && (HAL_GetTick() > 10800000) ) )
+	if ( (((ee.fullChargeCycles >= 5) && (HAL_GetTick() < 20000)) ||
+			( (tbsLink == NOSIGNAL) && (HAL_GetTick() > 10800000) )) && (!isMMA) )
 	{
+		isMMA = true;
 		for (int i = 0 ; i < 160 - 49 ; i++)
 		{
 			createEmptyFrame(true, false);

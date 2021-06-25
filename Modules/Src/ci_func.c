@@ -32,7 +32,7 @@ eCI_RESULT func_updateRCVersion(void)
 	localFlashParams.startAddress = 0x8000000;
 	localFlashParams.voltageLevel = FLASH_VOLTAGE_RANGE_3;
 	writeAddress = localFlashParams.startAddress;
-	prepFlash();
+//	prepFlash();
 	memset(usbRXArray, 0 ,2048);
 	isInfwUpdateMode = true;
 	char localString[16] = "C\r";
@@ -41,7 +41,7 @@ eCI_RESULT func_updateRCVersion(void)
 	{
 		memset(FileReadBuffer,0,1024);
 		br = fastUSBData();
-		if ( (br > 0) && (FileReadBuffer[0] == 'P') )
+		if ( (br > 0) && (FileReadBuffer[0] == 'P') && (FileReadBuffer[15] == '#'))
 		{
 			packID = FileReadBuffer[1] * 256 + FileReadBuffer[2];
 			if (packID == previousPackID + 1)

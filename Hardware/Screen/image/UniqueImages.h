@@ -8,6 +8,8 @@
 #ifndef SCREEN_IMAGE_UNIQUEIMAGES_H_
 #define SCREEN_IMAGE_UNIQUEIMAGES_H_
 
+extern bool isMMA;
+
 extern const unsigned char gImage_Image1[];
 extern const unsigned char gImage_Image2[];
 extern const unsigned char gImage_Image3[];
