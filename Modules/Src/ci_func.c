@@ -32,69 +32,69 @@ eCI_RESULT func_updateRCVersion(void)
 	localFlashParams.startAddress = 0x8000000;
 	localFlashParams.voltageLevel = FLASH_VOLTAGE_RANGE_3;
 	writeAddress = localFlashParams.startAddress;
-//	prepFlash();
+	prepFlash();
 	memset(usbRXArray, 0 ,2048);
 	isInfwUpdateMode = true;
 	char localString[16] = "C\r";
 	CDC_Transmit_FS((uint8_t*)localString, 16);
-	while (isInfwUpdateMode)
-	{
-		memset(FileReadBuffer,0,1024);
-		br = fastUSBData();
-		if ( (br > 0) && (FileReadBuffer[0] == 'P') && (FileReadBuffer[15] == '#'))
-		{
-			packID = FileReadBuffer[1] * 256 + FileReadBuffer[2];
-			if (packID == previousPackID + 1)
-			{
-				writeAddress = localFlashParams.startAddress + 32 * (packID -1);
-//				while (0 != writeData(writeAddress, (uint32_t *)&FileReadBuffer[3], 32))
+//	while (isInfwUpdateMode)
+//	{
+//		memset(FileReadBuffer,0,1024);
+//		br = readUSBData();
+//		if ( (br > 0) && (FileReadBuffer[0] == 'P') && (FileReadBuffer[15] == '#'))
+//		{
+//			packID = FileReadBuffer[1] * 256 + FileReadBuffer[2];
+//			if (packID == previousPackID + 1)
+//			{
+//				writeAddress = localFlashParams.startAddress + 32 * (packID -1);
+////				while (0 != writeData(writeAddress, (uint32_t *)&FileReadBuffer[3], 32))
+////				{
+////					HAL_Delay(25);
+////				}
+//				previousPackID = packID;
+//				sprintf(localString,"P%06d\r",packID);
+//			}
+//			else
+//			{
+//				sprintf(localString,"R%06d\r",previousPackID);
+//				int t = 1;
+//			}
+//			if (HAL_GetTick() - lastPackSent > 10)
+//			{
+//				uint8_t ret = CDC_Transmit_FS((uint8_t*)localString, 16);
+//				if (ret != USBD_OK)
+//
 //				{
-//					HAL_Delay(25);
+//					int a = 1;
 //				}
-				previousPackID = packID;
-				sprintf(localString,"P%06d\r",packID);
-			}
-			else
-			{
-				sprintf(localString,"R%06d\r",previousPackID);
-				int t = 1;
-			}
-			if (HAL_GetTick() - lastPackSent > 10)
-			{
-				uint8_t ret = CDC_Transmit_FS((uint8_t*)localString, 16);
-				if (ret != USBD_OK)
-
-				{
-					int a = 1;
-				}
-				lastPackSent = HAL_GetTick();
-			}
-//			writeData(writeAddress, (uint32_t *)FileReadBuffer, br);
-			memset(usbRXArray, 0, 64);
-//			HAL_Delay(2);
-		}
-		else
-		{
-			if ( ( br == 0 ) && (packID == previousPackID) )
-			{
-				sprintf(localString,"P%06d\r",previousPackID);
-			}
-			if (HAL_GetTick() - lastPackSent > 10)
-			{
-				uint8_t ret = CDC_Transmit_FS((uint8_t*)localString, 16);
-				if (ret != USBD_OK)
-
-				{
-					int a = 1;
-				}
-				lastPackSent = HAL_GetTick();
-			}
-//			HAL_Delay(2);
-			//			writeData(writeAddress, (uint32_t *)FileReadBuffer, br);
-			memset(usbRXArray, 0, 64);
-		}
-//		HAL_Delay(2);
-	}
+//				lastPackSent = HAL_GetTick();
+//			}
+////			writeData(writeAddress, (uint32_t *)FileReadBuffer, br);
+//			memset(usbRXArray, 0, 64);
+////			HAL_Delay(2);
+//		}
+//		else
+//		{
+//			if ( ( br == 0 ) && (packID == previousPackID) )
+//			{
+//				sprintf(localString,"P%06d\r",previousPackID);
+//			}
+//			if (HAL_GetTick() - lastPackSent > 10)
+//			{
+//				uint8_t ret = CDC_Transmit_FS((uint8_t*)localString, 16);
+//				if (ret != USBD_OK)
+//
+//				{
+//					int a = 1;
+//				}
+//				lastPackSent = HAL_GetTick();
+//			}
+////			HAL_Delay(2);
+//			//			writeData(writeAddress, (uint32_t *)FileReadBuffer, br);
+//			memset(usbRXArray, 0, 64);
+//		}
+////		HAL_Delay(2);
+//	}
 //	{
 
 //	}
@@ -130,6 +130,7 @@ eCI_RESULT func_endUpdatePhase(void)
 //	__set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
 //	JumpToApplication();
 	//TODO: show Flash process finished
+	isInfwUpdateMode = false;
 	return CI_OK;
 }
 

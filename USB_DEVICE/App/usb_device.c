@@ -57,7 +57,11 @@ USBD_HandleTypeDef hUsbDeviceFS;
 uint8_t usbRXArray[APP_RX_DATA_SIZE] = {0};
 uint8_t usbTXArray[APP_TX_DATA_SIZE] = {0};
 
+uint16_t previousPackID = 0;
+uint16_t packID = 0;
+
 uint32_t lastUSBDataRead = 0;
+
 /* USER CODE END 0 */
 
 /*
@@ -66,6 +70,140 @@ uint32_t lastUSBDataRead = 0;
 /* USER CODE BEGIN 1 */
 uint16_t readUSBData(void)
 {
+	uint16_t usbBytesRead = 0;
+	if ( (HAL_GetTick() - lastUSBDataRead >= 10) && (!isMSCMode) )
+	{
+//		memset(usbRXArray, 0, APP_RX_DATA_SIZE);
+		USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &usbRXArray[0]);
+		USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+		usbBytesRead = strlen((char *)usbRXArray);
+		char * ptr;
+		int    ch = '\r';
+
+		if (isInfwUpdateMode)
+		{
+			ch = '#';
+		}
+
+		ptr = strchr((char *)usbRXArray, ch );
+
+		if ( (usbBytesRead >= 1) && (ptr == NULL) && (!isInfwUpdateMode))
+		{
+			localCommand[localCounter] = usbRXArray[0];
+			localCounter++;
+
+			memset(usbRXArray, 0, APP_RX_DATA_SIZE);
+			usbBytesRead = 0;
+		}
+		else if ( (usbRXArray[0] == 'P') && (usbRXArray[35] == '#') && (usbRXArray[36] == '\r') && (isInfwUpdateMode))
+		{
+
+			uint32_t writeAddress = 0;
+			char localString[16] = "";
+			writeAddress = localFlashParams.startAddress;
+//			memcpy(&FileReadBuffer, (uint8_t *)usbRXArray, 35);
+			packID = usbRXArray[1] * 256 + usbRXArray[2];
+			if (packID == previousPackID + 1) // Packet received correctly
+			{
+				writeAddress = localFlashParams.startAddress + 32 * (packID -1);
+				uint32_t write_ret = writeData(writeAddress, (uint32_t *)&usbRXArray[3], 32);
+				while (0 != write_ret)
+				{
+					HAL_Delay(25);
+					write_ret = writeData(writeAddress, (uint32_t *)&usbRXArray[3], 32);
+				}
+				previousPackID = packID;
+				sprintf(localString,"P%06d\r",packID);
+			}
+			else if (packID == previousPackID) // Received duplicate packet
+			{
+				sprintf(localString,"P%06d\r",packID);
+				HAL_Delay(25);
+			}
+			else // Resend packet
+			{
+				sprintf(localString,"R%06d\r",previousPackID);
+				HAL_Delay(25);
+			}
+			PCD_HandleTypeDef *hpcd = hUsbDeviceFS.pData;
+			USB_FlushTxFifo(hpcd->Instance, 15);
+			uint8_t ret = CDC_Transmit_FS((uint8_t*)localString, 16);
+			memset(usbRXArray, 0, APP_RX_DATA_SIZE);
+			usbBytesRead = 0;
+		}
+		else if  ( (usbBytesRead > 1) && (!isInfwUpdateMode) && (usbRXArray[0] == '\r') )
+		{
+			parse(localCommand);
+			localCounter = 0;
+			memset(localCommand,0,COMMANDSMAXSIZE);
+			memset(usbRXArray, 0, APP_RX_DATA_SIZE);
+			usbBytesRead = 0;
+		}
+		else if  ( (usbBytesRead > 1) && (!isInfwUpdateMode) )
+		{
+			parse((char *)usbRXArray);
+			memset(usbRXArray, 0, APP_RX_DATA_SIZE);
+			usbBytesRead = 0;
+		}
+		else if ( (usbBytesRead == 0) && (isInfwUpdateMode) && (previousPackID > 0) && (previousPackID < packID) )
+		{
+			char localString[16] = "";
+			sprintf(localString,"R%06d\r",previousPackID);
+			PCD_HandleTypeDef *hpcd = hUsbDeviceFS.pData;
+			USB_FlushTxFifo(hpcd->Instance, 15);
+			uint8_t ret = CDC_Transmit_FS((uint8_t*)localString, 16);
+		}
+		else if ( (usbBytesRead == 0) && (isInfwUpdateMode) && (previousPackID >= 0) && (previousPackID == packID) )
+		{
+			char localString[16] = "";
+			sprintf(localString,"R%06d\r",previousPackID);
+			PCD_HandleTypeDef *hpcd = hUsbDeviceFS.pData;
+			USB_FlushTxFifo(hpcd->Instance, 15);
+			uint8_t ret = CDC_Transmit_FS((uint8_t*)localString, 16);
+		}
+
+		memset(usbRXArray, 0, APP_RX_DATA_SIZE);
+		usbBytesRead = 0;
+		lastUSBDataRead = HAL_GetTick();
+	}
+	return usbBytesRead;
+}
+
+uint16_t fastUSBData(void)
+{
+//	uint16_t usbBytesRead = 0;
+//	if ( (HAL_GetTick() - lastUSBDataRead >= 15) && (!isMSCMode) )
+//	{
+//		//	memset(usbRXArray, 0, APP_RX_DATA_SIZE);
+//		USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &usbRXArray[0]);
+//		uint8_t ret = USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+//		char * ptr;
+//		int    ch = '#';
+//
+//		ptr = strchr((char *)usbRXArray, ch );
+//		if (ptr != NULL)
+//		{
+//			int a = 1;
+//		}
+//		for (int i = 0 ; i < 65; i++)
+//		{
+//			if (usbRXArray[i] != 0)
+//			{
+//				usbBytesRead = i;
+//			}
+//		}
+//
+//		if (usbBytesRead >= 1)
+//		{
+//			memcpy(&FileReadBuffer, (uint8_t *)usbRXArray, 35);
+//			//		usbBytesRead = 0;
+//			int a = 1;
+//			a = a+ 1;
+//		}
+//
+//		lastUSBDataRead = HAL_GetTick();
+//	}
+//	return usbBytesRead;
 	uint16_t usbBytesRead = 0;
 	if ( (HAL_GetTick() - lastUSBDataRead >= 10) && (!isMSCMode) )
 	{
@@ -109,43 +247,6 @@ uint16_t readUSBData(void)
 			memset(usbRXArray, 0, APP_RX_DATA_SIZE);
 			usbBytesRead = 0;
 		}
-		lastUSBDataRead = HAL_GetTick();
-	}
-	return usbBytesRead;
-}
-
-uint16_t fastUSBData(void)
-{
-	uint16_t usbBytesRead = 0;
-	if ( (HAL_GetTick() - lastUSBDataRead >= 150) && (!isMSCMode) )
-	{
-		//	memset(usbRXArray, 0, APP_RX_DATA_SIZE);
-		USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &usbRXArray[0]);
-		uint8_t ret = USBD_CDC_ReceivePacket(&hUsbDeviceFS);
-		char * ptr;
-		int    ch = '#';
-
-		ptr = strchr((char *)usbRXArray, ch );
-		if (ptr != NULL)
-		{
-			int a = 1;
-		}
-		for (int i = 0 ; i < 65; i++)
-		{
-			if (usbRXArray[i] != 0)
-			{
-				usbBytesRead = i;
-			}
-		}
-
-		if (usbBytesRead >= 1)
-		{
-			memcpy(&FileReadBuffer, (uint8_t *)usbRXArray, 35);
-			//		usbBytesRead = 0;
-			int a = 1;
-			a = a+ 1;
-		}
-
 		lastUSBDataRead = HAL_GetTick();
 	}
 	return usbBytesRead;

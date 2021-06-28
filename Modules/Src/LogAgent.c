@@ -37,7 +37,7 @@ void logData(char *dataToLog, bool doNotShowOnDisplay, bool displayOnly, bool do
         sprintf(localString, "\r\n");
     }
     //TODO: disable sessionUnlocked and replace with debugLevel
-    if (displayOnly)
+    if ( (displayOnly) && (!isInfwUpdateMode) )
     {
     	CDC_Transmit_FS((uint8_t*)localString, strlen(localString));
     }
@@ -48,7 +48,7 @@ void logData(char *dataToLog, bool doNotShowOnDisplay, bool displayOnly, bool do
 //    	{
 //    		int a= 1;
 //    	}
-    	if (!doNotShowOnDisplay)
+    	if ( (!doNotShowOnDisplay) && (!isInfwUpdateMode) )
     	{
     		CDC_Transmit_FS((uint8_t*)localString, strlen(localString));
     	}
