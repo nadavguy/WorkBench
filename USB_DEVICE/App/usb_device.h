@@ -53,6 +53,8 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
  extern uint8_t usbRXArray[2048];
+ extern uint16_t packID;
+ extern uint16_t totalPackID;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/

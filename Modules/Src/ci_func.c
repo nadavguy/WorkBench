@@ -37,6 +37,7 @@ eCI_RESULT func_updateRCVersion(void)
 	isInfwUpdateMode = true;
 	char localString[16] = "C\r";
 	CDC_Transmit_FS((uint8_t*)localString, 16);
+	fullFrameDelay = 500;
 //	while (isInfwUpdateMode)
 //	{
 //		memset(FileReadBuffer,0,1024);

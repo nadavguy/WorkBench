@@ -19,6 +19,7 @@
 #include "LCD_Test.h"
 #include "LCD_1in8.h"
 #include "DEV_Config.h"
+#include "usb_device.h"
 
 const unsigned char *previousBluetoothImage;
 const unsigned char *previousPlatformImage;
@@ -337,8 +338,20 @@ void updateStatusText(void)
 	}
 	else if ((currentSmaStatus.smaState == IDLE) && (!displayWarning.displayWarning) && (displayWarning.BITStatus == 0))
 	{
-		addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3,BLUE);
-		centeredString(SystemStatusTextX, SystemStatusTextY, "Idle", WHITE, BLUE, 14, Font12);
+
+		if (!isInfwUpdateMode)
+		{
+			addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3,BLUE);
+			centeredString(SystemStatusTextX, SystemStatusTextY, "Idle", WHITE, BLUE, 14, Font12);
+
+		}
+		else
+		{
+			char localString[16] = "";
+			sprintf(localString,"P#: %d / %d", packID, totalPackID);
+			addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3,GRAYBLUE);
+			centeredString(SystemStatusTextX, SystemStatusTextY, localString, WHITE, GRAYBLUE, 14, Font12);
+		}
 		previousBITStatus = displayWarning.BITStatus;
 	}
 	else if ((currentSmaStatus.smaState == ARMED) && (!displayWarning.displayWarning) && (displayWarning.BITStatus == 0))

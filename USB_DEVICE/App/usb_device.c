@@ -39,6 +39,7 @@
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 uint8_t localCounter = 0;
+uint16_t localTimeout = 10;
 char localCommand[COMMANDSMAXSIZE] = "";
 /* USER CODE END PV */
 
@@ -59,6 +60,7 @@ uint8_t usbTXArray[APP_TX_DATA_SIZE] = {0};
 
 uint16_t previousPackID = 0;
 uint16_t packID = 0;
+uint16_t totalPackID = 0;
 
 uint32_t lastUSBDataRead = 0;
 
@@ -71,7 +73,8 @@ uint32_t lastUSBDataRead = 0;
 uint16_t readUSBData(void)
 {
 	uint16_t usbBytesRead = 0;
-	if ( (HAL_GetTick() - lastUSBDataRead >= 10) && (!isMSCMode) )
+
+	if ( (HAL_GetTick() - lastUSBDataRead >= localTimeout) && (!isMSCMode) )
 	{
 //		memset(usbRXArray, 0, APP_RX_DATA_SIZE);
 		USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &usbRXArray[0]);
@@ -95,6 +98,15 @@ uint16_t readUSBData(void)
 			memset(usbRXArray, 0, APP_RX_DATA_SIZE);
 			usbBytesRead = 0;
 		}
+		else if ( (usbRXArray[0] == 'T') && (usbRXArray[35] == '#') && (usbRXArray[36] == '\r') && (isInfwUpdateMode))
+		{
+			3 = usbRXArray[1] * 256 + usbRXArray[2];
+			if (totalPackID != 0)
+			{
+				char localString[16] = "C\r";
+				CDC_Transmit_FS((uint8_t*)localString, 16);
+			}
+		}
 		else if ( (usbRXArray[0] == 'P') && (usbRXArray[35] == '#') && (usbRXArray[36] == '\r') && (isInfwUpdateMode))
 		{
 
@@ -109,7 +121,7 @@ uint16_t readUSBData(void)
 				uint32_t write_ret = writeData(writeAddress, (uint32_t *)&usbRXArray[3], 32);
 				while (0 != write_ret)
 				{
-					HAL_Delay(25);
+					HAL_Delay(5);
 					write_ret = writeData(writeAddress, (uint32_t *)&usbRXArray[3], 32);
 				}
 				previousPackID = packID;
@@ -118,12 +130,12 @@ uint16_t readUSBData(void)
 			else if (packID == previousPackID) // Received duplicate packet
 			{
 				sprintf(localString,"P%06d\r",packID);
-				HAL_Delay(25);
+				HAL_Delay(5);
 			}
 			else // Resend packet
 			{
 				sprintf(localString,"R%06d\r",previousPackID);
-				HAL_Delay(25);
+				HAL_Delay(5);
 			}
 			PCD_HandleTypeDef *hpcd = hUsbDeviceFS.pData;
 			USB_FlushTxFifo(hpcd->Instance, 15);
@@ -165,6 +177,15 @@ uint16_t readUSBData(void)
 		memset(usbRXArray, 0, APP_RX_DATA_SIZE);
 		usbBytesRead = 0;
 		lastUSBDataRead = HAL_GetTick();
+		if ( (isInfwUpdateMode) && (totalPackID != 0) )
+		{
+			if (packID == totalPackID)
+			{
+				isInfwUpdateMode = false;
+				fullFrameDelay = 5000;
+				currentSmaStatus.smaState = UPDATE;
+			}
+		}
 	}
 	return usbBytesRead;
 }

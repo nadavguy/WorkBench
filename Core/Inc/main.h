@@ -135,6 +135,8 @@ extern bool shouldRedrawSafeAirBatteryIcon;
 extern bool shouldDrawSafeAirAltitude;
 extern bool isScreenBrightFull;
 
+extern uint16_t fullFrameDelay;
+
 extern uint32_t UID1;
 extern uint32_t UID2;
 extern uint32_t UID3;
