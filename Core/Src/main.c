@@ -79,7 +79,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.300;
+float buildID = 1.310;
 
 SYSTEMState rcState = PREINIT;
 
@@ -165,14 +165,20 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
+  RCC_OscInitTypeDef RCC_test = {0};
+  HAL_RCC_GetOscConfig(&RCC_test);
 
+  if (RCC_test.HSEState == 0x10000)
+  {
+//	  __HAL_RCC_SYSCLK_CONFIG(4);
+	  HAL_RCC_DeInit();
+  }
   /* USER CODE END Init */
 
   /* Configure the system clock */
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -192,13 +198,15 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   //
+//  char test[8] = "Testtset";
+//  HAL_UART_Transmit(&huart2, (uint8_t *)test, 8, 20);
   UID1 = (*(__I uint32_t *) 0x1FF0F420);
   UID2 = (*(__I uint32_t *) 0x1FF0F424);
   UID3 = (*(__I uint32_t *) 0x1FF0F428);
 
   BSP_QSPI_Init();
 
-  HAL_Delay(5000);
+//  HAL_Delay(1000);
 
   fileSystemInit();
   createNewLogFile();

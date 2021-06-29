@@ -2,7 +2,7 @@
 NVIC.FLASH_IRQn=true\:0\:0\:false\:false\:true\:true\:true
 RCC.USART1Freq_Value=108000000
 Dma.USART3_RX.1.Mode=DMA_CIRCULAR
-USART2.IPParameters=VirtualMode-Asynchronous
+USART2.IPParameters=VirtualMode-Asynchronous,BaudRate
 FATFS._USE_LFN=1
 QUADSPI.ClockPrescaler=1
 SPI1.VirtualType=VM_MASTER
@@ -137,6 +137,7 @@ RCC.UART8Freq_Value=54000000
 PC0.Signal=ADCx_IN10
 RCC.APB1CLKDivider=RCC_HCLK_DIV4
 QUADSPI.IPParameters=ClockPrescaler,FlashSize,SampleShifting,FifoThreshold
+USART2.BaudRate=921600
 RCC.PWR_Regulator_Voltage_Scale=PWR_REGULATOR_VOLTAGE_SCALE1
 PA3.Mode=Asynchronous
 TIM3.Channel-PWM\ Generation3\ CH3=TIM_CHANNEL_3
