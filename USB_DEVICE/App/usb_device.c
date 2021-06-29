@@ -100,7 +100,7 @@ uint16_t readUSBData(void)
 		}
 		else if ( (usbRXArray[0] == 'T') && (usbRXArray[35] == '#') && (usbRXArray[36] == '\r') && (isInfwUpdateMode))
 		{
-			3 = usbRXArray[1] * 256 + usbRXArray[2];
+			totalPackID = usbRXArray[1] * 256 + usbRXArray[2];
 			if (totalPackID != 0)
 			{
 				char localString[16] = "C\r";
