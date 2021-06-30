@@ -63,6 +63,7 @@ uint16_t packID = 0;
 uint16_t totalPackID = 0;
 
 uint32_t lastUSBDataRead = 0;
+uint32_t lastPacketRequest = 0;
 
 /* USER CODE END 0 */
 
@@ -101,11 +102,11 @@ uint16_t readUSBData(void)
 		else if ( (usbRXArray[0] == 'T') && (usbRXArray[35] == '#') && (usbRXArray[36] == '\r') && (isInfwUpdateMode))
 		{
 			totalPackID = usbRXArray[1] * 256 + usbRXArray[2];
-			if (totalPackID != 0)
-			{
-				char localString[16] = "C\r";
-				CDC_Transmit_FS((uint8_t*)localString, 16);
-			}
+//			if (totalPackID != 0)
+//			{
+//				char localString[16] = "C\r";
+//				CDC_Transmit_FS((uint8_t*)localString, 16);
+//			}
 		}
 		else if ( (usbRXArray[0] == 'P') && (usbRXArray[35] == '#') && (usbRXArray[36] == '\r') && (isInfwUpdateMode))
 		{
@@ -157,21 +158,26 @@ uint16_t readUSBData(void)
 			memset(usbRXArray, 0, APP_RX_DATA_SIZE);
 			usbBytesRead = 0;
 		}
-		else if ( (usbBytesRead == 0) && (isInfwUpdateMode) && (previousPackID > 0) && (previousPackID < packID) )
+		else if ( (usbBytesRead == 0) && (isInfwUpdateMode) && (previousPackID > 0) && (previousPackID < packID)
+				&& (HAL_GetTick() - lastPacketRequest > 3000) )
 		{
 			char localString[16] = "";
 			sprintf(localString,"R%06d\r",previousPackID);
 			PCD_HandleTypeDef *hpcd = hUsbDeviceFS.pData;
 			USB_FlushTxFifo(hpcd->Instance, 15);
 			uint8_t ret = CDC_Transmit_FS((uint8_t*)localString, 16);
+			lastPacketRequest = HAL_GetTick();
+
 		}
-		else if ( (usbBytesRead == 0) && (isInfwUpdateMode) && (previousPackID >= 0) && (previousPackID == packID) )
+		else if ( (usbBytesRead == 0) && (isInfwUpdateMode) && (previousPackID >= 0) && (previousPackID == packID)
+				&& (packID == 0) && (HAL_GetTick() - lastPacketRequest > 3000) )
 		{
 			char localString[16] = "";
-			sprintf(localString,"R%06d\r",previousPackID);
+			sprintf(localString,"P%06d\r",packID);
 			PCD_HandleTypeDef *hpcd = hUsbDeviceFS.pData;
 			USB_FlushTxFifo(hpcd->Instance, 15);
 			uint8_t ret = CDC_Transmit_FS((uint8_t*)localString, 16);
+			lastPacketRequest = HAL_GetTick();
 		}
 
 		memset(usbRXArray, 0, APP_RX_DATA_SIZE);

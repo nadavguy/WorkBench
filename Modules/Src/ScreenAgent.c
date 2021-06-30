@@ -336,7 +336,7 @@ void updateStatusText(void)
 			centeredString(SystemStatusTextX, SystemStatusTextY, "Critical Angle", WHITE, RED, 14, Font12);
 		}
 	}
-	else if ((currentSmaStatus.smaState == IDLE) && (!displayWarning.displayWarning) && (displayWarning.BITStatus == 0))
+	else if ( ((currentSmaStatus.smaState == IDLE) && (!displayWarning.displayWarning) && (displayWarning.BITStatus == 0)) || (isInfwUpdateMode) )
 	{
 
 		if (!isInfwUpdateMode)
