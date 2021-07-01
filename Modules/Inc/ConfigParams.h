@@ -24,6 +24,7 @@ typedef struct sEE_DATA
 	uint8_t bluetoothStatus;
 	float configuration;
 	uint16_t fullChargeCycles;
+	uint8_t rcMode;
 }tEE_DATA;
 
 

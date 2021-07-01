@@ -90,5 +90,5 @@ void printRCConfiguration(bool toDisplayOnly)
     // logData("------------------Initialization---------------------", false, toDisplayOnly);
 
      logData("--------------Initialization Ended---------------------\3", false, toDisplayOnly, false);
-     logData("", false, toDisplayOnly, false);
+     logData("\r\n", false, toDisplayOnly, false);
 }

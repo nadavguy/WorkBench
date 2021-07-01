@@ -413,6 +413,30 @@ eCI_RESULT func_showChargeCycles(void)
 	return CI_OK;
 }
 
+eCI_RESULT func_changeRCMode(void)
+{
+	if (get_param_count() > 0)
+	{
+		ee.rcMode = get_param_int(0);
+		ee_save1();
+	}
+	if (ee.rcMode == 4)
+	{
+		sprintf(terminalBuffer, "Changed RC Mode to: Unknown");
+	}
+	else if (ee.rcMode == 5)
+	{
+		sprintf(terminalBuffer, "Changed RC Mode to: Maintenance");
+	}
+	else if (ee.rcMode == 10)
+	{
+		sprintf(terminalBuffer, "Changed RC Mode to: Update");
+	}
+//	sprintf(terminalBuffer, "Changed RC Mode to: %d", ee.rcMode);
+	logData(terminalBuffer, false, true, false);
+	return CI_OK;
+}
+
 eCI_RESULT func_dir(void)
 {
     FILINFO fno1;
@@ -483,6 +507,7 @@ functionsList cases [] =
 		{ "ble", func_bleMode},
 		{ "fwu", func_bootloaderMode},
 		{ "sfcc", func_showChargeCycles},
+		{ "crcm", func_changeRCMode},
 		{ "dir" , func_dir },
 		{ "fmt" , func_fmt }
 };
