@@ -79,7 +79,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.350;
+float buildID = 1.360;
 
 SYSTEMState rcState = PREINIT;
 
@@ -218,6 +218,7 @@ int main(void)
 		logData(terminalBuffer, true, false, false);
 		ee_save1();
 	}
+	ee.rcMode = 0;
 
 	initMenuPages();
 	initMenuItems();

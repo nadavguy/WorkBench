@@ -432,7 +432,10 @@ eCI_RESULT func_changeRCMode(void)
 	{
 		sprintf(terminalBuffer, "Changed RC Mode to: Update");
 	}
-//	sprintf(terminalBuffer, "Changed RC Mode to: %d", ee.rcMode);
+	else
+	{
+		sprintf(terminalBuffer, "Changed RC Mode to: %d", ee.rcMode);
+	}
 	logData(terminalBuffer, false, true, false);
 	return CI_OK;
 }

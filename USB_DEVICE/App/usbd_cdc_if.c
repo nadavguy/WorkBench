@@ -285,11 +285,30 @@ uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len)
   uint8_t result = USBD_OK;
   /* USER CODE BEGIN 7 */
   USBD_CDC_HandleTypeDef *hcdc = (USBD_CDC_HandleTypeDef*)hUsbDeviceFS.pClassData;
-  if (hcdc->TxState != 0){
+  if (hcdc->TxState != 0)
+  {
     return USBD_BUSY;
   }
-  USBD_CDC_SetTxBuffer(&hUsbDeviceFS, Buf, Len);
-  result = USBD_CDC_TransmitPacket(&hUsbDeviceFS);
+  uint8_t localArray[64] = {0};
+  uint32_t localCounter = 0;
+  uint8_t remainBuffer = 0;
+  while (Len > localCounter)
+  {
+	  if (Len - localCounter >= 64)
+	  {
+		  remainBuffer = 64;
+	  }
+	  else
+	  {
+		  remainBuffer = Len - localCounter;
+		  HAL_Delay(1);
+	  }
+	  memset(localArray,0,64);
+	  memcpy(localArray, &Buf[localCounter], remainBuffer);
+	  USBD_CDC_SetTxBuffer(&hUsbDeviceFS, localArray, remainBuffer);
+	  result = USBD_CDC_TransmitPacket(&hUsbDeviceFS);
+	  localCounter += 64;
+  }
   /* USER CODE END 7 */
   return result;
 }
