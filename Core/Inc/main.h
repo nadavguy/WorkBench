@@ -167,6 +167,7 @@ extern tGPSPOSITION lastKnownPosition;
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
+extern void UpdateScreenBrightness(bool isScreenBrightFull);
 extern void updateRCState(void);
 /* USER CODE END EFP */
 

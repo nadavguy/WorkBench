@@ -79,7 +79,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.360;
+float buildID = 1.370;
 
 SYSTEMState rcState = PREINIT;
 
@@ -234,10 +234,11 @@ int main(void)
 	rcLinkStatus.UplinkRSSIAnt2 = 0xFF;
 	tbsLink = NOSIGNAL;
 
+	measureVoltages(true);
+
 	printRCConfiguration(false);
 
 	screenInit();
-
 	screenClear();
 	renderCompleteFrame = true;
 	CheckButtons();
@@ -247,7 +248,6 @@ int main(void)
 	nextPattern = &noBuzzerPattern;
 	setBuzzerPattern(*nextPattern);
 
-	measureVoltages(true);
 
 	initBLE();
 
@@ -317,7 +317,9 @@ int main(void)
 			}
 			else
 			{
-				LCD_1IN8_SetBackLight(4000);
+				CheckButtons();
+				UpdateScreenBrightness(isScreenBrightFull);
+//				LCD_1IN8_SetBackLight(4000);
 				createEmptyFrame(false, false);
 				//			  screenUpdate(false);
 				setIconPositionOnScreen();
@@ -325,6 +327,18 @@ int main(void)
 				char localText[12] = "";
 				chargingMaxValue = fmax(chargingMaxValue, batteryVoltage);
 				int8_t localPercent = (int8_t)(chargingMaxValue * (142.847) - 500);
+				if (previousBatteryCharge > localPercent)
+				{
+					previousBatteryCharge = localPercent;
+					lastChangeInMeasurement = HAL_GetTick();
+				}
+				else if ( (previousBatteryCharge == localPercent)
+						&& (HAL_GetTick() - lastChangeInMeasurement > 20 * 60 * 1000)
+						&& (localPercent >=93))
+				{
+					localPercent = 100;
+				}
+
 				if (localPercent > 100)
 				{
 					localPercent = 100;
@@ -422,6 +436,22 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+void UpdateScreenBrightness(bool isScreenBrightFull)
+{
+	if ( (isScreenBrightFull) && (HAL_GetTick() - lastAnyButtonPress > 120000) )
+	{
+		LCD_1IN8_SetBackLight(2000);
+		//		LCD_1IN8_SetBackLight(ee.backLight);
+		isScreenBrightFull = false;
+	}
+	else if ( (!isScreenBrightFull)
+			&& (HAL_GetTick() - lastAnyButtonPress < 2000) )
+	{
+		LCD_1IN8_SetBackLight(ee.backLight * 2000);
+		isScreenBrightFull = true;
+	}
+}
 void updateRCState(void)
 {
 	if ( (rcState == INIT) && (!isNoSignal) )
@@ -659,17 +689,7 @@ void updateRCState(void)
 		setBuzzerPattern(*nextPattern);
 	}
 
-	if ( (isScreenBrightFull) && (HAL_GetTick() - lastAnyButtonPress > 120000) )
-	{
-		LCD_1IN8_SetBackLight(2000);
-		//		LCD_1IN8_SetBackLight(ee.backLight);
-		isScreenBrightFull = false;
-	}
-	else if ( (!isScreenBrightFull) && (HAL_GetTick() - lastAnyButtonPress < 2000) )
-	{
-		LCD_1IN8_SetBackLight(ee.backLight * 2000);
-		isScreenBrightFull = true;
-	}
+	UpdateScreenBrightness(isScreenBrightFull);
 
 	if ( (shouldUpdateStatusText  || shouldReDrawTriggerModeIcon || shouldReDrawAutoPilotIcon || shouldRedrawBatteryIcon
 			|| shouldUpdatePlatformText || shouldReDrawPlatformIcon ) && (HAL_GetTick() - lastLogEntry > 50) )// || shouldDrawRedAlertIcon

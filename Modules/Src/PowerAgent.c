@@ -10,10 +10,13 @@
 #include "adc.h"
 #include "LCD_1in8.h"
 
+uint8_t previousBatteryCharge = 0;
+
 uint16_t currentMeasurementValue[3] = {0};
 
 uint32_t lastVoltageMeasurement = 0;
 uint32_t startChargeTime = 0;
+uint32_t lastChangeInMeasurement = 0;
 
 float currentVoltages[3] = {3.3, 5 , 4.2};
 float previousVoltages[3] = {3.3, 5 , 4.2};

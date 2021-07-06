@@ -20,7 +20,11 @@
 #define ChargeEnablePIN GPIO_PIN_1
 #define ADCRES 4096
 extern bool isChargingMode;
+
+extern uint8_t previousBatteryCharge;
+
 extern uint32_t startChargeTime;
+extern uint32_t lastChangeInMeasurement;
 
 extern void measureVoltages(bool forceMeasurement);
 

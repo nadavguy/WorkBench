@@ -1000,6 +1000,7 @@ void screenUpdate(bool drawDeltaImage)
 		if ( (shouldDrawSafeAirAltitude) )
 		{
 			char localText[12] = "";
+			Paint_DrawLine(LineStartX, LineY, LineEndX, LineY, BLACK, DOT_PIXEL_1X1, LINE_STYLE_SOLID);
 			if ((currentSmaStatus.smaState != ARMED) && (currentSmaStatus.smaState != TRIGGERED))
 			{
 				sprintf(localText, "%06.1f m", 0.0);

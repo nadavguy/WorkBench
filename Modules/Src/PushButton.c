@@ -78,6 +78,10 @@ void CheckButtons(void)
 	{
 		return;
 	}
+	else if ((isScreenBrightFull) && (isChargingMode))
+	{
+		return;
+	}
 
 	/*Accumulate Button Press Pattern  */
 	if (armPinState == GPIO_PIN_RESET)
