@@ -55,6 +55,8 @@
  extern uint8_t usbRXArray[2048];
  extern uint16_t packID;
  extern uint16_t totalPackID;
+
+ extern uint32_t totalBytesLengthInFile;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/

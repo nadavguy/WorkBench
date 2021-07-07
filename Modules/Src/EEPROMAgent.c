@@ -6,6 +6,7 @@
  */
 #include "main.h"
 #include "stm32f7xx_hal.h"
+#include "usb_device.h"
 uint32_t BankNumber = 0;
 FLASH_EraseInitTypeDef EraseInitStruct;
 tFlashParams localFlashParams;
@@ -123,58 +124,22 @@ uint32_t GetSector(uint32_t Address)
 	return sector;
 }
 
-void prepFlash()
+void prepFlash(uint8_t numberOfSectors)
 {
-//	HAL_FLASH_Unlock();
-//
-//	/* Clear OPTVERR bit set on virgin samples */
-//	__HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR|
-//			FLASH_FLAG_PGAERR | FLASH_FLAG_PGPERR | FLASH_FLAG_ERSERR);
-////	__HAL_FLASH_CLEAR_FLAG()
-//
-//
-//	/* Fill EraseInit structure*/
-//	EraseInitStruct.Banks = FLASH_BANK_BOTH;
-//	EraseInitStruct.TypeErase = FLASH_TYPEERASE_SECTORS;
-//	EraseInitStruct.Sector = localFlashParams.pageOrSector;
-//	EraseInitStruct.NbSectors =  1;
-//	EraseInitStruct.VoltageRange = localFlashParams.voltageLevel;
-////	FLASH_Erase_Sector(localFlashParams.pageOrSector, localFlashParams.voltageLevel);
-//
-//	if (HAL_FLASHEx_Erase(&EraseInitStruct, &PAGEError) != HAL_OK)
-//	{
-//		/*
-//	        Error occurred while mass erase.
-//	        User can add here some code to deal with this error.
-//	        To know the code error, user can call function 'HAL_FLASH_GetError()'
-//		 */
-//		/* Infinite loop */
-//		while (1)
-//		{
-//			/* Make LED2 blink (100ms on, 2s off) to indicate error in Erase operation */
-//			//        BSP_LED_On(LED2);
-//			//        HAL_Delay(100);
-//			//        BSP_LED_Off(LED2);
-//			HAL_Delay(2000);
-//		}
-//	}
-//	CLEAR_BIT (FLASH->CR, (FLASH_CR_SER));
-//	CLEAR_BIT (FLASH->CR, (FLASH_CR_LOCK));
-
-
 	if (localFlashParams.addDelayBeforeFlashOps)
 	{
 		HAL_Delay(2000);
 	}
-	HAL_FLASH_Unlock();
-	/* Allow Access to option bytes sector */
-	HAL_FLASH_OB_Unlock();
-	/* Get the Dual bank configuration status */
-	HAL_FLASHEx_OBGetConfig(&OBInit);
+//	HAL_FLASH_Unlock();
+//	/* Allow Access to option bytes sector */
+//	HAL_FLASH_OB_Unlock();
+//	/* Get the Dual bank configuration status */
+//	HAL_FLASHEx_OBGetConfig(&OBInit);
+	changeROP(0);
 
 	FirstSector = GetSector(localFlashParams.startAddress);
 	/* Get the number of sector to erase from 1st sector*/
-	NbOfSectors = 4;//GetSector(FLASH_USER_END_ADDR) - FirstSector + 1;
+	NbOfSectors = numberOfSectors;//GetSector(FLASH_USER_END_ADDR) - FirstSector + 1;
 	/* Fill EraseInit structure*/
 	EraseInitStruct.TypeErase     = FLASH_TYPEERASE_SECTORS;
 	EraseInitStruct.VoltageRange  = localFlashParams.voltageLevel;
@@ -208,7 +173,6 @@ uint32_t writeData(uint32_t startAddress, uint32_t* data, uint32_t data_length)
 {
 	uint32_t n;
 	HAL_FLASH_Unlock();
-//	prepFlash();
 	while (__HAL_FLASH_GET_FLAG(FLASH_FLAG_BSY) != RESET)
 	{
 		HAL_Delay(20);
@@ -227,11 +191,9 @@ uint32_t writeData(uint32_t startAddress, uint32_t* data, uint32_t data_length)
 		}
 		else
 		{
-//			uint32_t er = HAL_FLASH_GetError();
 			return (1);
 		}
 	}
-//	CLEAR_BIT (FLASH->CR, (FLASH_CR_PG));
 	return (0);
 }
 
@@ -249,14 +211,23 @@ uint32_t writeData(uint32_t startAddress, uint32_t* data, uint32_t data_length)
 //	return localEE;
 //}
 
-void reallocateData(uint32_t oldAddress, uint32_t newAddress)
+void reallocateData(uint32_t oldAddress, uint32_t newAddress, uint32_t totalNumberOfBytesToAllocate)
 {
-//	tEE_DATA localEE = readData(oldAddress);
-//	prepFlash();
-//	setFlashParams(localFlashParams.addDelayBeforeFlashOps, newAddress, localFlashParams.voltageLevel);
-//	prepFlash();
-//	uint32_t* data = &localEE;
-//	writeData(newAddress,data,sizeof(localEE));
+	uint8_t localArray[1024] = {0xFF};
+	uint16_t localMaxNumberOfArrays = totalNumberOfBytesToAllocate / 1024;
+	localFlashParams.startAddress = newAddress;
+	prepFlash(4);
+	for (int i = 0 ; i < localMaxNumberOfArrays ; i++)
+	{
+		memcpy(localArray, (uint32_t *)(oldAddress + 1024*i), 1024);
+		HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, newAddress + 1024*i, *(uint32_t *)localArray);
+		memset(localArray, 0xFF, 1024);
+	}
+	uint32_t reminderOfData = totalBytesLengthInFile - 1024 * localMaxNumberOfArrays;
+	memcpy(localArray, (uint32_t *)(oldAddress + 1024*localMaxNumberOfArrays), reminderOfData);
+	HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, newAddress + 1024*localMaxNumberOfArrays, *(uint32_t *)localArray);
+	localFlashParams.startAddress = oldAddress;
+	prepFlash(1);
 }
 
 void setFlashParams(bool addDelay,uint32_t startaddress, uint32_t voltageLevel)
@@ -264,4 +235,40 @@ void setFlashParams(bool addDelay,uint32_t startaddress, uint32_t voltageLevel)
 	localFlashParams.addDelayBeforeFlashOps = addDelay;
 	localFlashParams.startAddress = startaddress;
 	localFlashParams.voltageLevel = voltageLevel;
+}
+
+void changeROP(uint8_t ProtectionLevel)
+{
+	FLASH_OBProgramInitTypeDef OB_Init;
+	HAL_FLASH_Unlock();
+	HAL_FLASH_OB_Unlock();
+	OB_Init.OptionType = OPTIONBYTE_RDP;
+	if (ProtectionLevel == 0)
+	{
+		OB_Init.RDPLevel = OB_RDP_LEVEL_0;
+	}
+	else if (ProtectionLevel == 1)
+	{
+
+		OB_Init.RDPLevel = OB_RDP_LEVEL_1;
+	}
+	else if (ProtectionLevel == 2)
+	{
+
+		OB_Init.RDPLevel = OB_RDP_LEVEL_2;
+	}
+	else
+	{
+//		status = RDPLevel_Error;
+//		return status;
+	}
+	HAL_FLASHEx_OBProgram(&OB_Init);
+	HAL_FLASH_OB_Launch();
+	HAL_FLASH_OB_Lock();
+	HAL_FLASH_Lock();
+}
+
+crc checkCRC(uint32_t startAddress, uint32_t length)
+{
+ return 0;
 }

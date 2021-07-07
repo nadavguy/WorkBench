@@ -113,6 +113,7 @@
 "Support/Src/PopupHelper.o"
 "Support/Src/TimeHelper.o"
 "Support/Src/TypeDefs.o"
+"Support/Src/crc.o"
 "Support/Src/iap.o"
 "Support/Src/ymodem.o"
 "USB_DEVICE/App/usb_device.o"

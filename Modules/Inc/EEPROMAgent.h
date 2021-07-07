@@ -66,11 +66,12 @@ extern tFlashParams ELFlashParams;
 #endif /*STM32F7*/
 
 extern uint32_t writeData(uint32_t addr, uint32_t* data, uint32_t data_length);
-extern void prepFlash();
+extern void prepFlash(uint8_t numberOfSectors);
 extern tEE_DATA readData(uint32_t startAddress);
-extern void reallocateData(uint32_t oldAddress, uint32_t newAddress);
+extern void reallocateData(uint32_t oldAddress, uint32_t newAddress, uint32_t totalNumberOfBytesToAllocate);
 // extern void loadStoredParameters(void);
 extern void updateSafetyParametersSet(void);
+extern void changeROP(uint8_t ProtectionLevel);
 
 #ifdef STM32F7
 extern void setFlashParams(bool addDelay,uint32_t startaddress, uint32_t voltageLevel);

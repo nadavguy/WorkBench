@@ -11,6 +11,7 @@
 #include "PushButton.h"
 #include "TBSAgent.h"
 #include "UniqueImages.h"
+#include "LCD_1in8.h"
 uint8_t armButtonCycle = 0;
 uint8_t triggerButtonCycle = 0;
 
@@ -65,6 +66,7 @@ void CheckButtons(void)
 	}
 	else if ( (rcState == INIT) && (okPinState == GPIO_PIN_RESET) )
 	{
+		LCD_1IN8_SetBackLight(20000);
 		checkMMA();
 	}
 

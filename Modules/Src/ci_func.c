@@ -24,91 +24,16 @@ eCI_RESULT func_debug(void)
 
 eCI_RESULT func_updateRCVersion(void)
 {
-	uint16_t br = 1;
-	uint16_t previousPackID = 0;
-	uint16_t packID = 0;
-	uint32_t writeAddress = 0;
-	uint32_t lastPackSent = 0;
-	localFlashParams.startAddress = 0x8000000;
+//	uint32_t writeAddress = 0;
+	localFlashParams.startAddress = 0x8180000;
 	localFlashParams.voltageLevel = FLASH_VOLTAGE_RANGE_3;
-	writeAddress = localFlashParams.startAddress;
-	prepFlash();
+//	writeAddress = localFlashParams.startAddress;
+	prepFlash(1);
 	memset(usbRXArray, 0 ,2048);
 	isInfwUpdateMode = true;
 	char localString[16] = "C\r";
 	CDC_Transmit_FS((uint8_t*)localString, 16);
 	fullFrameDelay = 500;
-//	while (isInfwUpdateMode)
-//	{
-//		memset(FileReadBuffer,0,1024);
-//		br = readUSBData();
-//		if ( (br > 0) && (FileReadBuffer[0] == 'P') && (FileReadBuffer[15] == '#'))
-//		{
-//			packID = FileReadBuffer[1] * 256 + FileReadBuffer[2];
-//			if (packID == previousPackID + 1)
-//			{
-//				writeAddress = localFlashParams.startAddress + 32 * (packID -1);
-////				while (0 != writeData(writeAddress, (uint32_t *)&FileReadBuffer[3], 32))
-////				{
-////					HAL_Delay(25);
-////				}
-//				previousPackID = packID;
-//				sprintf(localString,"P%06d\r",packID);
-//			}
-//			else
-//			{
-//				sprintf(localString,"R%06d\r",previousPackID);
-//				int t = 1;
-//			}
-//			if (HAL_GetTick() - lastPackSent > 10)
-//			{
-//				uint8_t ret = CDC_Transmit_FS((uint8_t*)localString, 16);
-//				if (ret != USBD_OK)
-//
-//				{
-//					int a = 1;
-//				}
-//				lastPackSent = HAL_GetTick();
-//			}
-////			writeData(writeAddress, (uint32_t *)FileReadBuffer, br);
-//			memset(usbRXArray, 0, 64);
-////			HAL_Delay(2);
-//		}
-//		else
-//		{
-//			if ( ( br == 0 ) && (packID == previousPackID) )
-//			{
-//				sprintf(localString,"P%06d\r",previousPackID);
-//			}
-//			if (HAL_GetTick() - lastPackSent > 10)
-//			{
-//				uint8_t ret = CDC_Transmit_FS((uint8_t*)localString, 16);
-//				if (ret != USBD_OK)
-//
-//				{
-//					int a = 1;
-//				}
-//				lastPackSent = HAL_GetTick();
-//			}
-////			HAL_Delay(2);
-//			//			writeData(writeAddress, (uint32_t *)FileReadBuffer, br);
-//			memset(usbRXArray, 0, 64);
-//		}
-////		HAL_Delay(2);
-//	}
-//	{
-
-//	}
-//	HAL_UART_DMAStop(&huart1);
-//
-
-//	SerialDownload(true);
-//
-//	if(HAL_UART_Receive_DMA(&huart1, (uint8_t *)&aRxBufferCh1, 1 ) != HAL_OK)
-//	{
-//
-//	} //  Error_Handler();
-	//HAL_FLASH_Lock(); Is it realy needed?
 	return CI_OK;
 }
 
@@ -440,6 +365,27 @@ eCI_RESULT func_changeRCMode(void)
 	return CI_OK;
 }
 
+eCI_RESULT func_deleteFile(void)
+{
+
+	if (get_param_count() > 0)
+	{
+		char *fn = get_param_str(0);
+		FRESULT ret = f_unlink(fn);
+		if (ret == FR_OK)
+		{
+			sprintf(terminalBuffer, "File %s deleted", get_param_str(0));
+			logData(terminalBuffer, false, false, false);
+		}
+		else
+		{
+			sprintf(terminalBuffer, "File %s was not deleted", get_param_str(0));
+			logData(terminalBuffer, false, false, false);
+		}
+	}
+	return CI_NO_UART_ACK;
+}
+
 eCI_RESULT func_dir(void)
 {
     FILINFO fno1;
@@ -466,7 +412,7 @@ eCI_RESULT func_fmt(void)
 	f_sync(&USERFile);
 	f_close(&USERFile);
 
-	uint8_t ret = BSP_QSPI_Erase_Chip();
+	BSP_QSPI_Erase_Chip();
 	fileSystemInit();
 	createNewLogFile();
 
@@ -511,6 +457,7 @@ functionsList cases [] =
 		{ "fwu", func_bootloaderMode},
 		{ "sfcc", func_showChargeCycles},
 		{ "crcm", func_changeRCMode},
+		{ "del", func_deleteFile},
 		{ "dir" , func_dir },
 		{ "fmt" , func_fmt }
 };

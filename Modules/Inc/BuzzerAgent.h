@@ -14,7 +14,7 @@
 typedef struct sBuzzer_Pattern
 {
     uint8_t patternLength;
-    uint8_t patternOnOff[16];
+    uint16_t patternOnOff[16];
     uint16_t patternDuration[16];
     bool isSingleCycle;
     uint8_t id;

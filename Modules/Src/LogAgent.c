@@ -86,6 +86,7 @@ bool createNewLogFile(void)
     {
     	//TODO: what if br is not 6
     	// recreate index, etc.
+    	previousLogIndex = 0;
     }
     FS_ret = f_close(&USERFile);
     FS_ret = f_open(&USERFile, "Index.txt", FA_OPEN_EXISTING | FA_WRITE);

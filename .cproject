@@ -47,7 +47,7 @@
                             							
                             <option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.target_board.856453511" name="Board" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.target_board" useByScannerDiscovery="false" value="genericBoard" valueType="string"/>
                             							
-                            <option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.defaults.1647712031" name="Defaults" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.defaults" useByScannerDiscovery="false" value="com.st.stm32cube.ide.common.services.build.inputs.revA.1.0.4 || Debug || true || Executable || com.st.stm32cube.ide.mcu.gnu.managedbuild.option.toolchain.value.workspace || STM32F777VITx || 0 || 0 || arm-none-eabi- || ${gnu_tools_for_stm32_compiler_path} || ../FATFS/App | ../USB_DEVICE/Target | ../Drivers/CMSIS/Include | ../Drivers/CMSIS/Device/ST/STM32F7xx/Include | ../Core/Inc | ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc | ../USB_DEVICE/App | ../Drivers/STM32F7xx_HAL_Driver/Inc | ../FATFS/Target | ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc | ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy | ../Middlewares/Third_Party/FatFs/src ||  ||  || STM32F777xx | USE_HAL_DRIVER ||  || Drivers | Core/Startup | BlueNRG_2 | Middlewares | Core | FATFS | USB_DEVICE ||  ||  || ${workspace_loc:/${ProjName}/STM32F777VITX_FLASH.ld} || true || NonSecure ||  || secure_nsclib.o ||  || None" valueType="string"/>
+                            <option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.defaults.1647712031" name="Defaults" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.defaults" useByScannerDiscovery="false" value="com.st.stm32cube.ide.common.services.build.inputs.revA.1.0.4 || Debug || true || Executable || com.st.stm32cube.ide.mcu.gnu.managedbuild.option.toolchain.value.workspace || STM32F777VITx || 0 || 0 || arm-none-eabi- || ${gnu_tools_for_stm32_compiler_path} || ../Core/Inc | ../FATFS/Target | ../FATFS/App | ../USB_DEVICE/App | ../USB_DEVICE/Target | ../Drivers/STM32F7xx_HAL_Driver/Inc | ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy | ../Middlewares/Third_Party/FatFs/src | ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc | ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc | ../Drivers/CMSIS/Device/ST/STM32F7xx/Include | ../Drivers/CMSIS/Include ||  ||  || STM32F777xx | USE_HAL_DRIVER ||  || Drivers | Core/Startup | BlueNRG_2 | Middlewares | Core | FATFS | USB_DEVICE ||  ||  || ${workspace_loc:/${ProjName}/STM32F777VITX_FLASH.ld} || true || NonSecure ||  || secure_nsclib.o ||  || None" valueType="string"/>
                             							
                             <option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.nanoprintffloat.1990249090" name="Use float with printf from newlib-nano (-u _printf_float)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.nanoprintffloat" useByScannerDiscovery="false" value="true" valueType="boolean"/>
                             							
@@ -178,30 +178,6 @@
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Hardware/MSC/App}&quot;"/>
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Hardware/MSC/Class/Inc}&quot;"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="../FATFS/App"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="../USB_DEVICE/Target"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="../Drivers/CMSIS/Include"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="../Drivers/CMSIS/Device/ST/STM32F7xx/Include"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="../Core/Inc"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="../USB_DEVICE/App"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="../Drivers/STM32F7xx_HAL_Driver/Inc"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="../FATFS/Target"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="../Middlewares/ST/STM32_USB_Device_Library/Core/Inc"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="../Middlewares/Third_Party/FatFs/src"/>
                                     								
                                 </option>
                                 								
@@ -327,7 +303,7 @@
                             							
                             <option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.target_board.461896377" name="Board" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.target_board" useByScannerDiscovery="false" value="genericBoard" valueType="string"/>
                             							
-                            <option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.defaults.1802845218" name="Defaults" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.defaults" useByScannerDiscovery="false" value="com.st.stm32cube.ide.common.services.build.inputs.revA.1.0.4 || Release || false || Executable || com.st.stm32cube.ide.mcu.gnu.managedbuild.option.toolchain.value.workspace || STM32F777VITx || 0 || 0 || arm-none-eabi- || ${gnu_tools_for_stm32_compiler_path} || ../FATFS/App | ../USB_DEVICE/Target | ../Drivers/CMSIS/Include | ../Drivers/CMSIS/Device/ST/STM32F7xx/Include | ../Core/Inc | ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc | ../USB_DEVICE/App | ../Drivers/STM32F7xx_HAL_Driver/Inc | ../FATFS/Target | ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc | ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy | ../Middlewares/Third_Party/FatFs/src ||  ||  || STM32F777xx | USE_HAL_DRIVER ||  || Drivers | Core/Startup | BlueNRG_2 | Middlewares | Core | FATFS | USB_DEVICE ||  ||  || ${workspace_loc:/${ProjName}/STM32F777VITX_FLASH.ld} || true || NonSecure ||  || secure_nsclib.o ||  || None" valueType="string"/>
+                            <option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.defaults.1802845218" name="Defaults" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.defaults" useByScannerDiscovery="false" value="com.st.stm32cube.ide.common.services.build.inputs.revA.1.0.4 || Release || false || Executable || com.st.stm32cube.ide.mcu.gnu.managedbuild.option.toolchain.value.workspace || STM32F777VITx || 0 || 0 || arm-none-eabi- || ${gnu_tools_for_stm32_compiler_path} || ../Core/Inc | ../FATFS/Target | ../FATFS/App | ../USB_DEVICE/App | ../USB_DEVICE/Target | ../Drivers/STM32F7xx_HAL_Driver/Inc | ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy | ../Middlewares/Third_Party/FatFs/src | ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc | ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc | ../Drivers/CMSIS/Device/ST/STM32F7xx/Include | ../Drivers/CMSIS/Include ||  ||  || STM32F777xx | USE_HAL_DRIVER ||  || Drivers | Core/Startup | BlueNRG_2 | Middlewares | Core | FATFS | USB_DEVICE ||  ||  || ${workspace_loc:/${ProjName}/STM32F777VITX_FLASH.ld} || true || NonSecure ||  || secure_nsclib.o ||  || None" valueType="string"/>
                             							
                             <targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="com.st.stm32cube.ide.mcu.gnu.managedbuild.targetplatform.392754707" isAbstract="false" osList="all" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.targetplatform"/>
                             							
@@ -456,30 +432,6 @@
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Hardware/MSC/App}&quot;"/>
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Hardware/MSC/Class/Inc}&quot;"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="../FATFS/App"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="../USB_DEVICE/Target"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="../Drivers/CMSIS/Include"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="../Drivers/CMSIS/Device/ST/STM32F7xx/Include"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="../Core/Inc"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="../USB_DEVICE/App"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="../Drivers/STM32F7xx_HAL_Driver/Inc"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="../FATFS/Target"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="../Middlewares/ST/STM32_USB_Device_Library/Core/Inc"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="../Middlewares/Third_Party/FatFs/src"/>
                                     								
                                 </option>
                                 								

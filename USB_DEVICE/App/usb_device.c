@@ -64,7 +64,8 @@ uint16_t totalPackID = 0;
 
 uint32_t lastUSBDataRead = 0;
 uint32_t lastPacketRequest = 0;
-
+uint32_t totalBytesLengthInFile = 0;
+uint32_t receivedCRC = 0;
 /* USER CODE END 0 */
 
 /*
@@ -102,11 +103,15 @@ uint16_t readUSBData(void)
 		else if ( (usbRXArray[0] == 'T') && (usbRXArray[35] == '#') && (usbRXArray[36] == '\r') && (isInfwUpdateMode))
 		{
 			totalPackID = usbRXArray[1] * 256 + usbRXArray[2];
-//			if (totalPackID != 0)
-//			{
-//				char localString[16] = "C\r";
-//				CDC_Transmit_FS((uint8_t*)localString, 16);
-//			}
+			totalBytesLengthInFile = usbRXArray[4] * 65536 + usbRXArray[5] * 256 + usbRXArray[6];
+			sprintf(terminalBuffer,"Total Number of Bytes in file: %d", totalBytesLengthInFile);
+			logData(terminalBuffer, false, false, false);
+		}
+		else if ( (usbRXArray[0] == 'C') && (usbRXArray[1] == 'R') && (usbRXArray[2] == 'C') &&
+				(usbRXArray[35] == '#') && (usbRXArray[36] == '\r') && (isInfwUpdateMode))
+		{
+			receivedCRC = 0xff000000 * usbRXArray[3] + 0x00ff0000 * usbRXArray[4] +
+					0x0000ff00 * usbRXArray[5] + 0x000000ff * usbRXArray[6];
 		}
 		else if ( (usbRXArray[0] == 'P') && (usbRXArray[35] == '#') && (usbRXArray[36] == '\r') && (isInfwUpdateMode))
 		{
@@ -165,7 +170,7 @@ uint16_t readUSBData(void)
 			sprintf(localString,"R%06d\r",previousPackID);
 			PCD_HandleTypeDef *hpcd = hUsbDeviceFS.pData;
 			USB_FlushTxFifo(hpcd->Instance, 15);
-			uint8_t ret = CDC_Transmit_FS((uint8_t*)localString, 16);
+			CDC_Transmit_FS((uint8_t*)localString, 16);
 			lastPacketRequest = HAL_GetTick();
 
 		}
@@ -176,7 +181,7 @@ uint16_t readUSBData(void)
 			sprintf(localString,"P%06d\r",packID);
 			PCD_HandleTypeDef *hpcd = hUsbDeviceFS.pData;
 			USB_FlushTxFifo(hpcd->Instance, 15);
-			uint8_t ret = CDC_Transmit_FS((uint8_t*)localString, 16);
+			CDC_Transmit_FS((uint8_t*)localString, 16);
 			lastPacketRequest = HAL_GetTick();
 		}
 
@@ -187,9 +192,21 @@ uint16_t readUSBData(void)
 		{
 			if (packID == totalPackID)
 			{
+				uint32_t localCalcCRC = F_CRC_CalculaCheckSumFromFlash(localFlashParams.startAddress, totalBytesLengthInFile);
+				if (localCalcCRC == receivedCRC)
+				{
+					sprintf(terminalBuffer,"CRCs are identical");
+					logData(terminalBuffer, false, false, false);
+				}
+				else
+				{
+					sprintf(terminalBuffer,"CRCs are NOT identical");
+					logData(terminalBuffer, false, false, false);
+				}
 				isInfwUpdateMode = false;
 				fullFrameDelay = 5000;
 				currentSmaStatus.smaState = UPDATE;
+//				changeROP(1);
 			}
 		}
 	}
