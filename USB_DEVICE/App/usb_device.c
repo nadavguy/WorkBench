@@ -125,10 +125,16 @@ uint16_t readUSBData(void)
 			{
 				writeAddress = localFlashParams.startAddress + 32 * (packID -1);
 				uint32_t write_ret = writeData(writeAddress, (uint32_t *)&usbRXArray[3], 32);
-				while (0 != write_ret)
+				uint8_t retriesCount = 0;
+				while ( (0 != write_ret) && (retriesCount <= 5) )
 				{
 					HAL_Delay(5);
 					write_ret = writeData(writeAddress, (uint32_t *)&usbRXArray[3], 32);
+					retriesCount++;
+				}
+				if (retriesCount > 0)
+				{
+					int c = 1;
 				}
 				previousPackID = packID;
 				sprintf(localString,"P%06d\r",packID);
@@ -175,7 +181,17 @@ uint16_t readUSBData(void)
 
 		}
 		else if ( (usbBytesRead == 0) && (isInfwUpdateMode) && (previousPackID >= 0) && (previousPackID == packID)
-				&& (packID == 0) && (HAL_GetTick() - lastPacketRequest > 3000) )
+				&& (packID == 0) && (HAL_GetTick() - lastPacketRequest > 3000) && (totalPackID == 0) )
+		{
+			char localString[16] = "";
+			sprintf(localString,"T%06d\r",packID);
+			PCD_HandleTypeDef *hpcd = hUsbDeviceFS.pData;
+			USB_FlushTxFifo(hpcd->Instance, 15);
+			CDC_Transmit_FS((uint8_t*)localString, 16);
+			lastPacketRequest = HAL_GetTick();
+		}
+		else if ( (usbBytesRead == 0) && (isInfwUpdateMode) && (previousPackID >= 0) && (previousPackID == packID)
+				&& (packID == 0) && (HAL_GetTick() - lastPacketRequest > 3000) && (totalPackID != 0))
 		{
 			char localString[16] = "";
 			sprintf(localString,"P%06d\r",packID);
@@ -190,7 +206,7 @@ uint16_t readUSBData(void)
 		lastUSBDataRead = HAL_GetTick();
 		if ( (isInfwUpdateMode) && (totalPackID != 0) )
 		{
-			if (packID == totalPackID)
+			if ( (packID == totalPackID) && (packID != 0) )
 			{
 				uint32_t localCalcCRC = F_CRC_CalculaCheckSumFromFlash(localFlashParams.startAddress, totalBytesLengthInFile);
 				if (localCalcCRC == receivedCRC)
