@@ -65,7 +65,7 @@ static HAL_StatusTypeDef ReceivePacket(uint8_t *p_data, uint32_t *p_length, uint
 
   }
 //  char1 = usbRXArray[0];
-  if (status == USBD_OK) //HAL_OK
+  if (status == HAL_OK) //HAL_OK
   {
     switch (char1)
     {

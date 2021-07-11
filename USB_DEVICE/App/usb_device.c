@@ -104,7 +104,7 @@ uint16_t readUSBData(void)
 		{
 			totalPackID = usbRXArray[1] * 256 + usbRXArray[2];
 			totalBytesLengthInFile = usbRXArray[4] * 65536 + usbRXArray[5] * 256 + usbRXArray[6];
-			sprintf(terminalBuffer,"Total Number of Bytes in file: %d", totalBytesLengthInFile);
+			sprintf(terminalBuffer,"Total Number of Bytes in file: %ld", totalBytesLengthInFile);
 			logData(terminalBuffer, false, false, false);
 		}
 		else if ( (usbRXArray[0] == 'C') && (usbRXArray[1] == 'R') && (usbRXArray[2] == 'C') &&
@@ -134,7 +134,7 @@ uint16_t readUSBData(void)
 				}
 				if (retriesCount > 0)
 				{
-					int c = 1;
+//					int c = 1;
 				}
 				previousPackID = packID;
 				sprintf(localString,"P%06d\r",packID);
@@ -151,7 +151,7 @@ uint16_t readUSBData(void)
 			}
 			PCD_HandleTypeDef *hpcd = hUsbDeviceFS.pData;
 			USB_FlushTxFifo(hpcd->Instance, 15);
-			uint8_t ret = CDC_Transmit_FS((uint8_t*)localString, 16);
+			CDC_Transmit_FS((uint8_t*)localString, 16);
 			memset(usbRXArray, 0, APP_RX_DATA_SIZE);
 			usbBytesRead = 0;
 		}
