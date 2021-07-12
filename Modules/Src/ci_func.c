@@ -25,7 +25,7 @@ eCI_RESULT func_debug(void)
 eCI_RESULT func_updateRCVersion(void)
 {
 //	uint32_t writeAddress = 0;
-	localFlashParams.startAddress = 0x8180000;
+	localFlashParams.startAddress = 0x08180000;
 	localFlashParams.voltageLevel = FLASH_VOLTAGE_RANGE_3;
 //	writeAddress = localFlashParams.startAddress;
 	prepFlash(1);

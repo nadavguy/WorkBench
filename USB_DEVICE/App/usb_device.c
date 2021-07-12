@@ -115,7 +115,11 @@ uint16_t readUSBData(void)
 			rotator = totalBytesLengthInFile % 8;
 			if (rotator == 0)
 			{
-				rotator = (totalBytesLengthInFile + 1) % 7;
+				rotator = (totalBytesLengthInFile + 1) % 5;
+			}
+			if (rotator == 0)
+			{
+				rotator = 4;
 			}
 			sprintf(terminalBuffer,"Sector Used: %d", rotator);
 			logData(terminalBuffer, false, false, false);
@@ -141,9 +145,9 @@ uint16_t readUSBData(void)
 //				memcpy(decryptedArray, &usbRXArray[3], 32);
 				for (int i = 0; i < 32 ; i++)
 				{
-					uint8_t secondLeftRotate = lrotate(usbRXArray[i + 3], 8 - rotator);
+					uint8_t secondLeftRotate = rrotate(usbRXArray[i + 3], 8 - rotator);
 					uint8_t afterKey = (uint8_t)(secondLeftRotate ^ phrase[decryptionCounter]);
-					uint8_t firstLeftRotation = lrotate(afterKey, rotator);
+					uint8_t firstLeftRotation = rrotate(afterKey, rotator);
 					decryptedArray[i] = firstLeftRotation;
 					decryptionCounter++;
 					if (decryptionCounter > 255)
@@ -221,7 +225,7 @@ uint16_t readUSBData(void)
 			previousPackID = packID;
 		}
 		else if ( (usbBytesRead == 0) && (isInfwUpdateMode) && (previousPackID >= 0) && (previousPackID == packID)
-				&& (packID == 0) && (HAL_GetTick() - lastPacketRequest > 3000) && (totalPackID == 0) )
+				&& (packID == 0) && (HAL_GetTick() - lastPacketRequest > 100) && (totalPackID == 0) )
 		{
 			char localString[16] = "";
 			sprintf(localString,"T%06d\r",packID);
@@ -231,7 +235,7 @@ uint16_t readUSBData(void)
 			lastPacketRequest = HAL_GetTick();
 		}
 		else if ( (usbBytesRead == 0) && (isInfwUpdateMode) && (previousPackID >= 0) && (previousPackID == packID)
-				&& (packID == 0) && (HAL_GetTick() - lastPacketRequest > 3000) && (totalPackID != 0))
+				&& (packID == 0) && (HAL_GetTick() - lastPacketRequest > 100) && (totalPackID != 0))
 		{
 			char localString[16] = "";
 			sprintf(localString,"P%06d\r",packID);
@@ -262,7 +266,7 @@ uint16_t readUSBData(void)
 					ee_save1();
 					func_endUpdatePhase();
 				}
-				else if ((localCalcCRC != receivedCRC) && (retriesCounter == 0))
+				else
 				{
 					localFlashParams.startAddress = 0x8180000;
 					prepFlash(1);
@@ -271,23 +275,16 @@ uint16_t readUSBData(void)
 					packID = 1;
 					previousPackID = 0;
 					decryptionCounter = 0;
-					char localString[16] = "";
-					sprintf(localString,"R%06d\r",packID);
-					HAL_Delay(5);
-
-					PCD_HandleTypeDef *hpcd = hUsbDeviceFS.pData;
-					USB_FlushTxFifo(hpcd->Instance, 15);
-					CDC_Transmit_FS((uint8_t*)localString, 16);
-					memset(usbRXArray, 0, APP_RX_DATA_SIZE);
-					usbBytesRead = 0;
-					retriesCounter++;
-				}
-				else if ((localCalcCRC != receivedCRC) && (retriesCounter > 0))
-				{
-					localFlashParams.startAddress = 0x8180000;
-					prepFlash(1);
-					sprintf(terminalBuffer,"CRCs are NOT identical after second try");
-					logData(terminalBuffer, false, false, false);
+//					char localString[16] = "";
+//					sprintf(localString,"R%06d\r",packID);
+//					HAL_Delay(5);
+//
+//					PCD_HandleTypeDef *hpcd = hUsbDeviceFS.pData;
+//					USB_FlushTxFifo(hpcd->Instance, 15);
+//					CDC_Transmit_FS((uint8_t*)localString, 16);
+//					memset(usbRXArray, 0, APP_RX_DATA_SIZE);
+//					usbBytesRead = 0;
+//					retriesCounter++;
 				}
 			}
 		}

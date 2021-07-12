@@ -136,6 +136,11 @@ void prepFlash(uint8_t numberOfSectors)
 //	/* Get the Dual bank configuration status */
 //	HAL_FLASHEx_OBGetConfig(&OBInit);
 	changeROP(0);
+	HAL_FLASH_Unlock();
+	/* Allow Access to option bytes sector */
+	HAL_FLASH_OB_Unlock();
+	/* Get the Dual bank configuration status */
+	HAL_FLASHEx_OBGetConfig(&OBInit);
 
 	FirstSector = GetSector(localFlashParams.startAddress);
 	/* Get the number of sector to erase from 1st sector*/
@@ -220,12 +225,14 @@ void reallocateData(uint32_t oldAddress, uint32_t newAddress, uint32_t totalNumb
 	for (int i = 0 ; i < localMaxNumberOfArrays ; i++)
 	{
 		memcpy(localArray, (uint32_t *)(oldAddress + 1024*i), 1024);
-		HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, newAddress + 1024*i, *(uint32_t *)localArray);
+		writeData(newAddress + 1024*i, (uint32_t *)localArray, 1024);
+//		HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, newAddress + 1024*i, *(uint32_t *)localArray);
 		memset(localArray, 0xFF, 1024);
 	}
 	uint32_t reminderOfData = totalBytesLengthInFile - 1024 * localMaxNumberOfArrays;
 	memcpy(localArray, (uint32_t *)(oldAddress + 1024*localMaxNumberOfArrays), reminderOfData);
-	HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, newAddress + 1024*localMaxNumberOfArrays, *(uint32_t *)localArray);
+//	HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, newAddress + 1024*localMaxNumberOfArrays, *(uint32_t *)localArray);
+	writeData(newAddress + 1024*localMaxNumberOfArrays, (uint32_t *)localArray, reminderOfData);
 	localFlashParams.startAddress = oldAddress;
 	prepFlash(1);
 }
