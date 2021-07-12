@@ -223,10 +223,10 @@ crc F_CRC_CalculaCheckSum(uint8_t const AF_Datos[], uint16_t VF_nBytes)
 
 }
 
-crc F_CRC_CalculaCheckSumFromFlash(uint32_t startAddress, uint16_t VF_nBytes)
+crc F_CRC_CalculaCheckSumFromFlash(uint32_t startAddress, uint32_t VF_nBytes)
 {
     crc	VP_CRCTableValue = INITIAL_VALUE;
-    int16_t VP_bytes = 0;
+    int32_t VP_bytes = 0;
     uint32_t addressPointer = startAddress;
 
     for (VP_bytes = 0; VP_bytes < VF_nBytes; VP_bytes++)
@@ -234,7 +234,9 @@ crc F_CRC_CalculaCheckSumFromFlash(uint32_t startAddress, uint16_t VF_nBytes)
         #if (REVERSED_DATA == TRUE)
             VP_CRCTableValue = (VP_CRCTableValue >> 8) ^ F_CRC_ObtenValorDeTabla(((uint8_t)(VP_CRCTableValue & 0xFF)) ^ addressPointer);
         #else
-            VP_CRCTableValue = (VP_CRCTableValue << 8) ^ F_CRC_ObtenValorDeTabla(((uint8_t)((VP_CRCTableValue >> (WIDTH - 8)) & 0xFF)) ^ addressPointer);
+//            VP_CRCTableValue = (VP_CRCTableValue << 8) ^ F_CRC_ObtenValorDeTabla(((uint8_t)((VP_CRCTableValue >> (WIDTH - 8)) & 0xFF)) ^ addressPointer);
+            VP_CRCTableValue = (VP_CRCTableValue << 8) ^ F_CRC_ObtenValorDeTabla( (uint8_t)((VP_CRCTableValue >> 8)^(0xFF & *(uint32_t *)addressPointer )));
+
         #endif
             addressPointer++;
     }

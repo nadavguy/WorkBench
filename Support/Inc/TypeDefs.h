@@ -87,6 +87,8 @@ typedef int16_t* pS16;
 typedef uint32_t* pU32;
 typedef int32_t* pS32;
 typedef float* pFLOAT;
+
+extern uint8_t phrase[256];
 //-----------------------------------------------------------------------------
 
 uint32_t ee_validate_data(eEEV_DATA_TYPE data_type, void* value_ptr, void* eev_ptr);

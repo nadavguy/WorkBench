@@ -48,6 +48,8 @@ void Serial_PutString6(uint8_t *p_string);
 HAL_StatusTypeDef Serial_PutByte(uint8_t param);
 HAL_StatusTypeDef Serial_PutByte6(uint8_t param);
 extern uint32_t SerialDownload(bool move);
+extern unsigned char lrotate(unsigned char val, int n);
+extern unsigned char rrotate(unsigned char val, int n);
 
 
 #endif /* INC_COMMON_H_ */

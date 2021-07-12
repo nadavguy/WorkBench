@@ -106,7 +106,7 @@ crc-64-jones            0xAD93D23594C935A9	True        0xFFFFFFFFFFFFFFFF	0x0000
 
 
 //Indicate here the CRC algorithm that you want to use
-#define CRC_32
+#define CRC_CCITT
 
 //Indicate here if you want to do the calculation using a LookupTable
 #define CALCULATE_LOOKUPTABLE   FALSE
@@ -215,7 +215,7 @@ typedef uint64_t crc;
     void F_CRC_InicializaTabla(void);
 #endif
 crc F_CRC_CalculaCheckSum(uint8_t const AF_Datos[], uint16_t VF_nBytes);
-extern crc F_CRC_CalculaCheckSumFromFlash(uint32_t startAddress, uint16_t VF_nBytes);
+extern crc F_CRC_CalculaCheckSumFromFlash(uint32_t startAddress, uint32_t VF_nBytes);
 
 
 
