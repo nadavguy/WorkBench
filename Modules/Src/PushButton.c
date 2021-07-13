@@ -80,7 +80,7 @@ void CheckButtons(void)
 	{
 		return;
 	}
-	else if ((isScreenBrightFull) && (isChargingMode))
+	else if ((isScreenBrightFull) && (isChargingMode) && (!shouldRenderPopup))
 	{
 		return;
 	}
