@@ -70,19 +70,21 @@ void measureVoltages(bool forceMeasurement)
 			if (currentVoltages[1] < 2)
 			{
 				isChargingMode = true;
-				if ( (HAL_GetTick() - startChargeTime > 45 * 60 * 1000) && (!didCountChargeCycle) && (didCountChargeCycle >= 4.1) )
+				if ( (HAL_GetTick() - startChargeTime > 45 * 60 * 1000) && (!didCountChargeCycle) && (currentVoltages[2] >= 4.1) )
 				{
 					didCountChargeCycle = true;
 					ee.fullChargeCycles = ee.fullChargeCycles + 1;
+					currentVoltages[2] = 4.2;
 					ee_save1();
 				}
 			}
 			else
 			{
 				isChargingMode = false;
-				didCountChargeCycle = true;
+				didCountChargeCycle = false;
 				startChargeTime = HAL_GetTick();
 				LCD_1IN8_SetBackLight(ee.backLight * 2000);
+				isScreenBrightFull = true;
 			}
 		}
 	}

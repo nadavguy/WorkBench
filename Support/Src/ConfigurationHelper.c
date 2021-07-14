@@ -16,6 +16,8 @@ void printRCConfiguration(bool toDisplayOnly)
     logData(terminalBuffer, false, toDisplayOnly, false);
     sprintf(terminalBuffer,"Unit Unique ID.................................: %ld %ld %ld\3",UID1, UID2, UID3);
     logData(terminalBuffer, false, toDisplayOnly, false);
+    sprintf(terminalBuffer,"Last Paired Device ID..........................: %s\3",ee.lastPairedDevice);
+    logData(terminalBuffer, false, toDisplayOnly, false);
     sprintf(terminalBuffer,"Battery voltage: %1.2f V\3", batteryVoltage);
     logData(terminalBuffer, false, toDisplayOnly, false);
 

@@ -25,6 +25,7 @@ typedef struct sEE_DATA
 	float configuration;
 	uint16_t fullChargeCycles;
 	uint8_t rcMode;
+	char lastPairedDevice[16];
 }tEE_DATA;
 
 

@@ -491,6 +491,8 @@ bool parseTBSMessage(void)
 			{
 				isTailIDAlreadyReceived = true;
 				sprintf(terminalBuffer,"Received Tail-ID: %s", safeAirTailID);
+				memcpy(ee.lastPairedDevice,safeAirTailID,11);
+				ee_save1();
 				logData(terminalBuffer, false, false, false);
 			}
 			lastReceivedCRSFMessage = HAL_GetTick();

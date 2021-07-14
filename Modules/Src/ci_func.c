@@ -386,6 +386,14 @@ eCI_RESULT func_deleteFile(void)
 	return CI_NO_UART_ACK;
 }
 
+eCI_RESULT func_showLastTailID(void)
+{
+
+	sprintf(terminalBuffer, "Last TailID:  %s\3", ee.lastPairedDevice);
+	logData(terminalBuffer, false, true, false);
+	return CI_NO_UART_ACK;
+} //
+
 eCI_RESULT func_dir(void)
 {
     FILINFO fno1;
@@ -458,6 +466,7 @@ functionsList cases [] =
 		{ "sfcc", func_showChargeCycles},
 		{ "crcm", func_changeRCMode},
 		{ "del", func_deleteFile},
+		{ "slti", func_showLastTailID},
 		{ "dir" , func_dir },
 		{ "fmt" , func_fmt }
 };

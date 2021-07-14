@@ -79,7 +79,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.430;
+float buildID = 1.440;
 
 SYSTEMState rcState = PREINIT;
 
@@ -438,15 +438,15 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
-void UpdateScreenBrightness(bool isScreenBrightFull)
+void UpdateScreenBrightness(bool screenBrightfullnessLevel)
 {
-	if ( (isScreenBrightFull) && (HAL_GetTick() - lastAnyButtonPress > 120000) )
+	if ( (screenBrightfullnessLevel) && (HAL_GetTick() - lastAnyButtonPress > 120000) )
 	{
 		LCD_1IN8_SetBackLight(2000);
 		//		LCD_1IN8_SetBackLight(ee.backLight);
 		isScreenBrightFull = false;
 	}
-	else if ( (!isScreenBrightFull)
+	else if ( (!screenBrightfullnessLevel)
 			&& (HAL_GetTick() - lastAnyButtonPress < 2000) )
 	{
 		LCD_1IN8_SetBackLight(ee.backLight * 2000);

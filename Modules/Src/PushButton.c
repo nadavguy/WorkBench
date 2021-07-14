@@ -40,6 +40,7 @@ uint32_t lastOkButtonUnpress = 0;
 uint32_t okButtonPressDuration = 0;
 uint32_t lastAnyButtonPress = 0;
 uint32_t lastMUXCheck = 0;
+uint32_t buttonPressCounter = 0;
 
 
 bool armButtonIsHigh = true;
@@ -73,14 +74,19 @@ void CheckButtons(void)
 	if ( (armPinState == GPIO_PIN_RESET) || (triggerPinState == GPIO_PIN_RESET) || (upPinState == GPIO_PIN_RESET)
 			|| (downPinState == GPIO_PIN_RESET) || (okPinState == GPIO_PIN_RESET) )
 	{
-		lastAnyButtonPress = HAL_GetTick();
+		buttonPressCounter++;
+		if (buttonPressCounter > 10)
+		{
+			lastAnyButtonPress = HAL_GetTick();
+			buttonPressCounter= 0 ;
+		}
 	}
 
 	if(!isScreenBrightFull)
 	{
 		return;
 	}
-	else if ((isScreenBrightFull) && (isChargingMode) && (!shouldRenderPopup))
+	else if ((isScreenBrightFull) && (isChargingMode) && (!isPopupDisplayed))
 	{
 		return;
 	}
