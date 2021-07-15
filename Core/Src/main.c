@@ -79,7 +79,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.440;
+float buildID = 1.450;
 
 SYSTEMState rcState = PREINIT;
 
@@ -124,7 +124,7 @@ tCURSOR_DATA currentCursorPosition;
 
 tWarning displayWarning;
 
-float batteryVoltage = 4.2;
+float batteryVoltage = 4.3;
 float chargingMaxValue = 0;
 
 unsigned int BytesWritten = 0;
@@ -327,7 +327,7 @@ int main(void)
 				Paint_DrawImage(gImage_ChargingMode, ChargingModeImageX, ChargingModeImageY, 43, 86);
 				char localText[12] = "";
 				chargingMaxValue = fmax(chargingMaxValue, batteryVoltage);
-				int8_t localPercent = (int8_t)(chargingMaxValue * (142.847) - 500);
+				int8_t localPercent = (int8_t)(chargingMaxValue * (125) - 437.5);
 				if (previousBatteryCharge > localPercent)
 				{
 					previousBatteryCharge = localPercent;
