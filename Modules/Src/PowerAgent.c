@@ -104,8 +104,8 @@ void measureVoltages(bool forceMeasurement)
 			isChargingMode = false;
 			didCountChargeCycle = false;
 			startChargeTime = HAL_GetTick();
-			LCD_1IN8_SetBackLight(ee.backLight * 2000);
-			isScreenBrightFull = true;
+//			LCD_1IN8_SetBackLight(ee.backLight * 2000);
+//			isScreenBrightFull = true;
 		}
 	}
 }

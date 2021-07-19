@@ -79,7 +79,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.460;
+float buildID = 1.470;
 
 SYSTEMState rcState = PREINIT;
 
@@ -522,6 +522,9 @@ void updateRCState(void)
 		shouldRedrawSignalStrengthIcon = true;
 		tbsLink = NOSIGNAL;
 		isTBSDisconnected = true;
+		rcLinkStatus.DownlinkPSRLQ = 0;
+		rcLinkStatus.UplinkRSSIAnt1 = 0xFF;
+		rcLinkStatus.UplinkRSSIAnt2 = 0xFF;
 		sprintf(terminalBuffer,"No connection with TBS TX");
 		logData(terminalBuffer, true, false, false);
 	}
@@ -532,6 +535,7 @@ void updateRCState(void)
 			isNoSignal = true;
 			shouldRedrawSignalStrengthIcon = true;
 			tbsLink = NOSIGNAL;
+			rcLinkStatus.DownlinkPSRLQ = 0;
 			logRCLinkStatus(true);
 		}
 		//Show no signal icon
