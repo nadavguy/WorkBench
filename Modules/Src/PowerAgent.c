@@ -11,43 +11,46 @@
 #include "LCD_1in8.h"
 
 uint8_t previousBatteryCharge = 0;
+uint8_t cyclesAboveThresholdCounter = 0;
 
 uint16_t currentMeasurementValue[3] = {0};
 
 uint32_t lastVoltageMeasurement = 0;
 uint32_t startChargeTime = 0;
 uint32_t lastChangeInMeasurement = 0;
+uint32_t ThresholdReachedTime = 0;
 
 float currentVoltages[3] = {3.3, 5 , 4.2};
 float previousVoltages[3] = {3.3, 5 , 4.2};
+float ChargerMaxChargingVoltage = 4.25;
+
 bool isChargingMode = false;
 bool didCountChargeCycle = false;
+bool firstMeasurementAboveThreshold = false;
 
 void measureVoltages(bool forceMeasurement)
 {
 	uint32_t localDeltaTime = 60000;
 	if (isChargingMode)
 	{
-		localDeltaTime = 2000;
+		localDeltaTime = 5 * 60 * 1000;
 	}
+
+	HAL_ADC_Start_IT(&hadc1);
+	HAL_ADC_Start_IT(&hadc2);
+	currentMeasurementValue[0] = HAL_ADC_GetValue(&hadc1);
+	currentMeasurementValue[1] = HAL_ADC_GetValue(&hadc2);
+	currentVoltages[0] = (float)(currentMeasurementValue[0] * 2.0 / ADCRES) * MCURefVoltage;
+	currentVoltages[1] = (float)(currentMeasurementValue[1] * 2.0 / ADCRES) * MCURefVoltage;
+
+
 	if ( (HAL_GetTick() - lastVoltageMeasurement > localDeltaTime) || (lastVoltageMeasurement == 0) || (forceMeasurement) )
 	{
 		HAL_GPIO_WritePin(ChargeEnableGPIO, ChargeEnablePIN, GPIO_PIN_SET);
-		HAL_ADC_Start_IT(&hadc1);
-		HAL_ADC_Start_IT(&hadc2);
 		HAL_ADC_Start_IT(&hadc3);
-		//	  previousVoltages = currentVoltages;
 		memcpy(previousVoltages, currentVoltages, sizeof(currentVoltages));
-
-//		HAL_Delay(1);
-		currentMeasurementValue[0] = HAL_ADC_GetValue(&hadc1);
-		currentMeasurementValue[1] = HAL_ADC_GetValue(&hadc2);
 		currentMeasurementValue[2] = HAL_ADC_GetValue(&hadc3);
-
-		currentVoltages[0] = (float)(currentMeasurementValue[0] * 2.0 / ADCRES) * MCURefVoltage;
-		currentVoltages[1] = (float)(currentMeasurementValue[1] * 2.0 / ADCRES) * MCURefVoltage;
 		currentVoltages[2] = (float)(currentMeasurementValue[2] * 2.0 / ADCRES) * MCURefVoltage;
-
 		if (currentVoltages[0] < 3.1)
 		{
 			sprintf(terminalBuffer,"Low 3.3V regulator output: %1.3f", currentVoltages[0]);
@@ -59,33 +62,81 @@ void measureVoltages(bool forceMeasurement)
 			logData(terminalBuffer, false, false, false);
 		}
 		batteryVoltage = currentVoltages[2];
-		//	  if (currentVoltages[0] < 3.1)
-		//	  {
-		//	  }
 
 		lastVoltageMeasurement = HAL_GetTick();
 		if (isUSBConnected)
 		{
 			HAL_GPIO_WritePin(ChargeEnableGPIO, ChargeEnablePIN, GPIO_PIN_RESET);
-			if (currentVoltages[1] < 2)
-			{
-				isChargingMode = true;
-				if ( (HAL_GetTick() - startChargeTime > 45 * 60 * 1000) && (!didCountChargeCycle) && (currentVoltages[2] >= 4.2) )
-				{
-					didCountChargeCycle = true;
-					ee.fullChargeCycles = ee.fullChargeCycles + 1;
-					currentVoltages[2] = 4.3;
-					ee_save1();
-				}
-			}
-			else
-			{
-				isChargingMode = false;
-				didCountChargeCycle = false;
-				startChargeTime = HAL_GetTick();
-				LCD_1IN8_SetBackLight(ee.backLight * 2000);
-				isScreenBrightFull = true;
-			}
 		}
 	}
+	if (isUSBConnected)
+	{
+		if (currentVoltages[1] < 2)
+		{
+			isChargingMode = true;
+			if ((!didCountChargeCycle) && (currentVoltages[2] >= ChargerMaxChargingVoltage - 0.1) && (!firstMeasurementAboveThreshold))
+			{
+				ThresholdReachedTime = HAL_GetTick();
+				firstMeasurementAboveThreshold = true;
+				cyclesAboveThresholdCounter = 1;
+			}
+
+
+			if ( (HAL_GetTick() > ThresholdReachedTime + cyclesAboveThresholdCounter * 5 * 60 * 1000 )
+					&& (cyclesAboveThresholdCounter > 0) && (!didCountChargeCycle))
+			{
+				cyclesAboveThresholdCounter++;
+				currentVoltages[2] = (ChargerMaxChargingVoltage - 0.1) + cyclesAboveThresholdCounter * ( 1.0 / 100.0);
+				lastVoltageMeasurement = HAL_GetTick();
+			}
+
+			if ( (HAL_GetTick() >= ThresholdReachedTime + 75 * 60 * 1000) && (!didCountChargeCycle) && (currentVoltages[2] >= ChargerMaxChargingVoltage - 0.1) )
+			{
+				didCountChargeCycle = true;
+				ee.fullChargeCycles = ee.fullChargeCycles + 1;
+				currentVoltages[2] = batteryVoltage;
+				ee_save1();
+			}
+			batteryVoltage = currentVoltages[2];
+		}
+		else
+		{
+			isChargingMode = false;
+			didCountChargeCycle = false;
+			startChargeTime = HAL_GetTick();
+			LCD_1IN8_SetBackLight(ee.backLight * 2000);
+			isScreenBrightFull = true;
+		}
+	}
+}
+
+int8_t convertVoltageToPercent(float inputVoltage)
+{
+	uint8_t ret = 0;
+	if (inputVoltage <= 3.5)
+	{
+		ret = 0;
+	}
+	else if ( (inputVoltage > 3.5) && (inputVoltage <= 3.6) && (cyclesAboveThresholdCounter == 0) )
+	{
+		ret = (int8_t)(inputVoltage * (42.5) - 148.75);
+	}
+	else if ( (inputVoltage > 3.6) && (inputVoltage <= 3.8) && (cyclesAboveThresholdCounter == 0) )
+	{
+		ret = (int8_t)(inputVoltage * (233.75) - 837.25);
+	}
+	else if ( (inputVoltage > 3.8) && (inputVoltage <= 4) && (cyclesAboveThresholdCounter == 0) )
+	{
+		ret = (int8_t)(inputVoltage * (106.25) - 352.75);
+	}
+	else if ( (inputVoltage > 4) && (inputVoltage <= 4.15) && (cyclesAboveThresholdCounter == 0) )
+	{
+		ret = (int8_t)(inputVoltage * (85) - 267.75);
+	}
+	else if ( (cyclesAboveThresholdCounter > 0) )
+	{
+		ret = (int8_t)(85 + cyclesAboveThresholdCounter );
+	}
+
+	return ret;
 }

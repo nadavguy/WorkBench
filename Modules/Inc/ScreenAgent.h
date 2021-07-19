@@ -179,6 +179,14 @@
 #define VerticalChargingModePercentX 64
 #define VerticalChargingModePercentY 130
 
+#define VerticalChargingModeFirstDotX 34
+#define VerticalChargingModeSecondDotX VerticalChargingModeFirstDotX+12
+#define VerticalChargingModeThirdDotX VerticalChargingModeFirstDotX+12*2
+#define VerticalChargingModeForthDotX VerticalChargingModeFirstDotX+12*3
+#define VerticalChargingModeFifthDotX VerticalChargingModeFirstDotX+12*4
+#define VerticalChargingModeSixthDotX VerticalChargingModeFirstDotX+12*5
+#define VerticalChargingModeDotY 148
+
 typedef struct sIMAGE_DATA
 {
 	uint32_t imagePointer;
@@ -252,6 +260,7 @@ extern void drawItem(bool clearScreen, MENUDRAWType howToDraw);
 extern void drawPopup(void);
 extern void setFullDisplay(void);
 extern void setIconPositionOnScreen(void);
+extern void drawChargingDots(void);
 
 
 #endif /* SRC_SCREENAGENT_H_ */

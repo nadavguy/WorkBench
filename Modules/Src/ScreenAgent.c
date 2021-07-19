@@ -16,6 +16,7 @@
 #include "SafeAirImages.h"
 #include "BluetoothImages.h"
 #include "PlatformImages.h"
+#include "DotImages.h"
 #include "LCD_Test.h"
 #include "LCD_1in8.h"
 #include "DEV_Config.h"
@@ -84,11 +85,13 @@ uint8_t ChargingModeImageX = 0;
 uint8_t ChargingModeImageY = 0;
 uint8_t ChargingModePercentTextX = 0;
 uint8_t ChargingModePercentTextY = 0;
+uint8_t dotCycle = 0;
 
 uint32_t lastBatteryRefresh = 0;
 uint32_t lastBITStatusChange = 0;
 uint32_t lastFrameDisplayed = 0;
 uint32_t lastFullFrameDisplayed = 0 ;
+uint32_t lastDotRefresh = 0 ;
 
 tUINT8_ITEM uint8Item;
 tUINT16_ITEM uint16Item;
@@ -1334,5 +1337,72 @@ void setIconPositionOnScreen(void)
 		SafeAirBatteryX = HorizontalSafeAirBatteryTextX;
 		SafeAirBatteryY = HorizontalSafeAirBatteryTextY;
 
+	}
+}
+
+void drawChargingDots(void)
+{
+	if (dotCycle == 0)
+	{
+		Paint_DrawImage(gImage_WeakDot, VerticalChargingModeFirstDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_MediumDot, VerticalChargingModeSecondDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_StrongDot, VerticalChargingModeThirdDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_SuperStrongDot, VerticalChargingModeForthDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_StrongDot, VerticalChargingModeFifthDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_MediumDot, VerticalChargingModeFirstDotX, VerticalChargingModeDotY, 12, 12);
+	}
+	else if (dotCycle == 1)
+	{
+		Paint_DrawImage(gImage_MediumDot, VerticalChargingModeFirstDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_WeakDot, VerticalChargingModeSecondDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_MediumDot, VerticalChargingModeThirdDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_StrongDot, VerticalChargingModeForthDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_SuperStrongDot, VerticalChargingModeFifthDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_StrongDot, VerticalChargingModeFirstDotX, VerticalChargingModeDotY, 12, 12);
+	}
+	else if (dotCycle == 2)
+	{
+		Paint_DrawImage(gImage_StrongDot, VerticalChargingModeFirstDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_MediumDot, VerticalChargingModeSecondDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_WeakDot, VerticalChargingModeThirdDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_MediumDot, VerticalChargingModeForthDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_StrongDot, VerticalChargingModeFifthDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_SuperStrongDot, VerticalChargingModeFirstDotX, VerticalChargingModeDotY, 12, 12);
+	}
+	else if (dotCycle == 3)
+	{
+		Paint_DrawImage(gImage_SuperStrongDot, VerticalChargingModeFirstDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_StrongDot, VerticalChargingModeSecondDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_MediumDot, VerticalChargingModeThirdDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_WeakDot, VerticalChargingModeForthDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_MediumDot, VerticalChargingModeFifthDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_StrongDot, VerticalChargingModeFirstDotX, VerticalChargingModeDotY, 12, 12);
+	}
+	else if (dotCycle == 4)
+	{
+		Paint_DrawImage(gImage_StrongDot, VerticalChargingModeFirstDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_SuperStrongDot, VerticalChargingModeSecondDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_StrongDot, VerticalChargingModeThirdDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_MediumDot, VerticalChargingModeForthDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_WeakDot, VerticalChargingModeFifthDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_MediumDot, VerticalChargingModeFirstDotX, VerticalChargingModeDotY, 12, 12);
+	}
+	else if (dotCycle == 5)
+	{
+		Paint_DrawImage(gImage_MediumDot, VerticalChargingModeFirstDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_StrongDot, VerticalChargingModeSecondDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_SuperStrongDot, VerticalChargingModeThirdDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_StrongDot, VerticalChargingModeForthDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_MediumDot, VerticalChargingModeFifthDotX, VerticalChargingModeDotY, 12, 12);
+		Paint_DrawImage(gImage_WeakDot, VerticalChargingModeFirstDotX, VerticalChargingModeDotY, 12, 12);
+	}
+	if (HAL_GetTick() - lastDotRefresh > 100)
+	{
+		lastDotRefresh = HAL_GetTick();
+		dotCycle++;
+		if (dotCycle >= 6)
+		{
+			dotCycle = 0;
+		}
 	}
 }

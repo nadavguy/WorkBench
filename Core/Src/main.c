@@ -79,7 +79,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.450;
+float buildID = 1.460;
 
 SYSTEMState rcState = PREINIT;
 
@@ -124,7 +124,7 @@ tCURSOR_DATA currentCursorPosition;
 
 tWarning displayWarning;
 
-float batteryVoltage = 4.3;
+float batteryVoltage = 4.25;
 float chargingMaxValue = 0;
 
 unsigned int BytesWritten = 0;
@@ -207,7 +207,7 @@ int main(void)
 
 	BSP_QSPI_Init();
 
-	//  HAL_Delay(1000);
+	// HAL_Delay(1000);
 
 	fileSystemInit();
 	createNewLogFile();
@@ -254,6 +254,7 @@ int main(void)
 
 	currentCursorPosition.cursorPosition = 0;
 	currentCursorPosition.menuDepth = 0;
+	measureVoltages(true);
 	if ( (tbsLink == NOSIGNAL) && (isChargingMode) )
 	{
 		memcpy(&popupToShow, &tbsInChargeModeMessage, sizeof(popupToShow));
@@ -327,18 +328,18 @@ int main(void)
 				Paint_DrawImage(gImage_ChargingMode, ChargingModeImageX, ChargingModeImageY, 43, 86);
 				char localText[12] = "";
 				chargingMaxValue = fmax(chargingMaxValue, batteryVoltage);
-				int8_t localPercent = (int8_t)(chargingMaxValue * (125) - 437.5);
+				int8_t localPercent = convertVoltageToPercent(chargingMaxValue);
 				if (previousBatteryCharge > localPercent)
 				{
 					previousBatteryCharge = localPercent;
 					lastChangeInMeasurement = HAL_GetTick();
 				}
-				else if ( (previousBatteryCharge == localPercent)
-						&& (HAL_GetTick() - lastChangeInMeasurement > 20 * 60 * 1000)
-						&& (localPercent >=93))
-				{
-					localPercent = 100;
-				}
+//				else if ( (previousBatteryCharge == localPercent)
+//						&& (HAL_GetTick() - lastChangeInMeasurement > 20 * 60 * 1000)
+//						&& (localPercent >=93))
+//				{
+//					localPercent = 100;
+//				}
 
 				if (localPercent > 100)
 				{
@@ -352,6 +353,7 @@ int main(void)
 				sprintf(localText, "%03d%%", localPercent);
 				centeredString(ChargingModePercentTextX, ChargingModePercentTextY, localText, BLACK, BACKGROUND, 14, Font16);
 				centeredString(ChargingModePercentTextX, ChargingModeImageY - 24, "Charging", BLACK, BACKGROUND, 14, Font16);
+				drawChargingDots();
 			}
 			updateNextFrame();
 		}
