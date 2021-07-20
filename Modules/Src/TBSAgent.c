@@ -16,7 +16,7 @@
 
 uint8_t tbsRXArray[TBS_RX_BUFFER] = {0};
 uint8_t rcChannelsFrame[26] = {0};
-uint8_t tbsPingMessage[8] = {0}; //C8	4	0x28	0x00	0xEA	0x00	0xEA
+uint8_t tbsPingMessage[8] = {0};
 uint8_t safeairConfigurationFrame[29] = {0};
 
 uint8_t IdleMessageArray[26] = {0xC8, 0x18, 0x16, 0xAC, 0x60, 0x05, 0x2B, 0x58, 0xC1, 0x0A, 0x56, 0xB0, 0x82, 0x15, 0xAC, 0x60, 0x05, 0x2B, 0x58, 0xC1, 0x0A, 0x56, 0xB0, 0x82, 0x15, 0x5B};
@@ -283,10 +283,8 @@ bool parseTBSMessage(void)
 			currentSmaStatus.Acceleration = (localRxArray[i + 8] * 256 + localRxArray[i + 9])/100.0;
 			currentSmaStatus.BITStatus = localRxArray[i + 10] * 256 + localRxArray[i + 11];
 
-//			abs(previousSmaStatus.batteryVoltage - currentSmaStatus.batteryVoltage) > 0.05 ) && (HAL_GetTick() - lastBatteryRefresh > 30000)
 			if ( abs(previousSmaStatus.batteryVoltage - currentSmaStatus.batteryVoltage) > 0.05 )
 			{
-//				shouldRenderBatteryPercent = true;
 				shouldRedrawSafeAirBatteryIcon = true;
 			}
 
@@ -543,14 +541,13 @@ void createPingMessage(void)
 	uint8_t Counter = 0;
 	while (1)
 	{
-	tbsPingMessage[0] = 0xC8; //C8	4	0x28	0x00	0xEA	0x00	0xEA
+	tbsPingMessage[0] = 0xC8;
 	tbsPingMessage[1] = 0x06;
 	tbsPingMessage[2] = 0x28;
 	tbsPingMessage[3] = 0x00;
 	tbsPingMessage[4] = 0xC8;
 	tbsPingMessage[5] = 0x00;
 	tbsPingMessage[6] = 0xC8;
-//	tbsPingMessage[7] = crc8(&tbsPingMessage[2], 5);
 	tbsPingMessage[7] = Counter;
 
 
@@ -626,9 +623,6 @@ void sendSafeAirConfigurationMessage(bool includeTimeInMessage)
 		safeairConfigurationFrame[26] = 0x00; //
 		safeairConfigurationFrame[27] = 0x00; //
 		safeairConfigurationFrame[28] = crc8(&safeairConfigurationFrame[2], safeairConfigurationFrame[1]-1); //crc
-
-//		uint8_t len = tbsRXArray[1];
-//			uint8_t crc = crc8(&tbsRXArray[2], len-1);
 
 		HAL_UART_Transmit_IT(&TBS_UART, safeairConfigurationFrame, 29);
 		lastConfigurationMessageSent = HAL_GetTick();

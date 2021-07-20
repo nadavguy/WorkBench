@@ -79,7 +79,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.470;
+float buildID = 1.480;
 
 SYSTEMState rcState = PREINIT;
 
@@ -198,9 +198,7 @@ int main(void)
   MX_ADC3_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-	//
-	//  char test[8] = "Testtset";
-	//  HAL_UART_Transmit(&huart2, (uint8_t *)test, 8, 20);
+
 	UID1 = (*(__I uint32_t *) 0x1FF0F420);
 	UID2 = (*(__I uint32_t *) 0x1FF0F424);
 	UID3 = (*(__I uint32_t *) 0x1FF0F428);
@@ -288,9 +286,7 @@ int main(void)
 			// Allow only basic functionality
 			updateRCState();
 			monitorLogSize();
-
 			readUSBData();
-
 			checkBLEMessages();
 		}
 		if (!renderCompleteFrame)
@@ -321,9 +317,7 @@ int main(void)
 			{
 				CheckButtons();
 				UpdateScreenBrightness(isScreenBrightFull);
-//				LCD_1IN8_SetBackLight(4000);
 				createEmptyFrame(false, false);
-				//			  screenUpdate(false);
 				setIconPositionOnScreen();
 				Paint_DrawImage(gImage_ChargingMode, ChargingModeImageX, ChargingModeImageY, 43, 86);
 				char localText[12] = "";
@@ -334,12 +328,6 @@ int main(void)
 					previousBatteryCharge = localPercent;
 					lastChangeInMeasurement = HAL_GetTick();
 				}
-//				else if ( (previousBatteryCharge == localPercent)
-//						&& (HAL_GetTick() - lastChangeInMeasurement > 20 * 60 * 1000)
-//						&& (localPercent >=93))
-//				{
-//					localPercent = 100;
-//				}
 
 				if (localPercent > 100)
 				{
@@ -444,7 +432,7 @@ void UpdateScreenBrightness(bool screenBrightfullnessLevel)
 {
 	if ( (screenBrightfullnessLevel) && (HAL_GetTick() - lastAnyButtonPress > 120000) )
 	{
-		LCD_1IN8_SetBackLight(2000);
+		LCD_1IN8_SetBackLight(3000);
 		//		LCD_1IN8_SetBackLight(ee.backLight);
 		isScreenBrightFull = false;
 	}
@@ -476,7 +464,6 @@ void updateRCState(void)
 			batteryStrength = CHARGING;
 			displayWarning.BITStatus &= ~rcLowBat;
 		}
-		//Show charging symbol
 	}
 	else
 	{
@@ -538,7 +525,6 @@ void updateRCState(void)
 			rcLinkStatus.DownlinkPSRLQ = 0;
 			logRCLinkStatus(true);
 		}
-		//Show no signal icon
 	}
 	else if ( (rcLinkStatus.DownlinkPSRLQ <= 50) && (tbsLink != LOW) )
 	{
@@ -648,7 +634,6 @@ void updateRCState(void)
 			shouldUpdateStatusText = true;
 		}
 		nextPattern = &triggeredSafeAirPattern;
-		//		setBuzzerPattern(*nextPattern);
 	}
 	else if ( (currentSmaStatus.smaState == 0x02) && (previousSmaStatus.smaState != ARMED) )
 	{
@@ -718,20 +703,7 @@ void updateRCState(void)
 
 }
 
-//void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
-//{
-////	for (int i =0; i<3; i++)
-////	{
-////	  adc[i] = buffer[i];
-////	}
-////
-////	temperature = (((adc[2]*vsense)-.76)/.0025)+25;
-//	int a = 1;
-//	a = 2;
-//	  A[3] = HAL_ADC_GetValue(&hadc1);
-//	  A[4] = HAL_ADC_GetValue(&hadc2);
-//	  A[5] = HAL_ADC_GetValue(&hadc3);
-//}
+
 /* USER CODE END 4 */
 
 /**

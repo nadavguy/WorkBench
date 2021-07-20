@@ -26,6 +26,7 @@ typedef struct sEE_DATA
 	uint16_t fullChargeCycles;
 	uint8_t rcMode;
 	char lastPairedDevice[16];
+	uint8_t lastStepInCVChargeCycle;
 }tEE_DATA;
 
 
@@ -53,6 +54,7 @@ extern tEEV_U16 EEV_TriggerPWMOnValue;
 extern tEEV_U08 EEV_LinkType;
 extern tEEV_U16 EEV_Backlight;
 extern tEEV_U08 EEV_ScreenOrientation;
+extern tEEV_U08 EEV_ChargeCycle;
 
 extern bool ee_validate1(void);
 

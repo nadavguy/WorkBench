@@ -8,9 +8,11 @@
 
 #include "main.h"
 #include "usb_device.h"
+uint32_t popupShowTime = 0;
 
 void waitForPopupInput(void)
 {
+	popupShowTime = HAL_GetTick();
 	if (popupToShow.popupID != 0)
 	{
 		shouldRenderPopup = true;
@@ -240,7 +242,8 @@ void waitForPopupInput(void)
 
 				while (isChargingMode)
 				{
-					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 1000) )
+					if ( (!popupToShow.isQuestion) &&
+							( (okButtonPressDuration >= 1000) || (HAL_GetTick() - popupShowTime > 3000) ) )
 					{
 						break;
 					}

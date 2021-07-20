@@ -131,7 +131,6 @@ void screenInit(void)
 	Paint_SetClearFuntion(LCD_1IN8_Clear);
 	Paint_SetDisplayFuntion(LCD_1IN8_DrawPaint);
 
-//	printf("Paint_Clear\r\n");
 	Paint_Clear(WHITE);
 	DEV_Delay_ms(1000);
 
@@ -176,7 +175,6 @@ void centeredString(UWORD XCenterstart, UWORD Ystart, const char * pString, uint
 	uint8_t Xstart = 0;
 
 	Xstart = fmax( XCenterstart - numberOfCharactersToClear * localFont.Width / 2, 0) ;
-//	Paint_DrawString_EN(Xstart, Ystart, "MAINTENANCE", &Font12, WHITE,  WHITE);
 	if (!renderCompleteFrame)
 	{
 		Paint_ClearWindows(Xstart, Ystart, Xstart + numberOfCharactersToClear * localFont.Width, Ystart + localFont.Height, WHITE);
@@ -196,25 +194,6 @@ void centeredString(UWORD XCenterstart, UWORD Ystart, const char * pString, uint
 
 void renderSafeAirBattery(bool drawDeltaImage)
 {
-//	char batteryPercentString[4] = "";
-//	char pr[1] = "%";
-//	char tempBatteryPercentString[5] = "";
-//	uint8_t batteryPercent = 0;
-//	batteryPercent = (uint8_t) ((currentSmaStatus.batteryVoltage * 166.6667
-//			- 600) / 5) * 5;
-//	sprintf(batteryPercentString, "%03d%s", batteryPercent, pr);
-//	memcpy(tempBatteryPercentString, batteryPercentString, 5);
-//	tempBatteryPercentString[4] = 0;
-//	//TODO: Clear text before updating, generate value dynamically
-//	Paint_ClearWindows(SafeAirBatteryX,
-//			SafeAirBatteryY,
-//			SafeAirBatteryX + 5 * Font8.Width,
-//			SafeAirBatteryY + Font8.Height, WHITE);
-//	Paint_DrawString_EN(SafeAirBatteryX,
-//			SafeAirBatteryY, tempBatteryPercentString, &Font8,
-//			WHITE, BLACK);
-
-
 	switch (currentSmaStatus.batteryStrength)
 	{
 		case EMPTY:
@@ -314,9 +293,6 @@ void updateStatusText(void)
 {
 	if (currentSmaStatus.smaState == TRIGGERED)
 	{
-//		Paint_DrawImage(gImage_Parachute_24, Parachute1X, Parachute1Y, 24, 24);
-//		Paint_DrawImage(gImage_Parachute_24, Parachute2X, Parachute2Y, 24, 24);
-//		centeredString(HorizontalSystemStatusTextX, HorizontalSystemStatusTextY, "TRIGGERED", BLACK, RED);
 		addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, RED);
 		if (displayWarning.BITStatus & 0x40)
 		{
@@ -388,42 +364,32 @@ void updateStatusText(void)
 				addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, YELLOW);
 				centeredString(SystemStatusTextX, SystemStatusTextY, "Error", BLACK, YELLOW, 14, Font12);
 			}
-//			Paint_DrawImage(gImage_WarningRed_Icon_24, WarningIconX, WarningIconY, statusBarIconWidth, statusBarIconHeight);
-//			shouldDrawRedAlertIcon = false;
 			shouldUpdateStatusText = false;
 		}
 		if (displayWarning.BITStatus & 0x01)
 		{
-//			Paint_DrawString_EN(WarningTextX, WarningTextY, "SA Critical Bat", &Font12, BLACK, BACKGROUND);
 			centeredString(WarningTextX, WarningTextY, "SA Critical Bat", BLACK, BACKGROUND, 14, Font12);
 		}
 		else if (displayWarning.BITStatus & 0x02)
 		{
-//			Paint_DrawString_EN(WarningTextX, WarningTextY, "SA Low Bat", &Font12, BLACK, BACKGROUND);
 			centeredString(WarningTextX, WarningTextY, "SA Low Bat", BLACK, BACKGROUND, 14, Font12);
 		}
 		else if (displayWarning.BITStatus & 0x04)
 		{
-//			Paint_DrawString_EN(WarningTextX, WarningTextY, "SA Flash Err", &Font12, BLACK, BACKGROUND);
 			centeredString(WarningTextX, WarningTextY, "SA Flash Err", BLACK, BACKGROUND, 14, Font12);
 		}
 		else if (displayWarning.BITStatus & 0x08)
 		{
-//			Paint_DrawString_EN(WarningTextX, WarningTextY, "SA Orientation", &Font12, BLACK, BACKGROUND);
 			centeredString(WarningTextX, WarningTextY, "SA Orientation", BLACK, BACKGROUND, 14, Font12);
 		}
 		else if (displayWarning.BITStatus & 0x10)
 		{
-//			Paint_DrawString_EN(WarningTextX, WarningTextY, "SA Pyro Err", &Font12, BLACK, BACKGROUND);
 			centeredString(WarningTextX, WarningTextY, "SA Pyro Err", BLACK, BACKGROUND, 14, Font12);
 		}
 		else if (displayWarning.BITStatus & 0x20)
 		{
-//			Paint_DrawString_EN(WarningTextX, WarningTextY, "RC Low Bat", &Font12, BLACK, BACKGROUND);
 			centeredString(WarningTextX, WarningTextY, "RC Low Bat", BLACK, BACKGROUND, 14, Font12);
 		}
-//		displayWarning.displayWarning = false;
-		//			shouldClearDisplayedWarning = true;
 	}
 	else if ((!displayWarning.displayWarning) && (shouldClearDisplayedWarning))
 	{
@@ -559,7 +525,6 @@ void redrawBatteryIcon(bool drawDeltaImage)
 		previousRCBatteryImage = gImage_RC_Battery_Charging;
 		break; /* optional */
 
-			   /* you can have any number of case statements */
 	default: /* Optional */
 		if (!drawDeltaImage)
 		{
@@ -610,7 +575,6 @@ void redrawTriggerModeIcon(bool drawDeltaImage)
 			break; /* optional */
 		}
 
-		/* you can have any number of case statements */
 		default: /* Optional */
 		{
 			if (!drawDeltaImage)
@@ -664,10 +628,6 @@ void redrawBluetoothIcon(bool drawDeltaImage)
 			break; /* optional */
 		}
 
-		//		case PAIRING:
-		//			Paint_DrawImage(gImage_Bluetooth_Connected_24, HorizontalBluetoothX, HorizontalBluetoothY, iconWidth, statusBarIconHeight);
-		//			break; /* optional */
-
 		case SEARCHING:
 		{
 			if (!drawDeltaImage)
@@ -684,7 +644,6 @@ void redrawBluetoothIcon(bool drawDeltaImage)
 			break; /* optional */
 		}
 
-		/* you can have any number of case statements */
 		default: /* Optional */
 		{
 			if (!drawDeltaImage)
@@ -767,7 +726,6 @@ void redrawSignalStrengthIcon(bool drawDeltaImage)
 			break; /* optional */
 		}
 
-		/* you can have any number of case statements */
 		default: /* Optional */
 		{
 			if (!drawDeltaImage)
@@ -820,7 +778,6 @@ void redrawAutoPilotIcon(bool drawDeltaImage)
 			break; /* optional */
 		}
 
-		/* you can have any number of case statements */
 		default: /* Optional */
 		{
 			if (!drawDeltaImage)
@@ -904,7 +861,6 @@ void redrawPlatformIcon(bool drawDeltaImage)
 			break; /* optional */
 		}
 
-		/* you can have any number of case statements */
 		default: /* Optional */
 		{
 			if (!drawDeltaImage)
@@ -1016,24 +972,6 @@ void screenUpdate(bool drawDeltaImage)
 			drawAltitudeIcon(drawDeltaImage);
 			shouldDrawSafeAirAltitude = false;
 		}
-
-//		if (!drawDeltaImage)
-//		{
-//			Paint_DrawImage(gImage_SafeAir_Logo_74_11, HorizontalSafeAirLogo7411IconX, HorizontalSafeAirLogo7411IconY, 74, 11);
-//			Paint_DrawImage(gImage_Battery_Full, HorizontalSafeAirBatteryIconX, HorizontalSafeAirBatteryIconY,
-//					iconWidth, iconHeight);
-//			Paint_DrawImage(gImage_Altitude_24, HorizontalAltitudeIconX, HorizontalAltitudeIconY, iconWidth, iconHeight);
-//		}
-
-//		if ( (shouldRenderBatteryPercent) || (HAL_GetTick() - lastBatteryRefresh > 60000) ) //|| (lastBatteryRefresh == 0)
-//		{
-//			renderSafeAirBatteryPercent(bool drawDeltaImage);
-			//	  Paint_DrawString_EN(HorizontalAltitudeText1X, HorizontalAltitudeText1Y, "Alt[m]", &Font8, WHITE, BLACK);
-			//TODO: Clear text before updating, generate value dynamically
-			//	  Paint_DrawString_EN(HorizontalAltitudeText2X, HorizontalAltitudeText2Y, "999.9", &Font8, WHITE, BLACK);
-//			lastBatteryRefresh = HAL_GetTick();
-//			shouldRenderBatteryPercent = false;
-//		} // End of should draw SafeAir battery value
 	} // end of RC and SafeAir data display
 	else if (isMenuDisplayed)
 	{

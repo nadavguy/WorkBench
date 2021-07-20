@@ -1,7 +1,0 @@
-ymodem.c:47:26:ReceivePacket	40	static
-ymodem.c:141:13:PrepareIntialPacket	48	static
-ymodem.c:182:13:PreparePacket	40	static
-ymodem.c:222:10:UpdateCRC16	24	static
-ymodem.c:248:10:Cal_CRC16	24	static
-ymodem.c:268:9:CalcChecksum	24	static
-ymodem.c:291:19:Ymodem_Receive	80	static

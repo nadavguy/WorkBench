@@ -22,6 +22,7 @@
 extern bool isChargingMode;
 
 extern uint8_t previousBatteryCharge;
+extern uint8_t cyclesAboveThresholdCounter;
 
 extern uint32_t startChargeTime;
 extern uint32_t lastChangeInMeasurement;

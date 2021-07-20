@@ -68,45 +68,70 @@ void measureVoltages(bool forceMeasurement)
 		{
 			HAL_GPIO_WritePin(ChargeEnableGPIO, ChargeEnablePIN, GPIO_PIN_RESET);
 		}
-	}
-	if (isUSBConnected)
-	{
-		if (currentVoltages[1] < 2)
+
+		if ( (isUSBConnected) && (currentVoltages[1] < 2) && (!isChargingMode))
 		{
 			isChargingMode = true;
-			if ((!didCountChargeCycle) && (currentVoltages[2] >= ChargerMaxChargingVoltage - 0.1) && (!firstMeasurementAboveThreshold))
-			{
-				ThresholdReachedTime = HAL_GetTick();
-				firstMeasurementAboveThreshold = true;
-				cyclesAboveThresholdCounter = 1;
-			}
+			cyclesAboveThresholdCounter = ee.lastStepInCVChargeCycle;
 
-
-			if ( (HAL_GetTick() > ThresholdReachedTime + cyclesAboveThresholdCounter * 5 * 60 * 1000 )
-					&& (cyclesAboveThresholdCounter > 0) && (!didCountChargeCycle))
-			{
-				cyclesAboveThresholdCounter++;
-				currentVoltages[2] = (ChargerMaxChargingVoltage - 0.1) + cyclesAboveThresholdCounter * ( 1.0 / 100.0);
-				lastVoltageMeasurement = HAL_GetTick();
-			}
-
-			if ( (HAL_GetTick() >= ThresholdReachedTime + 75 * 60 * 1000) && (!didCountChargeCycle) && (currentVoltages[2] >= ChargerMaxChargingVoltage - 0.1) )
-			{
-				didCountChargeCycle = true;
-				ee.fullChargeCycles = ee.fullChargeCycles + 1;
-				currentVoltages[2] = batteryVoltage;
-				ee_save1();
-			}
-			batteryVoltage = currentVoltages[2];
 		}
-		else
+		else if ( (isUSBConnected) && (currentVoltages[1] >= 2))
 		{
 			isChargingMode = false;
 			didCountChargeCycle = false;
 			startChargeTime = HAL_GetTick();
-//			LCD_1IN8_SetBackLight(ee.backLight * 2000);
-//			isScreenBrightFull = true;
 		}
+		else if ( (!isUSBConnected) && (ee.lastStepInCVChargeCycle != 0) )
+		{
+			isChargingMode = false;
+			ee.lastStepInCVChargeCycle = 0;
+			ee_save1();
+		}
+
+//
+//		if (!isChargingMode)
+//		{
+//			ee.lastStepInCVChargeCycle = 0;
+//			ee_save1();
+//		}
+//		else
+//		{
+//			cyclesAboveThresholdCounter = ee.lastStepInCVChargeCycle;
+//		}
+	}
+	if (isChargingMode)
+	{
+		if ((!didCountChargeCycle) && (currentVoltages[2] >= ChargerMaxChargingVoltage - 0.1)
+				&& (!firstMeasurementAboveThreshold))
+		{
+			ThresholdReachedTime = HAL_GetTick();
+			firstMeasurementAboveThreshold = true;
+//			cyclesAboveThresholdCounter++;
+			ee.lastStepInCVChargeCycle = cyclesAboveThresholdCounter;
+			ee_save1();
+		}
+
+		if ( (HAL_GetTick() - ThresholdReachedTime > 5 * 60 * 1000 )
+				&& (cyclesAboveThresholdCounter > 0) && (!didCountChargeCycle))
+		{
+			cyclesAboveThresholdCounter++;
+			ThresholdReachedTime = HAL_GetTick();
+			currentVoltages[2] = (ChargerMaxChargingVoltage - 0.1) + cyclesAboveThresholdCounter * ( 1.0 / 100.0);
+			lastVoltageMeasurement = HAL_GetTick();
+			ee.lastStepInCVChargeCycle = cyclesAboveThresholdCounter;
+			ee_save1();
+		}
+
+		if ( ( (HAL_GetTick() - ThresholdReachedTime >= 75 * 60 * 1000) || (cyclesAboveThresholdCounter >= 15) )
+				&& (!didCountChargeCycle) && (currentVoltages[2] >= ChargerMaxChargingVoltage - 0.1) )
+		{
+			didCountChargeCycle = true;
+			ee.fullChargeCycles = ee.fullChargeCycles + 1;
+			currentVoltages[2] = batteryVoltage;
+			ee.lastStepInCVChargeCycle = cyclesAboveThresholdCounter;
+			ee_save1();
+		}
+		batteryVoltage = currentVoltages[2];
 	}
 }
 
