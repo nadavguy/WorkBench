@@ -57,6 +57,7 @@
  extern uint16_t totalPackID;
 
  extern uint32_t totalBytesLengthInFile;
+ extern USBD_HandleTypeDef hUsbDeviceFS;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/

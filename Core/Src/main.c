@@ -79,7 +79,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.480;
+float buildID = 1.490;
 
 SYSTEMState rcState = PREINIT;
 
@@ -105,6 +105,7 @@ bool waitForAckResponse = false;
 bool shouldRedrawSafeAirBatteryIcon = true;
 bool isScreenBrightFull = true;
 bool shouldDrawSafeAirAltitude = true;
+bool testMotorCut = false;
 
 uint16_t fullFrameDelay = 5000;
 

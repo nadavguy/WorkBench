@@ -346,7 +346,7 @@ void updateStatusText(void)
 	}
 	else if (currentSmaStatus.smaState == TESTFLIGHT)
 	{
-		addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, GRAYBLUE);
+		addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, DARKBLUE);
 		centeredString(SystemStatusTextX, SystemStatusTextY, "Test-Flight", WHITE, DARKBLUE, 14, Font12);
 	}
 	else if (currentSmaStatus.smaState == MAINTENANCE)
@@ -389,6 +389,18 @@ void updateStatusText(void)
 		else if (displayWarning.BITStatus & 0x20)
 		{
 			centeredString(WarningTextX, WarningTextY, "RC Low Bat", BLACK, BACKGROUND, 14, Font12);
+		}
+		else if (displayWarning.BITStatus & abnormalGyro)
+		{
+			centeredString(WarningTextX, WarningTextY, "Abnormal Gyro", BLACK, BACKGROUND, 14, Font12);
+		}
+		else if (displayWarning.BITStatus & abnormalAcceleration)
+		{
+			centeredString(WarningTextX, WarningTextY, "Abnormal Accel", BLACK, BACKGROUND, 14, Font12);
+		}
+		else if (displayWarning.BITStatus & abnormalAngle)
+		{
+			centeredString(WarningTextX, WarningTextY, "Abnormal Angle", BLACK, BACKGROUND, 14, Font12);
 		}
 	}
 	else if ((!displayWarning.displayWarning) && (shouldClearDisplayedWarning))

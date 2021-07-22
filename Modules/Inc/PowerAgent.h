@@ -20,6 +20,7 @@
 #define ChargeEnablePIN GPIO_PIN_1
 #define ADCRES 4096
 extern bool isChargingMode;
+extern bool firstMeasurementAboveThreshold;
 
 extern uint8_t previousBatteryCharge;
 extern uint8_t cyclesAboveThresholdCounter;

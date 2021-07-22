@@ -94,6 +94,9 @@ typedef struct sGPSPOSITION
 #define autoPilot 		256
 #define freeFall 		512
 #define criticalAngle	1024
+#define abnormalGyro	4096
+#define abnormalAcceleration	8192
+#define abnormalAngle	16384
 
 #define terminalRXBufferSize 1024
 
@@ -136,6 +139,7 @@ extern bool waitForAckResponse;
 extern bool shouldRedrawSafeAirBatteryIcon;
 extern bool shouldDrawSafeAirAltitude;
 extern bool isScreenBrightFull;
+extern bool testMotorCut;
 
 extern uint16_t fullFrameDelay;
 

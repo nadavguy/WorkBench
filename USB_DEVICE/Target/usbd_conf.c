@@ -27,6 +27,8 @@
 
 /* USER CODE BEGIN Includes */
 #include "main.h"
+#include "usb_device.h"
+#include "usbd_cdc_if.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -340,6 +342,13 @@ void HAL_PCD_DisconnectCallback(PCD_HandleTypeDef *hpcd)
   isUSBConnected = false;
   isChargingMode = false;
   chargingMaxValue = 0;
+  if (isMSCMode)
+  {
+    isMSCMode = false;
+    USBD_DeInit(&hUsbDeviceFS);
+    HAL_Delay(1500);
+    MX_USB_DEVICE_Init();
+  }
   measureVoltages(true);
 	/* USER CODE END 7 */
 }

@@ -8,7 +8,21 @@
 
 #include "main.h"
 #include "usb_device.h"
+#include "GUI_Paint.h"
+#include "ScreenAgent.h"
 uint32_t popupShowTime = 0;
+
+void showWaitForSAAck()
+{
+	createEmptyFrame(false, false);
+	char localString[12] = "Waiting for\0";
+	char localString2[10] = "SafeAir's\0";
+	char localString3[15] = "Acknowledgment\0";
+	centeredString(64, 68, localString, BLACK, BACKGROUND, 11, Font12);
+	centeredString(64, 80, localString2, BLACK, BACKGROUND, 9, Font12);
+	centeredString(64, 92, localString3, BLACK, BACKGROUND, 14, Font12);
+	updateNextFrame();
+}
 
 void waitForPopupInput(void)
 {
@@ -43,6 +57,7 @@ void waitForPopupInput(void)
 			}
 			case 2:
 			{
+				waitForAckResponse = false;
 				while ( (okButtonPressDuration < 1075) )
 				{
 					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 1000) )
@@ -69,6 +84,7 @@ void waitForPopupInput(void)
 					sendChannelMessageToTBS();
 					updateRCState();
 					CheckButtons();
+					showWaitForSAAck();
 				}
 				forceDisarmEnabled = false;
 //				waitForAckResponse = false;
@@ -97,6 +113,7 @@ void waitForPopupInput(void)
 			} // End of RC clear storage
 			case 4:
 			{
+				waitForAckResponse = false;
 				while ( (okButtonPressDuration < 1075) )
 				{
 					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 1000) )
@@ -259,6 +276,151 @@ void waitForPopupInput(void)
 				}
 				break;
 			}
+
+			case 11:
+			{
+				waitForAckResponse = false;
+				while ( (okButtonPressDuration < 1075) )
+				{
+					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 1000) )
+					{
+						break;
+					}
+					if ( (popupToShow.isQuestion) && (okButtonPressDuration >= 1000) && (popupDrawDirection == DOWN) )
+					{
+						if (!isAutoCalibActive)
+						{
+							isAutoCalibActive = true;
+						}
+						else
+						{
+							isAutoCalibActive = false;
+							safeairConfiguration.state = 1;
+						}
+						waitForAckResponse = true;
+						configurationMessageCounter++;
+						break;
+					}
+					sendChannelMessageToTBS();
+
+					updateRCState();
+					CheckButtons();
+					screenUpdate(false);
+					updateNextFrame();
+				}
+				while (waitForAckResponse)
+				{
+					sendChannelMessageToTBS();
+					updateRCState();
+					CheckButtons();
+					showWaitForSAAck();
+				}
+				initMenuPages();
+				initPopupMessages();
+				break;
+			} //End of AutoCalib
+
+			case 12:
+			{
+				waitForAckResponse = false;
+				while ( (okButtonPressDuration < 1075) )
+				{
+					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 1000) )
+					{
+						break;
+					}
+					if ( (popupToShow.isQuestion) && (okButtonPressDuration >= 1000) && (popupDrawDirection == DOWN) )
+					{
+						if (!isTestCalibActive)
+						{
+							isTestCalibActive = true;
+						}
+						else
+						{
+							isTestCalibActive = false;
+							safeairConfiguration.state = 1;
+						}
+						waitForAckResponse = true;
+						configurationMessageCounter++;
+						break;
+					}
+					sendChannelMessageToTBS();
+
+					updateRCState();
+					CheckButtons();
+					screenUpdate(false);
+					updateNextFrame();
+				}
+				while (waitForAckResponse)
+				{
+					sendChannelMessageToTBS();
+					updateRCState();
+					CheckButtons();
+					showWaitForSAAck();
+				}
+				initMenuPages();
+				initPopupMessages();
+				break;
+			} //End of TestCalib
+
+			case 13:
+			{
+				waitForAckResponse = false;
+				while ( (okButtonPressDuration < 1075) )
+				{
+					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 1000) )
+					{
+						break;
+					}
+					if ( (popupToShow.isQuestion) && (okButtonPressDuration >= 1000) && (popupDrawDirection == DOWN))
+					{
+						testMotorCut = true;
+						waitForAckResponse = true;
+						configurationMessageCounter++;
+						break;
+					}
+					sendChannelMessageToTBS();
+					updateRCState();
+					CheckButtons();
+					screenUpdate(false);
+					updateNextFrame();
+				}
+				while (waitForAckResponse)
+				{
+					sendChannelMessageToTBS();
+					updateRCState();
+					CheckButtons();
+					showWaitForSAAck();
+				}
+				testMotorCut = false;
+				initMenuPages();
+				initPopupMessages();
+				break;
+			} //End of Test Motor Cut
+
+			case 14:
+			{
+				while ( (okButtonPressDuration < 1075) )
+				{
+					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 1000) )
+					{
+						break;
+					}
+					if ( (popupToShow.isQuestion) && (okButtonPressDuration >= 1000) && (popupDrawDirection == DOWN))
+					{
+//						isTestCalibActive = !isTestCalibActive;
+						break;
+					}
+					sendChannelMessageToTBS();
+					updateRCState();
+					CheckButtons();
+					screenUpdate(false);
+					updateNextFrame();
+				}
+				initMenuPages();
+				initPopupMessages();
+				break;
+			} //End of TestCalib
 
 			default:
 			{

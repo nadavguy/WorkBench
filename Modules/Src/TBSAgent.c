@@ -245,7 +245,7 @@ bool parseTBSMessage(void)
 			crc = crc8(&localRxArray[i + 2], 0x0c-1);
 		}
 		if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x0c) && (localRxArray[i + 2] == 0x14) && (TBS_RX_BUFFER - i >= 0x0c)
-				&& (crc == localRxArray[i + 0x0c + 1]))
+				&& (crc == localRxArray[i + 0x0c + 1]) )
 		{
 			rcLinkStatus.UplinkRSSIAnt1 = localRxArray[i + 3];
 			rcLinkStatus.UplinkRSSIAnt2 = localRxArray[i + 4];
@@ -270,13 +270,28 @@ bool parseTBSMessage(void)
 			crc = crc8(&localRxArray[i + 2], 0x1B-1);
 		}
 		if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x1B) && (localRxArray[i + 2] == 0xDD) && (TBS_RX_BUFFER - i >= 0x1B)
-				&& (crc == localRxArray[i + 0x1B + 1]) )
+				&& (crc == localRxArray[i + 0x1B + 1]) && (!waitForAckResponse) )
 		{
 			previousSmaStatus = currentSmaStatus;
 			previousBITStatus = displayWarning.BITStatus;
 
 			currentSmaStatus.batteryVoltage = fmin(localRxArray[i + 3] / 50.0 + 0.05, 4.2);
 			currentSmaStatus.smaState = localRxArray[i + 4];
+			if (currentSmaStatus.smaState == 6)
+			{
+				isAutoCalibActive = true;
+				isTestCalibActive = false;
+			}
+			else if (currentSmaStatus.smaState == 7)
+			{
+				isAutoCalibActive = false;
+				isTestCalibActive = true;
+			}
+			else
+			{
+				isAutoCalibActive = false;
+				isTestCalibActive = false;
+			}
 			currentSmaStatus.triggerMode = (localRxArray[i + 5] & 0x0F) - 1;
 			currentSmaStatus.rcMenuLevel = ( (localRxArray[i + 5] & 0xF0) >> 4 ) - 1;
 			currentSmaStatus.Altitude = ((int16_t)(localRxArray[i + 6] * 256) + localRxArray[i + 7] + 28000)/10.0;
@@ -419,6 +434,33 @@ bool parseTBSMessage(void)
 			else
 			{
 				displayWarning.BITStatus &= ~criticalAngle;
+			}
+
+			if (currentSmaStatus.BITStatus & 0x1000)
+			{
+				displayWarning.BITStatus |= abnormalGyro;
+			}
+			else
+			{
+				displayWarning.BITStatus &= ~abnormalGyro;
+			}
+
+			if (currentSmaStatus.BITStatus & 0x2000)
+			{
+				displayWarning.BITStatus |= abnormalAcceleration;
+			}
+			else
+			{
+				displayWarning.BITStatus &= ~abnormalAcceleration;
+			}
+
+			if (currentSmaStatus.BITStatus & 0x4000)
+			{
+				displayWarning.BITStatus |= abnormalAngle;
+			}
+			else
+			{
+				displayWarning.BITStatus &= ~abnormalAngle;
 			}
 
 			if (currentSmaStatus.triggerMode == 0)
@@ -587,7 +629,20 @@ void sendSafeAirConfigurationMessage(bool includeTimeInMessage)
 		safeairConfigurationFrame[7] = safeairConfiguration.armMode;
 		safeairConfigurationFrame[8] = safeairConfiguration.triggerMode;
 		safeairConfigurationFrame[9] = safeairConfiguration.platformType;
-		safeairConfigurationFrame[10] = safeairConfiguration.state;
+		uint8_t localState = 0;
+		if (isAutoCalibActive)
+		{
+			localState = 4;
+		}
+		else if (isTestCalibActive)
+		{
+			localState = 5;
+		}
+		else
+		{
+			localState = safeairConfiguration.state;
+		}
+		safeairConfigurationFrame[10] = localState;
 		if (forceDisarmEnabled)
 		{
 			safeairConfiguration.forceDisarm = 0x85;
@@ -617,7 +672,14 @@ void sendSafeAirConfigurationMessage(bool includeTimeInMessage)
 		safeairConfigurationFrame[20] = sTime.Hours; //HH
 		safeairConfigurationFrame[21] = sTime.Minutes; //mm
 		safeairConfigurationFrame[22] = sTime.Seconds; //SS
-		safeairConfigurationFrame[23] = 0x00; //
+		if (testMotorCut)
+		{
+			safeairConfigurationFrame[23] = 0x85;
+		}
+		else
+		{
+			safeairConfigurationFrame[23] = 0x17;
+		}
 		safeairConfigurationFrame[24] = 0x00; //
 		safeairConfigurationFrame[25] = 0x00; //
 		safeairConfigurationFrame[26] = 0x00; //

@@ -29,6 +29,7 @@
 #include "diskio.h"
 #include "ff_gen_drv.h"
 #include "user_diskio.h"
+#include "usb_device.h"
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -131,7 +132,7 @@ const int8_t STORAGE_Inquirydata_FS[] = {/* 36 */
   * @{
   */
 
-extern USBD_HandleTypeDef hUsbDeviceFS;
+//extern USBD_HandleTypeDef hUsbDeviceFS;
 
 /* USER CODE BEGIN EXPORTED_VARIABLES */
 

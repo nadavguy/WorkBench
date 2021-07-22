@@ -273,6 +273,7 @@ void CheckButtons(void)
 			currentCursorPosition.cursorPosition = 0;
 			lastOkButtonPress = HAL_GetTick();
 			menuDrawDirection = FULL;
+			initMenuPages();
 		}
 		else if ( (okPinState == GPIO_PIN_RESET) && (isMenuDisplayed) && (!isItemDisplayed) && (HAL_GetTick() - lastOkButtonPress > 400) )
 		{

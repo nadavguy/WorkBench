@@ -43,6 +43,24 @@ void measureVoltages(bool forceMeasurement)
 	currentVoltages[0] = (float)(currentMeasurementValue[0] * 2.0 / ADCRES) * MCURefVoltage;
 	currentVoltages[1] = (float)(currentMeasurementValue[1] * 2.0 / ADCRES) * MCURefVoltage;
 
+	if ( (isUSBConnected) && (currentVoltages[1] < 2) && (!isChargingMode))
+	{
+		isChargingMode = true;
+		cyclesAboveThresholdCounter = ee.lastStepInCVChargeCycle;
+
+	}
+	else if ( (isUSBConnected) && (currentVoltages[1] >= 2))
+	{
+		isChargingMode = false;
+		didCountChargeCycle = false;
+		startChargeTime = HAL_GetTick();
+	}
+	else if ( (!isUSBConnected) && (ee.lastStepInCVChargeCycle != 0) )
+	{
+		isChargingMode = false;
+		ee.lastStepInCVChargeCycle = 0;
+		ee_save1();
+	}
 
 	if ( (HAL_GetTick() - lastVoltageMeasurement > localDeltaTime) || (lastVoltageMeasurement == 0) || (forceMeasurement) )
 	{
@@ -69,26 +87,7 @@ void measureVoltages(bool forceMeasurement)
 			HAL_GPIO_WritePin(ChargeEnableGPIO, ChargeEnablePIN, GPIO_PIN_RESET);
 		}
 
-		if ( (isUSBConnected) && (currentVoltages[1] < 2) && (!isChargingMode))
-		{
-			isChargingMode = true;
-			cyclesAboveThresholdCounter = ee.lastStepInCVChargeCycle;
-
-		}
-		else if ( (isUSBConnected) && (currentVoltages[1] >= 2))
-		{
-			isChargingMode = false;
-			didCountChargeCycle = false;
-			startChargeTime = HAL_GetTick();
-		}
-		else if ( (!isUSBConnected) && (ee.lastStepInCVChargeCycle != 0) )
-		{
-			isChargingMode = false;
-			ee.lastStepInCVChargeCycle = 0;
-			ee_save1();
-		}
-
-//
+		//
 //		if (!isChargingMode)
 //		{
 //			ee.lastStepInCVChargeCycle = 0;
@@ -101,6 +100,7 @@ void measureVoltages(bool forceMeasurement)
 	}
 	if (isChargingMode)
 	{
+
 		if ((!didCountChargeCycle) && (currentVoltages[2] >= ChargerMaxChargingVoltage - 0.1)
 				&& (!firstMeasurementAboveThreshold))
 		{
@@ -112,7 +112,7 @@ void measureVoltages(bool forceMeasurement)
 		}
 
 		if ( (HAL_GetTick() - ThresholdReachedTime > 5 * 60 * 1000 )
-				&& (cyclesAboveThresholdCounter > 0) && (!didCountChargeCycle))
+				&& (firstMeasurementAboveThreshold) && (!didCountChargeCycle))
 		{
 			cyclesAboveThresholdCounter++;
 			ThresholdReachedTime = HAL_GetTick();
@@ -158,7 +158,7 @@ int8_t convertVoltageToPercent(float inputVoltage)
 	{
 		ret = (int8_t)(inputVoltage * (85) - 267.75);
 	}
-	else if ( (cyclesAboveThresholdCounter > 0) )
+	else if ( (cyclesAboveThresholdCounter >= 0) && (firstMeasurementAboveThreshold))
 	{
 		ret = (int8_t)(85 + cyclesAboveThresholdCounter );
 	}

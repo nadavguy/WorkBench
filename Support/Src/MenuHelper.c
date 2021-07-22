@@ -15,8 +15,9 @@ tMENU_PAGE MainPage;
 tMENU_PAGE rcSettingsPage;
 tMENU_PAGE safeAirSettingsPage;
 tMENU_PAGE blueToothSettingsPage;
+tMENU_PAGE integrationPage;
 
-tMENU_PAGE pagesArray[5];
+tMENU_PAGE pagesArray[6];
 
 tUINT16_ITEM brightnessItem;
 tUINT16_ITEM motorDelayItem;
@@ -39,6 +40,13 @@ tPOPUP massStorageMessage;
 tPOPUP aboutRCMessage;
 tPOPUP aboutBLEMessage;
 tPOPUP tbsInChargeModeMessage;
+tPOPUP autoCalibrationMessage;
+tPOPUP testFlightMessage;
+tPOPUP testMotorCutMessage;
+tPOPUP returnToIdleMessage;
+
+bool isTestCalibActive = false;
+bool isAutoCalibActive = false;
 
 uint32_t itemIDtoUpdate = 0;
 
@@ -59,34 +67,34 @@ void initMenuPages(void)
 		MainPage.numberOfItemsInPage = 4;
 		memcpy(&MainPage.itemsArray[0],"RC Settings",strlen("RC Settings"));
 		memcpy(&MainPage.itemsArray[1],"SA Settings",strlen("SA Settings"));
-		memcpy(&MainPage.itemsArray[2],"About RC",strlen("About RC"));
-		memcpy(&MainPage.itemsArray[3],"Close menu",strlen("Close menu"));
+		memcpy(&MainPage.itemsArray[2],"Integration",strlen("Integration"));
+		memcpy(&MainPage.itemsArray[3],"About RC",strlen("About RC"));
+		memcpy(&MainPage.itemsArray[4],"Close menu",strlen("Close menu"));
 
 		MainPage.cellTypeArray[0] = PAGE;
 		MainPage.cellTypeArray[1] = PAGE;
-		MainPage.cellTypeArray[2] = POPUP;
-		MainPage.cellTypeArray[3] = CLOSE;
+		MainPage.cellTypeArray[2] = PAGE;
+		MainPage.cellTypeArray[3] = POPUP;
+		MainPage.cellTypeArray[4] = CLOSE;
 
 		MainPage.nextCellIDArray[0] = 2;
 		MainPage.nextCellIDArray[1] = 3;
-		MainPage.nextCellIDArray[2] = (uint32_t)&aboutRCMessage;
-		MainPage.nextCellIDArray[3] = 0;
+		MainPage.nextCellIDArray[2] = 5;
+		MainPage.nextCellIDArray[3] = (uint32_t)&aboutRCMessage;
+		MainPage.nextCellIDArray[4] = 0;
 	}
 	else
 	{
 		MainPage.numberOfItemsInPage = 3;
 		memcpy(&MainPage.itemsArray[0],"RC Settings",strlen("RC Settings"));
-//		memcpy(&MainPage.itemsArray[1],"SA Settings",strlen("SA Settings"));
 		memcpy(&MainPage.itemsArray[1],"About RC",strlen("About RC"));
 		memcpy(&MainPage.itemsArray[2],"Close menu",strlen("Close menu"));
 
 		MainPage.cellTypeArray[0] = PAGE;
-//		MainPage.cellTypeArray[1] = PAGE;
 		MainPage.cellTypeArray[1] = POPUP;
 		MainPage.cellTypeArray[2] = CLOSE;
 
 		MainPage.nextCellIDArray[0] = 2;
-//		MainPage.nextCellIDArray[1] = 3;
 		MainPage.nextCellIDArray[1] = (uint32_t)&aboutRCMessage;
 		MainPage.nextCellIDArray[2] = 0;
 	}
@@ -97,7 +105,7 @@ void initMenuPages(void)
 		rcSettingsPage.numberOfItemsInPage = 6;
 		memcpy(&rcSettingsPage.itemsArray[0],"Brightness",strlen("Brightness"));
 		memcpy(&rcSettingsPage.itemsArray[1],"Mass Storage",strlen("Mass Storage"));
-		memcpy(&rcSettingsPage.itemsArray[2],"Clear Storage",strlen("Clear Storage"));
+		memcpy(&rcSettingsPage.itemsArray[2],"Clear RC Storage",strlen("Clear RC Storage"));
 		memcpy(&rcSettingsPage.itemsArray[3],"BlueTooth",strlen("BlueTooth"));
 		memcpy(&rcSettingsPage.itemsArray[4],"Back",strlen("Back"));
 		memcpy(&rcSettingsPage.itemsArray[5],"Close menu",strlen("Close menu"));
@@ -119,7 +127,7 @@ void initMenuPages(void)
 		rcSettingsPage.numberOfItemsInPage = 5;
 		memcpy(&rcSettingsPage.itemsArray[0],"Brightness",strlen("Brightness"));
 		memcpy(&rcSettingsPage.itemsArray[1],"Mass Storage",strlen("Mass Storage"));
-		memcpy(&rcSettingsPage.itemsArray[2],"Clear Storage",strlen("Clear Storage"));
+		memcpy(&rcSettingsPage.itemsArray[2],"Clear RC Storage",strlen("Clear RC Storage"));
 		memcpy(&rcSettingsPage.itemsArray[3],"Back",strlen("Back"));
 		memcpy(&rcSettingsPage.itemsArray[4],"Close menu",strlen("Close menu"));
 		rcSettingsPage.cellTypeArray[0] = UINT16_ITEM;
@@ -142,7 +150,7 @@ void initMenuPages(void)
 	memcpy(&safeAirSettingsPage.itemsArray[3],"Motors Delay",strlen("Motors Delay"));
 	memcpy(&safeAirSettingsPage.itemsArray[4],"Platform Type",strlen("Platform Type"));
 	memcpy(&safeAirSettingsPage.itemsArray[5],"Change State",strlen("Change State"));
-	memcpy(&safeAirSettingsPage.itemsArray[6],"Clear Storage",strlen("Clear Storage"));
+	memcpy(&safeAirSettingsPage.itemsArray[6],"Clear SA Storage",strlen("Clear SA Storage"));
 	memcpy(&safeAirSettingsPage.itemsArray[7],"Back",strlen("Back"));
 	memcpy(&safeAirSettingsPage.itemsArray[8],"Close menu",strlen("Close menu"));
 	safeAirSettingsPage.cellTypeArray[0] = STRING_ITEM;
@@ -183,10 +191,92 @@ void initMenuPages(void)
 	blueToothSettingsPage.nextCellIDArray[4] = 0;
 
 
+	integrationPage.pageID = 5;
+	if ( (menuLevel == DEVELOPER) || (menuLevel == OEM) )
+	{
+		integrationPage.numberOfItemsInPage = 5;
+		if (!isAutoCalibActive)
+		{
+			memcpy(&integrationPage.itemsArray[0],"Init Auto-Calib",strlen("Init Auto-Calib"));
+		}
+		else
+		{
+			memcpy(&integrationPage.itemsArray[0],"Stop Auto-Calib",strlen("Stop Auto-Calib"));
+		}
+		if (!isTestCalibActive)
+		{
+			memcpy(&integrationPage.itemsArray[1],"Init Calib Test",strlen("Init Calib Test"));
+		}
+		else
+		{
+			memcpy(&integrationPage.itemsArray[1],"Stop Calib Test",strlen("Stop Calib Test"));
+		}
+		memcpy(&integrationPage.itemsArray[2],"Test Motor-Cut",strlen("Test Motor-Cut"));
+		memcpy(&integrationPage.itemsArray[3],"Back",strlen("Back"));
+		memcpy(&integrationPage.itemsArray[4],"Close menu",strlen("Close menu"));
+
+		integrationPage.cellTypeArray[0] = POPUP;
+		integrationPage.cellTypeArray[1] = POPUP;
+		integrationPage.cellTypeArray[2] = POPUP;
+		integrationPage.cellTypeArray[3] = BACK;
+		integrationPage.cellTypeArray[4] = CLOSE;
+
+		if (currentSmaStatus.smaState == IDLE)
+		{
+			integrationPage.nextCellIDArray[0] = (uint32_t)&autoCalibrationMessage;
+			integrationPage.nextCellIDArray[1] = (uint32_t)&testFlightMessage;
+			integrationPage.nextCellIDArray[2] = (uint32_t)&testMotorCutMessage;
+		}
+		else
+		{
+			if (isAutoCalibActive)
+			{
+				integrationPage.nextCellIDArray[0] = (uint32_t)&autoCalibrationMessage;
+			}
+			else
+			{
+				integrationPage.nextCellIDArray[0] = (uint32_t)&returnToIdleMessage;
+			}
+
+			if (isTestCalibActive)
+			{
+				integrationPage.nextCellIDArray[1] = (uint32_t)&testFlightMessage;
+			}
+			else
+			{
+				integrationPage.nextCellIDArray[1] = (uint32_t)&returnToIdleMessage;
+			}
+
+//			if (currentSmaStatus.smaState != IDLE)
+//			{
+				integrationPage.nextCellIDArray[2] = (uint32_t)&returnToIdleMessage;
+//			}
+		}
+		integrationPage.nextCellIDArray[3] = 0;
+		integrationPage.nextCellIDArray[4] = 0;
+	}
+//	else
+//	{
+//		integrationPage.numberOfItemsInPage = 3;
+//		memcpy(&integrationPage.itemsArray[0],"RC Settings",strlen("RC Settings"));
+//		memcpy(&integrationPage.itemsArray[1],"About RC",strlen("About RC"));
+//		memcpy(&integrationPage.itemsArray[2],"Close menu",strlen("Close menu"));
+//
+//		integrationPage.cellTypeArray[0] = PAGE;
+//		integrationPage.cellTypeArray[1] = POPUP;
+//		integrationPage.cellTypeArray[2] = CLOSE;
+//
+//		integrationPage.nextCellIDArray[0] = 2;
+//		integrationPage.nextCellIDArray[1] = (uint32_t)&aboutRCMessage;
+//		integrationPage.nextCellIDArray[2] = 0;
+//	}
+
+
 	pagesArray[1] = MainPage;
 	pagesArray[2] = rcSettingsPage;
 	pagesArray[3] = safeAirSettingsPage;
 	pagesArray[4] = blueToothSettingsPage;
+	pagesArray[5] = integrationPage;
 
 	safeairConfiguration.MTD = 0;
 	safeairConfiguration.armMode = 0;
@@ -436,6 +526,57 @@ void initPopupMessages(void)
 //	memcpy(&tbsInChargeModeMessage.itemsArray[3],"be overwritten",strlen("be overwritten"));
 	memcpy(&tbsInChargeModeMessage.itemsArray[3],"Cancel",strlen("Cancel"));
 	memcpy(&tbsInChargeModeMessage.itemsArray[4],"OK (Long Press)",strlen("OK (Long Press)"));
+
+	autoCalibrationMessage.popupID = 11;
+	autoCalibrationMessage.numberOfItemsInPopup = 4;
+	autoCalibrationMessage.isQuestion = true;
+	if (!isAutoCalibActive)
+	{
+		memcpy(&autoCalibrationMessage.itemsArray[0],"Approve to init",strlen("Approve to init"));
+		memcpy(&autoCalibrationMessage.itemsArray[1],"auto-calib",strlen("auto-calib"));
+	}
+	else
+	{
+		memcpy(&autoCalibrationMessage.itemsArray[0],"Approve to stop",strlen("Approve to stop"));
+		memcpy(&autoCalibrationMessage.itemsArray[1],"auto-calib",strlen("auto-calib"));
+	}
+	memcpy(&autoCalibrationMessage.itemsArray[2],"Cancel",strlen("Cancel"));
+	memcpy(&autoCalibrationMessage.itemsArray[3],"OK (Long Press)",strlen("OK (Long Press)"));
+
+	testFlightMessage.popupID = 12;
+	testFlightMessage.numberOfItemsInPopup = 4;
+	testFlightMessage.isQuestion = true;
+	if (!isTestCalibActive)
+	{
+		memcpy(&testFlightMessage.itemsArray[0],"Approve to init",strlen("Approve to init"));
+		memcpy(&testFlightMessage.itemsArray[1],"calib test",strlen("calib test"));
+	}
+	else
+	{
+		memcpy(&testFlightMessage.itemsArray[0],"Approve to stop",strlen("Approve to stop"));
+		memcpy(&testFlightMessage.itemsArray[1],"calib test",strlen("calib test"));
+	}
+	memcpy(&testFlightMessage.itemsArray[2],"Cancel",strlen("Cancel"));
+	memcpy(&testFlightMessage.itemsArray[3],"OK (Long Press)",strlen("OK (Long Press)"));
+
+	testMotorCutMessage.popupID = 13;
+	testMotorCutMessage.numberOfItemsInPopup = 4;
+	testMotorCutMessage.isQuestion = true;
+	memcpy(&testMotorCutMessage.itemsArray[0],"Approve to init",strlen("Approve to init"));
+	memcpy(&testMotorCutMessage.itemsArray[1],"motor-cut test",strlen("motor-cut test"));
+	memcpy(&testMotorCutMessage.itemsArray[2],"Cancel",strlen("Cancel"));
+	memcpy(&testMotorCutMessage.itemsArray[3],"OK (Long Press)",strlen("OK (Long Press)"));
+
+	returnToIdleMessage.popupID = 14;
+	returnToIdleMessage.numberOfItemsInPopup = 7;
+	returnToIdleMessage.isQuestion = false;
+	memcpy(&returnToIdleMessage.itemsArray[0],"SafeAir is not",strlen("SafeAir is not"));
+	memcpy(&returnToIdleMessage.itemsArray[1],"in Idle state,",strlen("in Idle state,"));
+	memcpy(&returnToIdleMessage.itemsArray[2],"Change SafeAir",strlen("Change SafeAir"));
+	memcpy(&returnToIdleMessage.itemsArray[3],"state and try",strlen("state and try"));
+	memcpy(&returnToIdleMessage.itemsArray[4],"again",strlen("again"));
+	memcpy(&returnToIdleMessage.itemsArray[5],"Cancel",strlen("Cancel"));
+	memcpy(&returnToIdleMessage.itemsArray[6],"OK (Long Press)",strlen("OK (Long Press)"));
 }
 
 void updateSelection(void)
@@ -483,18 +624,14 @@ void updateSelection(void)
 	else if ( (pagesArray[currentCursorPosition.currentPageID].cellTypeArray[currentCursorPosition.cursorPosition] == POPUP)
 			&& (currentCursorPosition.currentPageID != 0x00) )
 	{
+		initMenuPages();
 		memcpy(&popupToShow, (uint32_t *)pagesArray[currentCursorPosition.currentPageID].nextCellIDArray[currentCursorPosition.cursorPosition] , sizeof(popupToShow));
 		shouldRenderMenu = false;
 		shouldRenderItem = false;
 		shouldRenderPopup = true;
 		popupDrawDirection = FULL;
 		waitForPopupInput();
-//
-//		currentCursorPosition.previousPageCursorPosition[currentCursorPosition.menuDepth] = currentCursorPosition.cursorPosition;
-//		currentCursorPosition.previousPageID[currentCursorPosition.menuDepth] = currentCursorPosition.currentPageID;
-//		currentCursorPosition.currentPageID = pagesArray[currentCursorPosition.currentPageID].nextCellIDArray[currentCursorPosition.cursorPosition];
-//		currentCursorPosition.cursorPosition = 0;
-//		currentCursorPosition.menuDepth++;
+
 		isMenuDisplayed = true;
 		shouldRenderMenu = true;
 		shouldRenderItem = false;
