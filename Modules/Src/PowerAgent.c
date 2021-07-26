@@ -138,29 +138,32 @@ void measureVoltages(bool forceMeasurement)
 int8_t convertVoltageToPercent(float inputVoltage)
 {
 	uint8_t ret = 0;
-	if (inputVoltage <= 3.5)
+	if (ee.batteryType == 1)
 	{
-		ret = 0;
-	}
-	else if ( (inputVoltage > 3.5) && (inputVoltage <= 3.6) && (cyclesAboveThresholdCounter == 0) )
-	{
-		ret = (int8_t)(inputVoltage * (42.5) - 148.75);
-	}
-	else if ( (inputVoltage > 3.6) && (inputVoltage <= 3.8) && (cyclesAboveThresholdCounter == 0) )
-	{
-		ret = (int8_t)(inputVoltage * (233.75) - 837.25);
-	}
-	else if ( (inputVoltage > 3.8) && (inputVoltage <= 4) && (cyclesAboveThresholdCounter == 0) )
-	{
-		ret = (int8_t)(inputVoltage * (106.25) - 352.75);
-	}
-	else if ( (inputVoltage > 4) && (inputVoltage <= 4.15) && (cyclesAboveThresholdCounter == 0) )
-	{
-		ret = (int8_t)(inputVoltage * (85) - 267.75);
-	}
-	else if ( (cyclesAboveThresholdCounter >= 0) && (firstMeasurementAboveThreshold))
-	{
-		ret = (int8_t)(85 + cyclesAboveThresholdCounter );
+		if (inputVoltage <= 3.5)
+		{
+			ret = 0;
+		}
+		else if ( (inputVoltage > 3.5) && (inputVoltage <= 3.6) && (cyclesAboveThresholdCounter == 0) )
+		{
+			ret = (int8_t)(inputVoltage * (42.5) - 148.75);
+		}
+		else if ( (inputVoltage > 3.6) && (inputVoltage <= 3.8) && (cyclesAboveThresholdCounter == 0) )
+		{
+			ret = (int8_t)(inputVoltage * (233.75) - 837.25);
+		}
+		else if ( (inputVoltage > 3.8) && (inputVoltage <= 4) && (cyclesAboveThresholdCounter == 0) )
+		{
+			ret = (int8_t)(inputVoltage * (106.25) - 352.75);
+		}
+		else if ( (inputVoltage > 4) && (inputVoltage <= 4.15) && (cyclesAboveThresholdCounter == 0) )
+		{
+			ret = (int8_t)(inputVoltage * (85) - 267.75);
+		}
+		else if ( (cyclesAboveThresholdCounter >= 0) && (firstMeasurementAboveThreshold))
+		{
+			ret = (int8_t)(85 + cyclesAboveThresholdCounter );
+		}
 	}
 
 	return ret;

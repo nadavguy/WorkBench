@@ -408,7 +408,7 @@ void waitForPopupInput(void)
 					}
 					if ( (popupToShow.isQuestion) && (okButtonPressDuration >= 1000) && (popupDrawDirection == DOWN))
 					{
-//						isTestCalibActive = !isTestCalibActive;
+
 						break;
 					}
 					sendChannelMessageToTBS();
@@ -420,7 +420,31 @@ void waitForPopupInput(void)
 				initMenuPages();
 				initPopupMessages();
 				break;
-			} //End of TestCalib
+			}
+
+			case 15:
+			{
+				while ( (okButtonPressDuration < 1075) )
+				{
+					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 1000) )
+					{
+						break;
+					}
+					if ( (popupToShow.isQuestion) && (okButtonPressDuration >= 1000) && (popupDrawDirection == DOWN))
+					{
+
+						break;
+					}
+					sendChannelMessageToTBS();
+					updateRCState();
+					CheckButtons();
+					screenUpdate(false);
+					updateNextFrame();
+				}
+				initMenuPages();
+				initPopupMessages();
+				break;
+			}
 
 			default:
 			{

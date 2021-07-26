@@ -972,7 +972,7 @@ void screenUpdate(bool drawDeltaImage)
 		{
 			char localText[12] = "";
 			Paint_DrawLine(LineStartX, LineY, LineEndX, LineY, BLACK, DOT_PIXEL_1X1, LINE_STYLE_SOLID);
-			if ((currentSmaStatus.smaState != ARMED) && (currentSmaStatus.smaState != TRIGGERED))
+			if ((currentSmaStatus.smaState != ARMED) && (currentSmaStatus.smaState != TRIGGERED) && (!isAutoCalibActive) && (!isTestCalibActive))
 			{
 				sprintf(localText, "%06.1f m", 0.0);
 			}
@@ -980,7 +980,7 @@ void screenUpdate(bool drawDeltaImage)
 			{
 				sprintf(localText, "%06.1f m", currentSmaStatus.Altitude);
 			}
- 			centeredString(74, 138, localText, BLACK, BACKGROUND, 14, Font16);
+ 			centeredString(74, 138, localText, BLACK, BACKGROUND, 8, Font16);
 			drawAltitudeIcon(drawDeltaImage);
 			shouldDrawSafeAirAltitude = false;
 		}

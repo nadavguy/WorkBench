@@ -44,6 +44,7 @@ tPOPUP autoCalibrationMessage;
 tPOPUP testFlightMessage;
 tPOPUP testMotorCutMessage;
 tPOPUP returnToIdleMessage;
+tPOPUP disconnectPyroMessage;
 
 bool isTestCalibActive = false;
 bool isAutoCalibActive = false;
@@ -64,7 +65,7 @@ void initMenuPages(void)
 	MainPage.pageID = 1;
 	if ( (menuLevel == DEVELOPER) || (menuLevel == OEM) )
 	{
-		MainPage.numberOfItemsInPage = 4;
+		MainPage.numberOfItemsInPage = 5;
 		memcpy(&MainPage.itemsArray[0],"RC Settings",strlen("RC Settings"));
 		memcpy(&MainPage.itemsArray[1],"SA Settings",strlen("SA Settings"));
 		memcpy(&MainPage.itemsArray[2],"Integration",strlen("Integration"));
@@ -221,7 +222,12 @@ void initMenuPages(void)
 		integrationPage.cellTypeArray[3] = BACK;
 		integrationPage.cellTypeArray[4] = CLOSE;
 
-		if (currentSmaStatus.smaState == IDLE)
+		if (!(currentSmaStatus.BITStatus & 0x04) && (!isAutoCalibActive) && (!isTestCalibActive))
+		{
+			integrationPage.nextCellIDArray[0] = (uint32_t)&disconnectPyroMessage;
+			integrationPage.nextCellIDArray[1] = (uint32_t)&disconnectPyroMessage;
+		}
+		else if (currentSmaStatus.smaState == IDLE)
 		{
 			integrationPage.nextCellIDArray[0] = (uint32_t)&autoCalibrationMessage;
 			integrationPage.nextCellIDArray[1] = (uint32_t)&testFlightMessage;
@@ -577,6 +583,16 @@ void initPopupMessages(void)
 	memcpy(&returnToIdleMessage.itemsArray[4],"again",strlen("again"));
 	memcpy(&returnToIdleMessage.itemsArray[5],"Cancel",strlen("Cancel"));
 	memcpy(&returnToIdleMessage.itemsArray[6],"OK (Long Press)",strlen("OK (Long Press)"));
+
+	disconnectPyroMessage.popupID = 15;
+	disconnectPyroMessage.numberOfItemsInPopup = 6;
+	disconnectPyroMessage.isQuestion = false;
+	memcpy(&disconnectPyroMessage.itemsArray[0],"SafeAir's pyro",strlen("SafeAir's pyro"));
+	memcpy(&disconnectPyroMessage.itemsArray[1],"is connected.",strlen("is connected."));
+	memcpy(&disconnectPyroMessage.itemsArray[2],"Disconnect it",strlen("Disconnect it"));
+	memcpy(&disconnectPyroMessage.itemsArray[3],"and try again",strlen("and try again"));
+	memcpy(&disconnectPyroMessage.itemsArray[4],"Cancel",strlen("Cancel"));
+	memcpy(&disconnectPyroMessage.itemsArray[5],"OK (Long Press)",strlen("OK (Long Press)"));
 }
 
 void updateSelection(void)

@@ -394,6 +394,24 @@ eCI_RESULT func_showLastTailID(void)
 	return CI_NO_UART_ACK;
 } //
 
+eCI_RESULT func_updateBatteryType(void)
+{
+
+	if (get_param_count() > 0)
+	{
+		ee.batteryType = get_param_int(0);
+		ee_save1();
+		sprintf(terminalBuffer, "Battery type updated");
+		logData(terminalBuffer, false, false, false);
+	}
+	else
+	{
+		sprintf(terminalBuffer, "Battery type did not update");
+		logData(terminalBuffer, false, false, false);
+	}
+	return CI_NO_UART_ACK;
+} //
+
 eCI_RESULT func_dir(void)
 {
     FILINFO fno1;
@@ -467,6 +485,7 @@ functionsList cases [] =
 		{ "crcm", func_changeRCMode},
 		{ "del", func_deleteFile},
 		{ "slti", func_showLastTailID},
+		{ "upbt", func_updateBatteryType},
 		{ "dir" , func_dir },
 		{ "fmt" , func_fmt }
 };

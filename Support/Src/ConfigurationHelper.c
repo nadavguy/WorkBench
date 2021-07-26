@@ -39,8 +39,12 @@ void printRCConfiguration(bool toDisplayOnly)
     logData(terminalBuffer, false, toDisplayOnly, false);
     sprintf(terminalBuffer, "Screen Orientation..................[N/A].SCOR: %d [%d/%d/%d]",
                 ee.screenOreintation, EEV_ScreenOrientation.min, EEV_ScreenOrientation.std, EEV_ScreenOrientation.max);
-        logData(terminalBuffer, false, toDisplayOnly, false);
+    logData(terminalBuffer, false, toDisplayOnly, false);
     logData("Enum: 0 - Landscape, 1 - Portrait", false, toDisplayOnly, false);
+    sprintf(terminalBuffer, "Battery Type........................[N/A].UPBT: %d [%d/%d/%d]",
+    		ee.batteryType, EEV_BatteryType.min, EEV_BatteryType.std, EEV_BatteryType.max);
+    logData(terminalBuffer, false, toDisplayOnly, false);
+    logData("Enum: 1 - HCP902", false, toDisplayOnly, false);
 
     // sprintf(term_buffer, "\r\n<External Applications>");
     logData("", false, toDisplayOnly, false);

@@ -27,6 +27,7 @@ typedef struct sEE_DATA
 	uint8_t rcMode;
 	char lastPairedDevice[16];
 	uint8_t lastStepInCVChargeCycle;
+	uint8_t batteryType;
 }tEE_DATA;
 
 

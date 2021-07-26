@@ -295,6 +295,11 @@ bool parseTBSMessage(void)
 			currentSmaStatus.triggerMode = (localRxArray[i + 5] & 0x0F) - 1;
 			currentSmaStatus.rcMenuLevel = ( (localRxArray[i + 5] & 0xF0) >> 4 ) - 1;
 			currentSmaStatus.Altitude = ((int16_t)(localRxArray[i + 6] * 256) + localRxArray[i + 7] + 28000)/10.0;
+			if ( (fabs(1 - previousSmaStatus.Altitude / currentSmaStatus.Altitude) > 0.1)
+					|| (fabs(previousSmaStatus.Altitude - currentSmaStatus.Altitude) > 1) )
+			{
+				shouldDrawSafeAirAltitude = true;
+			}
 			currentSmaStatus.Acceleration = (localRxArray[i + 8] * 256 + localRxArray[i + 9])/100.0;
 			currentSmaStatus.BITStatus = localRxArray[i + 10] * 256 + localRxArray[i + 11];
 
