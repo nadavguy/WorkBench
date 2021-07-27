@@ -65,7 +65,7 @@ uint8_t retriesCounter = 0;
 uint16_t previousPackID = 0;
 uint16_t packID = 0;
 uint16_t totalPackID = 0;
-uint16_t receivedCRC = 0;
+uint16_t receivedCRC = 0xEC0C;
 
 uint32_t lastUSBDataRead = 0;
 uint32_t lastPacketRequest = 0;
@@ -86,7 +86,9 @@ uint16_t readUSBData(void)
 //		memset(usbRXArray, 0, APP_RX_DATA_SIZE);
 		USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &usbRXArray[0]);
 		USBD_CDC_ReceivePacket(&hUsbDeviceFS);
-		usbBytesRead = strlen((char *)usbRXArray);
+		uint8_t localArray[64] = {0};
+		memcpy(localArray, usbRXArray, 64);
+		usbBytesRead = strlen((char *)localArray);
 		char * ptr;
 		int    ch = '\r';
 
@@ -95,7 +97,7 @@ uint16_t readUSBData(void)
 			ch = '#';
 		}
 
-		ptr = strchr((char *)usbRXArray, ch );
+		ptr = strchr((char *)localArray, ch );
 
 		if ( (usbBytesRead >= 1) && (ptr == NULL) && (!isInfwUpdateMode))
 		{
@@ -105,10 +107,10 @@ uint16_t readUSBData(void)
 			memset(usbRXArray, 0, APP_RX_DATA_SIZE);
 			usbBytesRead = 0;
 		}
-		else if ( (usbRXArray[0] == 'T') && (usbRXArray[NUBMEROFBYTESINFWMESSAGE + 3] == '#') && (usbRXArray[NUBMEROFBYTESINFWMESSAGE + 4] == '\r') && (isInfwUpdateMode))
+		else if ( (localArray[0] == 'T') && (localArray[NUBMEROFBYTESINFWMESSAGE + 3] == '#') && (localArray[NUBMEROFBYTESINFWMESSAGE + 4] == '\r') && (isInfwUpdateMode))
 		{
-			totalPackID = usbRXArray[1] * 256 + usbRXArray[2];
-			totalBytesLengthInFile = usbRXArray[3] * 65536 + usbRXArray[4] * 256 + usbRXArray[5];
+			totalPackID = localArray[1] * 256 + localArray[2];
+			totalBytesLengthInFile = localArray[3] * 65536 + localArray[4] * 256 + localArray[5];
 			sprintf(terminalBuffer,"Total Number of Bytes in file: %ld", totalBytesLengthInFile);
 			logData(terminalBuffer, false, false, false);
 
@@ -123,21 +125,22 @@ uint16_t readUSBData(void)
 			}
 			sprintf(terminalBuffer,"Sector Used: %d", rotator);
 			logData(terminalBuffer, false, false, false);
+			lastPacketRequest = HAL_GetTick();
 
 		}
-		else if ( (usbRXArray[0] == 'C') && (usbRXArray[1] == 'R') && (usbRXArray[2] == 'C') &&
-				(usbRXArray[NUBMEROFBYTESINFWMESSAGE + 3] == '#') && (usbRXArray[NUBMEROFBYTESINFWMESSAGE + 4] == '\r') && (isInfwUpdateMode))
+		else if ( (localArray[0] == 'C') && (localArray[1] == 'R') && (localArray[2] == 'C') &&
+				(localArray[NUBMEROFBYTESINFWMESSAGE + 3] == '#') && (localArray[NUBMEROFBYTESINFWMESSAGE + 4] == '\r') && (isInfwUpdateMode))
 		{
-			receivedCRC = 0x100 * usbRXArray[3] + usbRXArray[4];
+			receivedCRC = 0x100 * localArray[3] + localArray[4];
 		}
-		else if ( (usbRXArray[0] == 'P') && (usbRXArray[NUBMEROFBYTESINFWMESSAGE + 3] == '#') && (usbRXArray[NUBMEROFBYTESINFWMESSAGE + 4] == '\r') && (isInfwUpdateMode))
+		else if ( (localArray[0] == 'P') && (localArray[NUBMEROFBYTESINFWMESSAGE + 3] == '#') && (localArray[NUBMEROFBYTESINFWMESSAGE + 4] == '\r') && (isInfwUpdateMode))
 		{
 
 			uint32_t writeAddress = 0;
 			char localString[16] = "";
 			writeAddress = localFlashParams.startAddress;
 //			memcpy(&FileReadBuffer, (uint8_t *)usbRXArray, 35);
-			packID = usbRXArray[1] * 256 + usbRXArray[2];
+			packID = localArray[1] * 256 + localArray[2];
 			if (packID == previousPackID + 1) // Packet received correctly
 			{
 				writeAddress = localFlashParams.startAddress + NUBMEROFBYTESINFWMESSAGE * (packID -1);
@@ -145,7 +148,7 @@ uint16_t readUSBData(void)
 //				memcpy(decryptedArray, &usbRXArray[3], 32);
 				for (int i = 0; i < NUBMEROFBYTESINFWMESSAGE ; i++)
 				{
-					uint8_t secondLeftRotate = rrotate(usbRXArray[i + 3], 8 - rotator);
+					uint8_t secondLeftRotate = rrotate(localArray[i + 3], 8 - rotator);
 					uint8_t afterKey = (uint8_t)(secondLeftRotate ^ phrase[decryptionCounter]);
 					uint8_t firstLeftRotation = rrotate(afterKey, rotator);
 					decryptedArray[i] = firstLeftRotation;
@@ -172,11 +175,13 @@ uint16_t readUSBData(void)
 				}
 				previousPackID = packID;
 				sprintf(localString,"P%06d\r",packID);
+				lastPacketRequest = HAL_GetTick();
 			}
 			else if (packID == previousPackID) // Received duplicate packet
 			{
 				sprintf(localString,"P%06d\r",packID);
 				HAL_Delay(5);
+				lastPacketRequest = HAL_GetTick();
 			}
 //			else // Resend packet
 //			{
@@ -203,8 +208,8 @@ uint16_t readUSBData(void)
 			memset(usbRXArray, 0, APP_RX_DATA_SIZE);
 			usbBytesRead = 0;
 		}
-		else if ( (usbBytesRead == 0) && (isInfwUpdateMode) && (previousPackID > 0) && (previousPackID <= packID)
-				&& (HAL_GetTick() - lastPacketRequest > 100) )
+		else if ( (usbBytesRead == 0) && (isInfwUpdateMode) && (previousPackID > 0) && (previousPackID < packID)
+				&& (HAL_GetTick() - lastPacketRequest > 50) )
 		{
 			char localString[16] = "";
 			sprintf(localString,"R%06d\r",previousPackID);
@@ -213,8 +218,18 @@ uint16_t readUSBData(void)
 			CDC_Transmit_FS((uint8_t*)localString, 16);
 			lastPacketRequest = HAL_GetTick();
 		}
+		else if ( (usbBytesRead == 0) && (isInfwUpdateMode) && (previousPackID > 0) && (previousPackID == packID)
+				&& (HAL_GetTick() - lastPacketRequest > 50)  && (packID == totalPackID) && (totalPackID != 0) )
+		{
+			char localString[16] = "";
+			sprintf(localString,"P%06d\r",previousPackID);
+			PCD_HandleTypeDef *hpcd = hUsbDeviceFS.pData;
+			USB_FlushTxFifo(hpcd->Instance, 15);
+			CDC_Transmit_FS((uint8_t*)localString, 16);
+			lastPacketRequest = HAL_GetTick();
+		}
 		else if ( (usbBytesRead == 0) && (isInfwUpdateMode) && (previousPackID > 0) && (previousPackID > packID)
-				&& (HAL_GetTick() - lastPacketRequest > 100) )
+				&& (HAL_GetTick() - lastPacketRequest > 50) )
 		{
 			char localString[16] = "";
 			sprintf(localString,"R%06d\r",packID);
@@ -224,8 +239,9 @@ uint16_t readUSBData(void)
 			lastPacketRequest = HAL_GetTick();
 			previousPackID = packID;
 		}
-		else if ( (usbBytesRead == 0) && (isInfwUpdateMode) && (previousPackID >= 0) && (previousPackID == packID)
-				&& (packID == 0) && (HAL_GetTick() - lastPacketRequest > 100) && (totalPackID == 0) )
+		else if ( (localArray[0] == 'P') && (localArray[NUBMEROFBYTESINFWMESSAGE + 3] == '#')
+		        && (localArray[NUBMEROFBYTESINFWMESSAGE + 4] == '\r')
+				&& (isInfwUpdateMode) && (receivedCRC == 0xEC0C))
 		{
 			char localString[16] = "";
 			sprintf(localString,"T%06d\r",packID);
@@ -235,7 +251,27 @@ uint16_t readUSBData(void)
 			lastPacketRequest = HAL_GetTick();
 		}
 		else if ( (usbBytesRead == 0) && (isInfwUpdateMode) && (previousPackID >= 0) && (previousPackID == packID)
-				&& (packID == 0) && (HAL_GetTick() - lastPacketRequest > 100) && (totalPackID != 0))
+				&& (packID == 0) && (HAL_GetTick() - lastPacketRequest > 50) && (totalPackID == 0) )
+		{
+			char localString[16] = "";
+			sprintf(localString,"T%06d\r",packID);
+			PCD_HandleTypeDef *hpcd = hUsbDeviceFS.pData;
+			USB_FlushTxFifo(hpcd->Instance, 15);
+			CDC_Transmit_FS((uint8_t*)localString, 16);
+			lastPacketRequest = HAL_GetTick();
+		}
+		else if ( (usbBytesRead == 0) && (isInfwUpdateMode) && (previousPackID >= 0) && (previousPackID == packID)
+				&& (packID == 0) && (HAL_GetTick() - lastPacketRequest > 50) && (totalPackID != 0))
+		{
+			char localString[16] = "";
+			sprintf(localString,"P%06d\r",packID);
+			PCD_HandleTypeDef *hpcd = hUsbDeviceFS.pData;
+			USB_FlushTxFifo(hpcd->Instance, 15);
+			CDC_Transmit_FS((uint8_t*)localString, 16);
+			lastPacketRequest = HAL_GetTick();
+		}
+		else if ( (usbBytesRead == 0) && (isInfwUpdateMode) && (previousPackID >= 0) && (previousPackID == packID)
+				&& (packID != 0) && (HAL_GetTick() - lastPacketRequest > 50) && (totalPackID != 0))
 		{
 			char localString[16] = "";
 			sprintf(localString,"P%06d\r",packID);

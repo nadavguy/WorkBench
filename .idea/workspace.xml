@@ -2,24 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e447845d-0404-4cf9-8f7c-0c2976b9c261" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/Core/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Debug/Core/Src/subdir.mk" beforeDir="false" afterPath="$PROJECT_DIR$/Debug/Core/Src/subdir.mk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Debug/Drivers/STM32F7xx_HAL_Driver/Src/subdir.mk" beforeDir="false" afterPath="$PROJECT_DIR$/Debug/Drivers/STM32F7xx_HAL_Driver/Src/subdir.mk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Debug/FATFS/App/subdir.mk" beforeDir="false" afterPath="$PROJECT_DIR$/Debug/FATFS/App/subdir.mk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Debug/FATFS/Target/subdir.mk" beforeDir="false" afterPath="$PROJECT_DIR$/Debug/FATFS/Target/subdir.mk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Debug/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/subdir.mk" beforeDir="false" afterPath="$PROJECT_DIR$/Debug/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/subdir.mk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Debug/Middlewares/ST/STM32_USB_Device_Library/Core/Src/subdir.mk" beforeDir="false" afterPath="$PROJECT_DIR$/Debug/Middlewares/ST/STM32_USB_Device_Library/Core/Src/subdir.mk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Debug/Middlewares/Third_Party/FatFs/src/option/subdir.mk" beforeDir="false" afterPath="$PROJECT_DIR$/Debug/Middlewares/Third_Party/FatFs/src/option/subdir.mk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Debug/Middlewares/Third_Party/FatFs/src/subdir.mk" beforeDir="false" afterPath="$PROJECT_DIR$/Debug/Middlewares/Third_Party/FatFs/src/subdir.mk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Debug/Modules/Src/subdir.mk" beforeDir="false" afterPath="$PROJECT_DIR$/Debug/Modules/Src/subdir.mk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Debug/Support/Src/subdir.mk" beforeDir="false" afterPath="$PROJECT_DIR$/Debug/Support/Src/subdir.mk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Debug/USB_DEVICE/App/subdir.mk" beforeDir="false" afterPath="$PROJECT_DIR$/Debug/USB_DEVICE/App/subdir.mk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Debug/USB_DEVICE/App/usb_device.su" beforeDir="false" afterPath="$PROJECT_DIR$/Debug/USB_DEVICE/App/usb_device.su" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Debug/USB_DEVICE/Target/subdir.mk" beforeDir="false" afterPath="$PROJECT_DIR$/Debug/USB_DEVICE/Target/subdir.mk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Debug/makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Debug/makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Debug/objects.list" beforeDir="false" afterPath="$PROJECT_DIR$/Debug/objects.list" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Debug/sources.mk" beforeDir="false" afterPath="$PROJECT_DIR$/Debug/sources.mk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RC-BeyondTheIronCurtain Debug.launch" beforeDir="false" afterPath="$PROJECT_DIR$/RC-BeyondTheIronCurtain Debug.launch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/USB_DEVICE/App/usb_device.c" beforeDir="false" afterPath="$PROJECT_DIR$/USB_DEVICE/App/usb_device.c" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -71,7 +54,7 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="7f8a3451-44aa-42fa-b418-25e8b13c7eae" name="Default Changelist" comment="" />
+      <changelist id="e447845d-0404-4cf9-8f7c-0c2976b9c261" name="Default Changelist" comment="" />
       <created>1624974797956</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
