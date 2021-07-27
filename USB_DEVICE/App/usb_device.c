@@ -105,7 +105,7 @@ uint16_t readUSBData(void)
 			memset(usbRXArray, 0, APP_RX_DATA_SIZE);
 			usbBytesRead = 0;
 		}
-		else if ( (usbRXArray[0] == 'T') && (usbRXArray[35] == '#') && (usbRXArray[36] == '\r') && (isInfwUpdateMode))
+		else if ( (usbRXArray[0] == 'T') && (usbRXArray[NUBMEROFBYTESINFWMESSAGE + 3] == '#') && (usbRXArray[NUBMEROFBYTESINFWMESSAGE + 4] == '\r') && (isInfwUpdateMode))
 		{
 			totalPackID = usbRXArray[1] * 256 + usbRXArray[2];
 			totalBytesLengthInFile = usbRXArray[3] * 65536 + usbRXArray[4] * 256 + usbRXArray[5];
@@ -126,11 +126,11 @@ uint16_t readUSBData(void)
 
 		}
 		else if ( (usbRXArray[0] == 'C') && (usbRXArray[1] == 'R') && (usbRXArray[2] == 'C') &&
-				(usbRXArray[35] == '#') && (usbRXArray[36] == '\r') && (isInfwUpdateMode))
+				(usbRXArray[NUBMEROFBYTESINFWMESSAGE + 3] == '#') && (usbRXArray[NUBMEROFBYTESINFWMESSAGE + 4] == '\r') && (isInfwUpdateMode))
 		{
 			receivedCRC = 0x100 * usbRXArray[3] + usbRXArray[4];
 		}
-		else if ( (usbRXArray[0] == 'P') && (usbRXArray[35] == '#') && (usbRXArray[36] == '\r') && (isInfwUpdateMode))
+		else if ( (usbRXArray[0] == 'P') && (usbRXArray[NUBMEROFBYTESINFWMESSAGE + 3] == '#') && (usbRXArray[NUBMEROFBYTESINFWMESSAGE + 4] == '\r') && (isInfwUpdateMode))
 		{
 
 			uint32_t writeAddress = 0;
@@ -140,10 +140,10 @@ uint16_t readUSBData(void)
 			packID = usbRXArray[1] * 256 + usbRXArray[2];
 			if (packID == previousPackID + 1) // Packet received correctly
 			{
-				writeAddress = localFlashParams.startAddress + 32 * (packID -1);
+				writeAddress = localFlashParams.startAddress + NUBMEROFBYTESINFWMESSAGE * (packID -1);
 				uint8_t decryptedArray[32] = {0};
 //				memcpy(decryptedArray, &usbRXArray[3], 32);
-				for (int i = 0; i < 32 ; i++)
+				for (int i = 0; i < NUBMEROFBYTESINFWMESSAGE ; i++)
 				{
 					uint8_t secondLeftRotate = rrotate(usbRXArray[i + 3], 8 - rotator);
 					uint8_t afterKey = (uint8_t)(secondLeftRotate ^ phrase[decryptionCounter]);
@@ -158,12 +158,12 @@ uint16_t readUSBData(void)
 
 
 
-				uint32_t write_ret = writeData(writeAddress, (uint32_t *)decryptedArray, 32);
+				uint32_t write_ret = writeData(writeAddress, (uint32_t *)decryptedArray, NUBMEROFBYTESINFWMESSAGE);
 				uint8_t retriesCount = 0;
 				while ( (0 != write_ret) && (retriesCount <= 5) )
 				{
 					HAL_Delay(5);
-					write_ret = writeData(writeAddress, (uint32_t *)decryptedArray, 32);
+					write_ret = writeData(writeAddress, (uint32_t *)decryptedArray, NUBMEROFBYTESINFWMESSAGE);
 					retriesCount++;
 				}
 				if (retriesCount > 0)
