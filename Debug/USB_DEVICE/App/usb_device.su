@@ -1,4 +1,0 @@
-usb_device.c:80:10:readUSBData	176	static
-usb_device.c:296:10:fastUSBData	24	static
-usb_device.c:379:6:MX_MSC_DEVICE_Init	8	static
-usb_device.c:406:6:MX_USB_DEVICE_Init	8	static

@@ -106,7 +106,7 @@ void initMenuPages(void)
 		rcSettingsPage.numberOfItemsInPage = 6;
 		memcpy(&rcSettingsPage.itemsArray[0],"Brightness",strlen("Brightness"));
 		memcpy(&rcSettingsPage.itemsArray[1],"Mass Storage",strlen("Mass Storage"));
-		memcpy(&rcSettingsPage.itemsArray[2],"Clear RC Storage",strlen("Clear RC Storage"));
+		memcpy(&rcSettingsPage.itemsArray[2],"Clear RC Flash",strlen("Clear RC Flash"));
 		memcpy(&rcSettingsPage.itemsArray[3],"BlueTooth",strlen("BlueTooth"));
 		memcpy(&rcSettingsPage.itemsArray[4],"Back",strlen("Back"));
 		memcpy(&rcSettingsPage.itemsArray[5],"Close menu",strlen("Close menu"));
@@ -128,7 +128,7 @@ void initMenuPages(void)
 		rcSettingsPage.numberOfItemsInPage = 5;
 		memcpy(&rcSettingsPage.itemsArray[0],"Brightness",strlen("Brightness"));
 		memcpy(&rcSettingsPage.itemsArray[1],"Mass Storage",strlen("Mass Storage"));
-		memcpy(&rcSettingsPage.itemsArray[2],"Clear RC Storage",strlen("Clear RC Storage"));
+		memcpy(&rcSettingsPage.itemsArray[2],"Clear RC Flash",strlen("Clear RC Flash"));
 		memcpy(&rcSettingsPage.itemsArray[3],"Back",strlen("Back"));
 		memcpy(&rcSettingsPage.itemsArray[4],"Close menu",strlen("Close menu"));
 		rcSettingsPage.cellTypeArray[0] = UINT16_ITEM;
@@ -151,7 +151,7 @@ void initMenuPages(void)
 	memcpy(&safeAirSettingsPage.itemsArray[3],"Motors Delay",strlen("Motors Delay"));
 	memcpy(&safeAirSettingsPage.itemsArray[4],"Platform Type",strlen("Platform Type"));
 	memcpy(&safeAirSettingsPage.itemsArray[5],"Change State",strlen("Change State"));
-	memcpy(&safeAirSettingsPage.itemsArray[6],"Clear SA Storage",strlen("Clear SA Storage"));
+	memcpy(&safeAirSettingsPage.itemsArray[6],"Clear SA Flash",strlen("Clear SA Flash"));
 	memcpy(&safeAirSettingsPage.itemsArray[7],"Back",strlen("Back"));
 	memcpy(&safeAirSettingsPage.itemsArray[8],"Close menu",strlen("Close menu"));
 	safeAirSettingsPage.cellTypeArray[0] = STRING_ITEM;
