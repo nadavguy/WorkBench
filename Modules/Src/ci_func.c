@@ -481,15 +481,15 @@ eCI_RESULT func_enterPassword(void)
 	{
 		if (strcmp(get_param_str(0), ee.password) == 0)
 		{
-			SessionUnlocked = true;
+			sessionUnlocked = true;
 			sprintf(terminalBuffer, "\r\nUnit unlocked\n\r");
-			PRINT(SessionUnlocked);
+			logData(terminalBuffer, false, true, false);
 		}
 	}
 	else
 	{
 		sprintf(terminalBuffer, "\r\nWrong password\n\r");
-		PRINT(true);
+		logData(terminalBuffer, false, true, false);
 	}
 	return (CI_OK);
 } //

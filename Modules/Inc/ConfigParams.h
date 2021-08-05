@@ -57,6 +57,7 @@ extern tEEV_U08 EEV_LinkType;
 extern tEEV_U16 EEV_Backlight;
 extern tEEV_U08 EEV_ScreenOrientation;
 extern tEEV_U08 EEV_ChargeCycle;
+extern tEEV_U08 EEV_BatteryType;
 
 extern bool ee_validate1(void);
 

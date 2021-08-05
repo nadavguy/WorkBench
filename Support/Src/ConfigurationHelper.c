@@ -98,7 +98,7 @@ void printRCConfiguration(bool toDisplayOnly)
 	// logData("------------------Initialization---------------------", false, toDisplayOnly);
 
 	logData("--------------Initialization Ended---------------------\3", false, toDisplayOnly, false);
-	if (!SessionUnlocked)
+	if (!sessionUnlocked)
 	{
 		logData("!Unit locked", false, true, false);
 	}
