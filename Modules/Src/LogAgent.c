@@ -11,7 +11,7 @@
 #include "usbd_cdc_if.h"
 #include "fatfs.h"
 
-bool sessionUnlocked = true;
+bool sessionUnlocked = false;
 uint32_t previousLogIndex = 0;
 uint32_t lastFileSizeCheck = 0;
 

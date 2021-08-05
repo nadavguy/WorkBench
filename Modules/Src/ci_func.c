@@ -12,6 +12,10 @@ bool isInfwUpdateMode = false;
 
 eCI_RESULT func_debug(void)
 {
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
 	if (get_param_count() > 0)
 	{
 		ee.debugLevel = get_param_int(0);
@@ -24,7 +28,10 @@ eCI_RESULT func_debug(void)
 
 eCI_RESULT func_updateRCVersion(void)
 {
-//	uint32_t writeAddress = 0;
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
 	localFlashParams.startAddress = 0x08180000;
 	localFlashParams.voltageLevel = FLASH_VOLTAGE_RANGE_3;
 //	writeAddress = localFlashParams.startAddress;
@@ -46,16 +53,10 @@ eCI_RESULT func_versionReport(void)
 
 eCI_RESULT func_endUpdatePhase(void)
 {
-//	HAL_UART_DMAStop(&huart2);
-//
-//	HAL_Delay(100);
-//	JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4);
-//	/* Jump to user application */
-//	JumpToApplication = (pFunction) JumpAddress;
-//	/* Initialize user application's Stack Pointer */
-//	__set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
-//	JumpToApplication();
-	//TODO: show Flash process finished
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
 	isInfwUpdateMode = false;
 	return CI_OK;
 }
@@ -73,6 +74,10 @@ eCI_RESULT func_showAvailableCommands(void)
 
 eCI_RESULT func_armPWMOff(void)
 {
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
 	if (get_param_count() > 0)
 	{
 		ee.armPWMOffValue = get_param_int(0);
@@ -85,6 +90,10 @@ eCI_RESULT func_armPWMOff(void)
 
 eCI_RESULT func_armPWMOn(void)
 {
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
 	if (get_param_count() > 0)
 	{
 		ee.armPWMOnValue = get_param_int(0);
@@ -97,6 +106,10 @@ eCI_RESULT func_armPWMOn(void)
 
 eCI_RESULT func_triggerPWMOff(void)
 {
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
 	if (get_param_count() > 0)
 	{
 		ee.triggerPWMOffValue = get_param_int(0);
@@ -109,6 +122,10 @@ eCI_RESULT func_triggerPWMOff(void)
 
 eCI_RESULT func_triggerPWMOn(void)
 {
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
 	if (get_param_count() > 0)
 	{
 		ee.triggerPWMOnValue = get_param_int(0);
@@ -121,6 +138,10 @@ eCI_RESULT func_triggerPWMOn(void)
 
 eCI_RESULT func_linkType(void)
 {
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
 	if (get_param_count() > 0)
 	{
 		ee.linkType = get_param_int(0);
@@ -133,12 +154,20 @@ eCI_RESULT func_linkType(void)
 
 eCI_RESULT func_systemConfiguration(void)
 {
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
 	printRCConfiguration(true);
 	return CI_OK;
 }
 
 eCI_RESULT func_backLight(void)
 {
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
 	if (get_param_count() > 0)
 	{
 		ee.backLight = get_param_int(0);
@@ -151,6 +180,10 @@ eCI_RESULT func_backLight(void)
 
 eCI_RESULT func_massStorage(void)
 {
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
 	isMSCMode = true;
 	MX_MSC_DEVICE_Init();
 	return CI_OK;
@@ -158,6 +191,10 @@ eCI_RESULT func_massStorage(void)
 
 eCI_RESULT func_importFile(void)
 {
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
 	char *res = 0;
 	//	  uint16_t slen = 0;
 	bool _endFile = false;
@@ -193,6 +230,10 @@ eCI_RESULT func_importFile(void)
 
 eCI_RESULT func_screenOrientation(void)
 {
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
 	if (get_param_count() > 0)
 	{
 		if ( (get_param_int(0) <= 1) && (get_param_int(0) >= 0) )
@@ -217,47 +258,51 @@ eCI_RESULT func_screenOrientation(void)
 
 eCI_RESULT func_setDateTime(void)
 {
-  int year = 0, month = 0, day = 0, hour = 0, minute = 0, second = 0;
+	int year = 0, month = 0, day = 0, hour = 0, minute = 0, second = 0;
 
-//  if (!SessionUnlocked)
-//  {
-//    return CI_COMMAND_ERROR;
-//  }
-  if (get_param_count() > 0)
-  {
-    sprintf(terminalBuffer, "Received Date & Time:\'%s\'", get_param_str(0));
-    logData(terminalBuffer, false, false, false);
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
+	if (get_param_count() > 0)
+	{
+		sprintf(terminalBuffer, "Received Date & Time:\'%s\'", get_param_str(0));
+		logData(terminalBuffer, false, false, false);
 
-    sscanf(get_param_str(0), "%02d/%02d/%02d %02d:%02d:%02d", &year, &month, &day, &hour, &minute, &second);
+		sscanf(get_param_str(0), "%02d/%02d/%02d %02d:%02d:%02d", &year, &month, &day, &hour, &minute, &second);
 
-    if ( (year >= 0) && (year <= 99) && (hour >= 0) && (hour < 24) &&
-    		(minute >= 0) && (minute < 60) && (day > 0) && (day < 32) && (month > 0) && (month < 13) && (second >= 0) && (second < 60) )
-    {
-    	configurationMessageCounter++;
+		if ( (year >= 0) && (year <= 99) && (hour >= 0) && (hour < 24) &&
+				(minute >= 0) && (minute < 60) && (day > 0) && (day < 32) && (month > 0) && (month < 13) && (second >= 0) && (second < 60) )
+		{
+			configurationMessageCounter++;
 
-    	sTime.Hours = hour;
-    	sTime.Minutes = minute;
-    	sTime.Seconds = second;
+			sTime.Hours = hour;
+			sTime.Minutes = minute;
+			sTime.Seconds = second;
 
-    	sDate.Month = month;
-    	sDate.Date = day;
-    	sDate.Year = year;
+			sDate.Month = month;
+			sDate.Date = day;
+			sDate.Year = year;
 
-    	shouldAddTimeToConfigurationMessage = true;
-    	sendSafeAirConfigurationMessage(shouldAddTimeToConfigurationMessage);
-    }
-    else
-    {
-    	sprintf(terminalBuffer, "Wrong date time:\'%s\'",get_param_str(0));
-    	logData(terminalBuffer, false, false, false);
-    }
-  }
+			shouldAddTimeToConfigurationMessage = true;
+			sendSafeAirConfigurationMessage(shouldAddTimeToConfigurationMessage);
+		}
+		else
+		{
+			sprintf(terminalBuffer, "Wrong date time:\'%s\'",get_param_str(0));
+			logData(terminalBuffer, false, false, false);
+		}
+	}
 
-  return (CI_OK);
+	return (CI_OK);
 }
 
 eCI_RESULT func_gpsLocation(void)
 {
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
 	if (get_param_count() == 3)
 	{
 		lastKnownPosition.Latitude = get_param_float(0);
@@ -278,16 +323,20 @@ eCI_RESULT func_gpsLocation(void)
 
 eCI_RESULT func_bleConnected(void)
 {
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
 	bluetoothConnection = CONNECTED;
 	return CI_OK;
 }
 
 eCI_RESULT func_openNewLogFile(void)
 {
-//	if (!SessionUnlocked)
-//	{
-//		return CI_COMMAND_ERROR;
-//	}
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
 	createNewLogFile();
 	logData("Received external command to create a new log file", false, false, false);
 	return CI_NO_UART_ACK;
@@ -295,10 +344,10 @@ eCI_RESULT func_openNewLogFile(void)
 
 eCI_RESULT func_closeCurrentLogFile(void) // Do file close
 {
-//  if (!SessionUnlocked)
-//  {
-//    return CI_COMMAND_ERROR;
-//  }
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
 	logData("Received external command to close log file", false, false, false);
 	closeLogFile();
 //  PRINT(SessionUnlocked);
@@ -307,10 +356,10 @@ eCI_RESULT func_closeCurrentLogFile(void) // Do file close
 
 eCI_RESULT func_bleMode(void)
 {
-//  if (!SessionUnlocked)
-//  {
-//    return CI_COMMAND_ERROR;
-//  }
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
 	if (get_param_count() > 0)
 	{
 		ee.bluetoothStatus = get_param_int(0);
@@ -322,10 +371,10 @@ eCI_RESULT func_bleMode(void)
 
 eCI_RESULT func_bootloaderMode(void)
 {
-//  if (!SessionUnlocked)
-//  {
-//    return CI_COMMAND_ERROR;
-//  }
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
 	NVIC_SystemReset();
 //  PRINT(SessionUnlocked);
   return CI_NO_UART_ACK;
@@ -333,6 +382,10 @@ eCI_RESULT func_bootloaderMode(void)
 
 eCI_RESULT func_showChargeCycles(void)
 {
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
 	sprintf(terminalBuffer, "Full charge cycles: %d", ee.fullChargeCycles);
 	logData(terminalBuffer, false, true, false);
 	return CI_OK;
@@ -340,6 +393,10 @@ eCI_RESULT func_showChargeCycles(void)
 
 eCI_RESULT func_changeRCMode(void)
 {
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
 	if (get_param_count() > 0)
 	{
 		ee.rcMode = get_param_int(0);
@@ -367,7 +424,10 @@ eCI_RESULT func_changeRCMode(void)
 
 eCI_RESULT func_deleteFile(void)
 {
-
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
 	if (get_param_count() > 0)
 	{
 		char *fn = get_param_str(0);
@@ -396,7 +456,10 @@ eCI_RESULT func_showLastTailID(void)
 
 eCI_RESULT func_updateBatteryType(void)
 {
-
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
 	if (get_param_count() > 0)
 	{
 		ee.batteryType = get_param_int(0);
@@ -412,8 +475,31 @@ eCI_RESULT func_updateBatteryType(void)
 	return CI_NO_UART_ACK;
 } //
 
+eCI_RESULT func_enterPassword(void)
+{
+	if (get_param_count() > 0)
+	{
+		if (strcmp(get_param_str(0), ee.password) == 0)
+		{
+			SessionUnlocked = true;
+			sprintf(terminalBuffer, "\r\nUnit unlocked\n\r");
+			PRINT(SessionUnlocked);
+		}
+	}
+	else
+	{
+		sprintf(terminalBuffer, "\r\nWrong password\n\r");
+		PRINT(true);
+	}
+	return (CI_OK);
+} //
+
 eCI_RESULT func_dir(void)
 {
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
     FILINFO fno1;
     DIR dp1;
     f_opendir(&dp1, "\\");
@@ -421,7 +507,6 @@ eCI_RESULT func_dir(void)
 
     while( (fno1.fname[0] != 0) )
     {
-//    	f_stat("\\", &fno1);
     	sprintf(terminalBuffer,"%s\t %lu",fno1.fname, (long int)fno1.fsize);
     	logData(terminalBuffer, false, true, true);
     	f_findnext(&dp1, &fno1);
@@ -433,6 +518,10 @@ eCI_RESULT func_dir(void)
 
 eCI_RESULT func_fmt(void)
 {
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
 	sprintf(terminalBuffer, "\r\n%s!Formatting Flash...restart required!\n\r", CT());
 	logData(terminalBuffer, false, false, false);
 	f_sync(&USERFile);
@@ -441,11 +530,6 @@ eCI_RESULT func_fmt(void)
 	BSP_QSPI_Erase_Chip();
 	fileSystemInit();
 	createNewLogFile();
-
-//	if (f_mkfs("\\", FM_FAT, 0, buffer, sizeof(buffer)) != FR_OK)
-//	{
-//		//TODO: Add screen indication for faulty Flash
-//	}
 	return CI_OK;
 }
 
@@ -486,6 +570,7 @@ functionsList cases [] =
 		{ "del", func_deleteFile},
 		{ "slti", func_showLastTailID},
 		{ "upbt", func_updateBatteryType},
+		{ "EPW", func_enterPassword},
 		{ "dir" , func_dir },
 		{ "fmt" , func_fmt }
 };

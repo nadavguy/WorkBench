@@ -79,7 +79,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.530;
+float buildID = 1.540;
 
 SYSTEMState rcState = PREINIT;
 
@@ -127,6 +127,7 @@ tWarning displayWarning;
 
 float batteryVoltage = 4.25;
 float chargingMaxValue = 0;
+float previousBatteryVoltage = 0;
 
 unsigned int BytesWritten = 0;
 
@@ -212,6 +213,7 @@ int main(void)
 	createNewLogFile();
 
 	ee_init1((pU32)&ee, sizeof(ee));
+	sprintf(ee.password, "PARAZERO@DOVHOZ#30");
 	if (!ee_validate1())
 	{
 		sprintf(terminalBuffer,"EEPROM1 Error, set default values");
@@ -700,6 +702,13 @@ void updateRCState(void)
 				currentSmaStatus.batteryVoltage, currentSmaStatus.Altitude, currentSmaStatus.Acceleration);
 		logData(terminalBuffer, true, false, false);
 		lastLogEntry = HAL_GetTick();
+	}
+
+	if (fabs(batteryVoltage - previousBatteryVoltage) > 0.1)
+	{
+		sprintf(terminalBuffer,"RC Battery voltage: %6.3f V", batteryVoltage);
+		logData(terminalBuffer, true, false, false);
+		previousBatteryVoltage = batteryVoltage;
 	}
 
 }

@@ -28,6 +28,7 @@ typedef struct sEE_DATA
 	char lastPairedDevice[16];
 	uint8_t lastStepInCVChargeCycle;
 	uint8_t batteryType;
+	char password[16];
 }tEE_DATA;
 
 
