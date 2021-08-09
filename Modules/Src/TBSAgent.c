@@ -41,6 +41,7 @@ uint32_t lastReceivedCRSFMessage = 0;
 bool isTBSDisconnected = false;
 bool isTailIDAlreadyReceived = false;
 bool shouldAddTimeToConfigurationMessage = false;
+bool isLegacyDronePlatform = false;
 
 char safeAirTailID[11] = "";
 
@@ -308,29 +309,33 @@ bool parseTBSMessage(void)
 				shouldRedrawSafeAirBatteryIcon = true;
 			}
 
-			if (localRxArray[i + 12] == 1)
+			if ( (localRxArray[i + 12] == 1) && (ee.legacySystemType == 0) )
 			{
 				currentSmaStatus.smaPlatformName = M200;
 			}
-			else if (localRxArray[i + 12] == 2)
+			else if ( (localRxArray[i + 12] == 2)  && (ee.legacySystemType == 0) )
 			{
 				currentSmaStatus.smaPlatformName = M300;
 			}
-			else if (localRxArray[i + 12] == 3)
+			else if ( (localRxArray[i + 12] == 3)  && (ee.legacySystemType == 0) )
 			{
 				currentSmaStatus.smaPlatformName = M600;
 			}
-			else if (localRxArray[i + 12] == 4)
+			else if ( (localRxArray[i + 12] == 4) && (ee.legacySystemType == 0) )
 			{
 				currentSmaStatus.smaPlatformName = PHANTOM;
 			}
-			else if (localRxArray[i + 12] == 5)
+			else if ( (localRxArray[i + 12] == 5)  && (ee.legacySystemType == 0) )
 			{
 				currentSmaStatus.smaPlatformName = MAVIC;
 			}
-			else if (localRxArray[i + 12] == 6)
+			else if ( (localRxArray[i + 12] == 6)  && (ee.legacySystemType == 0) )
 			{
 				currentSmaStatus.smaPlatformName = TAILID;
+			}
+			else if (ee.legacySystemType != 0)
+			{
+				currentSmaStatus.smaPlatformName = ee.legacySystemType;
 			}
 
 			if (localRxArray[i + 13] == 1)

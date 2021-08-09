@@ -45,6 +45,9 @@ void printRCConfiguration(bool toDisplayOnly)
 			ee.batteryType, EEV_BatteryType.min, EEV_BatteryType.std, EEV_BatteryType.max);
 	logData(terminalBuffer, false, toDisplayOnly, false);
 	logData("Enum: 1 - HCP902", false, toDisplayOnly, false);
+	sprintf(terminalBuffer, "Legacy System...........................[N/A].: %d [%d/%d/%d]",
+			ee.legacySystemType, EEV_LegacySystemType.min, EEV_LegacySystemType.std, EEV_LegacySystemType.max);
+	logData(terminalBuffer, false, toDisplayOnly, false);
 
 	// sprintf(term_buffer, "\r\n<External Applications>");
 	logData("", false, toDisplayOnly, false);

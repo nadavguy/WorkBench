@@ -79,7 +79,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.550;
+float buildID = 1.560;
 
 SYSTEMState rcState = PREINIT;
 
@@ -435,7 +435,7 @@ void UpdateScreenBrightness(bool screenBrightfullnessLevel)
 {
 	if ( (screenBrightfullnessLevel) && (HAL_GetTick() - lastAnyButtonPress > 120000) )
 	{
-		LCD_1IN8_SetBackLight(3000);
+		LCD_1IN8_SetBackLight(4000);
 		//		LCD_1IN8_SetBackLight(ee.backLight);
 		isScreenBrightFull = false;
 	}

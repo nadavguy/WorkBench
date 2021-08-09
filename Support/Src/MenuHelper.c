@@ -27,6 +27,7 @@ tSTRING_ITEM armModeItem;
 tSTRING_ITEM loggingModeItem;
 tSTRING_ITEM platformTypeItem;
 tSTRING_ITEM safeairStateItem;
+tSTRING_ITEM legacySystemItem;
 //tSTRING_ITEM bleMakeVisibleItem;
 //tSTRING_ITEM bleDisableItem;
 
@@ -103,44 +104,50 @@ void initMenuPages(void)
 	rcSettingsPage.pageID = 2;
 	if (menuLevel == DEVELOPER)
 	{
+		rcSettingsPage.numberOfItemsInPage = 7;
+		memcpy(&rcSettingsPage.itemsArray[0],"Brightness",strlen("Brightness"));
+		memcpy(&rcSettingsPage.itemsArray[1],"Mass Storage",strlen("Mass Storage"));
+		memcpy(&rcSettingsPage.itemsArray[2],"Clear RC Flash",strlen("Clear RC Flash"));
+		memcpy(&rcSettingsPage.itemsArray[3],"Legacy Systems",strlen("Legacy Systems"));
+		memcpy(&rcSettingsPage.itemsArray[4],"BlueTooth",strlen("BlueTooth"));
+		memcpy(&rcSettingsPage.itemsArray[5],"Back",strlen("Back"));
+		memcpy(&rcSettingsPage.itemsArray[6],"Close menu",strlen("Close menu"));
+		rcSettingsPage.cellTypeArray[0] = UINT16_ITEM;
+		rcSettingsPage.cellTypeArray[1] = POPUP;
+		rcSettingsPage.cellTypeArray[2] = POPUP;
+		rcSettingsPage.cellTypeArray[3] = STRING_ITEM;
+		rcSettingsPage.cellTypeArray[4] = PAGE;
+		rcSettingsPage.cellTypeArray[5] = BACK;
+		rcSettingsPage.cellTypeArray[6] = CLOSE;
+		rcSettingsPage.nextCellIDArray[0] = (uint32_t)&brightnessItem;
+		rcSettingsPage.nextCellIDArray[1] = (uint32_t)&massStorageMessage;
+		rcSettingsPage.nextCellIDArray[2] = (uint32_t)&rcClearStorageMessage;
+		rcSettingsPage.nextCellIDArray[3] = (uint32_t)&legacySystemItem;
+		rcSettingsPage.nextCellIDArray[4] = 4;
+		rcSettingsPage.nextCellIDArray[5] = 0;
+		rcSettingsPage.nextCellIDArray[6] = 0;
+	}
+	else
+	{
 		rcSettingsPage.numberOfItemsInPage = 6;
 		memcpy(&rcSettingsPage.itemsArray[0],"Brightness",strlen("Brightness"));
 		memcpy(&rcSettingsPage.itemsArray[1],"Mass Storage",strlen("Mass Storage"));
 		memcpy(&rcSettingsPage.itemsArray[2],"Clear RC Flash",strlen("Clear RC Flash"));
-		memcpy(&rcSettingsPage.itemsArray[3],"BlueTooth",strlen("BlueTooth"));
+		memcpy(&rcSettingsPage.itemsArray[3],"Legacy Systems",strlen("Legacy Systems"));
 		memcpy(&rcSettingsPage.itemsArray[4],"Back",strlen("Back"));
 		memcpy(&rcSettingsPage.itemsArray[5],"Close menu",strlen("Close menu"));
 		rcSettingsPage.cellTypeArray[0] = UINT16_ITEM;
 		rcSettingsPage.cellTypeArray[1] = POPUP;
 		rcSettingsPage.cellTypeArray[2] = POPUP;
-		rcSettingsPage.cellTypeArray[3] = PAGE;
+		rcSettingsPage.cellTypeArray[3] = STRING_ITEM;
 		rcSettingsPage.cellTypeArray[4] = BACK;
 		rcSettingsPage.cellTypeArray[5] = CLOSE;
 		rcSettingsPage.nextCellIDArray[0] = (uint32_t)&brightnessItem;
 		rcSettingsPage.nextCellIDArray[1] = (uint32_t)&massStorageMessage;
 		rcSettingsPage.nextCellIDArray[2] = (uint32_t)&rcClearStorageMessage;
-		rcSettingsPage.nextCellIDArray[3] = 4;
+		rcSettingsPage.nextCellIDArray[3] = (uint32_t)&legacySystemItem;
 		rcSettingsPage.nextCellIDArray[4] = 0;
 		rcSettingsPage.nextCellIDArray[5] = 0;
-	}
-	else
-	{
-		rcSettingsPage.numberOfItemsInPage = 5;
-		memcpy(&rcSettingsPage.itemsArray[0],"Brightness",strlen("Brightness"));
-		memcpy(&rcSettingsPage.itemsArray[1],"Mass Storage",strlen("Mass Storage"));
-		memcpy(&rcSettingsPage.itemsArray[2],"Clear RC Flash",strlen("Clear RC Flash"));
-		memcpy(&rcSettingsPage.itemsArray[3],"Back",strlen("Back"));
-		memcpy(&rcSettingsPage.itemsArray[4],"Close menu",strlen("Close menu"));
-		rcSettingsPage.cellTypeArray[0] = UINT16_ITEM;
-		rcSettingsPage.cellTypeArray[1] = POPUP;
-		rcSettingsPage.cellTypeArray[2] = POPUP;
-		rcSettingsPage.cellTypeArray[3] = BACK;
-		rcSettingsPage.cellTypeArray[4] = CLOSE;
-		rcSettingsPage.nextCellIDArray[0] = (uint32_t)&brightnessItem;
-		rcSettingsPage.nextCellIDArray[1] = (uint32_t)&massStorageMessage;
-		rcSettingsPage.nextCellIDArray[2] = (uint32_t)&rcClearStorageMessage;
-		rcSettingsPage.nextCellIDArray[3] = 0;
-		rcSettingsPage.nextCellIDArray[4] = 0;
 	}
 
 	safeAirSettingsPage.pageID = 3;
@@ -409,9 +416,27 @@ void initMenuItems(void)
 	memcpy(&safeairStateItem.itemsArray[4],"Cancel",strlen("Cancel"));
 	memcpy(&safeairStateItem.itemsArray[5],"OK",strlen("OK"));
 	safeairStateItem.numberOfValuesInArray = 2;
-	memcpy(&safeairStateItem.valuesArray[0],"Maintenance     ",strlen("Maintenance     "));
-	memcpy(&safeairStateItem.valuesArray[1],"Auto-Calibration",strlen("Auto-Calibration"));
+	memcpy(&safeairStateItem.valuesArray[0],"Maintenance    ",strlen("Maintenance    "));
+	memcpy(&safeairStateItem.valuesArray[1],"AutoCalibration",strlen("AutoCalibration"));
 	safeairStateItem.parameterPointer = (uint32_t)&safeairConfiguration.state;
+
+	legacySystemItem.itemID = 8;
+	legacySystemItem.maxValue = 2;
+	legacySystemItem.minValue = 0;
+	legacySystemItem.startValue = 0;
+	legacySystemItem.deltaMultiplier = 1;
+	legacySystemItem.numberOfItemsInPage = 6;
+	memcpy(&legacySystemItem.itemsArray[0],"Drone Type",strlen("Drone Type"));
+	memcpy(&legacySystemItem.itemsArray[1],"Units: [N/A]",strlen("Units: [N/A]"));
+	memcpy(&legacySystemItem.itemsArray[2],"Value",strlen("Value"));
+	memcpy(&legacySystemItem.itemsArray[3],"Delta",strlen("Delta"));
+	memcpy(&legacySystemItem.itemsArray[4],"Cancel",strlen("Cancel"));
+	memcpy(&legacySystemItem.itemsArray[5],"OK",strlen("OK"));
+	legacySystemItem.numberOfValuesInArray = 3;
+	memcpy(&legacySystemItem.valuesArray[0],"Phantom",strlen("Phantom"));
+	memcpy(&legacySystemItem.valuesArray[1],"Mavic  ",strlen("Mavic  "));
+	memcpy(&legacySystemItem.valuesArray[2],"Auto   ",strlen("Auto   "));
+	legacySystemItem.parameterPointer = (uint32_t)&currentSmaStatus.smaPlatformName;
 
 //	bleMakeVisibleItem.itemID = 4;
 //	bleMakeVisibleItem.maxValue = 1;
@@ -757,5 +782,29 @@ void updateSelectedParameter(void)
 	{
 		safeairConfiguration.platformType = stringItem.startValue + 1;
 		configurationMessageCounter++;
+	}
+//	else if (itemIDtoUpdate == 7)
+//	{
+//		safeairConfiguration.platformType = stringItem.startValue + 1;
+//		configurationMessageCounter++;
+//	}
+	else if (itemIDtoUpdate == 8)
+	{
+//		currentSmaStatus.smaPlatformName = stringItem.startValue + 4;
+		if (stringItem.startValue + 4 != 6)
+		{
+			ee.legacySystemType = stringItem.startValue + 4;
+			currentSmaStatus.smaPlatformName = stringItem.startValue + 4;
+			isLegacyDronePlatform = true;
+			logData("RC set to legacy mode", false, false, false);
+		}
+		else
+		{
+			currentSmaStatus.smaPlatformName = 0;
+			ee.legacySystemType = 0;
+			isLegacyDronePlatform = false;
+			logData("RC exited to legacy mode", false, false, false);
+		}
+		ee_save1();
 	}
 }

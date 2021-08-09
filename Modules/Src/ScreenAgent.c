@@ -315,7 +315,7 @@ void updateStatusText(void)
 			centeredString(SystemStatusTextX, SystemStatusTextY, "Critical Angle", WHITE, RED, 14, Font12);
 		}
 	}
-	else if ( ((currentSmaStatus.smaState == IDLE) && (!displayWarning.displayWarning) && (displayWarning.BITStatus == 0)) || (isInfwUpdateMode) )
+	else if ( ((currentSmaStatus.smaState == IDLE) /*&& (!displayWarning.displayWarning) && (displayWarning.BITStatus == 0)*/) || (isInfwUpdateMode) )
 	{
 
 		if (!isInfwUpdateMode)
@@ -333,7 +333,7 @@ void updateStatusText(void)
 		}
 		previousBITStatus = displayWarning.BITStatus;
 	}
-	else if ((currentSmaStatus.smaState == ARMED) && (!displayWarning.displayWarning) && (displayWarning.BITStatus == 0))
+	else if ((currentSmaStatus.smaState == ARMED) /*&& (!displayWarning.displayWarning) && (displayWarning.BITStatus == 0)*/)
 	{
 		addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, PZGREEN);
 		centeredString(SystemStatusTextX, SystemStatusTextY, "Armed", WHITE, PZGREEN, 14, Font12);
@@ -359,11 +359,11 @@ void updateStatusText(void)
 	{
 		if (shouldDrawRedAlertIcon)
 		{
-			if  ( (currentSmaStatus.smaState != ARMED) && (displayWarning.BITStatus != 0) )
-			{
-				addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, YELLOW);
-				centeredString(SystemStatusTextX, SystemStatusTextY, "Error", BLACK, YELLOW, 14, Font12);
-			}
+//			if  ( (currentSmaStatus.smaState != ARMED) && (displayWarning.BITStatus != 0) )
+//			{
+//				addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, YELLOW);
+//				centeredString(SystemStatusTextX, SystemStatusTextY, "Error", BLACK, YELLOW, 14, Font12);
+//			}
 			shouldUpdateStatusText = false;
 		}
 		if (displayWarning.BITStatus & 0x01)

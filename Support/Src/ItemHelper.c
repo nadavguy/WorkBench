@@ -949,7 +949,7 @@ void updateStringItem(MENUDRAWType howToDraw)
 
 	for (int i = 0; i < stringItem.numberOfItemsInPage ; i++)
 	{
-		if  ( (i < 2) && (howToDraw == FULL) )
+ 		if  ( (i < 2) && (howToDraw == FULL) )
 		{
 			Paint_DrawRectangle( MenuRectangleStartX, MenuRectangleStartY + MenuRectangleHeight * i,
 					MenuRectangleStartX + MenuRectangleWidth, MenuRectangleStartY + MenuRectangleHeight * (i + 1),

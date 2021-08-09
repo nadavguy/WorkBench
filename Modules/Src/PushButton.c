@@ -90,6 +90,13 @@ void CheckButtons(void)
 	{
 		return;
 	}
+	uint8_t triggerChannel = 1;
+	uint8_t armChannel = 0;
+	if (isLegacyDronePlatform)
+	{
+		triggerChannel = 0;
+		armChannel = 1;
+	}
 
 	/*Accumulate Button Press Pattern  */
 	if (armPinState == GPIO_PIN_RESET)
@@ -102,11 +109,11 @@ void CheckButtons(void)
 		armButtonIsLow = true;
 		if ( (ee.linkType == PWM) && (rcState == OPERATIONAL) )
 		{
-			channelPWMValues[0] =  ((ee.armPWMOnValue - 1500) * 2);
+			channelPWMValues[armChannel] =  ((ee.armPWMOnValue - 1500) * 2);
 		}
 		else
 		{
-			channelPWMValues[0] =  ((ee.armPWMOffValue - 1500) * 2);
+			channelPWMValues[armChannel] =  ((ee.armPWMOffValue - 1500) * 2);
 		}
 	}
 	else
@@ -115,7 +122,7 @@ void CheckButtons(void)
 		{
 			if ( (ee.linkType == PWM) && (rcState == OPERATIONAL) )
 			{
-				channelPWMValues[0] = ((ee.armPWMOffValue - 1500) * 2);
+				channelPWMValues[armChannel] = ((ee.armPWMOffValue - 1500) * 2);
 			}
 			uint32_t armLocalDuration = ((HAL_GetTick()
 					- armButtonPressStart) / 100) * 100;
@@ -155,18 +162,18 @@ void CheckButtons(void)
 		triggerButtonIsLow = true;
 		if ( (ee.linkType == PWM) && (rcState == OPERATIONAL) )
 		{
-			channelPWMValues[1] = ((ee.triggerPWMOnValue - 1500) * 2);
+			channelPWMValues[triggerChannel] = ((ee.triggerPWMOnValue - 1500) * 2);
 		}
 		else
 		{
-			channelPWMValues[1] = ((ee.triggerPWMOffValue - 1500) * 2);
+			channelPWMValues[triggerChannel] = ((ee.triggerPWMOffValue - 1500) * 2);
 		}
 	}
 	else
 	{
 		if ( (ee.linkType == PWM) && (rcState == OPERATIONAL) )
 		{
-			channelPWMValues[1] = ((ee.triggerPWMOffValue - 1500) * 2);
+			channelPWMValues[triggerChannel] = ((ee.triggerPWMOffValue - 1500) * 2);
 		}
 		if (triggerButtonIsLow)
 		{
