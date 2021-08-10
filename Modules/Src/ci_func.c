@@ -488,6 +488,7 @@ eCI_RESULT func_enterPassword(void)
 	}
 	else
 	{
+		// sprintf(terminalBuffer, "\r\nWrong password: %s, %s\n\r", ee.password, get_param_str(0));
 		sprintf(terminalBuffer, "\r\nWrong password\n\r");
 		logData(terminalBuffer, false, true, false);
 	}

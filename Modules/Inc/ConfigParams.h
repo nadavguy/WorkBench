@@ -28,7 +28,7 @@ typedef struct sEE_DATA
 	char lastPairedDevice[16];
 	uint8_t lastStepInCVChargeCycle;
 	uint8_t batteryType;
-	char password[16];
+	char password[32];
 	uint8_t legacySystemType;
 }tEE_DATA;
 
@@ -59,6 +59,7 @@ extern tEEV_U16 EEV_Backlight;
 extern tEEV_U08 EEV_ScreenOrientation;
 extern tEEV_U08 EEV_ChargeCycle;
 extern tEEV_U08 EEV_BatteryType;
+extern tEEV_U08 EEV_LegacySystemType;
 
 extern bool ee_validate1(void);
 
