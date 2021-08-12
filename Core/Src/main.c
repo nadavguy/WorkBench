@@ -79,7 +79,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.570;
+float buildID = 1.580;
 
 SYSTEMState rcState = PREINIT;
 
@@ -284,9 +284,6 @@ int main(void)
 			HAL_UART_Receive_DMA(&TBS_UART, tbsRXArray,TBS_RX_BUFFER);
 			HAL_Delay(2);
 			parseTBSMessage();
-			//TODO: Backward compatibility of SafeAir unit with old FW
-			// if there is telemetry messages without 0xDD message
-			// Allow only basic functionality
 			updateRCState();
 			monitorLogSize();
 			readUSBData();
@@ -689,15 +686,6 @@ void updateRCState(void)
 	if ( (shouldUpdateStatusText  || shouldReDrawTriggerModeIcon || shouldReDrawAutoPilotIcon || shouldRedrawBatteryIcon
 			|| shouldUpdatePlatformText || shouldReDrawPlatformIcon ) && (HAL_GetTick() - lastLogEntry > 50) )// || shouldDrawRedAlertIcon
 	{
-		//		sprintf(terminalBuffer,"SmartAir state: %d, trigger mode: %d",
-		//				currentSmaStatus.smaState, currentSmaStatus.triggerMode);
-		//		logData(terminalBuffer, false, false, false);
-		//		sprintf(terminalBuffer,"SmartAir Battery: %6.3f",currentSmaStatus.batteryVoltage);
-		//		logData(terminalBuffer, false, false, false);
-		//		sprintf(terminalBuffer,"SmartAir Altitude: %6.3f, Acceleration: %6.3f",
-		//				currentSmaStatus.Altitude, currentSmaStatus.Acceleration);
-		//		logData(terminalBuffer, false, false, false);
-
 		sprintf(terminalBuffer,"SMA, %d, %d, %6.3f, %6.3f, %6.3f",currentSmaStatus.smaState, currentSmaStatus.triggerMode,
 				currentSmaStatus.batteryVoltage, currentSmaStatus.Altitude, currentSmaStatus.Acceleration);
 		logData(terminalBuffer, true, false, false);

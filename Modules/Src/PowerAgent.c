@@ -86,17 +86,6 @@ void measureVoltages(bool forceMeasurement)
 		{
 			HAL_GPIO_WritePin(ChargeEnableGPIO, ChargeEnablePIN, GPIO_PIN_RESET);
 		}
-
-		//
-//		if (!isChargingMode)
-//		{
-//			ee.lastStepInCVChargeCycle = 0;
-//			ee_save1();
-//		}
-//		else
-//		{
-//			cyclesAboveThresholdCounter = ee.lastStepInCVChargeCycle;
-//		}
 	}
 	if (isChargingMode)
 	{

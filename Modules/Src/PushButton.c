@@ -445,7 +445,6 @@ void CheckButtons(void)
 	}
 	else if ( (currentSmaStatus.smaState == ARMED) && (currentSmaStatus.smaState != TRIGGERED) )
 	{
-		//TODO: force disarm logic
 		if ( (!isPopupDisplayed) && (okButtonPressDuration > 1000) )
 		{
 			isPopupDisplayed = true;

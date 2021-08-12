@@ -112,8 +112,6 @@ extern tRC_LINK rcLinkStatus;
 extern tSMA_Status previousSmaStatus;
 extern tSMA_Status currentSmaStatus;
 
-void tbsInit(void);
-void sendMessageToRC(void);
 void sendChannelMessageToTBS(void);
 uint8_t calcCrossfireTelemetryFrameCRC(void);
 uint8_t crc8(const uint8_t *ptr, uint32_t len);

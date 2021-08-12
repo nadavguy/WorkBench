@@ -44,10 +44,6 @@ void logData(char *dataToLog, bool doNotShowOnDisplay, bool displayOnly, bool do
     else if (!displayOnly || !doNotShowOnDisplay)
     {
     	f_write(&USERFile, localString, strlen(localString), &BytesWritten);
-//    	if (BytesWritten < strlen(localString))
-//    	{
-//    		int a= 1;
-//    	}
     	if ( (!doNotShowOnDisplay) && (!isInfwUpdateMode) )
     	{
     		CDC_Transmit_FS((uint8_t*)localString, strlen(localString));
@@ -154,19 +150,6 @@ void logRCLinkStatus(bool forceLog)
 {
 	if ( (HAL_GetTick() - lastLoggedLinkMessage > 5000) || (forceLog) )
 	{
-//		sprintf(terminalBuffer,"Uplink RSSI1: %d, RSSI2: %d, LQ: %d, SNR: %d",
-//				rcLinkStatus.UplinkRSSIAnt1, rcLinkStatus.UplinkRSSIAnt2, rcLinkStatus.UplinkPSRLQ,
-//				rcLinkStatus.UplinkSNR);
-//		logData(terminalBuffer, true, false, false);
-//		sprintf(terminalBuffer,"Uplink Diversity: %d, RFMode: %d, TX: %d",
-//				rcLinkStatus.DiversityActiveAntena, rcLinkStatus.RFMode,
-//				rcLinkStatus.UplinkTXPower);
-//		logData(terminalBuffer, true, false, false);
-//		sprintf(terminalBuffer,"Downlink RSSI: %d, LQ: %d, SNR: %d",
-//				rcLinkStatus.DownlinkRSSI, rcLinkStatus.DownlinkPSRLQ,
-//				rcLinkStatus.DownlinkSNR);
-//		logData(terminalBuffer, true, false, false);
-
 		sprintf(terminalBuffer,"LNK, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d",
 				rcLinkStatus.UplinkRSSIAnt1, rcLinkStatus.UplinkRSSIAnt2, rcLinkStatus.UplinkPSRLQ, rcLinkStatus.UplinkSNR,
 				rcLinkStatus.DiversityActiveAntena, rcLinkStatus.RFMode, rcLinkStatus.UplinkTXPower, rcLinkStatus.DownlinkRSSI,

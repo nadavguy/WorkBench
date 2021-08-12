@@ -130,12 +130,7 @@ void prepFlash(uint8_t numberOfSectors)
 	{
 		HAL_Delay(2000);
 	}
-//	HAL_FLASH_Unlock();
-//	/* Allow Access to option bytes sector */
-//	HAL_FLASH_OB_Unlock();
-//	/* Get the Dual bank configuration status */
-//	HAL_FLASHEx_OBGetConfig(&OBInit);
-	changeROP(0);
+	// // changeROP(0);
 	HAL_FLASH_Unlock();
 	/* Allow Access to option bytes sector */
 	HAL_FLASH_OB_Unlock();
