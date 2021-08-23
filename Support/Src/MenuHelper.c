@@ -459,44 +459,52 @@ void initMenuItems(void)
 void initPopupMessages(void)
 {
 	noConnectionMessage.popupID = 1;
-	noConnectionMessage.numberOfItemsInPopup = 6;
+	noConnectionMessage.numberOfItemsInPopup = 8;
 	noConnectionMessage.isQuestion = false;
 	memcpy(&noConnectionMessage.itemsArray[0],"SafeAir unit",strlen("SafeAir unit"));
 	memcpy(&noConnectionMessage.itemsArray[1],"not detected,",strlen("not detected,"));
 	memcpy(&noConnectionMessage.itemsArray[2],"Changes will",strlen("Changes will "));
 	memcpy(&noConnectionMessage.itemsArray[3],"be overwritten",strlen("be overwritten"));
-	memcpy(&noConnectionMessage.itemsArray[4],"Cancel",strlen("Cancel"));
-	memcpy(&noConnectionMessage.itemsArray[5],"OK (Long Press)",strlen("OK (Long Press)"));
+	memcpy(&noConnectionMessage.itemsArray[4],"",strlen(""));
+	memcpy(&noConnectionMessage.itemsArray[5],"->Long Press<-",strlen("->Long Press<-"));
+	memcpy(&noConnectionMessage.itemsArray[6],"Cancel",strlen("Cancel"));
+	memcpy(&noConnectionMessage.itemsArray[7],"OK",strlen("OK"));
 
 	safeairForceDisarmMessage.popupID = 2;
-	safeairForceDisarmMessage.numberOfItemsInPopup = 5;
+	safeairForceDisarmMessage.numberOfItemsInPopup = 8;
 	safeairForceDisarmMessage.isQuestion = true;
 	memcpy(&safeairForceDisarmMessage.itemsArray[0],"Force Disarm",strlen("Force Disarm"));
 	memcpy(&safeairForceDisarmMessage.itemsArray[1],"SafeAir unit?,",strlen("SafeAir unit?"));
 	memcpy(&safeairForceDisarmMessage.itemsArray[2],"Are you sure?",strlen("Are you sure?"));
-//	memcpy(&safeairForceDisarmMessage.itemsArray[3],"be overwritten",strlen("be overwritten"));
-	memcpy(&safeairForceDisarmMessage.itemsArray[3],"Cancel",strlen("Cancel"));
-	memcpy(&safeairForceDisarmMessage.itemsArray[4],"OK (Long Press)",strlen("OK (Long Press)"));
+	memcpy(&safeairForceDisarmMessage.itemsArray[3],"",strlen(""));
+	memcpy(&safeairForceDisarmMessage.itemsArray[4],"",strlen(""));
+	memcpy(&safeairForceDisarmMessage.itemsArray[5],"->Long Press<-",strlen("->Long Press<-"));
+	memcpy(&safeairForceDisarmMessage.itemsArray[6],"Cancel",strlen("Cancel"));
+	memcpy(&safeairForceDisarmMessage.itemsArray[7],"OK",strlen("OK"));
 
 	rcClearStorageMessage.popupID = 3;
-	rcClearStorageMessage.numberOfItemsInPopup = 5;
+	rcClearStorageMessage.numberOfItemsInPopup = 8;
 	rcClearStorageMessage.isQuestion = true;
 	memcpy(&rcClearStorageMessage.itemsArray[0],"Clear RC",strlen("Clear RC"));
 	memcpy(&rcClearStorageMessage.itemsArray[1],"Storage,",strlen("Storage,"));
 	memcpy(&rcClearStorageMessage.itemsArray[2],"Are you sure?",strlen("Are you sure?"));
-//	memcpy(&safeairForceDisarmMessage.itemsArray[3],"be overwritten",strlen("be overwritten"));
-	memcpy(&rcClearStorageMessage.itemsArray[3],"Cancel",strlen("Cancel"));
-	memcpy(&rcClearStorageMessage.itemsArray[4],"OK (Long Press)",strlen("OK (Long Press)"));
+	memcpy(&rcClearStorageMessage.itemsArray[3],"",strlen(""));
+	memcpy(&rcClearStorageMessage.itemsArray[4],"",strlen(""));
+	memcpy(&rcClearStorageMessage.itemsArray[5],"->Long Press<-",strlen("->Long Press<-"));
+	memcpy(&rcClearStorageMessage.itemsArray[6],"Cancel",strlen("Cancel"));
+	memcpy(&rcClearStorageMessage.itemsArray[7],"OK",strlen("OK"));
 
 	safeAirClearStorageMessage.popupID = 4;
-	safeAirClearStorageMessage.numberOfItemsInPopup = 5;
+	safeAirClearStorageMessage.numberOfItemsInPopup = 8;
 	safeAirClearStorageMessage.isQuestion = true;
 	memcpy(&safeAirClearStorageMessage.itemsArray[0],"Clear SafeAir",strlen("Clear SafeAir"));
 	memcpy(&safeAirClearStorageMessage.itemsArray[1],"Storage,",strlen("Storage,"));
 	memcpy(&safeAirClearStorageMessage.itemsArray[2],"Are you sure?",strlen("Are you sure?"));
-	//	memcpy(&safeairForceDisarmMessage.itemsArray[3],"be overwritten",strlen("be overwritten"));
-	memcpy(&safeAirClearStorageMessage.itemsArray[3],"Cancel",strlen("Cancel"));
-	memcpy(&safeAirClearStorageMessage.itemsArray[4],"OK (Long Press)",strlen("OK (Long Press)"));
+	memcpy(&safeAirClearStorageMessage.itemsArray[3],"",strlen(""));
+	memcpy(&safeAirClearStorageMessage.itemsArray[4],"",strlen(""));
+	memcpy(&safeAirClearStorageMessage.itemsArray[5],"->Long Press<-",strlen("->Long Press<-"));
+	memcpy(&safeAirClearStorageMessage.itemsArray[6],"Cancel",strlen("Cancel"));
+	memcpy(&safeAirClearStorageMessage.itemsArray[7],"OK",strlen("OK"));
 
 	bleMakeVisibleMessage.popupID = 5;
 	bleMakeVisibleMessage.numberOfItemsInPopup = 5;
@@ -549,17 +557,19 @@ void initPopupMessages(void)
 	memcpy(&aboutBLEMessage.itemsArray[4],"OK",strlen("OK"));
 
 	tbsInChargeModeMessage.popupID = 10;
-	tbsInChargeModeMessage.numberOfItemsInPopup = 5;
+	tbsInChargeModeMessage.numberOfItemsInPopup = 8;
 	tbsInChargeModeMessage.isQuestion = false;
 	memcpy(&tbsInChargeModeMessage.itemsArray[0],"RC in charge",strlen("RC in charge"));
 	memcpy(&tbsInChargeModeMessage.itemsArray[1],"mode, TX module",strlen("mode, TX module"));
 	memcpy(&tbsInChargeModeMessage.itemsArray[2],"is not powered",strlen("is not powered"));
-//	memcpy(&tbsInChargeModeMessage.itemsArray[3],"be overwritten",strlen("be overwritten"));
-	memcpy(&tbsInChargeModeMessage.itemsArray[3],"Cancel",strlen("Cancel"));
-	memcpy(&tbsInChargeModeMessage.itemsArray[4],"OK (Long Press)",strlen("OK (Long Press)"));
+	memcpy(&tbsInChargeModeMessage.itemsArray[3],"",strlen(""));
+	memcpy(&tbsInChargeModeMessage.itemsArray[4],"",strlen(""));
+	memcpy(&tbsInChargeModeMessage.itemsArray[5],"->Long Press<-",strlen("->Long Press<-"));
+	memcpy(&tbsInChargeModeMessage.itemsArray[6],"Cancel",strlen("Cancel"));
+	memcpy(&tbsInChargeModeMessage.itemsArray[7],"OK",strlen("OK"));
 
 	autoCalibrationMessage.popupID = 11;
-	autoCalibrationMessage.numberOfItemsInPopup = 4;
+	autoCalibrationMessage.numberOfItemsInPopup = 8;
 	autoCalibrationMessage.isQuestion = true;
 	if (!isAutoCalibActive)
 	{
@@ -571,11 +581,15 @@ void initPopupMessages(void)
 		memcpy(&autoCalibrationMessage.itemsArray[0],"Approve to stop",strlen("Approve to stop"));
 		memcpy(&autoCalibrationMessage.itemsArray[1],"auto-calib",strlen("auto-calib"));
 	}
-	memcpy(&autoCalibrationMessage.itemsArray[2],"Cancel",strlen("Cancel"));
-	memcpy(&autoCalibrationMessage.itemsArray[3],"OK (Long Press)",strlen("OK (Long Press)"));
+	memcpy(&autoCalibrationMessage.itemsArray[2],"",strlen(""));
+	memcpy(&autoCalibrationMessage.itemsArray[3],"",strlen(""));
+	memcpy(&autoCalibrationMessage.itemsArray[4],"",strlen(""));
+	memcpy(&autoCalibrationMessage.itemsArray[5],"->Long Press<-",strlen("->Long Press<-"));
+	memcpy(&autoCalibrationMessage.itemsArray[6],"Cancel",strlen("Cancel"));
+	memcpy(&autoCalibrationMessage.itemsArray[7],"OK",strlen("OK"));
 
 	testFlightMessage.popupID = 12;
-	testFlightMessage.numberOfItemsInPopup = 4;
+	testFlightMessage.numberOfItemsInPopup = 8;
 	testFlightMessage.isQuestion = true;
 	if (!isTestCalibActive)
 	{
@@ -587,37 +601,48 @@ void initPopupMessages(void)
 		memcpy(&testFlightMessage.itemsArray[0],"Approve to stop",strlen("Approve to stop"));
 		memcpy(&testFlightMessage.itemsArray[1],"calib test",strlen("calib test"));
 	}
-	memcpy(&testFlightMessage.itemsArray[2],"Cancel",strlen("Cancel"));
-	memcpy(&testFlightMessage.itemsArray[3],"OK (Long Press)",strlen("OK (Long Press)"));
+	memcpy(&testFlightMessage.itemsArray[2],"",strlen(""));
+	memcpy(&testFlightMessage.itemsArray[3],"",strlen(""));
+	memcpy(&testFlightMessage.itemsArray[4],"",strlen(""));
+	memcpy(&testFlightMessage.itemsArray[5],"->Long Press<-",strlen("->Long Press<-"));
+	memcpy(&testFlightMessage.itemsArray[6],"Cancel",strlen("Cancel"));
+	memcpy(&testFlightMessage.itemsArray[7],"OK",strlen("OK"));
 
 	testMotorCutMessage.popupID = 13;
-	testMotorCutMessage.numberOfItemsInPopup = 4;
+	testMotorCutMessage.numberOfItemsInPopup = 8;
 	testMotorCutMessage.isQuestion = true;
 	memcpy(&testMotorCutMessage.itemsArray[0],"Approve to init",strlen("Approve to init"));
 	memcpy(&testMotorCutMessage.itemsArray[1],"motor-cut test",strlen("motor-cut test"));
-	memcpy(&testMotorCutMessage.itemsArray[2],"Cancel",strlen("Cancel"));
-	memcpy(&testMotorCutMessage.itemsArray[3],"OK (Long Press)",strlen("OK (Long Press)"));
+	memcpy(&testMotorCutMessage.itemsArray[2],"",strlen(""));
+	memcpy(&testMotorCutMessage.itemsArray[3],"",strlen(""));
+	memcpy(&testMotorCutMessage.itemsArray[4],"",strlen(""));
+	memcpy(&testMotorCutMessage.itemsArray[5],"->Long Press<-",strlen("->Long Press<-"));
+	memcpy(&testMotorCutMessage.itemsArray[6],"Cancel",strlen("Cancel"));
+	memcpy(&testMotorCutMessage.itemsArray[7],"OK",strlen("OK"));
 
 	returnToIdleMessage.popupID = 14;
-	returnToIdleMessage.numberOfItemsInPopup = 7;
+	returnToIdleMessage.numberOfItemsInPopup = 8;
 	returnToIdleMessage.isQuestion = false;
 	memcpy(&returnToIdleMessage.itemsArray[0],"SafeAir is not",strlen("SafeAir is not"));
 	memcpy(&returnToIdleMessage.itemsArray[1],"in Idle state,",strlen("in Idle state,"));
 	memcpy(&returnToIdleMessage.itemsArray[2],"Change SafeAir",strlen("Change SafeAir"));
 	memcpy(&returnToIdleMessage.itemsArray[3],"state and try",strlen("state and try"));
 	memcpy(&returnToIdleMessage.itemsArray[4],"again",strlen("again"));
-	memcpy(&returnToIdleMessage.itemsArray[5],"Cancel",strlen("Cancel"));
-	memcpy(&returnToIdleMessage.itemsArray[6],"OK (Long Press)",strlen("OK (Long Press)"));
+	memcpy(&returnToIdleMessage.itemsArray[5],"->Long Press<-",strlen("->Long Press<-"));
+	memcpy(&returnToIdleMessage.itemsArray[6],"Cancel",strlen("Cancel"));
+	memcpy(&returnToIdleMessage.itemsArray[7],"OK",strlen("OK"));
 
 	disconnectPyroMessage.popupID = 15;
-	disconnectPyroMessage.numberOfItemsInPopup = 6;
+	disconnectPyroMessage.numberOfItemsInPopup = 8;
 	disconnectPyroMessage.isQuestion = false;
 	memcpy(&disconnectPyroMessage.itemsArray[0],"SafeAir's pyro",strlen("SafeAir's pyro"));
 	memcpy(&disconnectPyroMessage.itemsArray[1],"is connected.",strlen("is connected."));
 	memcpy(&disconnectPyroMessage.itemsArray[2],"Disconnect it",strlen("Disconnect it"));
 	memcpy(&disconnectPyroMessage.itemsArray[3],"and try again",strlen("and try again"));
-	memcpy(&disconnectPyroMessage.itemsArray[4],"Cancel",strlen("Cancel"));
-	memcpy(&disconnectPyroMessage.itemsArray[5],"OK (Long Press)",strlen("OK (Long Press)"));
+	memcpy(&disconnectPyroMessage.itemsArray[4],"",strlen(""));
+	memcpy(&disconnectPyroMessage.itemsArray[5],"->Long Press<-",strlen("->Long Press<-"));
+	memcpy(&disconnectPyroMessage.itemsArray[6],"Cancel",strlen("Cancel"));
+	memcpy(&disconnectPyroMessage.itemsArray[7],"OK",strlen("OK"));
 }
 
 void updateSelection(void)

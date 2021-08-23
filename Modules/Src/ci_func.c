@@ -46,7 +46,7 @@ eCI_RESULT func_updateRCVersion(void)
 
 eCI_RESULT func_versionReport(void)
 {
-	sprintf(terminalBuffer,"RC Firmware Version: %2.2f, BuildID: %2.2f, Configuration: %2.2f",fwVersion, buildID, ee.configuration);
+	sprintf(terminalBuffer,"RC Firmware Version: %2.2f, BuildID: %2.2f, Configuration: %2.2f \3",fwVersion, buildID, ee.configuration);
 	logData(terminalBuffer, false, true, false);
 	return CI_OK;
 }
