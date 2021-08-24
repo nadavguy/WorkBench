@@ -42,6 +42,8 @@ bool isTBSDisconnected = false;
 bool isTailIDAlreadyReceived = false;
 bool shouldAddTimeToConfigurationMessage = false;
 bool isLegacyDronePlatform = false;
+bool isSMABatteryCritical = false;
+bool isSMABatteryLow = false;
 
 char safeAirTailID[11] = "";
 
@@ -323,14 +325,17 @@ bool parseTBSMessage(void)
 				displayWarning.BITStatus &= ~smaPyroError;
 			}
 
-			if (currentSmaStatus.batteryVoltage < 3.8 )
+			if ( (currentSmaStatus.batteryVoltage < 3.5 ) || (isSMABatteryCritical) )
 			{
 				displayWarning.BITStatus |= smaCritBat;
+				isSMABatteryCritical = true;
 			}
-			else if ( (currentSmaStatus.batteryVoltage >= 3.8 ) && (currentSmaStatus.batteryVoltage < 3.9 ) )
+			else if ( ( (currentSmaStatus.batteryVoltage >= 3.5 ) && (currentSmaStatus.batteryVoltage < 3.7 ) && (!isSMABatteryCritical) )
+					|| (!isSMABatteryLow) )
 			{
 				displayWarning.BITStatus &= ~smaCritBat;
 				displayWarning.BITStatus |= smaLowBat;
+				isSMABatteryLow = true;
 			}
 			else
 			{

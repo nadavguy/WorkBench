@@ -366,6 +366,7 @@ void updateStatusText(void)
 //			}
 			shouldUpdateStatusText = false;
 		}
+		Paint_ClearWindows(0, WarningTextY, VerticalDisplayCenterWidth * 2, WarningTextY + Font12.Height, BACKGROUND);
 		if (displayWarning.BITStatus & 0x01)
 		{
 			centeredString(WarningTextX, WarningTextY, "SA Critical Bat", BLACK, BACKGROUND, 14, Font12);

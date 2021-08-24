@@ -19,7 +19,7 @@ tEEV_U08 EEV_BluetoothStatus = {0, 0, 2};
 tEEV_FLOAT EEV_Configuration = {0.0f, 0.0f, 99.0f};
 tEEV_U16 EEV_FullChargeCycles = {0, 0 ,5000};
 tEEV_U08 EEV_RCMode = {0, 0, 32};
-tEEV_U08 EEV_CVChargeStep = {0, 0, 32};
+tEEV_U08 EEV_CVChargeStep = {0, 0, 255};
 tEEV_U08 EEV_BatteryType = {0, 1, 32};
 tEEV_U08 EEV_LegacySystemType = {0, 0, 32};
 
@@ -47,5 +47,29 @@ bool ee_validate1(void)
 	ee_invalid_counter += ee_validate_data(EEV_U08, (pU08)&ee.batteryType, (pEEV_U08)&EEV_BatteryType);
 	ee_invalid_counter += ee_validate_data(EEV_U08, (pU08)&ee.legacySystemType, (pEEV_U08)&EEV_LegacySystemType);
 
+	if (ee_invalid_counter > 0)
+	{
+		setParametersToDefaults();
+	}
+
 	return (ee_invalid_counter == 0);
+}
+
+void setParametersToDefaults(void)
+{
+	ee.debugLevel = EEV_DebugLevel.std;
+	ee.armPWMOffValue = EEV_ArmPWMOffValue.std;
+	ee.armPWMOnValue = EEV_ArmPWMOnValue.std;
+	ee.triggerPWMOffValue = EEV_TriggerPWMOffValue.std;
+	ee.triggerPWMOnValue = EEV_TriggerPWMOnValue.std;
+	ee.linkType = EEV_LinkType.std;
+	ee.backLight = EEV_Backlight.std;
+	ee.screenOreintation = EEV_ScreenOrientation.std;
+	ee.bluetoothStatus = EEV_BluetoothStatus.std;
+	ee.configuration = EEV_Configuration.std;
+	ee.fullChargeCycles = EEV_FullChargeCycles.std;
+	ee.rcMode = EEV_RCMode.std;
+	ee.lastStepInCVChargeCycle = EEV_CVChargeStep.std;
+	ee.batteryType = EEV_BatteryType.std;
+	ee.legacySystemType = EEV_LegacySystemType.std;
 }

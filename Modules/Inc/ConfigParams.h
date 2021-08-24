@@ -62,5 +62,6 @@ extern tEEV_U08 EEV_BatteryType;
 extern tEEV_U08 EEV_LegacySystemType;
 
 extern bool ee_validate1(void);
+extern void setParametersToDefaults(void);
 
 #endif /* INC_CONFIGPARAMS_H_ */

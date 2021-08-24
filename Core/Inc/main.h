@@ -140,6 +140,7 @@ extern bool shouldRedrawSafeAirBatteryIcon;
 extern bool shouldDrawSafeAirAltitude;
 extern bool isScreenBrightFull;
 extern bool testMotorCut;
+extern bool isDisableButtonDetection;
 
 extern uint16_t fullFrameDelay;
 

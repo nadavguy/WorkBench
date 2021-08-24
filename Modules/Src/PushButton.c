@@ -82,6 +82,15 @@ void CheckButtons(void)
 		}
 	}
 
+	if ( (isDisableButtonDetection) && (HAL_GetTick() - lastAnyButtonPress > 500) )
+	{
+		isDisableButtonDetection = false;
+	}
+	else if ( (isDisableButtonDetection) && (HAL_GetTick() - lastAnyButtonPress < 500) )
+	{
+		return;
+	}
+
 	if(!isScreenBrightFull)
 	{
 		return;

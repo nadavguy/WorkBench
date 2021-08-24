@@ -79,7 +79,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.590;
+float buildID = 1.610;
 
 SYSTEMState rcState = PREINIT;
 
@@ -106,6 +106,7 @@ bool shouldRedrawSafeAirBatteryIcon = true;
 bool isScreenBrightFull = true;
 bool shouldDrawSafeAirAltitude = true;
 bool testMotorCut = false;
+bool isDisableButtonDetection = false;
 
 uint16_t fullFrameDelay = 5000;
 
@@ -256,11 +257,11 @@ int main(void)
 	currentCursorPosition.cursorPosition = 0;
 	currentCursorPosition.menuDepth = 0;
 	measureVoltages(true);
-	if ( (tbsLink == NOSIGNAL) && (isChargingMode) )
-	{
-		memcpy(&popupToShow, &tbsInChargeModeMessage, sizeof(popupToShow));
-		waitForPopupInput();
-	}
+//	if ( (tbsLink == NOSIGNAL) && (isChargingMode) )
+//	{
+//		memcpy(&popupToShow, &tbsInChargeModeMessage, sizeof(popupToShow));
+//		waitForPopupInput();
+//	}
 	if ( (tbsLink == NOSIGNAL) && (!isChargingMode) )
 	{
 		memcpy(&popupToShow, &noConnectionMessage, sizeof(popupToShow));
@@ -441,6 +442,7 @@ void UpdateScreenBrightness(bool screenBrightfullnessLevel)
 	{
 		LCD_1IN8_SetBackLight(ee.backLight * 2000);
 		isScreenBrightFull = true;
+		isDisableButtonDetection = true;
 	}
 }
 void updateRCState(void)
@@ -652,7 +654,7 @@ void updateRCState(void)
 			shouldUpdateStatusText = true;
 		}
 	}
-	else if (currentSmaStatus.batteryVoltage < 3.8)
+	else if (currentSmaStatus.batteryVoltage < 3.5)
 	{
 		//Sound SMA low battery
 	}
