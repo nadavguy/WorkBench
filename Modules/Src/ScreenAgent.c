@@ -256,20 +256,20 @@ void renderSafeAirBattery(bool drawDeltaImage)
 			break; /* optional */
 		}
 
-//		case CHARGING:
-//		{
-//			if (!drawDeltaImage)
-//			{
-//				Paint_DrawImage(gImage_Battery_Charging, BatteryX, BatteryY, statusBarIconWidth, statusBarIconHeight);
-//			}
-//			else
-//			{
-//				Paint_DrawDeltaImage(gImage_Battery_Charging, previousBatteryImage,
-//						BatteryX, BatteryY, statusBarIconWidth, statusBarIconHeight);
-//			}
-//			previousBatteryImage = gImage_Battery_Charging;
-//			break; /* optional */
-//		}
+		case CHARGING:
+		{
+			if (!drawDeltaImage)
+			{
+				Paint_DrawImage(gImage_SafeAir_External_Power, SafeAirBatteryX, SafeAirBatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
+			}
+			else
+			{
+				Paint_DrawDeltaImage(gImage_SafeAir_External_Power, previousBatteryImage,
+						SafeAirBatteryX, SafeAirBatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
+			}
+			previousBatteryImage = gImage_SafeAir_External_Power;
+			break; /* optional */
+		}
 
 			/* you can have any number of case statements */
 		default: /* Optional */

@@ -45,7 +45,7 @@ bool isLegacyDronePlatform = false;
 bool isSMABatteryCritical = false;
 bool isSMABatteryLow = false;
 
-char safeAirTailID[11] = "";
+char safeAirTailID[12] = "";
 
 tRC_LINK rcLinkStatus;
 tSMA_Status previousSmaStatus;
@@ -218,7 +218,36 @@ bool parseTBSMessage(void)
 			previousSmaStatus = currentSmaStatus;
 			previousBITStatus = displayWarning.BITStatus;
 
-			currentSmaStatus.batteryVoltage = fmin(localRxArray[i + 3] / 50.0 + 0.05, 4.2);
+			if (localRxArray[i + 3] / 50.0 >= 4.6)
+			{
+				currentSmaStatus.batteryVoltage = localRxArray[i + 3] / 50.0;
+//				currentSmaStatus.batteryStrength = CHARGING;
+			}
+			else
+			{
+				currentSmaStatus.batteryVoltage = fmin(localRxArray[i + 3] / 50.0 + 0.05, 4.2);
+			}
+			if ( (currentSmaStatus.batteryVoltage > 4.6) && (!isSMABatteryLow) && (!isSMABatteryCritical) )
+			{
+				currentSmaStatus.batteryStrength = CHARGING;
+			}
+			else if ( (currentSmaStatus.batteryVoltage > 3.9) && (!isSMABatteryLow) && (!isSMABatteryCritical) )
+			{
+				currentSmaStatus.batteryStrength = STRONG;
+			}
+			else if ( (currentSmaStatus.batteryVoltage > 3.7) && (!isSMABatteryLow) && (!isSMABatteryCritical) )
+			{
+				currentSmaStatus.batteryStrength = MEDIUM;
+			}
+			else if ( (currentSmaStatus.batteryVoltage > 3.5) && (!isSMABatteryCritical) )
+			{
+				currentSmaStatus.batteryStrength = LOW;
+			}
+			else
+			{
+				currentSmaStatus.batteryStrength = EMPTY;
+			}
+
 			currentSmaStatus.smaState = localRxArray[i + 4];
 			if (currentSmaStatus.smaState == 6)
 			{
@@ -246,7 +275,7 @@ bool parseTBSMessage(void)
 			currentSmaStatus.Acceleration = (localRxArray[i + 8] * 256 + localRxArray[i + 9])/100.0;
 			currentSmaStatus.BITStatus = localRxArray[i + 10] * 256 + localRxArray[i + 11];
 
-			if ( abs(previousSmaStatus.batteryVoltage - currentSmaStatus.batteryVoltage) > 0.05 )
+			if ( fabs(previousSmaStatus.batteryVoltage - currentSmaStatus.batteryVoltage) > 0.05 )
 			{
 				shouldRedrawSafeAirBatteryIcon = true;
 			}
@@ -325,7 +354,12 @@ bool parseTBSMessage(void)
 				displayWarning.BITStatus &= ~smaPyroError;
 			}
 
-			if ( (currentSmaStatus.batteryVoltage < 3.5 ) || (isSMABatteryCritical) )
+			if ( (!isSMABatteryLow) && (!isSMABatteryCritical) )
+			{
+				displayWarning.BITStatus &= ~smaCritBat;
+				displayWarning.BITStatus &= ~smaLowBat;
+			}
+			else if ( (currentSmaStatus.batteryVoltage < 3.5 ) || (isSMABatteryCritical) )
 			{
 				displayWarning.BITStatus |= smaCritBat;
 				isSMABatteryCritical = true;
@@ -336,11 +370,6 @@ bool parseTBSMessage(void)
 				displayWarning.BITStatus &= ~smaCritBat;
 				displayWarning.BITStatus |= smaLowBat;
 				isSMABatteryLow = true;
-			}
-			else
-			{
-				displayWarning.BITStatus &= ~smaCritBat;
-				displayWarning.BITStatus &= ~smaLowBat;
 			}
 
 			if (currentSmaStatus.BITStatus & 0x40)
@@ -482,11 +511,12 @@ bool parseTBSMessage(void)
 			safeAirTailID[8] = (char)(localRxArray[i + 11]);
 			safeAirTailID[9] = (char)(localRxArray[i + 12]);
 			safeAirTailID[10] = (char)(localRxArray[i + 13]);
+			safeAirTailID[11] = (char)(0x00);
 			if (!isTailIDAlreadyReceived)
 			{
 				isTailIDAlreadyReceived = true;
 				sprintf(terminalBuffer,"Received Tail-ID: %s", safeAirTailID);
-				memcpy(ee.lastPairedDevice,safeAirTailID,11);
+				memcpy(ee.lastPairedDevice,safeAirTailID,12);
 				ee_save1();
 				logData(terminalBuffer, false, false, false);
 			}

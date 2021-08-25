@@ -60,6 +60,7 @@ extern tEEV_U08 EEV_ScreenOrientation;
 extern tEEV_U08 EEV_ChargeCycle;
 extern tEEV_U08 EEV_BatteryType;
 extern tEEV_U08 EEV_LegacySystemType;
+extern tEEV_U16 EEV_MotorCutDelay;
 
 extern bool ee_validate1(void);
 extern void setParametersToDefaults(void);

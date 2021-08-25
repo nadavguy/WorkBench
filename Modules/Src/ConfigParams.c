@@ -22,6 +22,7 @@ tEEV_U08 EEV_RCMode = {0, 0, 32};
 tEEV_U08 EEV_CVChargeStep = {0, 0, 255};
 tEEV_U08 EEV_BatteryType = {0, 1, 32};
 tEEV_U08 EEV_LegacySystemType = {0, 0, 32};
+tEEV_U16 EEV_MotorCutDelay = {0, 0 ,5000};
 
 tEE_DATA ee;
 tCONFIG_DATA safeairConfiguration;
@@ -46,6 +47,7 @@ bool ee_validate1(void)
 	ee_invalid_counter += ee_validate_data(EEV_U08, (pU08)&ee.lastStepInCVChargeCycle, (pEEV_U08)&EEV_CVChargeStep);
 	ee_invalid_counter += ee_validate_data(EEV_U08, (pU08)&ee.batteryType, (pEEV_U08)&EEV_BatteryType);
 	ee_invalid_counter += ee_validate_data(EEV_U08, (pU08)&ee.legacySystemType, (pEEV_U08)&EEV_LegacySystemType);
+	ee_invalid_counter += ee_validate_data(EEV_U16, (pU16)&ee.motorDelayValue, (pEEV_U16)&EEV_MotorCutDelay);
 
 	if (ee_invalid_counter > 0)
 	{

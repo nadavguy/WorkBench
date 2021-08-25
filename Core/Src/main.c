@@ -79,7 +79,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.610;
+float buildID = 1.620;
 
 SYSTEMState rcState = PREINIT;
 
@@ -222,6 +222,7 @@ int main(void)
 		ee_save1();
 	}
 	ee.rcMode = 0;
+	safeairConfiguration.MTD = 0;
 
 	initMenuPages();
 	initMenuItems();
@@ -385,6 +386,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLN = 432;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 9;
+  RCC_OscInitStruct.PLL.PLLR = 2;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();

@@ -106,7 +106,7 @@ extern bool isTailIDAlreadyReceived;
 extern bool shouldAddTimeToConfigurationMessage;
 extern bool isLegacyDronePlatform;
 
-extern char safeAirTailID[11];
+extern char safeAirTailID[12];
 
 extern tRC_LINK rcLinkStatus;
 extern tSMA_Status previousSmaStatus;

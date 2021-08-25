@@ -108,7 +108,7 @@ uint8_t UserTxBufferFS[APP_TX_DATA_SIZE];
   * @{
   */
 
-//extern USBD_HandleTypeDef hUsbDeviceFS;
+extern USBD_HandleTypeDef hUsbDeviceFS;
 
 /* USER CODE BEGIN EXPORTED_VARIABLES */
 
@@ -315,7 +315,7 @@ uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len)
 
 /**
   * @brief  CDC_TransmitCplt_FS
-  *         Data transmited callback
+  *         Data transmitted callback
   *
   *         @note
   *         This function is IN transfer complete callback used to inform user that

@@ -16,7 +16,10 @@ void printRCConfiguration(bool toDisplayOnly)
 	logData(terminalBuffer, false, toDisplayOnly, false);
 	sprintf(terminalBuffer,"Unit Unique ID.................................: %ld %ld %ld\3",UID1, UID2, UID3);
 	logData(terminalBuffer, false, toDisplayOnly, false);
-	sprintf(terminalBuffer,"Last Paired Device ID..........................: %s\3",ee.lastPairedDevice);
+	char localPairedDevice[17] = "";
+	memcpy(localPairedDevice,ee.lastPairedDevice,16);
+	localPairedDevice[16] = 0x00;
+	sprintf(terminalBuffer,"Last Paired Device ID..........................: %s\3",localPairedDevice);
 	logData(terminalBuffer, false, toDisplayOnly, false);
 	sprintf(terminalBuffer,"Battery voltage: %1.2f V\3", batteryVoltage);
 	logData(terminalBuffer, false, toDisplayOnly, false);
