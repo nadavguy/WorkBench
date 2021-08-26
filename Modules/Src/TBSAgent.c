@@ -44,6 +44,7 @@ bool shouldAddTimeToConfigurationMessage = false;
 bool isLegacyDronePlatform = false;
 bool isSMABatteryCritical = false;
 bool isSMABatteryLow = false;
+bool isSMABatteryMedium = false;
 
 char safeAirTailID[12] = "";
 
@@ -231,7 +232,7 @@ bool parseTBSMessage(void)
 			{
 				currentSmaStatus.batteryStrength = CHARGING;
 			}
-			else if ( (currentSmaStatus.batteryVoltage > 3.9) && (!isSMABatteryLow) && (!isSMABatteryCritical) )
+			else if ( (currentSmaStatus.batteryVoltage > 3.9) && (!isSMABatteryLow) && (!isSMABatteryCritical) && (!isSMABatteryMedium))
 			{
 				currentSmaStatus.batteryStrength = STRONG;
 			}
@@ -354,22 +355,27 @@ bool parseTBSMessage(void)
 				displayWarning.BITStatus &= ~smaPyroError;
 			}
 
-			if ( (!isSMABatteryLow) && (!isSMABatteryCritical) )
+			if ( (!isSMABatteryLow) && (!isSMABatteryCritical) && (!isSMABatteryMedium) && (currentSmaStatus.batteryVoltage >= 3.9 ) )
 			{
 				displayWarning.BITStatus &= ~smaCritBat;
 				displayWarning.BITStatus &= ~smaLowBat;
+			}
+			else if ( ( (currentSmaStatus.batteryVoltage >= 3.7 ) && (currentSmaStatus.batteryVoltage < 3.9 )
+					&& (!isSMABatteryCritical) && (!isSMABatteryLow)) || (!isSMABatteryMedium) )
+			{
+				isSMABatteryMedium = true;
+			}
+			else if ( ( (currentSmaStatus.batteryVoltage >= 3.5 ) && (currentSmaStatus.batteryVoltage < 3.7 )
+					&& (!isSMABatteryCritical) ) || (!isSMABatteryLow) )
+			{
+				displayWarning.BITStatus &= ~smaCritBat;
+				displayWarning.BITStatus |= smaLowBat;
+				isSMABatteryLow = true;
 			}
 			else if ( (currentSmaStatus.batteryVoltage < 3.5 ) || (isSMABatteryCritical) )
 			{
 				displayWarning.BITStatus |= smaCritBat;
 				isSMABatteryCritical = true;
-			}
-			else if ( ( (currentSmaStatus.batteryVoltage >= 3.5 ) && (currentSmaStatus.batteryVoltage < 3.7 ) && (!isSMABatteryCritical) )
-					|| (!isSMABatteryLow) )
-			{
-				displayWarning.BITStatus &= ~smaCritBat;
-				displayWarning.BITStatus |= smaLowBat;
-				isSMABatteryLow = true;
 			}
 
 			if (currentSmaStatus.BITStatus & 0x40)
