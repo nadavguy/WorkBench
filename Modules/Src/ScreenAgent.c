@@ -354,7 +354,10 @@ void updateStatusText(void)
 		addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, CYAN);
 		centeredString(SystemStatusTextX, SystemStatusTextY, "Maintenance", BLACK, CYAN, 14, Font12);
 	}
+}
 
+void updateBITStatus(void)
+{
 	if (displayWarning.displayWarning)
 	{
 		if (shouldDrawRedAlertIcon)
@@ -379,7 +382,7 @@ void updateStatusText(void)
 		{
 			centeredString(WarningTextX, WarningTextY, "SA Flash Err", BLACK, BACKGROUND, 14, Font12);
 		}
-		else if (displayWarning.BITStatus & 0x08)
+		else if ( (displayWarning.BITStatus & 0x08) && (currentSmaStatus.smaState == IDLE) )
 		{
 			centeredString(WarningTextX, WarningTextY, "SA Orientation", BLACK, BACKGROUND, 14, Font12);
 		}
