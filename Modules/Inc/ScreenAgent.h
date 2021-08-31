@@ -261,6 +261,7 @@ extern void drawPopup(void);
 extern void setFullDisplay(void);
 extern void setIconPositionOnScreen(void);
 extern void drawChargingDots(void);
+extern void updateBITStatus(void);
 
 
 #endif /* SRC_SCREENAGENT_H_ */

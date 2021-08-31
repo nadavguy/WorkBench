@@ -79,7 +79,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.660;
+float buildID = 1.670;
 
 SYSTEMState rcState = PREINIT;
 
@@ -308,6 +308,7 @@ int main(void)
 					createEmptyFrame(false, true);
 					setFullDisplay();
 					screenUpdate(false);
+					updateBITStatus();
 					lastFullFrameDisplayed = HAL_GetTick();
 				}
 				else

@@ -959,12 +959,18 @@ void screenUpdate(bool drawDeltaImage)
 			shouldUpdatePlatformText = false;
 		} // End of should update platform text
 
-		if ( (shouldUpdateStatusText)  && (HAL_GetTick() - lastBITStatusChange > 500) )
+		if (shouldUpdateStatusText)
 		{
-			lastBITStatusChange = HAL_GetTick();
+
 			updateStatusText();
 			shouldUpdateStatusText = false;
 		} // End of should update status text
+
+		if (HAL_GetTick() - lastBITStatusChange >= 500)
+		{
+			lastBITStatusChange = HAL_GetTick();
+			updateBITStatus();
+		}
 
 		if ( (shouldRedrawSafeAirBatteryIcon) && (isSafeAirBatteryDisplayed) )
 		{
