@@ -79,7 +79,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.670;
+float buildID = 1.680;
 
 SYSTEMState rcState = PREINIT;
 
@@ -472,7 +472,7 @@ void updateRCState(void)
 	}
 	else
 	{
-		if ( (batteryVoltage <= 3.3) && (batteryStrength < EMPTY))
+		if ( (batteryVoltage <= 3.55) && (batteryStrength < EMPTY))
 		{
 			isLowBattery = true;
 			isEmptyBattery = true;
@@ -482,7 +482,7 @@ void updateRCState(void)
 			sprintf(terminalBuffer,"RC Battery is Empty");
 			logData(terminalBuffer, false, false, false);
 		}
-		else if ( (batteryVoltage > 3.3) && (batteryVoltage <= 3.45) && (batteryStrength < LOW))
+		else if ( (batteryVoltage > 3.55) && (batteryVoltage <= 3.65) && (batteryStrength < LOW))
 		{
 			shouldRedrawBatteryIcon = true;
 			batteryStrength = LOW;
@@ -490,7 +490,7 @@ void updateRCState(void)
 			sprintf(terminalBuffer,"RC Battery is Low");
 			logData(terminalBuffer, false, false, false);
 		}
-		else if ( (batteryVoltage > 3.45) && (batteryVoltage <= 3.8) && (batteryStrength < MEDIUM) )
+		else if ( (batteryVoltage > 3.65) && (batteryVoltage <= 3.8) && (batteryStrength < MEDIUM) )
 		{
 			shouldRedrawBatteryIcon = true;
 			batteryStrength = MEDIUM;

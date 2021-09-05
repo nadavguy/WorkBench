@@ -52,6 +52,7 @@ void waitForPopupInput(void)
 //					HAL_Delay(50);
 					screenUpdate(false);
 					updateNextFrame();
+					readUSBData();
 				}
 				break;
 			}
