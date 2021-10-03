@@ -90,10 +90,6 @@
 
 
 
-
-
-
-
 #define VerticalDisplayCenterWidth 64
 #define VerticalDisplayCenterHeight 80
 
@@ -186,6 +182,12 @@
 #define VerticalChargingModeFifthDotX VerticalChargingModeFirstDotX+12*4
 #define VerticalChargingModeSixthDotX VerticalChargingModeFirstDotX+12*5
 #define VerticalChargingModeDotY 148
+
+#define VerticalFullLogoX 0
+#define VerticalFullLogoY 90
+
+#define VerticalFullLogoWidth 128
+#define VerticalFullLogoHeight 25
 
 typedef struct sIMAGE_DATA
 {

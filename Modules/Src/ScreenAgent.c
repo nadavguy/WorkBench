@@ -86,6 +86,10 @@ uint8_t ChargingModeImageY = 0;
 uint8_t ChargingModePercentTextX = 0;
 uint8_t ChargingModePercentTextY = 0;
 uint8_t dotCycle = 0;
+uint8_t FullLogoX = 0;
+uint8_t FullLogoY = 0;
+uint8_t FullLogoWidth = 0;
+uint8_t FullLogoHeight = 0;
 
 uint32_t lastBatteryRefresh = 0;
 uint32_t lastBITStatusChange = 0;
@@ -120,12 +124,20 @@ void screenInit(void)
 		LCD_1IN8_Init(L2R_U2D);
 		LCD_1IN8_Clear(BLACK);
 		Paint_NewImage(LCD_1IN8_HEIGHT,LCD_1IN8_WIDTH, 0, WHITE);
+		FullLogoWidth = VerticalFullLogoWidth;
+		FullLogoHeight = VerticalFullLogoHeight;
+		FullLogoX = VerticalFullLogoX;
+		FullLogoY = VerticalFullLogoY;
 	}
 	else
 	{
 		LCD_1IN8_Init(U2D_R2L);
 		LCD_1IN8_Clear(BLACK);
 		Paint_NewImage(LCD_1IN8_WIDTH,LCD_1IN8_HEIGHT, 0, WHITE);
+//		FullLogoWidth = HorizontalFullLogoWidth;
+//		FullLogoHeight = HorizontalFullLogoHeight;
+//		FullLogoX = HorizontalFullLogoX;
+//		FullLogoY = HorizontalFullLogoY;
 	}
 
 	Paint_SetClearFuntion(LCD_1IN8_Clear);
@@ -916,17 +928,47 @@ void screenUpdate(bool drawDeltaImage)
 	setIconPositionOnScreen();
 	if ( (!isMenuDisplayed) && (!isPopupDisplayed) )
 	{
-		if ( (shouldReDrawPlatformIcon) && (isPlatformDisplayed) )
+		if (!isLegacyDronePlatform)
 		{
-			redrawPlatformIcon(drawDeltaImage);
-			shouldReDrawPlatformIcon = false;
-		} // End of Should draw platform icon
+			if ( (shouldReDrawPlatformIcon) && (isPlatformDisplayed) )
+			{
+				redrawPlatformIcon(drawDeltaImage);
+				shouldReDrawPlatformIcon = false;
+			} // End of Should draw platform icon
 
-		if ( (shouldReDrawAutoPilotIcon) && (isAutoPilotDisplayed) )
+			if ( (shouldReDrawAutoPilotIcon) && (isAutoPilotDisplayed) )
+			{
+				redrawAutoPilotIcon(drawDeltaImage);
+				shouldReDrawAutoPilotIcon = false;
+			} // End of should draw Auto-pilot icon
+
+			if ( (shouldRedrawSafeAirBatteryIcon) && (isSafeAirBatteryDisplayed) )
+			{
+				renderSafeAirBattery(drawDeltaImage);
+				shouldRedrawSafeAirBatteryIcon = false;
+			}
+
+			if ( (shouldDrawSafeAirAltitude) )
+			{
+				char localText[12] = "";
+				Paint_DrawLine(LineStartX, LineY, LineEndX, LineY, BLACK, DOT_PIXEL_1X1, LINE_STYLE_SOLID);
+				if ((currentSmaStatus.smaState != ARMED) && (currentSmaStatus.smaState != TRIGGERED) && (!isAutoCalibActive) && (!isTestCalibActive))
+				{
+					sprintf(localText, "%06.1f m", 0.0);
+				}
+				else
+				{
+					sprintf(localText, "%06.1f m", currentSmaStatus.Altitude);
+				}
+				centeredString(74, 138, localText, BLACK, BACKGROUND, 8, Font16);
+				drawAltitudeIcon(drawDeltaImage);
+				shouldDrawSafeAirAltitude = false;
+			}
+		}
+		else
 		{
-			redrawAutoPilotIcon(drawDeltaImage);
-			shouldReDrawAutoPilotIcon = false;
-		} // End of should draw Auto-pilot icon
+			Paint_DrawImage(gImage_ParaZeroFullLogo, FullLogoX, FullLogoY, FullLogoWidth, FullLogoHeight);
+		}
 
 		if (shouldRedrawSignalStrengthIcon)
 		{
@@ -970,29 +1012,6 @@ void screenUpdate(bool drawDeltaImage)
 		{
 			lastBITStatusChange = HAL_GetTick();
 			updateBITStatus();
-		}
-
-		if ( (shouldRedrawSafeAirBatteryIcon) && (isSafeAirBatteryDisplayed) )
-		{
-			renderSafeAirBattery(drawDeltaImage);
-			shouldRedrawSafeAirBatteryIcon = false;
-		}
-
-		if ( (shouldDrawSafeAirAltitude) )
-		{
-			char localText[12] = "";
-			Paint_DrawLine(LineStartX, LineY, LineEndX, LineY, BLACK, DOT_PIXEL_1X1, LINE_STYLE_SOLID);
-			if ((currentSmaStatus.smaState != ARMED) && (currentSmaStatus.smaState != TRIGGERED) && (!isAutoCalibActive) && (!isTestCalibActive))
-			{
-				sprintf(localText, "%06.1f m", 0.0);
-			}
-			else
-			{
-				sprintf(localText, "%06.1f m", currentSmaStatus.Altitude);
-			}
- 			centeredString(74, 138, localText, BLACK, BACKGROUND, 8, Font16);
-			drawAltitudeIcon(drawDeltaImage);
-			shouldDrawSafeAirAltitude = false;
 		}
 	} // end of RC and SafeAir data display
 	else if (isMenuDisplayed)
@@ -1277,6 +1296,9 @@ void setIconPositionOnScreen(void)
 		ChargingModeImageY = VerticalChargingModeX;
 		ChargingModePercentTextX = VerticalChargingModePercentX;
 		ChargingModePercentTextY = VerticalChargingModePercentY;
+
+		FullLogoX = VerticalFullLogoX;
+		FullLogoY = VerticalFullLogoY;
 	}
 	else
 	{
@@ -1296,7 +1318,8 @@ void setIconPositionOnScreen(void)
 		SystemTextY = HorizontalSystemTextY;
 		SafeAirBatteryX = HorizontalSafeAirBatteryTextX;
 		SafeAirBatteryY = HorizontalSafeAirBatteryTextY;
-
+//		FullLogoX = HorizontalFullLogoX;
+//		FullLogoY = HorizontalFullLogoY;
 	}
 }
 

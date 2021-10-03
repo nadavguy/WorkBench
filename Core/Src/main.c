@@ -79,7 +79,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.680;
+float buildID = 1.690;
 
 SYSTEMState rcState = PREINIT;
 
@@ -243,14 +243,16 @@ int main(void)
 	printRCConfiguration(false);
 
 	screenInit();
+	nextPattern = &testBuzzerPattern;
+	setBuzzerPattern(*nextPattern);
 	screenClear();
 	renderCompleteFrame = true;
 	CheckButtons();
 	createEmptyFrame(false, false);
 
-	//  createPingMessage();
-	nextPattern = &noBuzzerPattern;
-	setBuzzerPattern(*nextPattern);
+//	//  createPingMessage();
+//	nextPattern = &noBuzzerPattern;
+//	setBuzzerPattern(*nextPattern);
 
 
 	initBLE();
@@ -657,7 +659,7 @@ void updateRCState(void)
 			shouldUpdateStatusText = true;
 		}
 	}
-	else if (currentSmaStatus.batteryVoltage < 3.5)
+	else if (currentSmaStatus.batteryVoltage <= 3.5)
 	{
 		//Sound SMA low battery
 	}

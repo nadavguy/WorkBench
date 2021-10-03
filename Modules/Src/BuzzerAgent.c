@@ -87,9 +87,9 @@ void updateBuzzerStatus(void)
 
 void initBuzzerPatterns(void)
 {
-	testBuzzerPattern.patternLength = 12;
-	testBuzzerPattern.patternDuration[0] = 125;
-	testBuzzerPattern.patternDuration[1] = 125;
+	testBuzzerPattern.patternLength = 2;
+	testBuzzerPattern.patternDuration[0] = 400;
+	testBuzzerPattern.patternDuration[1] = 400;
 	testBuzzerPattern.patternDuration[2] = 125;
 	testBuzzerPattern.patternDuration[3] = 125;
 	testBuzzerPattern.patternDuration[4] = 125;
@@ -105,24 +105,24 @@ void initBuzzerPatterns(void)
 	testBuzzerPattern.patternDuration[14] = 0;
 	testBuzzerPattern.patternDuration[15] = 0;
 
-	testBuzzerPattern.patternOnOff[0] = NOTE_C6;
+	testBuzzerPattern.patternOnOff[0] = 1;
 	testBuzzerPattern.patternOnOff[1] = 0;
-	testBuzzerPattern.patternOnOff[2] = NOTE_E6;
+	testBuzzerPattern.patternOnOff[2] = 0;
 	testBuzzerPattern.patternOnOff[3] = 0;
-	testBuzzerPattern.patternOnOff[4] = NOTE_G6;
+	testBuzzerPattern.patternOnOff[4] = 0;
 	testBuzzerPattern.patternOnOff[5] = 0;
-	testBuzzerPattern.patternOnOff[6] = NOTE_E6;
+	testBuzzerPattern.patternOnOff[6] = 0;
 	testBuzzerPattern.patternOnOff[7] = 0;
-	testBuzzerPattern.patternOnOff[8] = NOTE_C6;
+	testBuzzerPattern.patternOnOff[8] = 0;
 	testBuzzerPattern.patternOnOff[9] = 0;
-	testBuzzerPattern.patternOnOff[10] = NOTE_C7;
+	testBuzzerPattern.patternOnOff[10] = 0;
 	testBuzzerPattern.patternOnOff[11] = 0;
 	testBuzzerPattern.patternOnOff[12] = 0;
 	testBuzzerPattern.patternOnOff[13] = 0;
 	testBuzzerPattern.patternOnOff[14] = 0;
 	testBuzzerPattern.patternOnOff[15] = 0;
 
-	testBuzzerPattern.isSingleCycle = false;
+	testBuzzerPattern.isSingleCycle = true;
 	testBuzzerPattern.id = 1;
 
 	idleBuzzerPattern.patternLength = 4;

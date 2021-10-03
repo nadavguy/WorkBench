@@ -108,7 +108,7 @@ void initMenuPages(void)
 		memcpy(&rcSettingsPage.itemsArray[0],"Brightness",strlen("Brightness"));
 		memcpy(&rcSettingsPage.itemsArray[1],"Mass Storage",strlen("Mass Storage"));
 		memcpy(&rcSettingsPage.itemsArray[2],"Clear RC Flash",strlen("Clear RC Flash"));
-		memcpy(&rcSettingsPage.itemsArray[3],"Legacy Systems",strlen("Legacy Systems"));
+		memcpy(&rcSettingsPage.itemsArray[3],"Safeair Systems",strlen("Safeair Systems"));
 		memcpy(&rcSettingsPage.itemsArray[4],"BlueTooth",strlen("BlueTooth"));
 		memcpy(&rcSettingsPage.itemsArray[5],"Back",strlen("Back"));
 		memcpy(&rcSettingsPage.itemsArray[6],"Close menu",strlen("Close menu"));
@@ -133,7 +133,7 @@ void initMenuPages(void)
 		memcpy(&rcSettingsPage.itemsArray[0],"Brightness",strlen("Brightness"));
 		memcpy(&rcSettingsPage.itemsArray[1],"Mass Storage",strlen("Mass Storage"));
 		memcpy(&rcSettingsPage.itemsArray[2],"Clear RC Flash",strlen("Clear RC Flash"));
-		memcpy(&rcSettingsPage.itemsArray[3],"Legacy Systems",strlen("Legacy Systems"));
+		memcpy(&rcSettingsPage.itemsArray[3],"Safeair Systems",strlen("Safeair Systems"));
 		memcpy(&rcSettingsPage.itemsArray[4],"Back",strlen("Back"));
 		memcpy(&rcSettingsPage.itemsArray[5],"Close menu",strlen("Close menu"));
 		rcSettingsPage.cellTypeArray[0] = UINT16_ITEM;
