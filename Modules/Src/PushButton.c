@@ -82,7 +82,7 @@ void CheckButtons(void)
 		}
 	}
 
-	if ( (isDisableButtonDetection) && (HAL_GetTick() - lastAnyButtonPress > 500) )
+	if ( ((isDisableButtonDetection) && (HAL_GetTick() - lastAnyButtonPress > 500)) || (triggerPinState == GPIO_PIN_RESET) )
 	{
 		isDisableButtonDetection = false;
 	}
@@ -91,7 +91,11 @@ void CheckButtons(void)
 		return;
 	}
 
-	if(!isScreenBrightFull)
+	if ( (!isScreenBrightFull) && (triggerPinState == GPIO_PIN_RESET) )
+	{
+
+	}
+	else if (!isScreenBrightFull)
 	{
 		return;
 	}
@@ -99,6 +103,7 @@ void CheckButtons(void)
 	{
 		return;
 	}
+
 	uint8_t triggerChannel = 1;
 	uint8_t armChannel = 0;
 	if (isLegacyDronePlatform)
