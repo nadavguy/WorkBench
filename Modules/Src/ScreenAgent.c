@@ -948,6 +948,12 @@ void screenUpdate(bool drawDeltaImage)
 				shouldRedrawSafeAirBatteryIcon = false;
 			}
 
+			if ( (shouldReDrawTriggerModeIcon) && (isTriggerModeDisplayed) )
+			{
+				redrawTriggerModeIcon(drawDeltaImage);
+				shouldReDrawTriggerModeIcon = false;
+			}// End of should redraw trigger mode
+
 			if ( (shouldDrawSafeAirAltitude) )
 			{
 				char localText[12] = "";
@@ -967,7 +973,7 @@ void screenUpdate(bool drawDeltaImage)
 		}
 		else
 		{
-			Paint_DrawImage(gImage_ParaZeroFullLogo, FullLogoX, FullLogoY, FullLogoWidth, FullLogoHeight);
+			Paint_DrawImage(gImage_ParaZero_Logo_Legacy_75_92, FullLogoX, FullLogoY, FullLogoWidth, FullLogoHeight);
 		}
 
 		if (shouldRedrawSignalStrengthIcon)
@@ -981,12 +987,6 @@ void screenUpdate(bool drawDeltaImage)
 			redrawBluetoothIcon(drawDeltaImage);
 			shouldReDrawBluetoothIcon = false;
 		}// End of should draw bluetooth icon
-
-		if ( (shouldReDrawTriggerModeIcon) && (isTriggerModeDisplayed) )
-		{
-			redrawTriggerModeIcon(drawDeltaImage);
-			shouldReDrawTriggerModeIcon = false;
-		}// End of should redraw trigger mode
 
 		if (shouldRedrawBatteryIcon)
 		{
