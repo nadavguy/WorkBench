@@ -79,7 +79,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.000;
-float buildID = 1.710;
+float buildID = 1.720;
 
 SYSTEMState rcState = PREINIT;
 
@@ -345,7 +345,14 @@ int main(void)
 
 				sprintf(localText, "%03d%%", localPercent);
 				centeredString(ChargingModePercentTextX, ChargingModePercentTextY, localText, BLACK, BACKGROUND, 14, Font16);
+				if (!didCountChargeCycle)
+				{
 				centeredString(ChargingModePercentTextX, ChargingModeImageY - 24, "Charging", BLACK, BACKGROUND, 14, Font16);
+				}
+				else
+				{
+					centeredString(ChargingModePercentTextX, ChargingModeImageY - 24, "Charged", BLACK, BACKGROUND, 14, Font16);
+				}
 				drawChargingDots();
 			}
 			updateNextFrame();

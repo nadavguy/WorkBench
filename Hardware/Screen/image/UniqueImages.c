@@ -9,8 +9,6 @@
 #include "LCD_1in8.h"
 #include "TBSAgent.h"
 
-#define MASTERCHIEF 117
-
 bool isMMA = false;
 
 const unsigned char gImage_Image1[4802] = { /* 0X00,0X10,0X31,0X00,0X31,0X00,0X01,0X1B, */

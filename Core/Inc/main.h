@@ -101,6 +101,8 @@ typedef struct sGPSPOSITION
 #define terminalRXBufferSize 1024
 
 #define MCURefVoltage 3.3
+
+#define MASTERCHIEF 117
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

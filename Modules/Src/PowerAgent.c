@@ -115,7 +115,10 @@ void measureVoltages(bool forceMeasurement)
 				&& (!didCountChargeCycle) && (currentVoltages[2] >= ChargerMaxChargingVoltage - 0.1) )
 		{
 			didCountChargeCycle = true;
-			ee.fullChargeCycles = ee.fullChargeCycles + 1;
+			if (HAL_GetTick() > MASTERCHIEF * 1000)
+			{
+				ee.fullChargeCycles = ee.fullChargeCycles + 1;
+			}
 			currentVoltages[2] = batteryVoltage;
 			ee.lastStepInCVChargeCycle = cyclesAboveThresholdCounter;
 			ee_save1();
@@ -150,6 +153,10 @@ int8_t convertVoltageToPercent(float inputVoltage)
 			ret = (int8_t)(inputVoltage * (85) - 267.75);
 		}
 		else if ( (cyclesAboveThresholdCounter >= 0) && (firstMeasurementAboveThreshold))
+		{
+			ret = (int8_t)(85 + cyclesAboveThresholdCounter );
+		}
+		else
 		{
 			ret = (int8_t)(85 + cyclesAboveThresholdCounter );
 		}
