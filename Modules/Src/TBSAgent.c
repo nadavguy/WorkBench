@@ -233,6 +233,9 @@ bool parseTBSMessage(void)
 			if ( (currentSmaStatus.batteryVoltage > 4.6) /*&& (!isSMABatteryLow) && (!isSMABatteryCritical)*/ )
 			{
 				currentSmaStatus.batteryStrength = CHARGING;
+				isSMABatteryMedium = false;
+				isSMABatteryLow = false;
+				isSMABatteryCritical = false;
 			}
 			else if ( (currentSmaStatus.batteryVoltage >= 3.9) && (!isSMABatteryLow) && (!isSMABatteryCritical) && (!isSMABatteryMedium))
 			{
@@ -386,19 +389,19 @@ bool parseTBSMessage(void)
 				displayWarning.BITStatus &= ~smaCritBat;
 				displayWarning.BITStatus &= ~smaLowBat;
 			}
-			else if ( ( (currentSmaStatus.batteryVoltage >= 3.7 ) && (currentSmaStatus.batteryVoltage < 3.9 )
+			else if ( ( (currentSmaStatus.batteryVoltage >= 3.8 ) && (currentSmaStatus.batteryVoltage < 3.9 )
 					&& (!isSMABatteryCritical) && (!isSMABatteryLow)) || (!isSMABatteryMedium) )
 			{
 				isSMABatteryMedium = true;
 			}
-			else if ( ( (currentSmaStatus.batteryVoltage >= 3.5 ) && (currentSmaStatus.batteryVoltage < 3.7 )
+			else if ( ( (currentSmaStatus.batteryVoltage >= 3.65 ) && (currentSmaStatus.batteryVoltage < 3.8 )
 					&& (!isSMABatteryCritical) ) || (!isSMABatteryLow) )
 			{
 				displayWarning.BITStatus &= ~smaCritBat;
 				displayWarning.BITStatus |= smaLowBat;
 				isSMABatteryLow = true;
 			}
-			else if ( (currentSmaStatus.batteryVoltage < 3.5 ) || (isSMABatteryCritical) )
+			else if ( (currentSmaStatus.batteryVoltage < 3.65 ) || (isSMABatteryCritical) )
 			{
 				displayWarning.BITStatus |= smaCritBat;
 				isSMABatteryCritical = true;
