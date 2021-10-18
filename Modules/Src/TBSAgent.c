@@ -230,7 +230,7 @@ bool parseTBSMessage(void)
 			{
 				currentSmaStatus.batteryVoltage = fmin(localRxArray[i + 3] / 50.0 + 0.05, 4.2);
 			}
-			if ( (currentSmaStatus.batteryVoltage > 4.6) && (!isSMABatteryLow) && (!isSMABatteryCritical) )
+			if ( (currentSmaStatus.batteryVoltage > 4.6) /*&& (!isSMABatteryLow) && (!isSMABatteryCritical)*/ )
 			{
 				currentSmaStatus.batteryStrength = CHARGING;
 			}

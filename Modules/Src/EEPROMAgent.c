@@ -12,7 +12,7 @@ FLASH_EraseInitTypeDef EraseInitStruct;
 tFlashParams localFlashParams;
 uint32_t FirstSector = 0, NbOfSectors = 0;
 uint32_t Address = 0, SECTORError = 0;
-FLASH_OBProgramInitTypeDef    OBInit;
+FLASH_OBProgramInitTypeDef OBInit;
 
 uint32_t GetSector(uint32_t Address)
 {
@@ -136,6 +136,8 @@ void prepFlash(uint8_t numberOfSectors)
 	HAL_FLASH_OB_Unlock();
 	/* Get the Dual bank configuration status */
 	HAL_FLASHEx_OBGetConfig(&OBInit);
+	// OB_Init.USERConfig &= OB_NDBANK_SINGLE_BANK;
+	// HAL_FLASH_Lock();
 
 	FirstSector = GetSector(localFlashParams.startAddress);
 	/* Get the number of sector to erase from 1st sector*/
@@ -245,19 +247,19 @@ void changeROP(uint8_t ProtectionLevel)
 	HAL_FLASH_Unlock();
 	HAL_FLASH_OB_Unlock();
 	OB_Init.OptionType = OPTIONBYTE_RDP;
+	// OB_Init.USERConfig &= OB_NDBANK_SINGLE_BANK;
 	if (ProtectionLevel == 0)
 	{
 		OB_Init.RDPLevel = OB_RDP_LEVEL_0;
 	}
 	else if (ProtectionLevel == 1)
 	{
-
 		OB_Init.RDPLevel = OB_RDP_LEVEL_1;
 	}
 	else if (ProtectionLevel == 2)
 	{
 
-		OB_Init.RDPLevel = OB_RDP_LEVEL_2;
+		// OB_Init.RDPLevel = OB_RDP_LEVEL_2;
 	}
 	else
 	{
@@ -266,8 +268,8 @@ void changeROP(uint8_t ProtectionLevel)
 	}
 	HAL_FLASHEx_OBProgram(&OB_Init);
 	HAL_FLASH_OB_Launch();
-	HAL_FLASH_OB_Lock();
-	HAL_FLASH_Lock();
+//	HAL_FLASH_OB_Lock();
+//	HAL_FLASH_Lock();
 }
 
 crc checkCRC(uint32_t startAddress, uint32_t length)

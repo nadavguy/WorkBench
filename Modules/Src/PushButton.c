@@ -66,8 +66,6 @@ void CheckButtons(void)
 		HAL_FLASH_Unlock();
 		/* Allow Access to option bytes sector */
 		HAL_FLASH_OB_Unlock();
-		/* Get the Dual bank configuration status */
-		HAL_FLASHEx_OBGetConfig(&OBInit);
 	}
 	else if ( (rcState == INIT) && (okPinState == GPIO_PIN_RESET) )
 	{
