@@ -232,6 +232,7 @@ extern uint8_t ChargingModeImageX;
 extern uint8_t ChargingModeImageY;
 extern uint8_t ChargingModePercentTextX;
 extern uint8_t ChargingModePercentTextY;
+extern uint8_t lowerBarDisplayID;
 
 extern uint32_t lastBITStatusChange;
 extern uint32_t lastFrameDisplayed;

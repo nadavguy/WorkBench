@@ -495,6 +495,37 @@ eCI_RESULT func_enterPassword(void)
 	return (CI_OK);
 } //
 
+eCI_RESULT func_updateInformationLevel(void)
+{
+	if (!sessionUnlocked)
+	{
+		return CI_COMMAND_ERROR;
+	}
+	if (get_param_count() == 1)
+	{
+		ee.informationLevel = get_param_int(0);
+		ee_save1();
+		sprintf(terminalBuffer, "set Information Level to %d", ee.informationLevel);
+		logData(terminalBuffer, false, false, false);
+		if (ee.informationLevel & 0x01)
+		{
+			sprintf(terminalBuffer, "Show abnormal BIT status");
+			logData(terminalBuffer, false, false, false);
+		}
+		if (ee.informationLevel & 0x02)
+		{
+			sprintf(terminalBuffer, "Save buttons & menus data");
+			logData(terminalBuffer, false, false, false);
+		}
+	}
+	else
+	{
+		sprintf(terminalBuffer, "Information Level did not update");
+		logData(terminalBuffer, false, false, false);
+	}
+	return CI_NO_UART_ACK;
+} //
+
 eCI_RESULT func_dir(void)
 {
 	if (!sessionUnlocked)
@@ -572,6 +603,7 @@ functionsList cases [] =
 		{ "slti", func_showLastTailID},
 		{ "upbt", func_updateBatteryType},
 		{ "EPW", func_enterPassword},
+		{ "upil", func_updateInformationLevel},
 		{ "dir" , func_dir },
 		{ "fmt" , func_fmt }
 };

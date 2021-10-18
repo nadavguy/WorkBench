@@ -30,6 +30,7 @@ typedef struct sEE_DATA
 	uint8_t batteryType;
 	char password[32];
 	uint8_t legacySystemType;
+	uint8_t informationLevel;
 }tEE_DATA;
 
 

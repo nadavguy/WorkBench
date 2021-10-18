@@ -9,6 +9,7 @@
 #define INC_EEPROMAGENT_H_
 #include "main.h"
 
+extern FLASH_OBProgramInitTypeDef    OBInit;
 
 typedef struct sFlashParams
 {

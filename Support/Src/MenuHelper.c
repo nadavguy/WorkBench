@@ -28,6 +28,7 @@ tSTRING_ITEM loggingModeItem;
 tSTRING_ITEM platformTypeItem;
 tSTRING_ITEM safeairStateItem;
 tSTRING_ITEM legacySystemItem;
+tSTRING_ITEM LowerBarDisplayItem;
 //tSTRING_ITEM bleMakeVisibleItem;
 //tSTRING_ITEM bleDisableItem;
 
@@ -202,7 +203,7 @@ void initMenuPages(void)
 	integrationPage.pageID = 5;
 	if ( (menuLevel == DEVELOPER) || (menuLevel == OEM) )
 	{
-		integrationPage.numberOfItemsInPage = 5;
+		integrationPage.numberOfItemsInPage = 6;
 		if (!isAutoCalibActive)
 		{
 			memcpy(&integrationPage.itemsArray[0],"Init Auto-Calib",strlen("Init Auto-Calib"));
@@ -220,14 +221,16 @@ void initMenuPages(void)
 			memcpy(&integrationPage.itemsArray[1],"Stop Calib Test",strlen("Stop Calib Test"));
 		}
 		memcpy(&integrationPage.itemsArray[2],"Test Motor-Cut",strlen("Test Motor-Cut"));
-		memcpy(&integrationPage.itemsArray[3],"Back",strlen("Back"));
-		memcpy(&integrationPage.itemsArray[4],"Close menu",strlen("Close menu"));
+		memcpy(&integrationPage.itemsArray[3],"Lower Bar Info",strlen("Lower Bar Info"));
+		memcpy(&integrationPage.itemsArray[4],"Back",strlen("Back"));
+		memcpy(&integrationPage.itemsArray[5],"Close menu",strlen("Close menu"));
 
 		integrationPage.cellTypeArray[0] = POPUP;
 		integrationPage.cellTypeArray[1] = POPUP;
 		integrationPage.cellTypeArray[2] = POPUP;
-		integrationPage.cellTypeArray[3] = BACK;
-		integrationPage.cellTypeArray[4] = CLOSE;
+		integrationPage.cellTypeArray[3] = STRING_ITEM;
+		integrationPage.cellTypeArray[4] = BACK;
+		integrationPage.cellTypeArray[5] = CLOSE;
 
 		if (!(currentSmaStatus.BITStatus & 0x04) && (!isAutoCalibActive) && (!isTestCalibActive))
 		{
@@ -265,8 +268,9 @@ void initMenuPages(void)
 				integrationPage.nextCellIDArray[2] = (uint32_t)&returnToIdleMessage;
 //			}
 		}
-		integrationPage.nextCellIDArray[3] = 0;
+		integrationPage.nextCellIDArray[3] = (uint32_t)&LowerBarDisplayItem;
 		integrationPage.nextCellIDArray[4] = 0;
+		integrationPage.nextCellIDArray[5] = 0;
 	}
 //	else
 //	{
@@ -423,7 +427,7 @@ void initMenuItems(void)
 	legacySystemItem.itemID = 8;
 	legacySystemItem.maxValue = 2;
 	legacySystemItem.minValue = 0;
-	legacySystemItem.startValue = 0;
+	legacySystemItem.startValue = 2;
 	legacySystemItem.deltaMultiplier = 1;
 	legacySystemItem.numberOfItemsInPage = 6;
 	memcpy(&legacySystemItem.itemsArray[0],"Drone Type",strlen("Drone Type"));
@@ -437,6 +441,24 @@ void initMenuItems(void)
 	memcpy(&legacySystemItem.valuesArray[1],"Mavic  ",strlen("Mavic  "));
 	memcpy(&legacySystemItem.valuesArray[2],"Auto   ",strlen("Auto   "));
 	legacySystemItem.parameterPointer = (uint32_t)&currentSmaStatus.smaPlatformName;
+
+	LowerBarDisplayItem.itemID = 9 ;
+	LowerBarDisplayItem.maxValue = 2;
+	LowerBarDisplayItem.minValue = 0;
+	LowerBarDisplayItem.startValue = 0;
+	LowerBarDisplayItem.deltaMultiplier = 1;
+	LowerBarDisplayItem.numberOfItemsInPage = 6;
+	memcpy(&LowerBarDisplayItem.itemsArray[0],"Data Display",strlen("Data Display"));
+	memcpy(&LowerBarDisplayItem.itemsArray[1],"Units: [N/A]",strlen("Units: [N/A]"));
+	memcpy(&LowerBarDisplayItem.itemsArray[2],"Value",strlen("Value"));
+	memcpy(&LowerBarDisplayItem.itemsArray[3],"Delta",strlen("Delta"));
+	memcpy(&LowerBarDisplayItem.itemsArray[4],"Cancel",strlen("Cancel"));
+	memcpy(&LowerBarDisplayItem.itemsArray[5],"OK",strlen("OK"));
+	LowerBarDisplayItem.numberOfValuesInArray = 3;
+	memcpy(&LowerBarDisplayItem.valuesArray[0],"Alt    ",strlen("Alt    "));
+	memcpy(&LowerBarDisplayItem.valuesArray[1],"Clb Tmr",strlen("Clb Tmr"));
+	memcpy(&LowerBarDisplayItem.valuesArray[2],"Auto   ",strlen("Auto   "));
+	LowerBarDisplayItem.parameterPointer = (uint32_t)&lowerBarDisplayID;
 
 //	bleMakeVisibleItem.itemID = 4;
 //	bleMakeVisibleItem.maxValue = 1;
@@ -664,6 +686,11 @@ void updateSelection(void)
 		screenClear();
 		createEmptyFrame(false, true);
 		screenUpdate(false);
+		if (ee.informationLevel & 0x02)
+		{
+			sprintf(terminalBuffer, "Analytics, Closed Menu - Page ID:, 0");
+			logData(terminalBuffer, true, false, false);
+		}
 	}
 	else if ( (pagesArray[currentCursorPosition.currentPageID].cellTypeArray[currentCursorPosition.cursorPosition] == BACK)
 			&& (currentCursorPosition.currentPageID != 0x00) )
@@ -674,6 +701,11 @@ void updateSelection(void)
 		shouldRenderMenu = true;
 		shouldRenderItem = false;
 		shouldRenderPopup = false;
+		if (ee.informationLevel & 0x02)
+		{
+			sprintf(terminalBuffer, "Analytics, Moved back in menu - Page ID:, %d", currentCursorPosition.currentPageID);
+			logData(terminalBuffer, true, false, false);
+		}
 	}
 	else if ( (pagesArray[currentCursorPosition.currentPageID].cellTypeArray[currentCursorPosition.cursorPosition] == PAGE)
 			&& (currentCursorPosition.currentPageID != 0x00) )
@@ -686,6 +718,11 @@ void updateSelection(void)
 		shouldRenderMenu = true;
 		shouldRenderItem = false;
 		shouldRenderPopup = false;
+		if (ee.informationLevel & 0x02)
+		{
+			sprintf(terminalBuffer, "Analytics, Opened Menu - Page ID:, %d", currentCursorPosition.currentPageID);
+			logData(terminalBuffer, true, false, false);
+		}
 	}
 	else if ( (pagesArray[currentCursorPosition.currentPageID].cellTypeArray[currentCursorPosition.cursorPosition] == POPUP)
 			&& (currentCursorPosition.currentPageID != 0x00) )
@@ -702,6 +739,11 @@ void updateSelection(void)
 		shouldRenderMenu = true;
 		shouldRenderItem = false;
 		shouldRenderPopup = false;
+		if (ee.informationLevel & 0x02)
+		{
+			sprintf(terminalBuffer, "Analytics, Displayed Popup ID:, %d, Is Question: ,%s", popupToShow.popupID, popupToShow.isQuestion ? "true" : "false");
+			logData(terminalBuffer, true, false, false);
+		}
 	}
 	else // handling Item navigation
 	{
@@ -743,6 +785,7 @@ void updateSelection(void)
 			shouldRenderMenu = true;
 			shouldRenderItem = false;
 			shouldRenderPopup = false;
+
 		}
 		else if ( (currentCursorPosition.cursorPosition == 0x05)
 				&& (currentCursorPosition.currentPageID == 0x00) && (isMenuDisplayed) && (!isItemDisplayed) )
@@ -774,6 +817,11 @@ void updateSelection(void)
 
 void updateSelectedParameter(void)
 {
+	if (ee.informationLevel & 0x02)
+	{
+		sprintf(terminalBuffer, "Analytics, Updated Item ID:, %ld", itemIDtoUpdate);
+		logData(terminalBuffer, true, false, false);
+	}
 	if (itemIDtoUpdate == 1)
 	{
 		ee.backLight = brightnessItem.startValue;
@@ -831,5 +879,9 @@ void updateSelectedParameter(void)
 			logData("RC exited to legacy mode", false, false, false);
 		}
 		ee_save1();
+	}
+	else if (itemIDtoUpdate == 9)
+	{
+		lowerBarDisplayID = stringItem.startValue;
 	}
 }

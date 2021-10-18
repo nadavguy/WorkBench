@@ -61,9 +61,13 @@ void CheckButtons(void)
 	downPinState = HAL_GPIO_ReadPin(downGPIO, downPIN);
 	okPinState = HAL_GPIO_ReadPin(okGPIO, okPIN);
 
-	if ( (rcState == PREINIT) && (armPinState == GPIO_PIN_RESET) )
+	if ( (rcState == PREINIT) && (downPinState == GPIO_PIN_RESET) )
 	{
-		rcState = MAINTENANCE;
+		HAL_FLASH_Unlock();
+		/* Allow Access to option bytes sector */
+		HAL_FLASH_OB_Unlock();
+		/* Get the Dual bank configuration status */
+		HAL_FLASHEx_OBGetConfig(&OBInit);
 	}
 	else if ( (rcState == INIT) && (okPinState == GPIO_PIN_RESET) )
 	{
@@ -295,6 +299,12 @@ void CheckButtons(void)
 			lastOkButtonPress = HAL_GetTick();
 			menuDrawDirection = FULL;
 			initMenuPages();
+
+			if (ee.informationLevel & 0x02)
+			{
+				sprintf(terminalBuffer, "Analytics, Opened Main Menu, %d", currentCursorPosition.currentPageID);
+				logData(terminalBuffer, true, false, false);
+			}
 		}
 		else if ( (okPinState == GPIO_PIN_RESET) && (isMenuDisplayed) && (!isItemDisplayed) && (HAL_GetTick() - lastOkButtonPress > 400) )
 		{
@@ -490,6 +500,20 @@ void CheckButtons(void)
 //			memcpy(&popupToShow, &safeairForceDisarmMessage, sizeof(popupToShow));
 //			screenUpdate(false);
 //		}
+	}
+	if ( (downPinState == GPIO_PIN_RESET) && (!isMenuDisplayed) && (!isItemDisplayed) && (!isPopupDisplayed) && (HAL_GetTick() - lastDownButtonPress > 400) )
+	{
+		if (lowerBarDisplayID > 0)
+		{
+			lowerBarDisplayID = lowerBarDisplayID - 1;
+		}
+	}
+	if ( (upPinState == GPIO_PIN_RESET) && (!isMenuDisplayed) && (!isItemDisplayed) && (!isPopupDisplayed) && (HAL_GetTick() - lastDownButtonPress > 400) )
+	{
+		if (lowerBarDisplayID < 1)
+		{
+			lowerBarDisplayID = lowerBarDisplayID + 1;
+		}
 	}
 }
 

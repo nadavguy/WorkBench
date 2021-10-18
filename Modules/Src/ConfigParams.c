@@ -23,6 +23,7 @@ tEEV_U08 EEV_CVChargeStep = {0, 0, 255};
 tEEV_U08 EEV_BatteryType = {0, 1, 32};
 tEEV_U08 EEV_LegacySystemType = {0, 0, 32};
 tEEV_U16 EEV_MotorCutDelay = {0, 0 ,5000};
+tEEV_U08 EEV_InformationLevel ={0, 0, 32};
 
 tEE_DATA ee;
 tCONFIG_DATA safeairConfiguration;
@@ -48,6 +49,7 @@ bool ee_validate1(void)
 	ee_invalid_counter += ee_validate_data(EEV_U08, (pU08)&ee.batteryType, (pEEV_U08)&EEV_BatteryType);
 	ee_invalid_counter += ee_validate_data(EEV_U08, (pU08)&ee.legacySystemType, (pEEV_U08)&EEV_LegacySystemType);
 	ee_invalid_counter += ee_validate_data(EEV_U16, (pU16)&ee.motorDelayValue, (pEEV_U16)&EEV_MotorCutDelay);
+	ee_invalid_counter += ee_validate_data(EEV_U08, (pU08)&ee.informationLevel, (pEEV_U08)&EEV_InformationLevel);
 
 	if (ee_invalid_counter > 0)
 	{
@@ -74,4 +76,5 @@ void setParametersToDefaults(void)
 	ee.lastStepInCVChargeCycle = EEV_CVChargeStep.std;
 	ee.batteryType = EEV_BatteryType.std;
 	ee.legacySystemType = EEV_LegacySystemType.std;
+	ee.informationLevel = EEV_InformationLevel.std;
 }

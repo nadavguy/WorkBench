@@ -100,6 +100,8 @@ extern uint32_t lastConfigurationMessageSent;
 extern uint32_t safeAirLogID;
 extern uint32_t safeAirTime;
 extern uint32_t lastReceivedCRSFMessage;
+extern uint32_t durationMultiplier;
+extern uint32_t remainingCalibrationTime;
 
 extern bool isTBSDisconnected;
 extern bool isTailIDAlreadyReceived;

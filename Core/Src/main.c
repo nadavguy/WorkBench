@@ -79,7 +79,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.010;
-float buildID = 1.000;
+float buildID = 1.030;
 
 SYSTEMState rcState = PREINIT;
 
@@ -345,15 +345,15 @@ int main(void)
 
 				sprintf(localText, "%03d%%", localPercent);
 				centeredString(ChargingModePercentTextX, ChargingModePercentTextY, localText, BLACK, BACKGROUND, 14, Font16);
-				if (!didCountChargeCycle)
+				if (localPercent != 100)
 				{
-				centeredString(ChargingModePercentTextX, ChargingModeImageY - 24, "Charging", BLACK, BACKGROUND, 14, Font16);
+					centeredString(ChargingModePercentTextX, ChargingModeImageY - 24, "Charging", BLACK, BACKGROUND, 14, Font16);
+					drawChargingDots();
 				}
 				else
 				{
 					centeredString(ChargingModePercentTextX, ChargingModeImageY - 24, "Charged", BLACK, BACKGROUND, 14, Font16);
 				}
-				drawChargingDots();
 			}
 			updateNextFrame();
 		}
@@ -481,7 +481,7 @@ void updateRCState(void)
 	}
 	else
 	{
-		if ( (batteryVoltage <= 3.55) && (batteryStrength < EMPTY))
+		if ( (batteryVoltage <= 3.65) && (batteryStrength < EMPTY))
 		{
 			isLowBattery = true;
 			isEmptyBattery = true;
@@ -491,7 +491,7 @@ void updateRCState(void)
 			sprintf(terminalBuffer,"RC Battery is Empty");
 			logData(terminalBuffer, false, false, false);
 		}
-		else if ( (batteryVoltage > 3.55) && (batteryVoltage <= 3.65) && (batteryStrength < LOW))
+		else if ( (batteryVoltage > 3.65) && (batteryVoltage <= 3.8) && (batteryStrength < LOW))
 		{
 			shouldRedrawBatteryIcon = true;
 			batteryStrength = LOW;
@@ -499,7 +499,7 @@ void updateRCState(void)
 			sprintf(terminalBuffer,"RC Battery is Low");
 			logData(terminalBuffer, false, false, false);
 		}
-		else if ( (batteryVoltage > 3.65) && (batteryVoltage <= 3.8) && (batteryStrength < MEDIUM) )
+		else if ( (batteryVoltage > 3.8) && (batteryVoltage <= 3.9) && (batteryStrength < MEDIUM) )
 		{
 			shouldRedrawBatteryIcon = true;
 			batteryStrength = MEDIUM;
@@ -507,7 +507,7 @@ void updateRCState(void)
 			sprintf(terminalBuffer,"RC Battery is Partially Full");
 			logData(terminalBuffer, false, false, false);
 		}
-		else if ( (batteryVoltage > 3.8) && (batteryStrength != STRONG))
+		else if ( (batteryVoltage > 3.9) && (batteryStrength != STRONG))
 		{
 			shouldRedrawBatteryIcon = true;
 			batteryStrength = STRONG;

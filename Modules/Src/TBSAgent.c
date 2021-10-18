@@ -37,6 +37,8 @@ uint32_t lastConfigurationMessageSent = 0;
 uint32_t safeAirLogID = 0;
 uint32_t safeAirTime = 0;
 uint32_t lastReceivedCRSFMessage = 0;
+uint32_t durationMultiplier = 0;
+uint32_t remainingCalibrationTime = 0;
 
 bool isTBSDisconnected = false;
 bool isTailIDAlreadyReceived = false;
@@ -232,15 +234,15 @@ bool parseTBSMessage(void)
 			{
 				currentSmaStatus.batteryStrength = CHARGING;
 			}
-			else if ( (currentSmaStatus.batteryVoltage > 3.9) && (!isSMABatteryLow) && (!isSMABatteryCritical) && (!isSMABatteryMedium))
+			else if ( (currentSmaStatus.batteryVoltage >= 3.9) && (!isSMABatteryLow) && (!isSMABatteryCritical) && (!isSMABatteryMedium))
 			{
 				currentSmaStatus.batteryStrength = STRONG;
 			}
-			else if ( (currentSmaStatus.batteryVoltage > 3.7) && (!isSMABatteryLow) && (!isSMABatteryCritical) )
+			else if ( (currentSmaStatus.batteryVoltage >= 3.8) && (!isSMABatteryLow) && (!isSMABatteryCritical) )
 			{
 				currentSmaStatus.batteryStrength = MEDIUM;
 			}
-			else if ( (currentSmaStatus.batteryVoltage > 3.5) && (!isSMABatteryCritical) )
+			else if ( (currentSmaStatus.batteryVoltage >= 3.65) && (!isSMABatteryCritical) )
 			{
 				currentSmaStatus.batteryStrength = LOW;
 			}
@@ -325,6 +327,30 @@ bool parseTBSMessage(void)
 			else if (localRxArray[i + 13] == 4)
 			{
 				currentSmaStatus.smaPlatfom = VTOLHORIZONTAL;
+			}
+
+			uint16_t localSMATime = 256 * localRxArray[i + 14] + localRxArray[i + 15];
+			if (localSMATime & 0x8000)
+			{
+				// Calibration duration
+				localSMATime &= ~0x8000;
+				//                 M    S    mSec   LSB
+//				if (localSMATime > 30 * 60 * 1000 * 10)
+//				{
+//					durationMultiplier = (localSMATime - 30 * 60 * 1000 * 10) / 10;
+//					remainingCalibrationTime = 0;
+//				}
+//				else
+//				{
+//					durationMultiplier = 0;
+//					remainingCalibrationTime = localSMATime / 10;
+//				}
+				remainingCalibrationTime = localSMATime;
+			}
+			else
+			{
+				//Unit time
+//				remainingCalibrationTime = 0;
 			}
 			i = i + 0x1B - 1;
 

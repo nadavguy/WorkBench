@@ -90,6 +90,7 @@ uint8_t FullLogoX = 0;
 uint8_t FullLogoY = 0;
 uint8_t FullLogoWidth = 0;
 uint8_t FullLogoHeight = 0;
+uint8_t lowerBarDisplayID = 0;
 
 uint32_t lastBatteryRefresh = 0;
 uint32_t lastBITStatusChange = 0;
@@ -392,7 +393,7 @@ void updateBITStatus(void)
 		}
 		else if (displayWarning.BITStatus & 0x04)
 		{
-			centeredString(WarningTextX, WarningTextY, "SA Flash Err", BLACK, BACKGROUND, 14, Font12);
+			centeredString(WarningTextX, WarningTextY, "SA Flash Error", BLACK, BACKGROUND, 14, Font12);
 		}
 		else if ( (displayWarning.BITStatus & 0x08) && (currentSmaStatus.smaState == IDLE) )
 		{
@@ -400,21 +401,21 @@ void updateBITStatus(void)
 		}
 		else if (displayWarning.BITStatus & 0x10)
 		{
-			centeredString(WarningTextX, WarningTextY, "SA Pyro Err", BLACK, BACKGROUND, 14, Font12);
+			centeredString(WarningTextX, WarningTextY, "SA Pyro Error", BLACK, BACKGROUND, 14, Font12);
 		}
 		else if (displayWarning.BITStatus & 0x20)
 		{
 			centeredString(WarningTextX, WarningTextY, "RC Low Bat", BLACK, BACKGROUND, 14, Font12);
 		}
-		else if (displayWarning.BITStatus & abnormalGyro)
+		else if ( (displayWarning.BITStatus & abnormalGyro) && (ee.informationLevel & 0x1) )
 		{
 			centeredString(WarningTextX, WarningTextY, "Abnormal Gyro", BLACK, BACKGROUND, 14, Font12);
 		}
-		else if (displayWarning.BITStatus & abnormalAcceleration)
+		else if ( (displayWarning.BITStatus & abnormalAcceleration) && (ee.informationLevel & 0x1) )
 		{
 			centeredString(WarningTextX, WarningTextY, "Abnormal Accel", BLACK, BACKGROUND, 14, Font12);
 		}
-		else if (displayWarning.BITStatus & abnormalAngle)
+		else if ( (displayWarning.BITStatus & abnormalAngle) && (ee.informationLevel & 0x1) )
 		{
 			centeredString(WarningTextX, WarningTextY, "Abnormal Angle", BLACK, BACKGROUND, 14, Font12);
 		}
@@ -910,14 +911,50 @@ void drawAltitudeIcon(bool drawDeltaImage)
 
 	if (!drawDeltaImage)
 	{
-		Paint_DrawImage(gImage_Altitude, AltitudeOrGPSX, AltitudeOrGPSY, statusBarIconWidth, statusBarIconHeight);
+		if (lowerBarDisplayID == 0)
+		{
+			Paint_DrawImage(gImage_Altitude, AltitudeOrGPSX, AltitudeOrGPSY, statusBarIconWidth, statusBarIconHeight);
+		}
+		else if (lowerBarDisplayID == 1)
+		{
+			Paint_DrawImage(gImage_StopWatch, AltitudeOrGPSX, AltitudeOrGPSY, statusBarIconWidth, statusBarIconHeight);
+		}
+		else
+		{
+			Paint_DrawImage(gImage_Altitude, AltitudeOrGPSX, AltitudeOrGPSY, statusBarIconWidth, statusBarIconHeight);
+		}
 	}
 	else
 	{
-		Paint_DrawDeltaImage(gImage_Altitude, previousAltitudeOrGPSImage,
-				AltitudeOrGPSX, AltitudeOrGPSY, statusBarIconWidth, statusBarIconHeight);
+		if (lowerBarDisplayID == 0)
+		{
+			Paint_DrawDeltaImage(gImage_Altitude, previousAltitudeOrGPSImage,
+					AltitudeOrGPSX, AltitudeOrGPSY, statusBarIconWidth, statusBarIconHeight);
+		}
+		else if (lowerBarDisplayID == 1)
+		{
+			Paint_DrawDeltaImage(gImage_StopWatch, previousAltitudeOrGPSImage,
+					AltitudeOrGPSX, AltitudeOrGPSY, statusBarIconWidth, statusBarIconHeight);
+		}
+		else
+		{
+			Paint_DrawDeltaImage(gImage_Altitude, previousAltitudeOrGPSImage,
+					AltitudeOrGPSX, AltitudeOrGPSY, statusBarIconWidth, statusBarIconHeight);
+		}
 	}
-	previousAltitudeOrGPSImage = gImage_Altitude;
+	if (lowerBarDisplayID == 0)
+	{
+		previousAltitudeOrGPSImage = gImage_Altitude;
+	}
+	else if (lowerBarDisplayID == 1)
+	{
+		previousAltitudeOrGPSImage = gImage_StopWatch;
+	}
+	else
+	{
+		previousAltitudeOrGPSImage = gImage_Altitude;
+	}
+
 
 }
 
@@ -958,13 +995,40 @@ void screenUpdate(bool drawDeltaImage)
 			{
 				char localText[12] = "";
 				Paint_DrawLine(LineStartX, LineY, LineEndX, LineY, BLACK, DOT_PIXEL_1X1, LINE_STYLE_SOLID);
-				if ((currentSmaStatus.smaState != ARMED) && (currentSmaStatus.smaState != TRIGGERED) && (!isAutoCalibActive) && (!isTestCalibActive))
+				if (lowerBarDisplayID == 0)
 				{
-					sprintf(localText, "%06.1f m", 0.0);
+					if ((currentSmaStatus.smaState != ARMED) && (currentSmaStatus.smaState != TRIGGERED) && (!isAutoCalibActive) && (!isTestCalibActive))
+					{
+						sprintf(localText, "%06.1f m", 0.0);
+					}
+					else
+					{
+						sprintf(localText, "%06.1f m", currentSmaStatus.Altitude);
+					}
+				}
+				else if (lowerBarDisplayID == 1)
+				{
+//					int localMinutes = durationMultiplier * 30 + remainingCalibrationTime / (60 * 1000);
+//					int localSeconds = 0;
+					int localHours = remainingCalibrationTime / (3600);
+					int localMinutes = (remainingCalibrationTime - localHours * 3600) / 60;
+//					int localSeconds = remainingCalibrationTime - localMinutes * 60;
+//					if (durationMultiplier == 0)
+//					{
+//						localSeconds = remainingCalibrationTime - (remainingCalibrationTime / (60 * 1000)) * 60 * 1000;
+//					}
+					sprintf(localText, "%02d:%02d", localHours, localMinutes);
 				}
 				else
 				{
-					sprintf(localText, "%06.1f m", currentSmaStatus.Altitude);
+					if ((currentSmaStatus.smaState != ARMED) && (currentSmaStatus.smaState != TRIGGERED) && (!isAutoCalibActive) && (!isTestCalibActive))
+					{
+						sprintf(localText, "%06.1f m", 0.0);
+					}
+					else
+					{
+						sprintf(localText, "%06.1f m", currentSmaStatus.Altitude);
+					}
 				}
 				centeredString(74, 138, localText, BLACK, BACKGROUND, 8, Font16);
 				drawAltitudeIcon(drawDeltaImage);
