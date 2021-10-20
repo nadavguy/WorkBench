@@ -214,7 +214,7 @@ typedef uint64_t crc;
 #else
     void F_CRC_InicializaTabla(void);
 #endif
-crc F_CRC_CalculaCheckSum(uint8_t const AF_Datos[], uint16_t VF_nBytes);
+crc F_CRC_CalculaCheckSum(uint8_t const AF_Datos[], uint32_t VF_nBytes);
 extern crc F_CRC_CalculaCheckSumFromFlash(uint32_t startAddress, uint32_t VF_nBytes);
 
 

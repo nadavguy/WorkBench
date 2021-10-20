@@ -55,6 +55,8 @@
 #include "stm32746g_qspi.h"
 #include "w25q128fv.h"
 #include "LCD_1in8.h"
+#include "BootLoader.h"
+#include "crc.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -79,7 +81,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.010;
-float buildID = 1.050;
+float buildID = 1.060;
 
 SYSTEMState rcState = PREINIT;
 
@@ -205,6 +207,17 @@ int main(void)
 	UID1 = (*(__I uint32_t *) 0x1FF0F420);
 	UID2 = (*(__I uint32_t *) 0x1FF0F424);
 	UID3 = (*(__I uint32_t *) 0x1FF0F428);
+
+	uint32_t bootloaderLength = sizeof(Array)/sizeof(char);
+	crc currentBL = F_CRC_CalculaCheckSumFromFlash(0x08000000, bootloaderLength);
+	crc includedBL = F_CRC_CalculaCheckSum(Array, bootloaderLength);
+
+	if (currentBL != includedBL)
+	{
+		localFlashParams.startAddress = 0x08000000;
+		localFlashParams.voltageLevel = FLASH_VOLTAGE_RANGE_3;
+		reallocateDataFromArray(Array, 0x08000000, bootloaderLength);
+	}
 
 	BSP_QSPI_Init();
 

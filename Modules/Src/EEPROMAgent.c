@@ -234,6 +234,27 @@ void reallocateData(uint32_t oldAddress, uint32_t newAddress, uint32_t totalNumb
 	prepFlash(1);
 }
 
+void reallocateDataFromArray(const unsigned char *AF_Datos, uint32_t newAddress, uint32_t totalNumberOfBytesToAllocate)
+{
+	uint8_t localArray[1024] = {0xFF};
+	uint16_t localMaxNumberOfArrays = totalNumberOfBytesToAllocate / 1024;
+	localFlashParams.startAddress = newAddress;
+	prepFlash(4);
+	for (int i = 0 ; i < localMaxNumberOfArrays ; i++)
+	{
+		memcpy(localArray, (uint32_t *)(AF_Datos + 1024*i), 1024);
+		writeData(newAddress + 1024*i, (uint32_t *)localArray, 1024);
+//		HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, newAddress + 1024*i, *(uint32_t *)localArray);
+		memset(localArray, 0xFF, 1024);
+	}
+	uint32_t reminderOfData = totalNumberOfBytesToAllocate - 1024 * localMaxNumberOfArrays;
+	memcpy(localArray, (uint32_t *)(AF_Datos + 1024*localMaxNumberOfArrays), reminderOfData);
+//	HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, newAddress + 1024*localMaxNumberOfArrays, *(uint32_t *)localArray);
+	writeData(newAddress + 1024*localMaxNumberOfArrays, (uint32_t *)localArray, reminderOfData);
+//	localFlashParams.startAddress = oldAddress;
+//	prepFlash(1);
+}
+
 void setFlashParams(bool addDelay,uint32_t startaddress, uint32_t voltageLevel)
 {
 	localFlashParams.addDelayBeforeFlashOps = addDelay;

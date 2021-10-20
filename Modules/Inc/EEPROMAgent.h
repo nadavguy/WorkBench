@@ -73,6 +73,7 @@ extern void reallocateData(uint32_t oldAddress, uint32_t newAddress, uint32_t to
 // extern void loadStoredParameters(void);
 extern void updateSafetyParametersSet(void);
 extern void changeROP(uint8_t ProtectionLevel);
+extern void reallocateDataFromArray(const unsigned char *AF_Datos, uint32_t newAddress, uint32_t totalNumberOfBytesToAllocate);
 
 #ifdef STM32F7
 extern void setFlashParams(bool addDelay,uint32_t startaddress, uint32_t voltageLevel);
