@@ -65,6 +65,7 @@ void measureVoltages(bool forceMeasurement)
 	if ( (HAL_GetTick() - lastVoltageMeasurement > localDeltaTime) || (lastVoltageMeasurement == 0) || (forceMeasurement) )
 	{
 		HAL_GPIO_WritePin(ChargeEnableGPIO, ChargeEnablePIN, GPIO_PIN_SET);
+		HAL_Delay(2);
 		HAL_ADC_Start_IT(&hadc3);
 		memcpy(previousVoltages, currentVoltages, sizeof(currentVoltages));
 		currentMeasurementValue[2] = HAL_ADC_GetValue(&hadc3);

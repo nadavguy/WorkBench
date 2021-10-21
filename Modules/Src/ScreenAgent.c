@@ -207,8 +207,10 @@ void centeredString(UWORD XCenterstart, UWORD Ystart, const char * pString, uint
 
 void renderSafeAirBattery(bool drawDeltaImage)
 {
-	switch (currentSmaStatus.batteryStrength)
+	if (!isNoSignal)
 	{
+		switch (currentSmaStatus.batteryStrength)
+		{
 		case EMPTY:
 		{
 			if (!drawDeltaImage)
@@ -284,7 +286,7 @@ void renderSafeAirBattery(bool drawDeltaImage)
 			break; /* optional */
 		}
 
-			/* you can have any number of case statements */
+		/* you can have any number of case statements */
 		default: /* Optional */
 		{
 			if (!drawDeltaImage)
@@ -298,148 +300,156 @@ void renderSafeAirBattery(bool drawDeltaImage)
 			}
 			previousBatteryImage = gImage_SafeAir_Battery_Alert;
 		}
-
+		}
 	}
 }
 
 void updateStatusText(void)
 {
-	if (currentSmaStatus.smaState == TRIGGERED)
+	if (!isNoSignal)
 	{
-		addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, RED);
-		if (displayWarning.BITStatus & 0x40)
+		if (currentSmaStatus.smaState == TRIGGERED)
 		{
-			centeredString(SystemStatusTextX, SystemStatusTextY, "Manual Trigger", WHITE, RED, 14, Font12);
+			addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, RED);
+			if (displayWarning.BITStatus & 0x40)
+			{
+				centeredString(SystemStatusTextX, SystemStatusTextY, "Manual Trigger", WHITE, RED, 14, Font12);
+			}
+			else if (displayWarning.BITStatus & 0x80)
+			{
+				centeredString(SystemStatusTextX, SystemStatusTextY, "GeoFencing", WHITE, RED, 14, Font12);
+			}
+			else if (displayWarning.BITStatus & 0x100)
+			{
+				centeredString(SystemStatusTextX, SystemStatusTextY, "AutoPilot", WHITE, RED, 14, Font12);
+			}
+			else if (displayWarning.BITStatus & 0x200)
+			{
+				centeredString(SystemStatusTextX, SystemStatusTextY, "Freefall", WHITE, RED, 14, Font12);
+			}
+			else if (displayWarning.BITStatus & 0x400)
+			{
+				centeredString(SystemStatusTextX, SystemStatusTextY, "Critical Angle", WHITE, RED, 14, Font12);
+			}
 		}
-		else if (displayWarning.BITStatus & 0x80)
+		else if ( ((currentSmaStatus.smaState == IDLE) /*&& (!displayWarning.displayWarning) && (displayWarning.BITStatus == 0)*/) || (isInfwUpdateMode) )
 		{
-			centeredString(SystemStatusTextX, SystemStatusTextY, "GeoFencing", WHITE, RED, 14, Font12);
-		}
-		else if (displayWarning.BITStatus & 0x100)
-		{
-			centeredString(SystemStatusTextX, SystemStatusTextY, "AutoPilot", WHITE, RED, 14, Font12);
-		}
-		else if (displayWarning.BITStatus & 0x200)
-		{
-			centeredString(SystemStatusTextX, SystemStatusTextY, "Freefall", WHITE, RED, 14, Font12);
-		}
-		else if (displayWarning.BITStatus & 0x400)
-		{
-			centeredString(SystemStatusTextX, SystemStatusTextY, "Critical Angle", WHITE, RED, 14, Font12);
-		}
-	}
-	else if ( ((currentSmaStatus.smaState == IDLE) /*&& (!displayWarning.displayWarning) && (displayWarning.BITStatus == 0)*/) || (isInfwUpdateMode) )
-	{
 
-		if (!isInfwUpdateMode)
-		{
-			addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3,BLUE);
-			centeredString(SystemStatusTextX, SystemStatusTextY, "Idle", WHITE, BLUE, 14, Font12);
+			if (!isInfwUpdateMode)
+			{
+				addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3,BLUE);
+				centeredString(SystemStatusTextX, SystemStatusTextY, "Idle", WHITE, BLUE, 14, Font12);
 
+			}
+			else
+			{
+				char localString[16] = "";
+				sprintf(localString,"P#: %d / %d", packID, totalPackID);
+				addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3,GRAYBLUE);
+				centeredString(SystemStatusTextX, SystemStatusTextY, localString, WHITE, GRAYBLUE, 14, Font12);
+			}
+			previousBITStatus = displayWarning.BITStatus;
 		}
-		else
+		else if ((currentSmaStatus.smaState == ARMED) /*&& (!displayWarning.displayWarning) && (displayWarning.BITStatus == 0)*/)
 		{
-			char localString[16] = "";
-			sprintf(localString,"P#: %d / %d", packID, totalPackID);
-			addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3,GRAYBLUE);
-			centeredString(SystemStatusTextX, SystemStatusTextY, localString, WHITE, GRAYBLUE, 14, Font12);
+			addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, PZGREEN);
+			centeredString(SystemStatusTextX, SystemStatusTextY, "Armed", WHITE, PZGREEN, 14, Font12);
+			previousBITStatus = displayWarning.BITStatus;
 		}
-		previousBITStatus = displayWarning.BITStatus;
-	}
-	else if ((currentSmaStatus.smaState == ARMED) /*&& (!displayWarning.displayWarning) && (displayWarning.BITStatus == 0)*/)
-	{
-		addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, PZGREEN);
-		centeredString(SystemStatusTextX, SystemStatusTextY, "Armed", WHITE, PZGREEN, 14, Font12);
-		previousBITStatus = displayWarning.BITStatus;
-	}
-	else if (currentSmaStatus.smaState == AUTOCALIBRATION)
-	{
-		addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, GRAYBLUE);
-		centeredString(SystemStatusTextX, SystemStatusTextY, "Calibration", WHITE, GRAYBLUE, 14, Font12);
-	}
-	else if (currentSmaStatus.smaState == TESTFLIGHT)
-	{
-		addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, DARKBLUE);
-		centeredString(SystemStatusTextX, SystemStatusTextY, "Test-Flight", WHITE, DARKBLUE, 14, Font12);
-	}
-	else if (currentSmaStatus.smaState == MAINTENANCE)
-	{
-		addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, CYAN);
-		centeredString(SystemStatusTextX, SystemStatusTextY, "Maintenance", BLACK, CYAN, 14, Font12);
+		else if (currentSmaStatus.smaState == AUTOCALIBRATION)
+		{
+			addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, GRAYBLUE);
+			centeredString(SystemStatusTextX, SystemStatusTextY, "Calibration", WHITE, GRAYBLUE, 14, Font12);
+		}
+		else if (currentSmaStatus.smaState == TESTFLIGHT)
+		{
+			addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, DARKBLUE);
+			centeredString(SystemStatusTextX, SystemStatusTextY, "Test-Flight", WHITE, DARKBLUE, 14, Font12);
+		}
+		else if (currentSmaStatus.smaState == MAINTENANCE)
+		{
+			addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, CYAN);
+			centeredString(SystemStatusTextX, SystemStatusTextY, "Maintenance", BLACK, CYAN, 14, Font12);
+		}
 	}
 }
 
 void updateBITStatus(void)
 {
-	if (displayWarning.displayWarning)
+	if (!isNoSignal)
 	{
-		if (shouldDrawRedAlertIcon)
+		if (displayWarning.displayWarning)
 		{
-//			if  ( (currentSmaStatus.smaState != ARMED) && (displayWarning.BITStatus != 0) )
-//			{
-//				addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, YELLOW);
-//				centeredString(SystemStatusTextX, SystemStatusTextY, "Error", BLACK, YELLOW, 14, Font12);
-//			}
-			shouldUpdateStatusText = false;
-		}
-		Paint_ClearWindows(0, WarningTextY, VerticalDisplayCenterWidth * 2, WarningTextY + Font12.Height, BACKGROUND);
-		if (displayWarning.BITStatus & 0x01)
-		{
-			centeredString(WarningTextX, WarningTextY, "SA Critical Bat", BLACK, BACKGROUND, 14, Font12);
-		}
-		else if (displayWarning.BITStatus & 0x02)
-		{
-			centeredString(WarningTextX, WarningTextY, "SA Low Bat", BLACK, BACKGROUND, 14, Font12);
-		}
-		else if (displayWarning.BITStatus & 0x04)
-		{
-			centeredString(WarningTextX, WarningTextY, "SA Flash Error", BLACK, BACKGROUND, 14, Font12);
-		}
-		else if ( (displayWarning.BITStatus & 0x08) && (currentSmaStatus.smaState == IDLE) )
-		{
-			centeredString(WarningTextX, WarningTextY, "SA Orientation", BLACK, BACKGROUND, 14, Font12);
-		}
-		else if (displayWarning.BITStatus & 0x10)
-		{
-			centeredString(WarningTextX, WarningTextY, "SA Pyro Error", BLACK, BACKGROUND, 14, Font12);
-		}
-		else if (displayWarning.BITStatus & 0x20)
-		{
-			centeredString(WarningTextX, WarningTextY, "RC Low Bat", BLACK, BACKGROUND, 14, Font12);
-		}
-		else if ( (displayWarning.BITStatus & abnormalGyro) && (ee.informationLevel & 0x1) )
-		{
-			centeredString(WarningTextX, WarningTextY, "Abnormal Gyro", BLACK, BACKGROUND, 14, Font12);
-		}
-		else if ( (displayWarning.BITStatus & abnormalAcceleration) && (ee.informationLevel & 0x1) )
-		{
-			centeredString(WarningTextX, WarningTextY, "Abnormal Accel", BLACK, BACKGROUND, 14, Font12);
-		}
-		else if ( (displayWarning.BITStatus & abnormalAngle) && (ee.informationLevel & 0x1) )
-		{
-			centeredString(WarningTextX, WarningTextY, "Abnormal Angle", BLACK, BACKGROUND, 14, Font12);
-		}
-	}
-	else if ((!displayWarning.displayWarning) && (shouldClearDisplayedWarning))
-	{
-
-		if (!isPortrait)
-		{
-			Paint_ClearWindows(WarningIconX, WarningIconY, WarningIconX + statusBarIconWidth, WarningIconY + statusBarIconHeight, WHITE);
-			Paint_ClearWindows(WarningTextX, WarningTextY, WarningTextX + 14 * Font12.Width, WarningTextY + Font12.Height, WHITE);
-		}
-		else
-		{
+			if (shouldDrawRedAlertIcon)
+			{
+				//			if  ( (currentSmaStatus.smaState != ARMED) && (displayWarning.BITStatus != 0) )
+				//			{
+				//				addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, YELLOW);
+				//				centeredString(SystemStatusTextX, SystemStatusTextY, "Error", BLACK, YELLOW, 14, Font12);
+				//			}
+				shouldUpdateStatusText = false;
+			}
 			Paint_ClearWindows(0, WarningTextY, VerticalDisplayCenterWidth * 2, WarningTextY + Font12.Height, BACKGROUND);
+			if (displayWarning.BITStatus & 0x01)
+			{
+				centeredString(WarningTextX, WarningTextY, "SA Critical Bat", BLACK, BACKGROUND, 14, Font12);
+			}
+			else if (displayWarning.BITStatus & 0x02)
+			{
+				centeredString(WarningTextX, WarningTextY, "SA Low Bat", BLACK, BACKGROUND, 14, Font12);
+			}
+			else if (displayWarning.BITStatus & 0x04)
+			{
+				centeredString(WarningTextX, WarningTextY, "SA Flash Error", BLACK, BACKGROUND, 14, Font12);
+			}
+			else if ( (displayWarning.BITStatus & 0x08) && (currentSmaStatus.smaState == IDLE) )
+			{
+				centeredString(WarningTextX, WarningTextY, "SA Orientation", BLACK, BACKGROUND, 14, Font12);
+			}
+			else if (displayWarning.BITStatus & 0x10)
+			{
+				centeredString(WarningTextX, WarningTextY, "SA Pyro Error", BLACK, BACKGROUND, 14, Font12);
+			}
+			else if (displayWarning.BITStatus & 0x20)
+			{
+				centeredString(WarningTextX, WarningTextY, "RC Low Bat", BLACK, BACKGROUND, 14, Font12);
+			}
+			else if ( (displayWarning.BITStatus & abnormalGyro) && (ee.informationLevel & 0x1) )
+			{
+				centeredString(WarningTextX, WarningTextY, "Abnormal Gyro", BLACK, BACKGROUND, 14, Font12);
+			}
+			else if ( (displayWarning.BITStatus & abnormalAcceleration) && (ee.informationLevel & 0x1) )
+			{
+				centeredString(WarningTextX, WarningTextY, "Abnormal Accel", BLACK, BACKGROUND, 14, Font12);
+			}
+			else if ( (displayWarning.BITStatus & abnormalAngle) && (ee.informationLevel & 0x1) )
+			{
+				centeredString(WarningTextX, WarningTextY, "Abnormal Angle", BLACK, BACKGROUND, 14, Font12);
+			}
 		}
-		shouldClearDisplayedWarning = false;
+		else if ((!displayWarning.displayWarning) && (shouldClearDisplayedWarning))
+		{
+
+			if (!isPortrait)
+			{
+				Paint_ClearWindows(WarningIconX, WarningIconY, WarningIconX + statusBarIconWidth, WarningIconY + statusBarIconHeight, WHITE);
+				Paint_ClearWindows(WarningTextX, WarningTextY, WarningTextX + 14 * Font12.Width, WarningTextY + Font12.Height, WHITE);
+			}
+			else
+			{
+				Paint_ClearWindows(0, WarningTextY, VerticalDisplayCenterWidth * 2, WarningTextY + Font12.Height, BACKGROUND);
+			}
+			shouldClearDisplayedWarning = false;
+		}
 	}
 }
 
 void updatePlatformText(void)
 {
-	switch (currentSmaStatus.smaPlatformName)
+	if (!isNoSignal)
 	{
+		switch (currentSmaStatus.smaPlatformName)
+		{
 		case M200:
 		{
 			centeredString(SystemTextX, SystemTextY, "SafeAir M200 Pro", BLACK, BACKGROUND, 16, Font12);
@@ -481,8 +491,9 @@ void updatePlatformText(void)
 		{
 			centeredString(SystemTextX, SystemTextY, "Unknown platform", BLACK, BACKGROUND, 16, Font12);
 		}
+		}
+		previousSmaStatus.smaPlatformName = currentSmaStatus.smaPlatformName;
 	}
-	previousSmaStatus.smaPlatformName = currentSmaStatus.smaPlatformName;
 }
 
 void redrawBatteryIcon(bool drawDeltaImage)
@@ -570,8 +581,10 @@ void redrawBatteryIcon(bool drawDeltaImage)
 
 void redrawTriggerModeIcon(bool drawDeltaImage)
 {
-	switch (currentSmaStatus.safeairTriggerMode)
+	if (!isNoSignal)
 	{
+		switch (currentSmaStatus.safeairTriggerMode)
+		{
 		case AUTO:
 		{
 			if (!drawDeltaImage)
@@ -617,6 +630,7 @@ void redrawTriggerModeIcon(bool drawDeltaImage)
 						TriggerModeX, TriggerModeY, safeAirBarIconWidth, safeAirBarIconHeight);
 			}
 			previousTriggerModeImage = gImage_SafeAir_Manual_Trigger;
+		}
 		}
 	}
 }
@@ -773,8 +787,10 @@ void redrawSignalStrengthIcon(bool drawDeltaImage)
 
 void redrawAutoPilotIcon(bool drawDeltaImage)
 {
-	switch (currentSmaStatus.autoPilotConnection)
+	if (!isNoSignal)
 	{
+		switch (currentSmaStatus.autoPilotConnection)
+		{
 		case DISCONNECTED:
 		{
 			if (!drawDeltaImage)
@@ -821,13 +837,16 @@ void redrawAutoPilotIcon(bool drawDeltaImage)
 			}
 			previousAutoPilotImage = gImage_AutoPilot_Disconnected;
 		}
+		}
 	}
 }
 
 void redrawPlatformIcon(bool drawDeltaImage)
 {
-	switch (currentSmaStatus.smaPlatfom)
+	if (!isNoSignal)
 	{
+		switch (currentSmaStatus.smaPlatfom)
+		{
 		case MULTICOPTER:
 		{
 			if (!drawDeltaImage)
@@ -902,6 +921,7 @@ void redrawPlatformIcon(bool drawDeltaImage)
 						PlatfomTypeX, PlatfomTypeY, safeAirBarIconWidth, safeAirBarIconHeight);
 			}
 			previousPlatformImage = gImage_Multicopter;
+		}
 		}
 	}
 }

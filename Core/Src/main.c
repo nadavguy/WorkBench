@@ -81,7 +81,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.010;
-float buildID = 1.060;
+float buildID = 1.070;
 
 SYSTEMState rcState = PREINIT;
 
@@ -208,16 +208,16 @@ int main(void)
 	UID2 = (*(__I uint32_t *) 0x1FF0F424);
 	UID3 = (*(__I uint32_t *) 0x1FF0F428);
 
-	uint32_t bootloaderLength = sizeof(Array)/sizeof(char);
-	crc currentBL = F_CRC_CalculaCheckSumFromFlash(0x08000000, bootloaderLength);
-	crc includedBL = F_CRC_CalculaCheckSum(Array, bootloaderLength);
+		uint32_t bootloaderLength = sizeof(Array)/sizeof(char);
+		crc currentBL = F_CRC_CalculaCheckSumFromFlash(0x08000000, bootloaderLength);
+		crc includedBL = F_CRC_CalculaCheckSum(Array, bootloaderLength);
 
-	if (currentBL != includedBL)
-	{
-		localFlashParams.startAddress = 0x08000000;
-		localFlashParams.voltageLevel = FLASH_VOLTAGE_RANGE_3;
-		reallocateDataFromArray(Array, 0x08000000, bootloaderLength);
-	}
+		if (currentBL != includedBL)
+		{
+			localFlashParams.startAddress = 0x08000000;
+			localFlashParams.voltageLevel = FLASH_VOLTAGE_RANGE_3;
+			reallocateDataFromArray(Array, 0x08000000, bootloaderLength);
+		}
 
 	BSP_QSPI_Init();
 
@@ -236,6 +236,12 @@ int main(void)
 	}
 	ee.rcMode = 0;
 	safeairConfiguration.MTD = 0;
+
+	if (ee.legacySystemType != 0)
+	{
+		isLegacyDronePlatform = true;
+    currentSmaStatus.smaPlatformName = ee.legacySystemType;
+	}
 
 	initMenuPages();
 	initMenuItems();
@@ -539,6 +545,8 @@ void updateRCState(void)
 		rcLinkStatus.DownlinkPSRLQ = 0;
 		rcLinkStatus.UplinkRSSIAnt1 = 0xFF;
 		rcLinkStatus.UplinkRSSIAnt2 = 0xFF;
+		currentSmaStatus.smaPlatformName = NOPLATFORM;
+		currentSmaStatus.smaState = UNKNOWN;
 		sprintf(terminalBuffer,"No connection with TBS TX");
 		logData(terminalBuffer, true, false, false);
 	}
