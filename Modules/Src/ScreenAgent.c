@@ -1057,7 +1057,7 @@ void screenUpdate(bool drawDeltaImage)
 		}
 		else
 		{
-			Paint_DrawImage(gImage_ParaZero_Logo_Legacy_75_92, FullLogoX, FullLogoY, FullLogoWidth, FullLogoHeight);
+			Paint_DrawImage(gImage_ParaZero_Logo_Legacy_62_77, FullLogoX, FullLogoY, FullLogoWidth, FullLogoHeight);
 		}
 
 		if (shouldRedrawSignalStrengthIcon)

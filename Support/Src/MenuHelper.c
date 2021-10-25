@@ -401,10 +401,10 @@ void initMenuItems(void)
 	memcpy(&platformTypeItem.itemsArray[4],"Cancel",strlen("Cancel"));
 	memcpy(&platformTypeItem.itemsArray[5],"OK",strlen("OK"));
 	platformTypeItem.numberOfValuesInArray = 4;
-	memcpy(&platformTypeItem.valuesArray[0],"Multi-rotor    ",strlen("Multi-rotor    "));
-	memcpy(&platformTypeItem.valuesArray[1],"VTOL Vertical  ",strlen("VTOL Vertical  "));
-	memcpy(&platformTypeItem.valuesArray[2],"VTOL Transition",strlen("VTOL Transition"));
-	memcpy(&platformTypeItem.valuesArray[3],"VTOL Horizontal",strlen("VTOL Horizontal"));
+	memcpy(&platformTypeItem.valuesArray[0],"Mlt-rtr",strlen("Mlt-rtr"));
+	memcpy(&platformTypeItem.valuesArray[1],"Vrtcl  ",strlen("Vrtcl  "));
+	memcpy(&platformTypeItem.valuesArray[2],"Trnsmtn",strlen("Trnsmtn"));
+	memcpy(&platformTypeItem.valuesArray[3],"Hrzntl ",strlen("Hrzntl "));
 	platformTypeItem.parameterPointer = (uint32_t)&safeairConfiguration.platformType;
 
 	safeairStateItem.itemID = 7;
@@ -420,8 +420,8 @@ void initMenuItems(void)
 	memcpy(&safeairStateItem.itemsArray[4],"Cancel",strlen("Cancel"));
 	memcpy(&safeairStateItem.itemsArray[5],"OK",strlen("OK"));
 	safeairStateItem.numberOfValuesInArray = 2;
-	memcpy(&safeairStateItem.valuesArray[0],"Maintenance    ",strlen("Maintenance    "));
-	memcpy(&safeairStateItem.valuesArray[1],"AutoCalibration",strlen("AutoCalibration"));
+	memcpy(&safeairStateItem.valuesArray[0],"Mntnnc",strlen("Mntnnc"));
+	memcpy(&safeairStateItem.valuesArray[1],"At-Clb",strlen("At-Clb"));
 	safeairStateItem.parameterPointer = (uint32_t)&safeairConfiguration.state;
 
 	legacySystemItem.itemID = 8;
@@ -493,40 +493,37 @@ void initPopupMessages(void)
 	memcpy(&noConnectionMessage.itemsArray[7],"OK",strlen("OK"));
 
 	safeairForceDisarmMessage.popupID = 2;
-	safeairForceDisarmMessage.numberOfItemsInPopup = 8;
+	safeairForceDisarmMessage.numberOfItemsInPopup = 7;
 	safeairForceDisarmMessage.isQuestion = true;
 	memcpy(&safeairForceDisarmMessage.itemsArray[0],"Force Disarm",strlen("Force Disarm"));
 	memcpy(&safeairForceDisarmMessage.itemsArray[1],"SafeAir unit?,",strlen("SafeAir unit?"));
 	memcpy(&safeairForceDisarmMessage.itemsArray[2],"Are you sure?",strlen("Are you sure?"));
 	memcpy(&safeairForceDisarmMessage.itemsArray[3],"",strlen(""));
-	memcpy(&safeairForceDisarmMessage.itemsArray[4],"",strlen(""));
-	memcpy(&safeairForceDisarmMessage.itemsArray[5],"->Long Press<-",strlen("->Long Press<-"));
-	memcpy(&safeairForceDisarmMessage.itemsArray[6],"Cancel",strlen("Cancel"));
-	memcpy(&safeairForceDisarmMessage.itemsArray[7],"OK",strlen("OK"));
+	memcpy(&safeairForceDisarmMessage.itemsArray[4],"->Long Press<-",strlen("->Long Press<-"));
+	memcpy(&safeairForceDisarmMessage.itemsArray[5],"Cancel",strlen("Cancel"));
+	memcpy(&safeairForceDisarmMessage.itemsArray[6],"OK",strlen("OK"));
 
 	rcClearStorageMessage.popupID = 3;
-	rcClearStorageMessage.numberOfItemsInPopup = 8;
+	rcClearStorageMessage.numberOfItemsInPopup = 7;
 	rcClearStorageMessage.isQuestion = true;
 	memcpy(&rcClearStorageMessage.itemsArray[0],"Clear RC",strlen("Clear RC"));
 	memcpy(&rcClearStorageMessage.itemsArray[1],"Storage,",strlen("Storage,"));
 	memcpy(&rcClearStorageMessage.itemsArray[2],"Are you sure?",strlen("Are you sure?"));
 	memcpy(&rcClearStorageMessage.itemsArray[3],"",strlen(""));
-	memcpy(&rcClearStorageMessage.itemsArray[4],"",strlen(""));
-	memcpy(&rcClearStorageMessage.itemsArray[5],"->Long Press<-",strlen("->Long Press<-"));
-	memcpy(&rcClearStorageMessage.itemsArray[6],"Cancel",strlen("Cancel"));
-	memcpy(&rcClearStorageMessage.itemsArray[7],"OK",strlen("OK"));
+	memcpy(&rcClearStorageMessage.itemsArray[4],"->Long Press<-",strlen("->Long Press<-"));
+	memcpy(&rcClearStorageMessage.itemsArray[5],"Cancel",strlen("Cancel"));
+	memcpy(&rcClearStorageMessage.itemsArray[6],"OK",strlen("OK"));
 
 	safeAirClearStorageMessage.popupID = 4;
-	safeAirClearStorageMessage.numberOfItemsInPopup = 8;
+	safeAirClearStorageMessage.numberOfItemsInPopup = 7;
 	safeAirClearStorageMessage.isQuestion = true;
 	memcpy(&safeAirClearStorageMessage.itemsArray[0],"Clear SafeAir",strlen("Clear SafeAir"));
 	memcpy(&safeAirClearStorageMessage.itemsArray[1],"Storage,",strlen("Storage,"));
 	memcpy(&safeAirClearStorageMessage.itemsArray[2],"Are you sure?",strlen("Are you sure?"));
 	memcpy(&safeAirClearStorageMessage.itemsArray[3],"",strlen(""));
-	memcpy(&safeAirClearStorageMessage.itemsArray[4],"",strlen(""));
-	memcpy(&safeAirClearStorageMessage.itemsArray[5],"->Long Press<-",strlen("->Long Press<-"));
-	memcpy(&safeAirClearStorageMessage.itemsArray[6],"Cancel",strlen("Cancel"));
-	memcpy(&safeAirClearStorageMessage.itemsArray[7],"OK",strlen("OK"));
+	memcpy(&safeAirClearStorageMessage.itemsArray[4],"->Long Press<-",strlen("->Long Press<-"));
+	memcpy(&safeAirClearStorageMessage.itemsArray[5],"Cancel",strlen("Cancel"));
+	memcpy(&safeAirClearStorageMessage.itemsArray[6],"OK",strlen("OK"));
 
 	bleMakeVisibleMessage.popupID = 5;
 	bleMakeVisibleMessage.numberOfItemsInPopup = 5;
