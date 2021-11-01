@@ -81,7 +81,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.010;
-float buildID = 1.080;
+float buildID = 1.090;
 
 SYSTEMState rcState = PREINIT;
 
@@ -109,6 +109,7 @@ bool isScreenBrightFull = true;
 bool shouldDrawSafeAirAltitude = true;
 bool testMotorCut = false;
 bool isDisableButtonDetection = false;
+bool isFirstCycleAfterUSBDisconnection = false;
 
 uint16_t fullFrameDelay = 5000;
 
@@ -199,7 +200,6 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART3_UART_Init();
   MX_RTC_Init();
-  MX_ADC2_Init();
   MX_ADC3_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
@@ -378,7 +378,15 @@ int main(void)
 		}
 		updateBuzzerStatus();
 		checkChargerMux();
-		measureVoltages(false);
+		if (isFirstCycleAfterUSBDisconnection)
+		{
+			measureVoltages(true);
+			isFirstCycleAfterUSBDisconnection = false;
+		}
+		else
+		{
+			measureVoltages(false);
+		}
 
     /* USER CODE END WHILE */
 
@@ -500,7 +508,7 @@ void updateRCState(void)
 	}
 	else
 	{
-		if ( (batteryVoltage <= 3.65) && (batteryStrength < EMPTY))
+		if ( (batteryVoltage <= 3.65) && ( (batteryStrength < EMPTY) || (batteryStrength == CHARGING)) )
 		{
 			isLowBattery = true;
 			isEmptyBattery = true;
@@ -510,7 +518,7 @@ void updateRCState(void)
 			sprintf(terminalBuffer,"RC Battery is Empty");
 			logData(terminalBuffer, false, false, false);
 		}
-		else if ( (batteryVoltage > 3.65) && (batteryVoltage <= 3.8) && (batteryStrength < LOW))
+		else if ( (batteryVoltage > 3.65) && (batteryVoltage <= 3.8) && ( (batteryStrength < LOW) || (batteryStrength == CHARGING)) )
 		{
 			shouldRedrawBatteryIcon = true;
 			batteryStrength = LOW;
@@ -518,7 +526,7 @@ void updateRCState(void)
 			sprintf(terminalBuffer,"RC Battery is Low");
 			logData(terminalBuffer, false, false, false);
 		}
-		else if ( (batteryVoltage > 3.8) && (batteryVoltage <= 3.9) && (batteryStrength < MEDIUM) )
+		else if ( (batteryVoltage > 3.8) && (batteryVoltage <= 3.9) && ( (batteryStrength < MEDIUM) || (batteryStrength == CHARGING)) )
 		{
 			shouldRedrawBatteryIcon = true;
 			batteryStrength = MEDIUM;
@@ -526,7 +534,7 @@ void updateRCState(void)
 			sprintf(terminalBuffer,"RC Battery is Partially Full");
 			logData(terminalBuffer, false, false, false);
 		}
-		else if ( (batteryVoltage > 3.9) && (batteryStrength != STRONG))
+		else if ( (batteryVoltage > 3.9) && ( (batteryStrength != STRONG) || (batteryStrength == CHARGING)) )
 		{
 			shouldRedrawBatteryIcon = true;
 			batteryStrength = STRONG;

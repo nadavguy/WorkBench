@@ -70,7 +70,7 @@ void CheckButtons(void)
 	else if ( (rcState == INIT) && (okPinState == GPIO_PIN_RESET) )
 	{
 		LCD_1IN8_SetBackLight(20000);
-		checkMMA();
+//		checkMMA();
 	}
 
 	if ( (armPinState == GPIO_PIN_RESET) || (triggerPinState == GPIO_PIN_RESET) || (upPinState == GPIO_PIN_RESET)

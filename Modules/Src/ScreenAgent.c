@@ -343,7 +343,7 @@ void updateStatusText(void)
 			}
 			else
 			{
-				char localString[16] = "";
+				char localString[18] = "";
 				sprintf(localString,"P#: %d / %d", packID, totalPackID);
 				addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3,GRAYBLUE);
 				centeredString(SystemStatusTextX, SystemStatusTextY, localString, WHITE, GRAYBLUE, 14, Font12);
@@ -534,7 +534,7 @@ void redrawBatteryIcon(bool drawDeltaImage)
 		else
 		{
 			Paint_DrawDeltaImage(gImage_RC_Battery_Medium, previousRCBatteryImage,
-					BatteryX, BatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
+					BatteryX, BatteryY, statusBarIconWidth, statusBarIconWidth);
 		}
 		previousRCBatteryImage = gImage_RC_Battery_Medium;
 		break; /* optional */
@@ -1013,7 +1013,7 @@ void screenUpdate(bool drawDeltaImage)
 
 			if ( (shouldDrawSafeAirAltitude) )
 			{
-				char localText[12] = "";
+				char localText[17] = "";
 				Paint_DrawLine(LineStartX, LineY, LineEndX, LineY, BLACK, DOT_PIXEL_1X1, LINE_STYLE_SOLID);
 				if (lowerBarDisplayID == 0)
 				{

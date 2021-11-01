@@ -143,6 +143,7 @@ extern bool shouldDrawSafeAirAltitude;
 extern bool isScreenBrightFull;
 extern bool testMotorCut;
 extern bool isDisableButtonDetection;
+extern bool isFirstCycleAfterUSBDisconnection;
 
 extern uint16_t fullFrameDelay;
 
