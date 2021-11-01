@@ -45,36 +45,35 @@ void measureVoltages(bool forceMeasurement)
 		sConfig.SamplingTime = ADC_SAMPLETIME_15CYCLES;    /* Sampling time (number of clock cycles unit) */
 		sConfig.Offset = 0;
 
-		 if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-		  {
-		    /* Channel Configuration Error */
-		    Error_Handler();
-		  }
+		if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+		{
+			/* Channel Configuration Error */
+			Error_Handler();
+		}
 
-		  if (HAL_ADC_Start(&hadc1) != HAL_OK)
-		  {
-		    /* Start Conversation Error */
-		    Error_Handler();
-		  }
+		if (HAL_ADC_Start(&hadc1) != HAL_OK)
+		{
+			/* Start Conversation Error */
+			Error_Handler();
+		}
 
-		  /*##-4- Wait for the end of conversion #####################################*/
-		  /*  For simplicity reasons, this example is just waiting till the end of the
+		/*##-4- Wait for the end of conversion #####################################*/
+		/*  For simplicity reasons, this example is just waiting till the end of the
 		      conversion, but application may perform other tasks while conversion
 		      operation is ongoing. */
-		  if (HAL_ADC_PollForConversion(&hadc1, 10) != HAL_OK)
-		  {
-		    /* End Of Conversion flag not set on time */
-		    Error_Handler();
-		  }
-		  else
-		  {
-		    /* ADC conversion completed */
-		    /*##-5- Get the converted value of regular channel  ########################*/
-			  currentMeasurementValue[0] = HAL_ADC_GetValue(&hadc1);
-		  }
+		if (HAL_ADC_PollForConversion(&hadc1, 10) != HAL_OK)
+		{
+			/* End Of Conversion flag not set on time */
+			Error_Handler();
+		}
+		else
+		{
+			/* ADC conversion completed */
+			/*##-5- Get the converted value of regular channel  ########################*/
+			currentMeasurementValue[0] = HAL_ADC_GetValue(&hadc1);
+		}
 
-//		HAL_ADC_Start_IT(&hadc1);
-//		currentMeasurementValue[0] = HAL_ADC_GetValue(&hadc1);
+
 		currentVoltages[0] = (float)(currentMeasurementValue[0] * 2.0 / ADCRES) * MCURefVoltage;
 	}
 	else
@@ -84,49 +83,38 @@ void measureVoltages(bool forceMeasurement)
 		sConfig.Rank         = 1;          /* Rank of sampled channel number ADCx_CHANNEL */
 		sConfig.SamplingTime = ADC_SAMPLETIME_15CYCLES;    /* Sampling time (number of clock cycles unit) */
 		sConfig.Offset = 0;
-		 if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-		  {
-		    /* Channel Configuration Error */
-		    Error_Handler();
-		  }
+		if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+		{
+			/* Channel Configuration Error */
+			Error_Handler();
+		}
 
-		  if (HAL_ADC_Start(&hadc1) != HAL_OK)
-		  {
-		    /* Start Conversation Error */
-		    Error_Handler();
-		  }
+		if (HAL_ADC_Start(&hadc1) != HAL_OK)
+		{
+			/* Start Conversation Error */
+			Error_Handler();
+		}
 
-		  /*##-4- Wait for the end of conversion #####################################*/
-		  /*  For simplicity reasons, this example is just waiting till the end of the
+		/*##-4- Wait for the end of conversion #####################################*/
+		/*  For simplicity reasons, this example is just waiting till the end of the
 		      conversion, but application may perform other tasks while conversion
 		      operation is ongoing. */
-		  if (HAL_ADC_PollForConversion(&hadc1, 10) != HAL_OK)
-		  {
-		    /* End Of Conversion flag not set on time */
-		    Error_Handler();
-		  }
-		  else
-		  {
-		    /* ADC conversion completed */
-		    /*##-5- Get the converted value of regular channel  ########################*/
-			  currentMeasurementValue[1] = HAL_ADC_GetValue(&hadc1);
-		  }
-
-//		currentMeasurementValue[1] = HAL_ADC_GetValue(&hadc1);
+		if (HAL_ADC_PollForConversion(&hadc1, 10) != HAL_OK)
+		{
+			/* End Of Conversion flag not set on time */
+			Error_Handler();
+		}
+		else
+		{
+			/* ADC conversion completed */
+			/*##-5- Get the converted value of regular channel  ########################*/
+			currentMeasurementValue[1] = HAL_ADC_GetValue(&hadc1);
+		}
 		currentVoltages[1] = (float)(currentMeasurementValue[1] * 2.0 / ADCRES) * MCURefVoltage;
-//	HAL_ADC_Start_IT(&hadc2);
-//	currentMeasurementValue[1] = HAL_ADC_GetValue(&hadc2);
-//	currentVoltages[1] = (float)(currentMeasurementValue[1] * 2.0 / ADCRES) * MCURefVoltage;
+
 
 	}
 	FirstOrSecond = !FirstOrSecond;
-//	sprintf(terminalBuffer,"is USB connected: %s",isUSBConnected ? "true" : "false");
-//	logData(terminalBuffer, false, false, false);
-//	sprintf(terminalBuffer,"Measurements: %d, %d",currentMeasurementValue[0], currentMeasurementValue[1]);
-//	logData(terminalBuffer, false, false, false);
-//	sprintf(terminalBuffer,"Voltages: %6.3f, %6.3f",currentVoltages[0], currentVoltages[1]);
-//	logData(terminalBuffer, false, false, false);
-
 	if ( (isUSBConnected) && (currentVoltages[1] < 2) && (!isChargingMode))
 	{
 		isChargingMode = true;
@@ -149,7 +137,7 @@ void measureVoltages(bool forceMeasurement)
 	if ( (HAL_GetTick() - lastVoltageMeasurement > localDeltaTime) || (lastVoltageMeasurement == 0) || (forceMeasurement) )
 	{
 		HAL_GPIO_WritePin(ChargeEnableGPIO, ChargeEnablePIN, GPIO_PIN_SET);
-//		HAL_Delay(2);
+		//		HAL_Delay(2);
 		uint32_t localTime = HAL_GetTick();
 		while (HAL_GetTick() - localTime < 3)
 		{
@@ -159,8 +147,8 @@ void measureVoltages(bool forceMeasurement)
 		memcpy(previousVoltages, currentVoltages, sizeof(currentVoltages));
 		currentMeasurementValue[2] = HAL_ADC_GetValue(&hadc3);
 		currentVoltages[2] = (float)(currentMeasurementValue[2] * 2.0 / ADCRES) * MCURefVoltage;
-//		sprintf(terminalBuffer,"Voltage battery: %6.3f, %d",currentVoltages[2], currentMeasurementValue[2]);
-//		logData(terminalBuffer, false, false, false);
+		//		sprintf(terminalBuffer,"Voltage battery: %6.3f, %d",currentVoltages[2], currentMeasurementValue[2]);
+		//		logData(terminalBuffer, false, false, false);
 		if (currentVoltages[0] < 3.1)
 		{
 			sprintf(terminalBuffer,"Low 3.3V regulator output: %1.3f", currentVoltages[0]);
@@ -187,7 +175,7 @@ void measureVoltages(bool forceMeasurement)
 		{
 			ThresholdReachedTime = HAL_GetTick();
 			firstMeasurementAboveThreshold = true;
-//			cyclesAboveThresholdCounter++;
+			//			cyclesAboveThresholdCounter++;
 			ee.lastStepInCVChargeCycle = cyclesAboveThresholdCounter;
 			ee_save1();
 		}
