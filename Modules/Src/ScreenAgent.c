@@ -135,10 +135,10 @@ void screenInit(void)
 		LCD_1IN8_Init(U2D_R2L);
 		LCD_1IN8_Clear(BLACK);
 		Paint_NewImage(LCD_1IN8_WIDTH,LCD_1IN8_HEIGHT, 0, WHITE);
-//		FullLogoWidth = HorizontalFullLogoWidth;
-//		FullLogoHeight = HorizontalFullLogoHeight;
-//		FullLogoX = HorizontalFullLogoX;
-//		FullLogoY = HorizontalFullLogoY;
+		//		FullLogoWidth = HorizontalFullLogoWidth;
+		//		FullLogoHeight = HorizontalFullLogoHeight;
+		//		FullLogoX = HorizontalFullLogoX;
+		//		FullLogoY = HorizontalFullLogoY;
 	}
 
 	Paint_SetClearFuntion(LCD_1IN8_Clear);
@@ -207,106 +207,106 @@ void centeredString(UWORD XCenterstart, UWORD Ystart, const char * pString, uint
 
 void renderSafeAirBattery(bool drawDeltaImage)
 {
-	if (!isNoSignal)
+	if ( (!isNoSignal) && (everReceivedConfigurationMessage) )
 	{
 		switch (currentSmaStatus.batteryStrength)
 		{
-		case EMPTY:
-		{
-			if (!drawDeltaImage)
+			case EMPTY:
 			{
-				Paint_DrawImage(gImage_SafeAir_Battery_Alert, SafeAirBatteryX, SafeAirBatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
+				if (!drawDeltaImage)
+				{
+					Paint_DrawImage(gImage_SafeAir_Battery_Alert, SafeAirBatteryX, SafeAirBatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				else
+				{
+					Paint_DrawDeltaImage(gImage_SafeAir_Battery_Alert, previousBatteryImage,
+							SafeAirBatteryX, SafeAirBatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				previousBatteryImage = gImage_SafeAir_Battery_Alert;
+				break; /* optional */
 			}
-			else
-			{
-				Paint_DrawDeltaImage(gImage_SafeAir_Battery_Alert, previousBatteryImage,
-						SafeAirBatteryX, SafeAirBatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
-			}
-			previousBatteryImage = gImage_SafeAir_Battery_Alert;
-			break; /* optional */
-		}
 
-		case LOW:
-		{
-			if (!drawDeltaImage)
+			case LOW:
 			{
-				Paint_DrawImage(gImage_SafeAir_Battery_Low, SafeAirBatteryX, SafeAirBatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
+				if (!drawDeltaImage)
+				{
+					Paint_DrawImage(gImage_SafeAir_Battery_Low, SafeAirBatteryX, SafeAirBatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				else
+				{
+					Paint_DrawDeltaImage(gImage_SafeAir_Battery_Low, previousBatteryImage,
+							SafeAirBatteryX, SafeAirBatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				previousBatteryImage = gImage_SafeAir_Battery_Low;
+				break; /* optional */
 			}
-			else
-			{
-				Paint_DrawDeltaImage(gImage_SafeAir_Battery_Low, previousBatteryImage,
-						SafeAirBatteryX, SafeAirBatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
-			}
-			previousBatteryImage = gImage_SafeAir_Battery_Low;
-			break; /* optional */
-		}
 
-		case MEDIUM:
-		{
-			if (!drawDeltaImage)
+			case MEDIUM:
 			{
-				Paint_DrawImage(gImage_SafeAir_Battery_Medium, SafeAirBatteryX, SafeAirBatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
+				if (!drawDeltaImage)
+				{
+					Paint_DrawImage(gImage_SafeAir_Battery_Medium, SafeAirBatteryX, SafeAirBatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				else
+				{
+					Paint_DrawDeltaImage(gImage_SafeAir_Battery_Medium, previousBatteryImage,
+							SafeAirBatteryX, SafeAirBatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				previousBatteryImage = gImage_SafeAir_Battery_Medium;
+				break; /* optional */
 			}
-			else
-			{
-				Paint_DrawDeltaImage(gImage_SafeAir_Battery_Medium, previousBatteryImage,
-						SafeAirBatteryX, SafeAirBatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
-			}
-			previousBatteryImage = gImage_SafeAir_Battery_Medium;
-			break; /* optional */
-		}
 
-		case STRONG:
-		{
-			if (!drawDeltaImage)
+			case STRONG:
 			{
-				Paint_DrawImage(gImage_SafeAir_Battery_Full, SafeAirBatteryX, SafeAirBatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
+				if (!drawDeltaImage)
+				{
+					Paint_DrawImage(gImage_SafeAir_Battery_Full, SafeAirBatteryX, SafeAirBatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				else
+				{
+					Paint_DrawDeltaImage(gImage_SafeAir_Battery_Full, previousBatteryImage,
+							SafeAirBatteryX, SafeAirBatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				previousBatteryImage = gImage_SafeAir_Battery_Full;
+				break; /* optional */
 			}
-			else
-			{
-				Paint_DrawDeltaImage(gImage_SafeAir_Battery_Full, previousBatteryImage,
-						SafeAirBatteryX, SafeAirBatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
-			}
-			previousBatteryImage = gImage_SafeAir_Battery_Full;
-			break; /* optional */
-		}
 
-		case CHARGING:
-		{
-			if (!drawDeltaImage)
+			case CHARGING:
 			{
-				Paint_DrawImage(gImage_SafeAir_External_Power, SafeAirBatteryX, SafeAirBatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
+				if (!drawDeltaImage)
+				{
+					Paint_DrawImage(gImage_SafeAir_External_Power, SafeAirBatteryX, SafeAirBatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				else
+				{
+					Paint_DrawDeltaImage(gImage_SafeAir_External_Power, previousBatteryImage,
+							SafeAirBatteryX, SafeAirBatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				previousBatteryImage = gImage_SafeAir_External_Power;
+				break; /* optional */
 			}
-			else
-			{
-				Paint_DrawDeltaImage(gImage_SafeAir_External_Power, previousBatteryImage,
-						SafeAirBatteryX, SafeAirBatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
-			}
-			previousBatteryImage = gImage_SafeAir_External_Power;
-			break; /* optional */
-		}
 
-		/* you can have any number of case statements */
-		default: /* Optional */
-		{
-			if (!drawDeltaImage)
+			/* you can have any number of case statements */
+			default: /* Optional */
 			{
-				Paint_DrawImage(gImage_SafeAir_Battery_Alert, SafeAirBatteryX, SafeAirBatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
+				if (!drawDeltaImage)
+				{
+					Paint_DrawImage(gImage_SafeAir_Battery_Alert, SafeAirBatteryX, SafeAirBatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				else
+				{
+					Paint_DrawDeltaImage(gImage_SafeAir_Battery_Alert, previousBatteryImage,
+							SafeAirBatteryX, SafeAirBatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				previousBatteryImage = gImage_SafeAir_Battery_Alert;
 			}
-			else
-			{
-				Paint_DrawDeltaImage(gImage_SafeAir_Battery_Alert, previousBatteryImage,
-						SafeAirBatteryX, SafeAirBatteryY, safeAirBarIconWidth, safeAirBarIconHeight);
-			}
-			previousBatteryImage = gImage_SafeAir_Battery_Alert;
-		}
 		}
 	}
 }
 
 void updateStatusText(void)
 {
-	if (!isNoSignal)
+	if ( (!isNoSignal) && (everReceivedConfigurationMessage) )
 	{
 		if (currentSmaStatus.smaState == TRIGGERED)
 		{
@@ -376,93 +376,100 @@ void updateStatusText(void)
 
 void updateBITStatus(void)
 {
-	if (!isNoSignal)
-	{
-		if (displayWarning.displayWarning)
-		{
-			if (shouldDrawRedAlertIcon)
-			{
-				//			if  ( (currentSmaStatus.smaState != ARMED) && (displayWarning.BITStatus != 0) )
-				//			{
-				//				addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, YELLOW);
-				//				centeredString(SystemStatusTextX, SystemStatusTextY, "Error", BLACK, YELLOW, 14, Font12);
-				//			}
-				shouldUpdateStatusText = false;
-			}
-			Paint_ClearWindows(0, WarningTextY, VerticalDisplayCenterWidth * 2, WarningTextY + Font12.Height, BACKGROUND);
-			if (displayWarning.BITStatus & 0x01)
-			{
-				centeredString(WarningTextX, WarningTextY, "SA Critical Bat", BLACK, BACKGROUND, 14, Font12);
-			}
-			else if (displayWarning.BITStatus & 0x02)
-			{
-				centeredString(WarningTextX, WarningTextY, "SA Low Bat", BLACK, BACKGROUND, 14, Font12);
-			}
-			else if (displayWarning.BITStatus & 0x04)
-			{
-				centeredString(WarningTextX, WarningTextY, "SA Flash Error", BLACK, BACKGROUND, 14, Font12);
-			}
-			else if ( (displayWarning.BITStatus & 0x08) && (currentSmaStatus.smaState == IDLE) )
-			{
-				centeredString(WarningTextX, WarningTextY, "SA Orientation", BLACK, BACKGROUND, 14, Font12);
-			}
-			else if (displayWarning.BITStatus & 0x10)
-			{
-				centeredString(WarningTextX, WarningTextY, "SA Pyro Error", BLACK, BACKGROUND, 14, Font12);
-			}
-			else if (displayWarning.BITStatus & 0x20)
-			{
-				centeredString(WarningTextX, WarningTextY, "RC Low Bat", BLACK, BACKGROUND, 14, Font12);
-			}
-			else if ( (displayWarning.BITStatus & abnormalGyro) && (ee.informationLevel & 0x1) )
-			{
-				centeredString(WarningTextX, WarningTextY, "Abnormal Gyro", BLACK, BACKGROUND, 14, Font12);
-			}
-			else if ( (displayWarning.BITStatus & abnormalAcceleration) && (ee.informationLevel & 0x1) )
-			{
-				centeredString(WarningTextX, WarningTextY, "Abnormal Accel", BLACK, BACKGROUND, 14, Font12);
-			}
-			else if ( (displayWarning.BITStatus & abnormalAngle) && (ee.informationLevel & 0x1) )
-			{
-				centeredString(WarningTextX, WarningTextY, "Abnormal Angle", BLACK, BACKGROUND, 14, Font12);
-			}
-		}
-		else if ((!displayWarning.displayWarning) && (shouldClearDisplayedWarning))
-		{
 
-			if (!isPortrait)
-			{
-				Paint_ClearWindows(WarningIconX, WarningIconY, WarningIconX + statusBarIconWidth, WarningIconY + statusBarIconHeight, WHITE);
-				Paint_ClearWindows(WarningTextX, WarningTextY, WarningTextX + 14 * Font12.Width, WarningTextY + Font12.Height, WHITE);
-			}
-			else
-			{
-				Paint_ClearWindows(0, WarningTextY, VerticalDisplayCenterWidth * 2, WarningTextY + Font12.Height, BACKGROUND);
-			}
-			shouldClearDisplayedWarning = false;
+	if (displayWarning.displayWarning)
+	{
+		if (shouldDrawRedAlertIcon)
+		{
+			//			if  ( (currentSmaStatus.smaState != ARMED) && (displayWarning.BITStatus != 0) )
+			//			{
+			//				addRectangleToFrame(0, SystemStatusTextY - 2, VerticalDisplayCenterWidth * 2, SystemStatusTextY - 2 + Font12.Height + 3, YELLOW);
+			//				centeredString(SystemStatusTextX, SystemStatusTextY, "Error", BLACK, YELLOW, 14, Font12);
+			//			}
+			shouldUpdateStatusText = false;
+		}
+		Paint_ClearWindows(0, WarningTextY, VerticalDisplayCenterWidth * 2, WarningTextY + Font12.Height, BACKGROUND);
+		if ( (displayWarning.BITStatus & 0x01) && (!isNoSignal) && (everReceivedConfigurationMessage) )
+		{
+			centeredString(WarningTextX, WarningTextY, "SA Critical Bat", BLACK, BACKGROUND, 14, Font12);
+		}
+		else if ( (displayWarning.BITStatus & 0x02) && (!isNoSignal) && (everReceivedConfigurationMessage) )
+		{
+			centeredString(WarningTextX, WarningTextY, "SA Low Bat", BLACK, BACKGROUND, 14, Font12);
+		}
+		else if ( (displayWarning.BITStatus & 0x04) && (!isNoSignal) && (everReceivedConfigurationMessage) )
+		{
+			centeredString(WarningTextX, WarningTextY, "SA Flash Error", BLACK, BACKGROUND, 14, Font12);
+		}
+		else if ( (displayWarning.BITStatus & 0x08) && (currentSmaStatus.smaState == IDLE) && (!isNoSignal) && (everReceivedConfigurationMessage) )
+		{
+			centeredString(WarningTextX, WarningTextY, "SA Orientation", BLACK, BACKGROUND, 14, Font12);
+		}
+		else if ( (displayWarning.BITStatus & 0x10) && (!isNoSignal) && (everReceivedConfigurationMessage) )
+		{
+			centeredString(WarningTextX, WarningTextY, "SA Pyro Error", BLACK, BACKGROUND, 14, Font12);
+		}
+		else if (displayWarning.BITStatus & 0x20)
+		{
+			centeredString(WarningTextX, WarningTextY, "RC Low Bat", BLACK, BACKGROUND, 14, Font12);
+		}
+		else if ( (displayWarning.BITStatus & abnormalGyro) && (ee.informationLevel & 0x1) )
+		{
+			centeredString(WarningTextX, WarningTextY, "Abnormal Gyro", BLACK, BACKGROUND, 14, Font12);
+		}
+		else if ( (displayWarning.BITStatus & abnormalAcceleration) && (ee.informationLevel & 0x1) )
+		{
+			centeredString(WarningTextX, WarningTextY, "Abnormal Accel", BLACK, BACKGROUND, 14, Font12);
+		}
+		else if ( (displayWarning.BITStatus & abnormalAngle) && (ee.informationLevel & 0x1) )
+		{
+			centeredString(WarningTextX, WarningTextY, "Abnormal Angle", BLACK, BACKGROUND, 14, Font12);
 		}
 	}
+	else if ((!displayWarning.displayWarning) && (shouldClearDisplayedWarning))
+	{
+
+		if (!isPortrait)
+		{
+			Paint_ClearWindows(WarningIconX, WarningIconY, WarningIconX + statusBarIconWidth, WarningIconY + statusBarIconHeight, WHITE);
+			Paint_ClearWindows(WarningTextX, WarningTextY, WarningTextX + 14 * Font12.Width, WarningTextY + Font12.Height, WHITE);
+		}
+		else
+		{
+			Paint_ClearWindows(0, WarningTextY, VerticalDisplayCenterWidth * 2, WarningTextY + Font12.Height, BACKGROUND);
+		}
+		shouldClearDisplayedWarning = false;
+	}
+
 }
 
 void updatePlatformText(void)
 {
-	if (!isNoSignal)
+
+	switch (currentSmaStatus.smaPlatformName)
 	{
-		switch (currentSmaStatus.smaPlatformName)
-		{
 		case M200:
 		{
-			centeredString(SystemTextX, SystemTextY, "SafeAir M200 Pro", BLACK, BACKGROUND, 16, Font12);
+			if ( (!isNoSignal) && (everReceivedConfigurationMessage) )
+			{
+				centeredString(SystemTextX, SystemTextY, "SafeAir M200 Pro", BLACK, BACKGROUND, 16, Font12);
+			}
 			break;
 		}
 		case M300:
 		{
-			centeredString(SystemTextX, SystemTextY, "SafeAir M300 Pro", BLACK, BACKGROUND, 16, Font12);
+			if ( (!isNoSignal) && (everReceivedConfigurationMessage) )
+			{
+				centeredString(SystemTextX, SystemTextY, "SafeAir M300 Pro", BLACK, BACKGROUND, 16, Font12);
+			}
 			break;
 		}
 		case M600:
 		{
-			centeredString(SystemTextX, SystemTextY, "SafeAir M600 Pro", BLACK, BACKGROUND, 16, Font12);
+			if ( (!isNoSignal) && (everReceivedConfigurationMessage) )
+			{
+				centeredString(SystemTextX, SystemTextY, "SafeAir M600 Pro", BLACK, BACKGROUND, 16, Font12);
+			}
 			break;
 		}
 		case PHANTOM:
@@ -475,15 +482,23 @@ void updatePlatformText(void)
 			centeredString(SystemTextX, SystemTextY, "SafeAir Mavic", BLACK, BACKGROUND, 16, Font12);
 			break;
 		}
+		case SAFEAIR:
+		{
+			centeredString(SystemTextX, SystemTextY, "SafeAir", BLACK, BACKGROUND, 16, Font12);
+			break;
+		}
 		case TAILID:
 		{
-			if (isTailIDAlreadyReceived)
+			if ( (!isNoSignal) && (everReceivedConfigurationMessage) )
 			{
-				centeredString(SystemTextX, SystemTextY, safeAirTailID, BLACK, BACKGROUND, 11, Font16);
-			}
-			else
-			{
-				centeredString(SystemTextX, SystemTextY, "Waiting TailID", BLACK, BACKGROUND, 16, Font12);
+				if (isTailIDAlreadyReceived)
+				{
+					centeredString(SystemTextX, SystemTextY, safeAirTailID, BLACK, BACKGROUND, 11, Font16);
+				}
+				else
+				{
+					centeredString(SystemTextX, SystemTextY, "Waiting TailID", BLACK, BACKGROUND, 16, Font12);
+				}
 			}
 			break;
 		}
@@ -491,146 +506,153 @@ void updatePlatformText(void)
 		{
 			centeredString(SystemTextX, SystemTextY, "Unknown platform", BLACK, BACKGROUND, 16, Font12);
 		}
-		}
-		previousSmaStatus.smaPlatformName = currentSmaStatus.smaPlatformName;
 	}
+	previousSmaStatus.smaPlatformName = currentSmaStatus.smaPlatformName;
+
 }
 
 void redrawBatteryIcon(bool drawDeltaImage)
 {
 	switch (batteryStrength)
 	{
-	case EMPTY:
-		if (!drawDeltaImage)
+		case EMPTY:
 		{
-			Paint_DrawImage(gImage_RC_Battery_Alert, BatteryX, BatteryY, statusBarIconWidth, statusBarIconHeight);
+			if (!drawDeltaImage)
+			{
+				Paint_DrawImage(gImage_RC_Battery_Alert, BatteryX, BatteryY, statusBarIconWidth, statusBarIconHeight);
+			}
+			else
+			{
+				Paint_DrawDeltaImage(gImage_RC_Battery_Alert, previousRCBatteryImage,
+						BatteryX, BatteryY, statusBarIconWidth, statusBarIconHeight);
+			}
+			previousRCBatteryImage = gImage_RC_Battery_Alert;
+			break; /* optional */
 		}
-		else
+		case LOW:
 		{
-			Paint_DrawDeltaImage(gImage_RC_Battery_Alert, previousRCBatteryImage,
-					BatteryX, BatteryY, statusBarIconWidth, statusBarIconHeight);
+			if (!drawDeltaImage)
+			{
+				Paint_DrawImage(gImage_RC_Battery_Low, BatteryX, BatteryY, statusBarIconWidth, statusBarIconHeight);
+			}
+			else
+			{
+				Paint_DrawDeltaImage(gImage_RC_Battery_Low, previousRCBatteryImage,
+						BatteryX, BatteryY, statusBarIconWidth, statusBarIconHeight);
+			}
+			previousRCBatteryImage = gImage_RC_Battery_Low;
+			break; /* optional */
 		}
-		previousRCBatteryImage = gImage_RC_Battery_Alert;
-		break; /* optional */
-
-	case LOW:
-		if (!drawDeltaImage)
+		case MEDIUM:
 		{
-			Paint_DrawImage(gImage_RC_Battery_Low, BatteryX, BatteryY, statusBarIconWidth, statusBarIconHeight);
+			if (!drawDeltaImage)
+			{
+				Paint_DrawImage(gImage_RC_Battery_Medium, BatteryX, BatteryY, statusBarIconWidth, statusBarIconHeight);
+			}
+			else
+			{
+				Paint_DrawDeltaImage(gImage_RC_Battery_Medium, previousRCBatteryImage,
+						BatteryX, BatteryY, statusBarIconWidth, statusBarIconWidth);
+			}
+			previousRCBatteryImage = gImage_RC_Battery_Medium;
+			break; /* optional */
 		}
-		else
+		case STRONG:
 		{
-			Paint_DrawDeltaImage(gImage_RC_Battery_Low, previousRCBatteryImage,
-					BatteryX, BatteryY, statusBarIconWidth, statusBarIconHeight);
+			if (!drawDeltaImage)
+			{
+				Paint_DrawImage(gImage_RC_Battery_Full, BatteryX, BatteryY, statusBarIconWidth, statusBarIconHeight);
+			}
+			else
+			{
+				Paint_DrawDeltaImage(gImage_RC_Battery_Full, previousRCBatteryImage,
+						BatteryX, BatteryY, statusBarIconWidth, statusBarIconHeight);
+			}
+			previousRCBatteryImage = gImage_RC_Battery_Full;
+			break; /* optional */
 		}
-		previousRCBatteryImage = gImage_RC_Battery_Low;
-		break; /* optional */
-
-	case MEDIUM:
-		if (!drawDeltaImage)
+		case CHARGING:
 		{
-			Paint_DrawImage(gImage_RC_Battery_Medium, BatteryX, BatteryY, statusBarIconWidth, statusBarIconHeight);
+			if (!drawDeltaImage)
+			{
+				Paint_DrawImage(gImage_RC_Battery_Charging, BatteryX, BatteryY, statusBarIconWidth, statusBarIconHeight);
+			}
+			else
+			{
+				Paint_DrawDeltaImage(gImage_RC_Battery_Charging, previousRCBatteryImage,
+						BatteryX, BatteryY, statusBarIconWidth, statusBarIconHeight);
+			}
+			previousRCBatteryImage = gImage_RC_Battery_Charging;
+			break; /* optional */
 		}
-		else
+		default: /* Optional */
 		{
-			Paint_DrawDeltaImage(gImage_RC_Battery_Medium, previousRCBatteryImage,
-					BatteryX, BatteryY, statusBarIconWidth, statusBarIconWidth);
+			if (!drawDeltaImage)
+			{
+				Paint_DrawImage(gImage_RC_Battery_Alert, BatteryX, BatteryY, statusBarIconWidth, statusBarIconHeight);
+			}
+			else
+			{
+				Paint_DrawDeltaImage(gImage_RC_Battery_Alert, previousRCBatteryImage,
+						BatteryX, BatteryY, statusBarIconWidth, statusBarIconHeight);
+			}
+			previousRCBatteryImage = gImage_RC_Battery_Alert;
 		}
-		previousRCBatteryImage = gImage_RC_Battery_Medium;
-		break; /* optional */
-
-	case STRONG:
-		if (!drawDeltaImage)
-		{
-			Paint_DrawImage(gImage_RC_Battery_Full, BatteryX, BatteryY, statusBarIconWidth, statusBarIconHeight);
-		}
-		else
-		{
-			Paint_DrawDeltaImage(gImage_RC_Battery_Full, previousRCBatteryImage,
-					BatteryX, BatteryY, statusBarIconWidth, statusBarIconHeight);
-		}
-		previousRCBatteryImage = gImage_RC_Battery_Full;
-		break; /* optional */
-
-	case CHARGING:
-		if (!drawDeltaImage)
-		{
-			Paint_DrawImage(gImage_RC_Battery_Charging, BatteryX, BatteryY, statusBarIconWidth, statusBarIconHeight);
-		}
-		else
-		{
-			Paint_DrawDeltaImage(gImage_RC_Battery_Charging, previousRCBatteryImage,
-					BatteryX, BatteryY, statusBarIconWidth, statusBarIconHeight);
-		}
-		previousRCBatteryImage = gImage_RC_Battery_Charging;
-		break; /* optional */
-
-	default: /* Optional */
-		if (!drawDeltaImage)
-		{
-			Paint_DrawImage(gImage_RC_Battery_Alert, BatteryX, BatteryY, statusBarIconWidth, statusBarIconHeight);
-		}
-		else
-		{
-			Paint_DrawDeltaImage(gImage_RC_Battery_Alert, previousRCBatteryImage,
-					BatteryX, BatteryY, statusBarIconWidth, statusBarIconHeight);
-		}
-		previousRCBatteryImage = gImage_RC_Battery_Alert;
 	}
 }
 
 void redrawTriggerModeIcon(bool drawDeltaImage)
 {
-	if (!isNoSignal)
+	if ( (!isNoSignal) && (everReceivedConfigurationMessage) )
 	{
 		switch (currentSmaStatus.safeairTriggerMode)
 		{
-		case AUTO:
-		{
-			if (!drawDeltaImage)
+			case AUTO:
 			{
-				Paint_DrawImage(gImage_SafeAir_Auto_Trigger, TriggerModeX, TriggerModeY,
-						safeAirBarIconWidth, safeAirBarIconHeight);
+				if (!drawDeltaImage)
+				{
+					Paint_DrawImage(gImage_SafeAir_Auto_Trigger, TriggerModeX, TriggerModeY,
+							safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				else
+				{
+					Paint_DrawDeltaImage(gImage_SafeAir_Auto_Trigger, previousTriggerModeImage,
+							TriggerModeX, TriggerModeY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				previousTriggerModeImage = gImage_SafeAir_Auto_Trigger;
+				break; /* optional */
 			}
-			else
-			{
-				Paint_DrawDeltaImage(gImage_SafeAir_Auto_Trigger, previousTriggerModeImage,
-						TriggerModeX, TriggerModeY, safeAirBarIconWidth, safeAirBarIconHeight);
-			}
-			previousTriggerModeImage = gImage_SafeAir_Auto_Trigger;
-			break; /* optional */
-		}
 
-		case MANUAL:
-		{
-			if (!drawDeltaImage)
+			case MANUAL:
 			{
-				Paint_DrawImage(gImage_SafeAir_Manual_Trigger, TriggerModeX, TriggerModeY,
-						safeAirBarIconWidth, safeAirBarIconHeight);
+				if (!drawDeltaImage)
+				{
+					Paint_DrawImage(gImage_SafeAir_Manual_Trigger, TriggerModeX, TriggerModeY,
+							safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				else
+				{
+					Paint_DrawDeltaImage(gImage_SafeAir_Manual_Trigger, previousTriggerModeImage,
+							TriggerModeX, TriggerModeY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				previousTriggerModeImage = gImage_SafeAir_Manual_Trigger;
+				break; /* optional */
 			}
-			else
-			{
-				Paint_DrawDeltaImage(gImage_SafeAir_Manual_Trigger, previousTriggerModeImage,
-						TriggerModeX, TriggerModeY, safeAirBarIconWidth, safeAirBarIconHeight);
-			}
-			previousTriggerModeImage = gImage_SafeAir_Manual_Trigger;
-			break; /* optional */
-		}
 
-		default: /* Optional */
-		{
-			if (!drawDeltaImage)
+			default: /* Optional */
 			{
-				Paint_DrawImage(gImage_SafeAir_Manual_Trigger, TriggerModeX, TriggerModeY,
-						safeAirBarIconWidth, safeAirBarIconHeight);
+				if (!drawDeltaImage)
+				{
+					Paint_DrawImage(gImage_SafeAir_Manual_Trigger, TriggerModeX, TriggerModeY,
+							safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				else
+				{
+					Paint_DrawDeltaImage(gImage_SafeAir_Manual_Trigger, previousTriggerModeImage,
+							TriggerModeX, TriggerModeY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				previousTriggerModeImage = gImage_SafeAir_Manual_Trigger;
 			}
-			else
-			{
-				Paint_DrawDeltaImage(gImage_SafeAir_Manual_Trigger, previousTriggerModeImage,
-						TriggerModeX, TriggerModeY, safeAirBarIconWidth, safeAirBarIconHeight);
-			}
-			previousTriggerModeImage = gImage_SafeAir_Manual_Trigger;
-		}
 		}
 	}
 }
@@ -787,141 +809,141 @@ void redrawSignalStrengthIcon(bool drawDeltaImage)
 
 void redrawAutoPilotIcon(bool drawDeltaImage)
 {
-	if (!isNoSignal)
+	if ( (!isNoSignal) && (everReceivedConfigurationMessage) )
 	{
 		switch (currentSmaStatus.autoPilotConnection)
 		{
-		case DISCONNECTED:
-		{
-			if (!drawDeltaImage)
+			case DISCONNECTED:
 			{
-				Paint_DrawImage(gImage_AutoPilot_Disconnected, AutoPilotX, AutoPilotY,
-						safeAirBarIconWidth, safeAirBarIconHeight);
+				if (!drawDeltaImage)
+				{
+					Paint_DrawImage(gImage_AutoPilot_Disconnected, AutoPilotX, AutoPilotY,
+							safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				else
+				{
+					Paint_DrawDeltaImage(gImage_AutoPilot_Disconnected, previousAutoPilotImage,
+							AutoPilotX, AutoPilotY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				previousAutoPilotImage = gImage_AutoPilot_Disconnected;
+				break; /* optional */
 			}
-			else
-			{
-				Paint_DrawDeltaImage(gImage_AutoPilot_Disconnected, previousAutoPilotImage,
-						AutoPilotX, AutoPilotY, safeAirBarIconWidth, safeAirBarIconHeight);
-			}
-			previousAutoPilotImage = gImage_AutoPilot_Disconnected;
-			break; /* optional */
-		}
 
-		case CONNECTED:
-		{
-			if (!drawDeltaImage)
+			case CONNECTED:
 			{
-				Paint_DrawImage(gImage_AutoPilot_Connected, AutoPilotX, AutoPilotY,
-						safeAirBarIconWidth, safeAirBarIconHeight);
+				if (!drawDeltaImage)
+				{
+					Paint_DrawImage(gImage_AutoPilot_Connected, AutoPilotX, AutoPilotY,
+							safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				else
+				{
+					Paint_DrawDeltaImage(gImage_AutoPilot_Connected, previousAutoPilotImage,
+							AutoPilotX, AutoPilotY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				previousAutoPilotImage = gImage_AutoPilot_Connected;
+				break; /* optional */
 			}
-			else
-			{
-				Paint_DrawDeltaImage(gImage_AutoPilot_Connected, previousAutoPilotImage,
-						AutoPilotX, AutoPilotY, safeAirBarIconWidth, safeAirBarIconHeight);
-			}
-			previousAutoPilotImage = gImage_AutoPilot_Connected;
-			break; /* optional */
-		}
 
-		default: /* Optional */
-		{
-			if (!drawDeltaImage)
+			default: /* Optional */
 			{
-				Paint_DrawImage(gImage_AutoPilot_Disconnected, AutoPilotX, AutoPilotY,
-						safeAirBarIconWidth, safeAirBarIconHeight);
+				if (!drawDeltaImage)
+				{
+					Paint_DrawImage(gImage_AutoPilot_Disconnected, AutoPilotX, AutoPilotY,
+							safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				else
+				{
+					Paint_DrawDeltaImage(gImage_AutoPilot_Disconnected, previousAutoPilotImage,
+							AutoPilotX, AutoPilotY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				previousAutoPilotImage = gImage_AutoPilot_Disconnected;
 			}
-			else
-			{
-				Paint_DrawDeltaImage(gImage_AutoPilot_Disconnected, previousAutoPilotImage,
-						AutoPilotX, AutoPilotY, safeAirBarIconWidth, safeAirBarIconHeight);
-			}
-			previousAutoPilotImage = gImage_AutoPilot_Disconnected;
-		}
 		}
 	}
 }
 
 void redrawPlatformIcon(bool drawDeltaImage)
 {
-	if (!isNoSignal)
+	if ( (!isNoSignal) && (everReceivedConfigurationMessage) )
 	{
 		switch (currentSmaStatus.smaPlatfom)
 		{
-		case MULTICOPTER:
-		{
-			if (!drawDeltaImage)
+			case MULTICOPTER:
 			{
+				if (!drawDeltaImage)
+				{
 
-				Paint_DrawImage(gImage_Multicopter, PlatfomTypeX, PlatfomTypeY, safeAirBarIconWidth, safeAirBarIconHeight);
+					Paint_DrawImage(gImage_Multicopter, PlatfomTypeX, PlatfomTypeY, safeAirBarIconWidth, safeAirBarIconHeight);
 
+				}
+				else
+				{
+					Paint_DrawDeltaImage(gImage_Multicopter, previousPlatformImage,
+							PlatfomTypeX, PlatfomTypeY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				previousPlatformImage = gImage_Multicopter;
+				break; /* optional */
 			}
-			else
-			{
-				Paint_DrawDeltaImage(gImage_Multicopter, previousPlatformImage,
-						PlatfomTypeX, PlatfomTypeY, safeAirBarIconWidth, safeAirBarIconHeight);
-			}
-			previousPlatformImage = gImage_Multicopter;
-			break; /* optional */
-		}
 
-		case VTOLHORIZONTAL:
-		{
-			if (!drawDeltaImage)
+			case VTOLHORIZONTAL:
 			{
-				Paint_DrawImage(gImage_VTOLHorizontal, PlatfomTypeX, PlatfomTypeY, safeAirBarIconWidth, safeAirBarIconHeight);
+				if (!drawDeltaImage)
+				{
+					Paint_DrawImage(gImage_VTOLHorizontal, PlatfomTypeX, PlatfomTypeY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				else
+				{
+					Paint_DrawDeltaImage(gImage_VTOLHorizontal, previousPlatformImage,
+							PlatfomTypeX, PlatfomTypeY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				previousPlatformImage = gImage_VTOLHorizontal;
+				break; /* optional */
 			}
-			else
-			{
-				Paint_DrawDeltaImage(gImage_VTOLHorizontal, previousPlatformImage,
-						PlatfomTypeX, PlatfomTypeY, safeAirBarIconWidth, safeAirBarIconHeight);
-			}
-			previousPlatformImage = gImage_VTOLHorizontal;
-			break; /* optional */
-		}
 
-		case VTOLTRANSITION:
-		{
-			if (!drawDeltaImage)
+			case VTOLTRANSITION:
 			{
-				Paint_DrawImage(gImage_VTOLTransition, PlatfomTypeX, PlatfomTypeY, safeAirBarIconWidth, safeAirBarIconHeight);
+				if (!drawDeltaImage)
+				{
+					Paint_DrawImage(gImage_VTOLTransition, PlatfomTypeX, PlatfomTypeY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				else
+				{
+					Paint_DrawDeltaImage(gImage_VTOLTransition, previousPlatformImage,
+							PlatfomTypeX, PlatfomTypeY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				previousPlatformImage = gImage_VTOLTransition;
+				break; /* optional */
 			}
-			else
-			{
-				Paint_DrawDeltaImage(gImage_VTOLTransition, previousPlatformImage,
-						PlatfomTypeX, PlatfomTypeY, safeAirBarIconWidth, safeAirBarIconHeight);
-			}
-			previousPlatformImage = gImage_VTOLTransition;
-			break; /* optional */
-		}
 
-		case VTOLVERTICAL:
-		{
-			if (!drawDeltaImage)
+			case VTOLVERTICAL:
 			{
-				Paint_DrawImage(gImage_VTOLVertical, PlatfomTypeX, PlatfomTypeY, safeAirBarIconWidth, safeAirBarIconHeight);
+				if (!drawDeltaImage)
+				{
+					Paint_DrawImage(gImage_VTOLVertical, PlatfomTypeX, PlatfomTypeY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				else
+				{
+					Paint_DrawDeltaImage(gImage_VTOLVertical, previousPlatformImage,
+							PlatfomTypeX, PlatfomTypeY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				previousPlatformImage = gImage_VTOLVertical;
+				break; /* optional */
 			}
-			else
-			{
-				Paint_DrawDeltaImage(gImage_VTOLVertical, previousPlatformImage,
-						PlatfomTypeX, PlatfomTypeY, safeAirBarIconWidth, safeAirBarIconHeight);
-			}
-			previousPlatformImage = gImage_VTOLVertical;
-			break; /* optional */
-		}
 
-		default: /* Optional */
-		{
-			if (!drawDeltaImage)
+			default: /* Optional */
 			{
-				Paint_DrawImage(gImage_Multicopter, PlatfomTypeX, PlatfomTypeY, safeAirBarIconWidth, safeAirBarIconHeight);
+				if (!drawDeltaImage)
+				{
+					Paint_DrawImage(gImage_Multicopter, PlatfomTypeX, PlatfomTypeY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				else
+				{
+					Paint_DrawDeltaImage(gImage_Multicopter, previousPlatformImage,
+							PlatfomTypeX, PlatfomTypeY, safeAirBarIconWidth, safeAirBarIconHeight);
+				}
+				previousPlatformImage = gImage_Multicopter;
 			}
-			else
-			{
-				Paint_DrawDeltaImage(gImage_Multicopter, previousPlatformImage,
-						PlatfomTypeX, PlatfomTypeY, safeAirBarIconWidth, safeAirBarIconHeight);
-			}
-			previousPlatformImage = gImage_Multicopter;
-		}
 		}
 	}
 }
@@ -1028,15 +1050,15 @@ void screenUpdate(bool drawDeltaImage)
 				}
 				else if (lowerBarDisplayID == 1)
 				{
-//					int localMinutes = durationMultiplier * 30 + remainingCalibrationTime / (60 * 1000);
-//					int localSeconds = 0;
+					//					int localMinutes = durationMultiplier * 30 + remainingCalibrationTime / (60 * 1000);
+					//					int localSeconds = 0;
 					int localHours = remainingCalibrationTime / (3600);
 					int localMinutes = (remainingCalibrationTime - localHours * 3600) / 60;
-//					int localSeconds = remainingCalibrationTime - localMinutes * 60;
-//					if (durationMultiplier == 0)
-//					{
-//						localSeconds = remainingCalibrationTime - (remainingCalibrationTime / (60 * 1000)) * 60 * 1000;
-//					}
+					//					int localSeconds = remainingCalibrationTime - localMinutes * 60;
+					//					if (durationMultiplier == 0)
+					//					{
+					//						localSeconds = remainingCalibrationTime - (remainingCalibrationTime / (60 * 1000)) * 60 * 1000;
+					//					}
 					sprintf(localText, "%02d:%02d", localHours, localMinutes);
 				}
 				else
@@ -1333,7 +1355,7 @@ void setFullDisplay(void)
 	shouldRenderItem = false;
 	shouldRenderMenu = false;
 
-//	shouldDrawRedAlertIcon = false;
+	//	shouldDrawRedAlertIcon = false;
 }
 
 void setIconPositionOnScreen(void)
@@ -1402,8 +1424,8 @@ void setIconPositionOnScreen(void)
 		SystemTextY = HorizontalSystemTextY;
 		SafeAirBatteryX = HorizontalSafeAirBatteryTextX;
 		SafeAirBatteryY = HorizontalSafeAirBatteryTextY;
-//		FullLogoX = HorizontalFullLogoX;
-//		FullLogoY = HorizontalFullLogoY;
+		//		FullLogoX = HorizontalFullLogoX;
+		//		FullLogoY = HorizontalFullLogoY;
 	}
 }
 

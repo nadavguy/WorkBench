@@ -425,7 +425,7 @@ void initMenuItems(void)
 	safeairStateItem.parameterPointer = (uint32_t)&safeairConfiguration.state;
 
 	legacySystemItem.itemID = 8;
-	legacySystemItem.maxValue = 2;
+	legacySystemItem.maxValue = 3;
 	legacySystemItem.minValue = 0;
 	legacySystemItem.startValue = 2;
 	legacySystemItem.deltaMultiplier = 1;
@@ -439,7 +439,8 @@ void initMenuItems(void)
 	legacySystemItem.numberOfValuesInArray = 3;
 	memcpy(&legacySystemItem.valuesArray[0],"Phantom",strlen("Phantom"));
 	memcpy(&legacySystemItem.valuesArray[1],"Mavic  ",strlen("Mavic  "));
-	memcpy(&legacySystemItem.valuesArray[2],"Auto   ",strlen("Auto   "));
+	memcpy(&legacySystemItem.valuesArray[2],"SafeAir",strlen("SafeAir"));
+	memcpy(&legacySystemItem.valuesArray[3],"Auto   ",strlen("Auto   "));
 	legacySystemItem.parameterPointer = (uint32_t)&currentSmaStatus.smaPlatformName;
 
 	LowerBarDisplayItem.itemID = 9 ;
@@ -861,7 +862,7 @@ void updateSelectedParameter(void)
 	else if (itemIDtoUpdate == 8)
 	{
 //		currentSmaStatus.smaPlatformName = stringItem.startValue + 4;
-		if (stringItem.startValue + 4 != 6)
+		if (stringItem.startValue + 4 != 7)
 		{
 			ee.legacySystemType = stringItem.startValue + 4;
 			currentSmaStatus.smaPlatformName = stringItem.startValue + 4;

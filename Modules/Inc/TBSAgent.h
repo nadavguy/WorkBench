@@ -28,7 +28,7 @@
 #define TBS_RX_BUFFER				128
 
 
-typedef enum {NOPLATFORM, M200, M300, M600, PHANTOM, MAVIC, TAILID} PLATFORMName;
+typedef enum {NOPLATFORM, M200, M300, M600, PHANTOM, MAVIC, SAFEAIR, TAILID} PLATFORMName;
 
 typedef enum {MULTICOPTER, VTOLHORIZONTAL, VTOLTRANSITION, VTOLVERTICAL} PLATFORMType;
 
@@ -107,6 +107,7 @@ extern bool isTBSDisconnected;
 extern bool isTailIDAlreadyReceived;
 extern bool shouldAddTimeToConfigurationMessage;
 extern bool isLegacyDronePlatform;
+extern bool everReceivedConfigurationMessage;
 
 extern char safeAirTailID[12];
 

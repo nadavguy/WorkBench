@@ -47,6 +47,7 @@ bool isLegacyDronePlatform = false;
 bool isSMABatteryCritical = false;
 bool isSMABatteryLow = false;
 bool isSMABatteryMedium = false;
+bool everReceivedConfigurationMessage = false;
 
 char safeAirTailID[12] = "";
 
@@ -218,6 +219,10 @@ bool parseTBSMessage(void)
 		if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x1B) && (localRxArray[i + 2] == 0xDD) && (TBS_RX_BUFFER - i >= 0x1B)
 				&& (crc == localRxArray[i + 0x1B + 1]) && (!waitForAckResponse) )
 		{
+			if (!everReceivedConfigurationMessage)
+			{
+				everReceivedConfigurationMessage = true;
+			}
 			previousSmaStatus = currentSmaStatus;
 			previousBITStatus = displayWarning.BITStatus;
 
