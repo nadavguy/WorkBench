@@ -82,6 +82,14 @@ typedef struct sWarning
 	uint16_t BITStatus; // 1 - SMA Crit Bat, 2 - SMA Low Bat, 4 - SMA Flash Error, 8 - SMA Out Of Bounds, 16 - Pyro Error, 32 - RC Low Bat
 }tWarning;
 
+typedef struct sFastData
+{
+	uint8_t type;
+	float xVal;
+	float yVal;
+	float zVal;
+}tFastData;
+
 extern uint8_t tbsRXArray[TBS_RX_BUFFER];
 extern int16_t channelPWMValues[16];
 

@@ -40,6 +40,10 @@ void initBLE(void)
 			HAL_UART_Transmit(&BLE_UART, (uint8_t *)lt, 15, 100);  //SN,MyDevice
 			checkBLEMessages();
 //		}
+			sprintf(lt,"SS, C0\r");
+			HAL_UART_Transmit(&BLE_UART, (uint8_t *)lt, 2, 100);
+			HAL_Delay(20);
+			checkBLEMessages();
 		sprintf(lt,"A\r");
 		HAL_UART_Transmit(&BLE_UART, (uint8_t *)lt, 2, 100);
 		sprintf(lt,"---\r");
@@ -55,6 +59,7 @@ void checkBLEMessages(void)
 //		HAL_Delay(2);
 		uint8_t localRxArray[BLE_RX_BUFFER] = {0};
 		memcpy(localRxArray,bleRXArray,BLE_RX_BUFFER);
+		memset(bleRXArray,0,BLE_RX_BUFFER);
 		for (int i = 0; i < BLE_RX_BUFFER; i++)
 		{
 			if (localRxArray[0] == 0)

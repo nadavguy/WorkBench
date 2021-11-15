@@ -596,6 +596,29 @@ bool parseTBSMessage(void)
 
 		}
 
+		if ( TBS_RX_BUFFER - (i + 2) > 0x09 - 1 )
+		{
+			crc = crc8(&localRxArray[i + 2], 0x09 - 1);
+		}
+		if ( /*(localRxArray[i] == 0xEA) &&*/ (localRxArray[i + 1] == 0x09) && (localRxArray[i + 2] == 0xFD) && (TBS_RX_BUFFER - i >= 0x09)
+				/*&& (crc == localRxArray[i + 0x09 + 1])*/ )
+		{
+			tFastData localFD = {0};
+			if (localRxArray[3] == 1)
+			{
+					localFD.xVal = localRxArray[4] * 256 + localRxArray[5];
+					localFD.yVal = localRxArray[6] * 256 + localRxArray[7];
+					localFD.zVal = localRxArray[8] * 256 + localRxArray[9];
+			}
+			i = i + 0x09 - 1;
+			lastReceivedCRSFMessage = HAL_GetTick();
+		}
+		else if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x09) && (localRxArray[i + 2] == 0xFD) && (TBS_RX_BUFFER - i >= 0x09)
+				&& (crc != localRxArray[i + 0x09 + 1]) )
+		{
+
+		}
+
 		i++;
 	}
 	memset(tbsRXArray, 0, TBS_RX_BUFFER);

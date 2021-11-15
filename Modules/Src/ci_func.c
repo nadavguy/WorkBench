@@ -539,8 +539,15 @@ eCI_RESULT func_dir(void)
 
     while( (fno1.fname[0] != 0) )
     {
-    	sprintf(terminalBuffer,"%s\t %lu",fno1.fname, (long int)fno1.fsize);
-    	logData(terminalBuffer, false, true, true);
+    	if ( (fno1.fsize == 0xffffffff) || ((fno1.fsize == 0x0)) )
+    	{
+    		f_unlink(fno1.fname);
+    	}
+    	else
+    	{
+    		sprintf(terminalBuffer,"%s\t %lu",fno1.fname, (long int)fno1.fsize);
+    		logData(terminalBuffer, false, true, true);
+    	}
     	f_findnext(&dp1, &fno1);
     }
     f_closedir(&dp1);
