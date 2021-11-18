@@ -863,7 +863,7 @@ void Paint_DrawMovingObject(const unsigned char *image,const unsigned char *imag
 				UWORD templateColor = (*(imageTemplate + j*W_Image*2 + i*2+1))<<8 | (*(imageTemplate + j*W_Image*2 + i*2));
 				UWORD imColor = (*(image + j*W_Image*2 + i*2+1))<<8 | (*(image + j*W_Image*2 + i*2));
 				UWORD finalColor = 0;
-				if (templateColor >= 0x7fff)
+				if (templateColor >= 0x88ff)
 				{
 					finalColor = bgColor;
 				}
