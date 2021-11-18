@@ -265,6 +265,7 @@ extern void setFullDisplay(void);
 extern void setIconPositionOnScreen(void);
 extern void drawChargingDots(void);
 extern void updateBITStatus(void);
+extern void drawScreenSaver(void);
 
 
 #endif /* SRC_SCREENAGENT_H_ */

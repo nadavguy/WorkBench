@@ -848,3 +848,34 @@ void Paint_DrawDeltaImage(const unsigned char *image,const unsigned char *previo
 		}
 	}
 }
+
+void Paint_DrawMovingObject(const unsigned char *image,const unsigned char *imageTemplate, UWORD xStart, UWORD yStart, UWORD W_Image, UWORD H_Image)
+{
+	int i,j;
+	for(j = 0; j < H_Image; j++)
+	{
+		for(i = 0; i < W_Image; i++)
+		{
+			if(xStart+i < Paint.WidthMemory  &&  yStart+j < Paint.HeightMemory)//Exceeded part does not display
+			{
+				UWORD bgColor = nextFrameToDraw[(SCREEN_WIDTH * (yStart+j) + xStart+i) * 2] * 256 +
+						nextFrameToDraw[(SCREEN_WIDTH * (yStart+j) + xStart+i) * 2 + 1];
+				UWORD templateColor = (*(imageTemplate + j*W_Image*2 + i*2+1))<<8 | (*(imageTemplate + j*W_Image*2 + i*2));
+				UWORD imColor = (*(image + j*W_Image*2 + i*2+1))<<8 | (*(image + j*W_Image*2 + i*2));
+				UWORD finalColor = 0;
+				if (templateColor >= 0x7fff)
+				{
+					finalColor = bgColor;
+				}
+				else
+				{
+					finalColor = imColor;
+				}
+				Paint_SetPixel(xStart + i, yStart + j, finalColor);
+			}
+			//Using arrays is a property of sequential storage, accessing the original array by algorithm
+			//j*W_Image*2 			   Y offset
+			//i*2              	   X offset
+		}
+	}
+}

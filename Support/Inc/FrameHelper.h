@@ -13,6 +13,7 @@
 #define BACKGROUND 0xE73C
 
 #define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 160
 #define STATUSBAR_HEIGHT 25
 
 extern uint8_t numberOfDisplayedSafeAirIcons;

@@ -21,6 +21,7 @@
 #include "LCD_1in8.h"
 #include "DEV_Config.h"
 #include "usb_device.h"
+#include "ScreenSaverImages.h"
 
 const unsigned char *previousBluetoothImage;
 const unsigned char *previousPlatformImage;
@@ -91,6 +92,10 @@ uint8_t FullLogoY = 0;
 uint8_t FullLogoWidth = 0;
 uint8_t FullLogoHeight = 0;
 uint8_t lowerBarDisplayID = 0;
+int8_t velX = 3;
+int8_t velY = 3;
+uint8_t posX = 0;
+uint8_t posY = 0;
 
 uint32_t lastBatteryRefresh = 0;
 uint32_t lastBITStatusChange = 0;
@@ -1493,5 +1498,29 @@ void drawChargingDots(void)
 		{
 			dotCycle = 0;
 		}
+	}
+}
+
+void drawScreenSaver(void)
+{
+	Paint_DrawMovingObject(gImage_LoGoScreenSaver, gImage_LoGoScreenSaverTemplate,
+			posX, posY, 26, 30);
+	if ( (posX + velX>= 0) && (posX + velX + 26 <= SCREEN_WIDTH) )
+	{
+		posX += velX;
+	}
+	else
+	{
+		velX = -velX;
+		posX += velX;
+	}
+	if  ( (posY + velY>= 0) && (posY + velY + 30 <= SCREEN_HEIGHT) )
+	{
+		posY += velY;
+	}
+	else
+	{
+		velY = -velY;
+		posY += velY;
 	}
 }

@@ -37,6 +37,7 @@ uint32_t lastConfigurationMessageSent = 0;
 uint32_t safeAirLogID = 0;
 uint32_t safeAirTime = 0;
 uint32_t lastReceivedCRSFMessage = 0;
+uint32_t lastReceivedFastMessage = 0;
 uint32_t durationMultiplier = 0;
 uint32_t remainingCalibrationTime = 0;
 
@@ -54,6 +55,8 @@ char safeAirTailID[12] = "";
 tRC_LINK rcLinkStatus;
 tSMA_Status previousSmaStatus;
 tSMA_Status currentSmaStatus;
+
+tFastData localFD = {0};
 
 // CRC8 implementation with polynom = x^8+x^7+x^6+x^4+x^2+1 (0xD5)
 const unsigned char crc8tab[256] = {
@@ -600,18 +603,21 @@ bool parseTBSMessage(void)
 		{
 			crc = crc8(&localRxArray[i + 2], 0x09 - 1);
 		}
-		if ( /*(localRxArray[i] == 0xEA) &&*/ (localRxArray[i + 1] == 0x09) && (localRxArray[i + 2] == 0xFD) && (TBS_RX_BUFFER - i >= 0x09)
-				/*&& (crc == localRxArray[i + 0x09 + 1])*/ )
+		if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x09) && (localRxArray[i + 2] == 0xFD) && (TBS_RX_BUFFER - i >= 0x09)
+				&& (crc == localRxArray[i + 0x09 + 1]) )
 		{
-			tFastData localFD = {0};
-			if (localRxArray[3] == 1)
+
+			if (localRxArray[i + 3] == 1)
 			{
-					localFD.xVal = localRxArray[4] * 256 + localRxArray[5];
-					localFD.yVal = localRxArray[6] * 256 + localRxArray[7];
-					localFD.zVal = localRxArray[8] * 256 + localRxArray[9];
+					localFD.xVal = localRxArray[i + 4] * 256 + localRxArray[i + 5];
+					localFD.yVal = localRxArray[i + 6] * 256 + localRxArray[i + 7];
+					localFD.zVal = localRxArray[i + 8] * 256 + localRxArray[i + 9];
 			}
 			i = i + 0x09 - 1;
 			lastReceivedCRSFMessage = HAL_GetTick();
+			lastReceivedFastMessage = HAL_GetTick();
+			sprintf(terminalBuffer,"Current SafeAir time: %ld", lastReceivedFastMessage);
+			logData(terminalBuffer, false, true, false);
 		}
 		else if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x09) && (localRxArray[i + 2] == 0xFD) && (TBS_RX_BUFFER - i >= 0x09)
 				&& (crc != localRxArray[i + 0x09 + 1]) )

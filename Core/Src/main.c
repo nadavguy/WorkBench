@@ -57,6 +57,7 @@
 #include "LCD_1in8.h"
 #include "BootLoader.h"
 #include "crc.h"
+#include "ScreenSaverImages.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -81,7 +82,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.020;
-float buildID = 1.020;
+float buildID = 1.030;
 
 SYSTEMState rcState = PREINIT;
 
@@ -111,6 +112,7 @@ bool testMotorCut = false;
 bool isDisableButtonDetection = false;
 bool isFirstCycleAfterUSBDisconnection = false;
 
+
 uint16_t fullFrameDelay = 5000;
 
 uint32_t UID1 = 0;
@@ -119,6 +121,7 @@ uint32_t UID3 = 0;
 uint32_t A[9] = {0};
 uint32_t lastScreenUpdate = 0;
 uint32_t lastLogEntry = 0;
+
 
 SYSTEMConnectionStatus bluetoothConnection = DISCONNECTED;
 
@@ -161,7 +164,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 #ifdef __USE_BOOT_LOADER__
-	SCB->VTOR = 0x8020000; /* NVIC Vector Table Relocation in Internal FLASH */
+ 	SCB->VTOR = 0x8020000; /* NVIC Vector Table Relocation in Internal FLASH */
 #endif
   /* USER CODE END 1 */
 
@@ -216,7 +219,7 @@ int main(void)
   {
     localFlashParams.startAddress = 0x08000000;
     localFlashParams.voltageLevel = FLASH_VOLTAGE_RANGE_3;
-    reallocateDataFromArray(Array, 0x08000000, bootloaderLength);
+//    reallocateDataFromArray(Array, 0x08000000, bootloaderLength);
   }
 
   BSP_QSPI_Init();
@@ -372,6 +375,11 @@ int main(void)
 				else
 				{
 					centeredString(ChargingModePercentTextX, ChargingModeImageY - 24, "Charged", BLACK, BACKGROUND, 14, Font16);
+				}
+
+				if ((HAL_GetTick() - lastAnyButtonPress > 30*1000))
+				{
+					drawScreenSaver();
 				}
 			}
 			updateNextFrame();
