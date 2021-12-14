@@ -82,7 +82,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.020;
-float buildID = 1.040;
+float buildID = 1.050;
 
 SYSTEMState rcState = PREINIT;
 
@@ -121,6 +121,7 @@ uint32_t UID3 = 0;
 uint32_t A[9] = {0};
 uint32_t lastScreenUpdate = 0;
 uint32_t lastLogEntry = 0;
+uint32_t lastOpModeCycle = 0;
 
 
 SYSTEMConnectionStatus bluetoothConnection = DISCONNECTED;
@@ -219,7 +220,7 @@ int main(void)
   {
     localFlashParams.startAddress = 0x08000000;
     localFlashParams.voltageLevel = FLASH_VOLTAGE_RANGE_3;
-    reallocateDataFromArray(Array, 0x08000000, bootloaderLength);
+//    reallocateDataFromArray(Array, 0x08000000, bootloaderLength);
   }
 
   BSP_QSPI_Init();
@@ -272,7 +273,7 @@ int main(void)
 	CheckButtons();
 	createEmptyFrame(false, false);
 
-//	//  createPingMessage();
+//	createPingMessage();
 //	nextPattern = &noBuzzerPattern;
 //	setBuzzerPattern(*nextPattern);
 
@@ -314,6 +315,7 @@ int main(void)
 			monitorLogSize();
 			readUSBData();
 			checkBLEMessages();
+			lastOpModeCycle = HAL_GetTick();
 		}
 		if (!renderCompleteFrame)
 		{
@@ -377,7 +379,7 @@ int main(void)
 					centeredString(ChargingModePercentTextX, ChargingModeImageY - 24, "Charged", BLACK, BACKGROUND, 14, Font16);
 				}
 
-				if ((HAL_GetTick() - lastAnyButtonPress > 30*1000))
+				if ((HAL_GetTick() - lastAnyButtonPress > 30*1000) && ( HAL_GetTick() - lastOpModeCycle > 30*1000) )
 				{
 					drawScreenSaver();
 				}

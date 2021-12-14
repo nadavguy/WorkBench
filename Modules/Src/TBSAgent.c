@@ -639,12 +639,12 @@ void createPingMessage(void)
 	{
 	tbsPingMessage[0] = 0xC8;
 	tbsPingMessage[1] = 0x06;
-	tbsPingMessage[2] = 0x28;
+	tbsPingMessage[2] = PING_DEVICES_ID;
 	tbsPingMessage[3] = 0x00;
 	tbsPingMessage[4] = 0xC8;
 	tbsPingMessage[5] = 0x00;
 	tbsPingMessage[6] = 0xC8;
-	tbsPingMessage[7] = Counter;
+	tbsPingMessage[7] = crc8(&tbsPingMessage[2], tbsPingMessage[1]-1);;
 
 
 
