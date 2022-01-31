@@ -230,4 +230,3 @@ DRESULT USER_ioctl (
 }
 #endif /* _USE_IOCTL == 1 */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

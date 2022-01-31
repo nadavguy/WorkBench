@@ -9,6 +9,7 @@
 #include "usart.h"
 #include "TBSAgent.h"
 #include "Common.h"
+#include "fatfs.h"
 
 #define CROSSFIRE_CH_CENTER         0x3E0
 #define CROSSFIRE_CH_BITS           11
@@ -18,13 +19,18 @@ uint8_t tbsRXArray[TBS_RX_BUFFER] = {0};
 uint8_t rcChannelsFrame[26] = {0};
 uint8_t tbsPingMessage[8] = {0};
 uint8_t safeairConfigurationFrame[29] = {0};
+uint8_t genralAckMessage[8] = {0};
+uint8_t logCommandMessage[TBS_RX_BUFFER] = {0};
+uint8_t logNameStartIndex = 0;
 
 uint8_t IdleMessageArray[26] = {0xC8, 0x18, 0x16, 0xAC, 0x60, 0x05, 0x2B, 0x58, 0xC1, 0x0A, 0x56, 0xB0, 0x82, 0x15, 0xAC, 0x60, 0x05, 0x2B, 0x58, 0xC1, 0x0A, 0x56, 0xB0, 0x82, 0x15, 0x5B};
 uint8_t TriggerMessageArray[26] = {0xC8, 0x18, 0x16, 0xA4, 0x26, 0x35, 0xA9, 0x49, 0x4D, 0x6A, 0x52, 0x93, 0x9A, 0xD4, 0xA4, 0x26, 0x35, 0xA9, 0x49, 0x4D, 0x6A, 0x52, 0x93, 0x9A, 0xD4, 0x64};
 uint8_t messagesMissed = 0;
+uint8_t commandReceivedForLog = 0;
 
 int16_t channelPWMValues[16] = {((1000 - 1500) * 8 / 5 + 992)};
 uint16_t previousBITStatus = 0;
+uint16_t lastPacketIDReceivedFromRC = 0;
 
 uint32_t lastCRSFChannelMessage = 0;
 uint32_t lastLoggedLinkMessage = 0;
@@ -40,6 +46,7 @@ uint32_t lastReceivedCRSFMessage = 0;
 uint32_t lastReceivedFastMessage = 0;
 uint32_t durationMultiplier = 0;
 uint32_t remainingCalibrationTime = 0;
+uint32_t lastAckSent = 0;
 
 bool isTBSDisconnected = false;
 bool isTailIDAlreadyReceived = false;
@@ -49,6 +56,8 @@ bool isSMABatteryCritical = false;
 bool isSMABatteryLow = false;
 bool isSMABatteryMedium = false;
 bool everReceivedConfigurationMessage = false;
+bool sapLogInSession = false;
+bool committedLastLogCommand = true;
 
 char safeAirTailID[12] = "";
 
@@ -57,6 +66,9 @@ tSMA_Status previousSmaStatus;
 tSMA_Status currentSmaStatus;
 
 tFastData localFD = {0};
+
+FRESULT logFRRes = FR_OK;
+FIL sapLogFile;
 
 // CRC8 implementation with polynom = x^8+x^7+x^6+x^4+x^2+1 (0xD5)
 const unsigned char crc8tab[256] = {
@@ -175,13 +187,13 @@ bool parseTBSMessage(void)
 
 //	char test[1024] = "";
 //	logData((char *)"TBS RX: ", true, true, false);
-//	for (int i = 0 ; i < 128 ; i ++)
+//	for (int i = 0 ; i < 128 ; i++)
 //	{
-//		sprintf(&test[i*3], "-%02x",tbsRXArray[i]);
-//		if (tbsRXArray[i] == 0x29)
-//		{
-//			int y = 1;
-//		}
+//		sprintf(&test[i*5], "-0x%02X",tbsRXArray[i]);
+////		if (tbsRXArray[i] == 0x3E)
+////		{
+////			int y = 1;
+////		}
 //	}
 //	logData(test, true, true, false);
 //	memset(test, 0, 1024);
@@ -619,8 +631,64 @@ bool parseTBSMessage(void)
 			sprintf(terminalBuffer,"Current SafeAir time: %ld", lastReceivedFastMessage);
 			logData(terminalBuffer, false, true, false);
 		}
-		else if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x09) && (localRxArray[i + 2] == 0xFD) && (TBS_RX_BUFFER - i >= 0x09)
+		else if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x09) && (localRxArray[i + 2] == 0xBF) && (TBS_RX_BUFFER - i >= 0x09)
 				&& (crc != localRxArray[i + 0x09 + 1]) )
+		{
+
+		}
+
+		if ( TBS_RX_BUFFER - (i + 2) > 0x3E - 1 )
+		{
+			crc = crc8(&localRxArray[i + 2], 0x3E - 1);
+		}
+		if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x3E) && (localRxArray[i + 2] == 0xBF) && (TBS_RX_BUFFER - i >= 0x3E)
+				&& (crc == localRxArray[i + 0x3E + 1]) )
+		{
+			if (localRxArray[i + 3] * 256 + localRxArray[i + 4] == 0)
+			{
+				lastPacketIDReceivedFromRC = localRxArray[i + 3] * 256 + localRxArray[i + 4];
+				commandReceivedForLog = localRxArray[i + 5];
+				logNameStartIndex = 6;
+				if (committedLastLogCommand)
+				{
+					memmove(logCommandMessage, &localRxArray[i], 64);
+					committedLastLogCommand = false;
+				}
+			}
+			else if (lastPacketIDReceivedFromRC == localRxArray[i + 3] * 256 + localRxArray[i + 4])
+			{
+				lastPacketIDReceivedFromRC = localRxArray[i + 3] * 256 + localRxArray[i + 4];
+				commandReceivedForLog = localRxArray[i + 5];
+				logNameStartIndex = 0;
+				FRESULT localRes = f_lseek(&sapLogFile, (lastPacketIDReceivedFromRC - 1) * 57);
+				if (committedLastLogCommand)
+				{
+					memmove(logCommandMessage, &localRxArray[i], 64);
+					committedLastLogCommand = false;
+				}
+			}
+			else if (lastPacketIDReceivedFromRC + 1 == localRxArray[i + 3] * 256 + localRxArray[i + 4])
+			{
+				lastPacketIDReceivedFromRC = localRxArray[i + 3] * 256 + localRxArray[i + 4];
+				commandReceivedForLog = localRxArray[i + 5];
+				logNameStartIndex = 0;
+				if (committedLastLogCommand)
+				{
+					memmove(logCommandMessage, &localRxArray[i], 64);
+					committedLastLogCommand = false;
+				}
+			}
+			else
+			{
+				committedLastLogCommand = true;
+			}
+			i = i + 0x3E - 1;
+
+//			sprintf(terminalBuffer,"Current SafeAir time: %ld", lastReceivedFastMessage);
+//			logData(terminalBuffer, false, true, false);
+		}
+		else if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x3E) && (localRxArray[i + 2] == 0xBF) && (TBS_RX_BUFFER - i >= 0x3E)
+				&& (crc != localRxArray[i + 0x3E + 1]) )
 		{
 
 		}
@@ -743,4 +811,85 @@ void sendSafeAirConfigurationMessage(bool includeTimeInMessage)
 		HAL_UART_Transmit_IT(&TBS_UART, safeairConfigurationFrame, 29);
 		lastConfigurationMessageSent = HAL_GetTick();
 	}
+}
+
+void replyToSAPLogMessage(void)
+{
+	unsigned int localBytesWritten = 0;
+	if (!committedLastLogCommand)
+	{
+		if (commandReceivedForLog == 1)
+		{
+			if (sapLogInSession)
+			{
+				logFRRes = f_sync(&sapLogFile);
+				logFRRes = f_close(&sapLogFile);
+			}
+			uint8_t localNewFileName[64] = {0};
+			memmove(localNewFileName, &logCommandMessage[logNameStartIndex], 57);
+			logFRRes = f_open(&sapLogFile, (char *)localNewFileName, FA_OPEN_APPEND | FA_WRITE);
+			sapLogInSession = true;
+			committedLastLogCommand = true;
+			memset(logCommandMessage, 0 , 64);
+			sprintf(terminalBuffer,"Received command to Open Log file.");
+			logData(terminalBuffer, false, true, false);
+		}
+		else if (commandReceivedForLog == 2)
+		{
+			logFRRes = f_write(&sapLogFile, &logCommandMessage[6], 57, &localBytesWritten);
+			committedLastLogCommand = true;
+			memset(logCommandMessage, 0 , 64);
+			sprintf(terminalBuffer,"Received command with data.");
+			logData(terminalBuffer, false, true, false);
+		}
+		else if (commandReceivedForLog == 3)
+		{
+			logFRRes = f_sync(&sapLogFile);
+			logFRRes = f_close(&sapLogFile);
+			sapLogInSession = false;
+			committedLastLogCommand = true;
+			memset(logCommandMessage, 0 , 64);
+			lastPacketIDReceivedFromRC = 0;
+			sprintf(terminalBuffer,"Received command to close file.");
+			logData(terminalBuffer, false, true, false);
+		}
+
+		if (committedLastLogCommand)
+		{
+			//TODO: send ack message
+			rcGeneralACKMessage(lastPacketIDReceivedFromRC, 0xBF, commandReceivedForLog, 1);
+		}
+		else
+		{
+			rcGeneralACKMessage(lastPacketIDReceivedFromRC, 0xBF, commandReceivedForLog, 2);
+		}
+		lastAckSent = HAL_GetTick();
+	}
+	else
+	{
+		if (HAL_GetTick() - lastAckSent > 10 * 1000)
+		{
+			//TODO: send timeout message
+			rcGeneralACKMessage(lastPacketIDReceivedFromRC, 0xBF, commandReceivedForLog, 3);
+			lastAckSent = HAL_GetTick() - 0 * 1000;
+		}
+	}
+}
+
+void rcGeneralACKMessage(uint16_t packetID, uint8_t opCode, uint8_t commandType, uint8_t ackType)
+{
+	genralAckMessage[0] = MODULE_ADDRESS;
+	genralAckMessage[1] = 0x07;
+	genralAckMessage[2] = 0xFB;
+	genralAckMessage[3] = (uint8_t)((packetID & 0xFF00) >> 8);
+	genralAckMessage[4] = (uint8_t)(packetID & 0x00FF);
+	genralAckMessage[5] = opCode;
+	genralAckMessage[6] = commandType;
+	genralAckMessage[7] = ackType;
+	genralAckMessage[8] = crc8(&genralAckMessage[2], genralAckMessage[1]-1); //crc
+
+	HAL_UART_Transmit_IT(&TBS_UART, genralAckMessage, 9);
+	sprintf(terminalBuffer,"Sent ACK replay to PacketID: %d, and ACK type: %d", packetID, ackType);
+	logData(terminalBuffer, false, true, false);
+
 }

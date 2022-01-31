@@ -42,6 +42,8 @@ typedef enum {STRONG, MEDIUM, LOW, NOSIGNAL, CHARGING , EMPTY} SIGNALStrength;
 
 typedef enum {CRITICALANGLE, FREEFALL, MANUALTRIGGER, GEOFENCING, AUTOPILOTTRIGGER, NOTTRIGGERED} TRIGGERReason;
 
+//typedef enum {ACKNULL, ACK, NACK, TIMEOUT, WAITING} ACKType;
+
 typedef struct sRC_LINK
 {
 	uint8_t UplinkRSSIAnt1; //Uplink is ground to UAV
@@ -98,6 +100,8 @@ extern uint8_t IdleMessageArray[26];
 extern uint8_t TriggerMessageArray[26];
 extern uint8_t tbsPingMessage[8];
 
+extern uint16_t lastPacketIDReceivedFromRC;
+
 extern uint16_t previousBITStatus;
 extern uint32_t lastCRSFChannelMessage;
 extern uint32_t lastLoggedLinkMessage;
@@ -130,6 +134,8 @@ uint8_t createCrossfireChannelsFrame(uint8_t * frame, int16_t * pulses);
 bool parseTBSMessage(void);
 extern void createPingMessage(void);
 extern void sendSafeAirConfigurationMessage(bool includeTimeInMessage);
+extern void replyToSAPLogMessage(void);
+void rcGeneralACKMessage(uint16_t packetID, uint8_t opCode, uint8_t commandType, uint8_t ackType);
 
 
 #endif /* INC_TBSAGENT_H_ */

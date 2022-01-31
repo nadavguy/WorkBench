@@ -301,8 +301,8 @@ uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len)
 	  else
 	  {
 		  remainBuffer = Len - localCounter;
-		  HAL_Delay(1);
 	  }
+	  HAL_Delay(1);
 	  memset(localArray,0,64);
 	  memcpy(localArray, &Buf[localCounter], remainBuffer);
 	  USBD_CDC_SetTxBuffer(&hUsbDeviceFS, localArray, remainBuffer);
@@ -348,4 +348,3 @@ static int8_t CDC_TransmitCplt_FS(uint8_t *Buf, uint32_t *Len, uint8_t epnum)
   * @}
   */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

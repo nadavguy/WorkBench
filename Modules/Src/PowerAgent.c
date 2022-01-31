@@ -141,7 +141,7 @@ void measureVoltages(bool forceMeasurement)
 		uint32_t localTime = HAL_GetTick();
 		while (HAL_GetTick() - localTime < 3)
 		{
-			int a= 1;
+//			int a= 1;
 		}
 		HAL_ADC_Start_IT(&hadc3);
 		memcpy(previousVoltages, currentVoltages, sizeof(currentVoltages));
