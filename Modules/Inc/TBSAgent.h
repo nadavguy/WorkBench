@@ -44,6 +44,8 @@ typedef enum {CRITICALANGLE, FREEFALL, MANUALTRIGGER, GEOFENCING, AUTOPILOTTRIGG
 
 //typedef enum {ACKNULL, ACK, NACK, TIMEOUT, WAITING} ACKType;
 
+typedef enum {TBSIDLE, TBSTX, TBSRX} TBSRXTXType;
+
 typedef struct sRC_LINK
 {
 	uint8_t UplinkRSSIAnt1; //Uplink is ground to UAV
@@ -120,12 +122,15 @@ extern bool isTailIDAlreadyReceived;
 extern bool shouldAddTimeToConfigurationMessage;
 extern bool isLegacyDronePlatform;
 extern bool everReceivedConfigurationMessage;
+//extern bool logDataPacketReceived;
+//extern bool logDataAckSent;
 
 extern char safeAirTailID[12];
 
 extern tRC_LINK rcLinkStatus;
 extern tSMA_Status previousSmaStatus;
 extern tSMA_Status currentSmaStatus;
+extern TBSRXTXType tbsTXRXStatus;
 
 void sendChannelMessageToTBS(void);
 uint8_t calcCrossfireTelemetryFrameCRC(void);

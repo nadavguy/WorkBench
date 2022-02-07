@@ -22,6 +22,7 @@
 #include "DEV_Config.h"
 #include "usb_device.h"
 #include "ScreenSaverImages.h"
+#include "DataTransferImages.h"
 
 const unsigned char *previousBluetoothImage;
 const unsigned char *previousPlatformImage;
@@ -31,6 +32,7 @@ const unsigned char *previousSignalImage;
 const unsigned char *previousBatteryImage;
 const unsigned char *previousRCBatteryImage;
 const unsigned char *previousAltitudeOrGPSImage;
+const unsigned char *previousDataTransferImage;
 
 bool shouldRenderBatteryPercent = false;
 bool shouldRenderMenu = false;
@@ -50,6 +52,7 @@ bool isTriggerModeDisplayed = true;
 bool isSafeAirBatteryDisplayed = true;
 bool isAltitudeDisplayed = true;
 bool isGPSPositionDisplayed = false;
+bool shouldRenderDataTransfer = false;
 
 uint8_t PlatfomTypeX = 0;
 uint8_t PlatfomTypeY = 0;
@@ -59,6 +62,8 @@ uint8_t TBSSignalX = 0;
 uint8_t TBSSignalY = 0;
 uint8_t BluetoothX = 0;
 uint8_t BluetoothY = 0;
+uint8_t DataTransferX = 0;
+uint8_t DataTransferY = 0;
 uint8_t TriggerModeX = 0;
 uint8_t TriggerModeY = 0;
 uint8_t BatteryX = 0;
@@ -102,6 +107,7 @@ uint32_t lastBITStatusChange = 0;
 uint32_t lastFrameDisplayed = 0;
 uint32_t lastFullFrameDisplayed = 0 ;
 uint32_t lastDotRefresh = 0 ;
+uint32_t lastLogDataRefresh = 0;
 
 tUINT8_ITEM uint8Item;
 tUINT16_ITEM uint16Item;
@@ -1005,6 +1011,75 @@ void drawAltitudeIcon(bool drawDeltaImage)
 
 }
 
+void drawTBSTxRxIcon(bool drawDeltaImage)
+{
+	switch (tbsTXRXStatus)
+	{
+		case TBSIDLE:
+		{
+			if (!drawDeltaImage)
+			{
+				Paint_DrawImage(gImage_DataTransferIdle, DataTransferX, DataTransferY,
+						statusBarIconWidth, statusBarIconHeight);
+			}
+			else
+			{
+				Paint_DrawDeltaImage(gImage_DataTransferIdle, previousDataTransferImage,
+						DataTransferX, DataTransferY, statusBarIconWidth, statusBarIconHeight);
+			}
+			previousDataTransferImage = gImage_DataTransferIdle;
+			break; /* optional */
+		}
+
+		case TBSTX:
+		{
+			if (!drawDeltaImage)
+			{
+				Paint_DrawImage(gImage_DataTransferTransmit, DataTransferX, DataTransferY,
+						statusBarIconWidth, statusBarIconHeight);
+			}
+			else
+			{
+				Paint_DrawDeltaImage(gImage_DataTransferTransmit, previousDataTransferImage,
+						DataTransferX, DataTransferY, statusBarIconWidth, statusBarIconHeight);
+			}
+			previousDataTransferImage = gImage_DataTransferTransmit;
+			break; /* optional */
+		}
+
+		case TBSRX:
+		{
+			if (!drawDeltaImage)
+			{
+				Paint_DrawImage(gImage_DataTransferReceive, DataTransferX, DataTransferY,
+						statusBarIconWidth, statusBarIconHeight);
+			}
+			else
+			{
+				Paint_DrawDeltaImage(gImage_DataTransferReceive, previousDataTransferImage,
+						DataTransferX, DataTransferY, statusBarIconWidth, statusBarIconHeight);
+			}
+			previousDataTransferImage = gImage_DataTransferReceive;
+			break; /* optional */
+		}
+
+		default: /* Optional */
+		{
+			if (!drawDeltaImage)
+			{
+				Paint_DrawImage(gImage_DataTransferIdle, DataTransferX, DataTransferY,
+						statusBarIconWidth, statusBarIconHeight);
+			}
+			else
+			{
+				Paint_DrawDeltaImage(gImage_DataTransferIdle, previousDataTransferImage,
+						DataTransferX, DataTransferY, statusBarIconWidth, statusBarIconHeight);
+			}
+			previousDataTransferImage = gImage_DataTransferIdle;
+		}
+	}
+}
+
 void screenUpdate(bool drawDeltaImage)
 {
 	numberOfDisplayedSafeAirIcons = 1 * isAutoPilotDisplayed + 1 * isPlatformDisplayed +
@@ -1118,6 +1193,28 @@ void screenUpdate(bool drawDeltaImage)
 			updateStatusText();
 			shouldUpdateStatusText = false;
 		} // End of should update status text
+
+		if ( (menuLevel == DEVELOPER) )
+		{
+			if ( (tbsTXRXStatus != TBSRX) && (HAL_GetTick() - lastLogDataRefresh < 500) )
+			{
+				tbsTXRXStatus = TBSRX;
+//				drawTBSTxRxIcon(drawDeltaImage);
+			}
+			else if ( (HAL_GetTick() - lastLogDataRefresh >= 500) && (HAL_GetTick() - lastLogDataRefresh < 1000) )
+			{
+//				lastLogDataRefresh = HAL_GetTick();
+//				drawTBSTxRxIcon(drawDeltaImage);
+			}
+			if (HAL_GetTick() - lastLogDataRefresh >= 1000)
+			{
+				tbsTXRXStatus = TBSIDLE;
+//				drawTBSTxRxIcon(drawDeltaImage);
+				shouldRenderDataTransfer = false;
+//				lastLogDataRefresh = HAL_GetTick();
+			}
+			drawTBSTxRxIcon(drawDeltaImage);
+		}
 
 		if (HAL_GetTick() - lastBITStatusChange >= 500)
 		{
@@ -1370,6 +1467,8 @@ void setIconPositionOnScreen(void)
 
 		BluetoothX = VerticalBluetoothX;
 		BluetoothY = VerticalBluetoothY;
+		DataTransferX = VerticalDataTransferX;
+		DataTransferY = VerticalDataTransferY;
 		TBSSignalX = VerticalTBSSignalX;
 		TBSSignalY = VerticalTBSSignalY;
 		BatteryX = VerticalBatteryX;
@@ -1417,6 +1516,8 @@ void setIconPositionOnScreen(void)
 		PlatfomTypeY = HorizontalPltfomTypeY;
 		AutoPilotX = HorizontalAutoPilotX;
 		AutoPilotY = HorizontalAutoPilotY;
+		DataTransferX = VerticalDataTransferX;
+		DataTransferY = VerticalDataTransferY;
 		TBSSignalX = HorizontalTBSSignalX;
 		TBSSignalY = HorizontalTBSSignalY;
 		BluetoothX = HorizontalBluetoothX;

@@ -93,6 +93,9 @@
 #define VerticalDisplayCenterWidth 64
 #define VerticalDisplayCenterHeight 80
 
+#define VerticalDataTransferX 1
+#define VerticalDataTransferY 1
+
 #define VerticalBluetoothX 56
 #define VerticalBluetoothY 1
 
@@ -204,6 +207,7 @@ extern const unsigned char *previousAutoPilotImage;
 extern const unsigned char *previousTriggerModeImage;
 extern const unsigned char *previousSignalImage;
 extern const unsigned char *previousBatteryImage;
+extern const unsigned char *previousDataTransferImage;
 
 extern bool shouldRenderBatteryPercent;
 extern bool shouldRenderMenu;
@@ -223,6 +227,7 @@ extern bool isTriggerModeDisplayed;
 extern bool isSafeAirBatteryDisplayed;
 extern bool isAltitudeDisplayed;
 extern bool isGPSPositionDisplayed;
+extern bool shouldRenderDataTransfer;
 
 extern uint8_t LineStartX;
 extern uint8_t LineEndX;
@@ -237,6 +242,7 @@ extern uint8_t lowerBarDisplayID;
 extern uint32_t lastBITStatusChange;
 extern uint32_t lastFrameDisplayed;
 extern uint32_t lastFullFrameDisplayed;
+extern uint32_t lastLogDataRefresh;
 
 extern tUINT8_ITEM uint8Item;
 extern tUINT16_ITEM uint16Item;

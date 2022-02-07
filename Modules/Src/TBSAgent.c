@@ -27,6 +27,7 @@ uint8_t IdleMessageArray[26] = {0xC8, 0x18, 0x16, 0xAC, 0x60, 0x05, 0x2B, 0x58, 
 uint8_t TriggerMessageArray[26] = {0xC8, 0x18, 0x16, 0xA4, 0x26, 0x35, 0xA9, 0x49, 0x4D, 0x6A, 0x52, 0x93, 0x9A, 0xD4, 0xA4, 0x26, 0x35, 0xA9, 0x49, 0x4D, 0x6A, 0x52, 0x93, 0x9A, 0xD4, 0x64};
 uint8_t messagesMissed = 0;
 uint8_t commandReceivedForLog = 0;
+uint8_t timeoutCounter = 0;
 
 int16_t channelPWMValues[16] = {((1000 - 1500) * 8 / 5 + 992)};
 uint16_t previousBITStatus = 0;
@@ -58,14 +59,18 @@ bool isSMABatteryMedium = false;
 bool everReceivedConfigurationMessage = false;
 bool sapLogInSession = false;
 bool committedLastLogCommand = true;
+//bool logDataPacketReceived = false;
+//bool logDataAckSent = false;
 
 char safeAirTailID[12] = "";
 
 tRC_LINK rcLinkStatus;
 tSMA_Status previousSmaStatus;
 tSMA_Status currentSmaStatus;
+TBSRXTXType tbsTXRXStatus = TBSIDLE;
 
 tFastData localFD = {0};
+
 
 FRESULT logFRRes = FR_OK;
 FIL sapLogFile;
@@ -644,6 +649,9 @@ bool parseTBSMessage(void)
 		if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x3E) && (localRxArray[i + 2] == 0xBF) && (TBS_RX_BUFFER - i >= 0x3E)
 				&& (crc == localRxArray[i + 0x3E + 1]) )
 		{
+			shouldRenderDataTransfer = true;
+			lastLogDataRefresh = HAL_GetTick();
+			tbsTXRXStatus = TBSRX;
 			if (localRxArray[i + 3] * 256 + localRxArray[i + 4] == 0)
 			{
 				lastPacketIDReceivedFromRC = localRxArray[i + 3] * 256 + localRxArray[i + 4];
@@ -849,7 +857,7 @@ void replyToSAPLogMessage(void)
 			sapLogInSession = false;
 			committedLastLogCommand = true;
 			memset(logCommandMessage, 0 , 64);
-			lastPacketIDReceivedFromRC = 0;
+//			lastPacketIDReceivedFromRC = 0;
 			sprintf(terminalBuffer,"Received command to close file.");
 			logData(terminalBuffer, false, true, false);
 		}
@@ -864,14 +872,16 @@ void replyToSAPLogMessage(void)
 			rcGeneralACKMessage(lastPacketIDReceivedFromRC, 0xBF, commandReceivedForLog, 2);
 		}
 		lastAckSent = HAL_GetTick();
+		timeoutCounter = 0;
 	}
 	else
 	{
-		if (HAL_GetTick() - lastAckSent > 10 * 1000)
+		if ( (HAL_GetTick() - lastAckSent > 10 * 1000) && (timeoutCounter < 5) )
 		{
 			//TODO: send timeout message
 			rcGeneralACKMessage(lastPacketIDReceivedFromRC, 0xBF, commandReceivedForLog, 3);
 			lastAckSent = HAL_GetTick() - 0 * 1000;
+			timeoutCounter++;
 		}
 	}
 }
@@ -891,5 +901,8 @@ void rcGeneralACKMessage(uint16_t packetID, uint8_t opCode, uint8_t commandType,
 	HAL_UART_Transmit_IT(&TBS_UART, genralAckMessage, 9);
 	sprintf(terminalBuffer,"Sent ACK replay to PacketID: %d, and ACK type: %d", packetID, ackType);
 	logData(terminalBuffer, false, true, false);
+
+	tbsTXRXStatus = TBSTX;
+	shouldRenderDataTransfer = true;
 
 }

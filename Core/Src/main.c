@@ -57,6 +57,7 @@
 #include "BootLoader.h"
 #include "crc.h"
 #include "ScreenSaverImages.h"
+#include "DataTransferImages.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -81,7 +82,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.020;
-float buildID = 1.070;
+float buildID = 1.080;
 
 SYSTEMState rcState = PREINIT;
 
