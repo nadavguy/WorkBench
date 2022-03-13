@@ -9,7 +9,7 @@
 #define INC_BOOTLOADER_H_
 
 
-extern const unsigned char Array[70096];
+extern const unsigned char Array[76272];
 
 
 #endif /* INC_BOOTLOADER_H_ */

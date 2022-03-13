@@ -8,7 +8,7 @@
 #include "stm32f7xx_hal.h"
 #include "usb_device.h"
 uint32_t BankNumber = 0;
-FLASH_EraseInitTypeDef EraseInitStruct;
+//FLASH_EraseInitTypeDef EraseInitStruct;
 tFlashParams localFlashParams;
 uint32_t FirstSector = 0, NbOfSectors = 0;
 uint32_t Address = 0, SECTORError = 0;

@@ -150,7 +150,7 @@ extern uint16_t fullFrameDelay;
 extern uint32_t UID1;
 extern uint32_t UID2;
 extern uint32_t UID3;
-uint32_t A[9];
+//uint32_t A[9];
 
 extern unsigned int BytesWritten;
 

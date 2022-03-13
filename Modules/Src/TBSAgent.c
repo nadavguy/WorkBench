@@ -335,6 +335,14 @@ bool parseTBSMessage(void)
 			{
 				currentSmaStatus.smaPlatformName = TAILID;
 			}
+			else if ( (localRxArray[i + 12] == 7)  && (ee.legacySystemType == 0) )
+			{
+				currentSmaStatus.smaPlatformName = PHANTOMEU;
+			}
+			else if ( (localRxArray[i + 12] == 8)  && (ee.legacySystemType == 0) )
+			{
+				currentSmaStatus.smaPlatformName = MAVICEU;
+			}
 			else if (ee.legacySystemType != 0)
 			{
 				currentSmaStatus.smaPlatformName = ee.legacySystemType;

@@ -513,6 +513,16 @@ void updatePlatformText(void)
 			}
 			break;
 		}
+		case PHANTOMEU:
+		{
+			centeredString(SystemTextX, SystemTextY, "Phantom EU", BLACK, BACKGROUND, 16, Font12);
+			break;
+		}
+		case MAVICEU:
+		{
+			centeredString(SystemTextX, SystemTextY, "Mavic EU", BLACK, BACKGROUND, 16, Font12);
+			break;
+		}
 		default: /* Optional */
 		{
 			centeredString(SystemTextX, SystemTextY, "Unknown platform", BLACK, BACKGROUND, 16, Font12);
