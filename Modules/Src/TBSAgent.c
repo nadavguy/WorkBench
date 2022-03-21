@@ -171,12 +171,21 @@ uint8_t createCrossfireChannelsFrame(uint8_t * frame, int16_t * pulses)
 	for (int i=0; i<CROSSFIRE_CHANNELS_COUNT; i++)
 	{
 		uint32_t val = limitInt32(0, CROSSFIRE_CH_CENTER + (((pulses[i]) * 4) / 5), 2*CROSSFIRE_CH_CENTER);
+//		sprintf(terminalBuffer,"Channel ID: %d, Value to encode: 0x%lX, # of bits to rotate left: %d",i, val, bitsavailable);
+//		logData(terminalBuffer, false, true, false);
+
 		bits |= val << bitsavailable;
 		bitsavailable += CROSSFIRE_CH_BITS;
+//		sprintf(terminalBuffer,"Encoded value: 0x%lX",bits);
+//		logData(terminalBuffer, false, true, false);
 		while (bitsavailable >= 8)
 		{
 			*buf++ = bits;
+//			sprintf(terminalBuffer,"Low Byte set to array: 0x%lX",bits&0xFF);
+//			logData(terminalBuffer, false, true, false);
 			bits >>= 8;
+//			sprintf(terminalBuffer,"after 8 bits rotation right: 0x%lX",bits);
+//			logData(terminalBuffer, false, true, false);
 			bitsavailable -= 8;
 		}
 	}
