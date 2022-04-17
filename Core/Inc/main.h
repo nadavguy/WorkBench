@@ -97,6 +97,7 @@ typedef struct sGPSPOSITION
 #define abnormalGyro	4096
 #define abnormalAcceleration	8192
 #define abnormalAngle	16384
+#define smaButtonStuck	32768
 
 #define terminalRXBufferSize 1024
 

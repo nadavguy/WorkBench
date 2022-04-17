@@ -420,6 +420,10 @@ void updateBITStatus(void)
 		{
 			centeredString(WarningTextX, WarningTextY, "SA Pyro Error", BLACK, BACKGROUND, 14, Font12);
 		}
+		else if (displayWarning.BITStatus & smaButtonStuck)
+		{
+			centeredString(WarningTextX, WarningTextY, "SA BTN Error", BLACK, BACKGROUND, 14, Font12);
+		}
 		else if (displayWarning.BITStatus & 0x20)
 		{
 			centeredString(WarningTextX, WarningTextY, "RC Low Bat", BLACK, BACKGROUND, 14, Font12);

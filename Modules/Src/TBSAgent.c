@@ -524,6 +524,15 @@ bool parseTBSMessage(void)
 				displayWarning.BITStatus &= ~abnormalAngle;
 			}
 
+			if (currentSmaStatus.BITStatus & 0x8000)
+			{
+				displayWarning.BITStatus |= smaButtonStuck;
+			}
+			else
+			{
+				displayWarning.BITStatus &= ~smaButtonStuck;
+			}
+
 			if (currentSmaStatus.triggerMode == 0)
 			{
 				currentSmaStatus.safeairTriggerMode = MANUAL;

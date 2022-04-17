@@ -7,7 +7,7 @@
 #include "main.h"
 //#include "FlashQSPIAgent.h"
 
-void printRCConfiguration(bool toDisplayOnly)
+void printConfiguration(bool toDisplayOnly)
 {
 
 	logData("", false, toDisplayOnly, false);

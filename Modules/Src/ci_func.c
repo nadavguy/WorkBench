@@ -158,7 +158,7 @@ eCI_RESULT func_systemConfiguration(void)
 	{
 		return CI_COMMAND_ERROR;
 	}
-	printRCConfiguration(true);
+	printConfiguration(true);
 	return CI_OK;
 }
 

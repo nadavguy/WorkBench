@@ -83,7 +83,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.030;
-float buildID = 1.010;
+float buildID = 1.020;
 
 SYSTEMState rcState = PREINIT;
 
@@ -268,7 +268,7 @@ int main(void)
 
 	measureVoltages(true);
 
-	printRCConfiguration(false);
+	printConfiguration(false);
 
 	screenInit();
 	nextPattern = &testBuzzerPattern;

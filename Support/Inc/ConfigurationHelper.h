@@ -8,6 +8,6 @@
 #ifndef INC_CONFIGURATIONHELPER_H_
 #define INC_CONFIGURATIONHELPER_H_
 
-extern void printRCConfiguration(bool toDisplayOnly);
+extern void printConfiguration(bool toDisplayOnly);
 
 #endif /* INC_CONFIGURATIONHELPER_H_ */
