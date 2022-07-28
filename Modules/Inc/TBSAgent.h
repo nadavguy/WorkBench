@@ -67,7 +67,7 @@ typedef struct sSMA_Status
 	uint8_t triggerMode;
 	float Altitude;
 	float Acceleration;
-	uint16_t BITStatus;
+	uint32_t BITStatus;
 	PLATFORMName smaPlatformName;
 	PLATFORMType smaPlatfom;
 	bool isAutoPilotConnected;
@@ -83,7 +83,7 @@ typedef struct sSMA_Status
 typedef struct sWarning
 {
 	bool displayWarning;
-	uint16_t BITStatus; // 1 - SMA Crit Bat, 2 - SMA Low Bat, 4 - SMA Flash Error, 8 - SMA Out Of Bounds, 16 - Pyro Error, 32 - RC Low Bat
+	uint32_t BITStatus; // 1 - SMA Crit Bat, 2 - SMA Low Bat, 4 - SMA Flash Error, 8 - SMA Out Of Bounds, 16 - Pyro Error, 32 - RC Low Bat
 }tWarning;
 
 typedef struct sFastData

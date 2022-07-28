@@ -83,7 +83,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.030;
-float buildID = 1.020;
+float buildID = 1.030;
 
 SYSTEMState rcState = PREINIT;
 
@@ -112,6 +112,7 @@ bool shouldDrawSafeAirAltitude = true;
 bool testMotorCut = false;
 bool isDisableButtonDetection = false;
 bool isFirstCycleAfterUSBDisconnection = false;
+bool shouldRedrawButtonDotIcon = true;
 
 
 uint16_t fullFrameDelay = 5000;

@@ -8,5 +8,7 @@ extern const unsigned char gImage_WarningRed_Icon_24[];
 extern const unsigned char gImage_Parachute_24[];
 extern const unsigned char gImage_Altitude_24[];
 extern const unsigned char gImage_StopWatch[];
+extern const unsigned char gImage_RedDot[];
+extern const unsigned char gImage_GreenDot[];
 
 #endif

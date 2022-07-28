@@ -174,6 +174,7 @@ void CheckButtons(void)
 		{
 			logData("Trigger button pressed", false, false, false);
 		}
+		shouldRedrawButtonDotIcon = true;
 		triggerButtonIsHigh = false;
 		triggerButtonIsLow = true;
 		if ( (ee.linkType == PWM) && (rcState == OPERATIONAL) )
@@ -211,7 +212,7 @@ void CheckButtons(void)
 		{
 			logData("Trigger button released", false, false, false);
 		}
-
+		shouldRedrawButtonDotIcon = true;
 		triggerButtonIsHigh = true;
 		triggerButtonIsLow = false;
 		triggerButtonPressStart = HAL_GetTick();

@@ -33,6 +33,7 @@ const unsigned char *previousBatteryImage;
 const unsigned char *previousRCBatteryImage;
 const unsigned char *previousAltitudeOrGPSImage;
 const unsigned char *previousDataTransferImage;
+const unsigned char *previousButtonDotImage;
 
 bool shouldRenderBatteryPercent = false;
 bool shouldRenderMenu = false;
@@ -101,6 +102,8 @@ int8_t velX = 3;
 int8_t velY = 3;
 uint8_t posX = 0;
 uint8_t posY = 0;
+uint8_t ButtonDotX = 0;
+uint8_t ButtonDotY = 0;
 
 uint32_t lastBatteryRefresh = 0;
 uint32_t lastBITStatusChange = 0;
@@ -1094,6 +1097,62 @@ void drawTBSTxRxIcon(bool drawDeltaImage)
 	}
 }
 
+void drawButtonDotIcon(bool drawDeltaImage)
+{
+	if ( true )
+	{
+		switch (triggerPinState)
+		{
+			case GPIO_PIN_RESET:
+			{
+				if (!drawDeltaImage)
+				{
+					Paint_DrawImage(gImage_RedDot, ButtonDotX, ButtonDotY,
+							statusBarIconWidth, statusBarIconHeight);
+				}
+				else
+				{
+					Paint_DrawDeltaImage(gImage_RedDot, previousButtonDotImage,
+							ButtonDotX, ButtonDotY, statusBarIconWidth, statusBarIconHeight);
+				}
+				previousButtonDotImage = gImage_RedDot;
+				break; /* optional */
+			}
+
+			case GPIO_PIN_SET:
+			{
+				if (!drawDeltaImage)
+				{
+					Paint_DrawImage(gImage_GreenDot, ButtonDotX, ButtonDotY,
+							statusBarIconWidth, statusBarIconHeight);
+				}
+				else
+				{
+					Paint_DrawDeltaImage(gImage_GreenDot, previousButtonDotImage,
+							ButtonDotX, ButtonDotY, statusBarIconWidth, statusBarIconHeight);
+				}
+				previousButtonDotImage = gImage_GreenDot;
+				break; /* optional */
+			}
+
+			default: /* Optional */
+			{
+				if (!drawDeltaImage)
+				{
+					Paint_DrawImage(gImage_RedDot, ButtonDotX, ButtonDotY,
+							statusBarIconWidth, statusBarIconHeight);
+				}
+				else
+				{
+					Paint_DrawDeltaImage(gImage_RedDot, previousButtonDotImage,
+							ButtonDotX, ButtonDotY, statusBarIconWidth, statusBarIconHeight);
+				}
+				previousButtonDotImage = gImage_RedDot;
+			}
+		}
+	}
+}
+
 void screenUpdate(bool drawDeltaImage)
 {
 	numberOfDisplayedSafeAirIcons = 1 * isAutoPilotDisplayed + 1 * isPlatformDisplayed +
@@ -1207,6 +1266,12 @@ void screenUpdate(bool drawDeltaImage)
 			updateStatusText();
 			shouldUpdateStatusText = false;
 		} // End of should update status text
+
+		if (shouldRedrawButtonDotIcon)
+		{
+			drawButtonDotIcon(drawDeltaImage);
+			shouldRedrawButtonDotIcon = false;
+		} // End of should update Button Dot
 
 		if ( (menuLevel == DEVELOPER) )
 		{

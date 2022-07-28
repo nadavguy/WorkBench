@@ -208,6 +208,7 @@ extern const unsigned char *previousTriggerModeImage;
 extern const unsigned char *previousSignalImage;
 extern const unsigned char *previousBatteryImage;
 extern const unsigned char *previousDataTransferImage;
+extern const unsigned char *previousButtonDotImage;
 
 extern bool shouldRenderBatteryPercent;
 extern bool shouldRenderMenu;

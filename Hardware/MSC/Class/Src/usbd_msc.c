@@ -562,7 +562,7 @@ uint8_t USBD_MSC_RegisterStorage(USBD_HandleTypeDef *pdev, USBD_StorageTypeDef *
     return (uint8_t)USBD_FAIL;
   }
 
-  pdev->pUserData = fops;
+//  pdev->pUserData = fops;
 
   return (uint8_t)USBD_OK;
 }
