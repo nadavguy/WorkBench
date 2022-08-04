@@ -180,10 +180,12 @@ void CheckButtons(void)
 		if ( (ee.linkType == PWM) && (rcState == OPERATIONAL) )
 		{
 			channelPWMValues[triggerChannel] = ((ee.triggerPWMOnValue - 1500) * 2);
+			channelPWMValues[5] = ((ee.triggerPWMOnValue - 1500) * 2);
 		}
 		else
 		{
 			channelPWMValues[triggerChannel] = ((ee.triggerPWMOffValue - 1500) * 2);
+			channelPWMValues[5] = ((ee.triggerPWMOffValue - 1500) * 2);
 		}
 	}
 	else
@@ -191,6 +193,7 @@ void CheckButtons(void)
 		if ( (ee.linkType == PWM) && (rcState == OPERATIONAL) )
 		{
 			channelPWMValues[triggerChannel] = ((ee.triggerPWMOffValue - 1500) * 2);
+			channelPWMValues[5] = ((ee.triggerPWMOffValue - 1500) * 2);
 		}
 		if (triggerButtonIsLow)
 		{
