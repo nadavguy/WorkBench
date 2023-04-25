@@ -8,7 +8,6 @@
 
 #include "main.h"
 #include "adc.h"
-#include "LCD_1in8.h"
 
 uint8_t previousBatteryCharge = 0;
 uint8_t cyclesAboveThresholdCounter = 0;

@@ -199,18 +199,18 @@ bool parseTBSMessage(void)
 	uint8_t crc = 0;
 	bool localRet = false;
 
-//	char test[1024] = "";
-//	logData((char *)"TBS RX: ", true, true, false);
-//	for (int i = 0 ; i < 128 ; i++)
-//	{
-//		sprintf(&test[i*5], "-0x%02X",tbsRXArray[i]);
-////		if (tbsRXArray[i] == 0x3E)
-////		{
-////			int y = 1;
-////		}
-//	}
-//	logData(test, true, true, false);
-//	memset(test, 0, 1024);
+// 	char test[1024] = "";
+// 	logData((char *)"TBS RX: ", true, true, false);
+// 	for (int i = 0 ; i < 128 ; i++)
+// 	{
+// 		sprintf(&test[i*5], "-0x%02X",tbsRXArray[i]);
+// 		if (tbsRXArray[i] == 0xFD)
+// 		{
+// //			int y = 1;
+// 		}
+// 	}
+// 	logData(test, true, true, false);
+// 	memset(test, 0, 1024);
 	uint8_t localRxArray[TBS_RX_BUFFER] = {0};
 	memcpy(localRxArray,tbsRXArray,TBS_RX_BUFFER);
 
@@ -694,7 +694,7 @@ bool parseTBSMessage(void)
 				lastPacketIDReceivedFromRC = localRxArray[i + 3] * 256 + localRxArray[i + 4];
 				commandReceivedForLog = localRxArray[i + 5];
 				logNameStartIndex = 0;
-				FRESULT localRes = f_lseek(&sapLogFile, (lastPacketIDReceivedFromRC - 1) * 57);
+				/*FRESULT localRes = */f_lseek(&sapLogFile, (lastPacketIDReceivedFromRC - 1) * 57);
 				if (committedLastLogCommand)
 				{
 					memmove(logCommandMessage, &localRxArray[i], 64);

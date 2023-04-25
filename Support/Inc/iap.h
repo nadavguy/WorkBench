@@ -61,7 +61,7 @@ extern uint32_t iap_sector_index;
 void iap_init(void);
 void iap_prepare_flash(void);
 uint32_t iap_erase_sector(uint32_t addr);
-uint32_t iap_write_sector(uint32_t addr, pU32 data, uint32_t data_length);
+uint32_t iap_write_page(uint32_t addr, pU32 data, uint32_t data_length);
 uint32_t iap_verify(pU32 buffer1, pU32 buffer2, uint32_t data_length);
 uint32_t iap_get_sector(uint32_t addr);
 

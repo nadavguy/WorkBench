@@ -32,15 +32,15 @@ extern tBuzzer_Pattern testBuzzerPattern;
 extern tBuzzer_Pattern idleBuzzerPattern;
 extern tBuzzer_Pattern armedBuzzerPattern;
 extern tBuzzer_Pattern noBuzzerPattern;
-extern tBuzzer_Pattern noTelemetryPattern;
-extern tBuzzer_Pattern lowTelemetryPattern;
-extern tBuzzer_Pattern lowRCBatteryPattern;
-extern tBuzzer_Pattern triggeredSafeAirPattern;
+extern tBuzzer_Pattern noTelemetryBuzzerPattern;
+extern tBuzzer_Pattern lowTelemetryBuzzerPattern;
+extern tBuzzer_Pattern lowRCBatteryBuzzerPattern;
+extern tBuzzer_Pattern triggeredBuzzerPattern;
 
 extern bool isBuzzerCycleEnded;
 
 extern void setBuzzerPattern(tBuzzer_Pattern patternToSet);
-extern void updateBuzzerStatus(void);
+extern void updateBuzzerPattern(void);
 extern void initBuzzerPatterns(void);
 
 

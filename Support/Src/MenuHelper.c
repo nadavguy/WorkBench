@@ -46,6 +46,7 @@ tPOPUP autoCalibrationMessage;
 tPOPUP testFlightMessage;
 tPOPUP testMotorCutMessage;
 tPOPUP returnToIdleMessage;
+tPOPUP resetDueToAltitudeMessage;
 tPOPUP disconnectPyroMessage;
 
 bool isTestCalibActive = false;
@@ -272,21 +273,30 @@ void initMenuPages(void)
 		integrationPage.nextCellIDArray[4] = 0;
 		integrationPage.nextCellIDArray[5] = 0;
 	}
-//	else
-//	{
-//		integrationPage.numberOfItemsInPage = 3;
-//		memcpy(&integrationPage.itemsArray[0],"RC Settings",strlen("RC Settings"));
-//		memcpy(&integrationPage.itemsArray[1],"About RC",strlen("About RC"));
-//		memcpy(&integrationPage.itemsArray[2],"Close menu",strlen("Close menu"));
-//
-//		integrationPage.cellTypeArray[0] = PAGE;
-//		integrationPage.cellTypeArray[1] = POPUP;
-//		integrationPage.cellTypeArray[2] = CLOSE;
-//
-//		integrationPage.nextCellIDArray[0] = 2;
-//		integrationPage.nextCellIDArray[1] = (uint32_t)&aboutRCMessage;
-//		integrationPage.nextCellIDArray[2] = 0;
-//	}
+	else
+	{
+		integrationPage.numberOfItemsInPage = 3;
+		memcpy(&integrationPage.itemsArray[0],"Test Motor-Cut",strlen("Test Motor-Cut"));
+		memcpy(&integrationPage.itemsArray[1],"Close menu",strlen("Close menu"));
+
+		integrationPage.cellTypeArray[0] = POPUP;
+		integrationPage.cellTypeArray[1] = CLOSE;
+
+		if ( (currentSmaStatus.smaState == IDLE) && (currentSmaStatus.Altitude < 6) )
+		{
+			integrationPage.nextCellIDArray[0] = (uint32_t)&testMotorCutMessage;
+		}
+		else if (currentSmaStatus.smaState != IDLE)
+		{
+			integrationPage.nextCellIDArray[1] = (uint32_t)&returnToIdleMessage;
+		}
+		else if (currentSmaStatus.Altitude >= 6)
+		{
+			integrationPage.nextCellIDArray[1] = (uint32_t)&resetDueToAltitudeMessage;
+		}
+
+		integrationPage.nextCellIDArray[1] = 0;
+	}
 
 
 	pagesArray[1] = MainPage;
@@ -663,6 +673,19 @@ void initPopupMessages(void)
 	memcpy(&disconnectPyroMessage.itemsArray[5],"->Long Press<-",strlen("->Long Press<-"));
 	memcpy(&disconnectPyroMessage.itemsArray[6],"Cancel",strlen("Cancel"));
 	memcpy(&disconnectPyroMessage.itemsArray[7],"OK",strlen("OK"));
+
+
+	resetDueToAltitudeMessage.popupID = 16;
+	resetDueToAltitudeMessage.numberOfItemsInPopup = 8;
+	resetDueToAltitudeMessage.isQuestion = false;
+	memcpy(&resetDueToAltitudeMessage.itemsArray[0],"SafeAir's alt",strlen("SafeAir's alt"));
+	memcpy(&resetDueToAltitudeMessage.itemsArray[1],"is too high.",strlen("is too high."));
+	memcpy(&resetDueToAltitudeMessage.itemsArray[2],"Please restart",strlen("Please restart"));
+	memcpy(&resetDueToAltitudeMessage.itemsArray[3],"and try again",strlen("and try again"));
+	memcpy(&resetDueToAltitudeMessage.itemsArray[4],"",strlen(""));
+	memcpy(&resetDueToAltitudeMessage.itemsArray[5],"->Long Press<-",strlen("->Long Press<-"));
+	memcpy(&resetDueToAltitudeMessage.itemsArray[6],"Cancel",strlen("Cancel"));
+	memcpy(&resetDueToAltitudeMessage.itemsArray[7],"OK",strlen("OK"));
 }
 
 void updateSelection(void)

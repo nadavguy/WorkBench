@@ -12,23 +12,24 @@ uint8_t cycleCounter = 0;
 float startBuzzerPhase = 0;
 float currentBuzzerPhase = 0;
 
-tBuzzer_Pattern currentPattern;
+tBuzzer_Pattern currentPattern = {0};
 tBuzzer_Pattern *nextPattern;
 
-tBuzzer_Pattern testBuzzerPattern;
-tBuzzer_Pattern idleBuzzerPattern;
-tBuzzer_Pattern armedBuzzerPattern;
-tBuzzer_Pattern noBuzzerPattern;
-tBuzzer_Pattern noTelemetryPattern;
-tBuzzer_Pattern lowTelemetryPattern;
-tBuzzer_Pattern lowRCBatteryPattern;
-tBuzzer_Pattern triggeredSafeAirPattern;
+tBuzzer_Pattern testBuzzerPattern = {0};
+tBuzzer_Pattern idleBuzzerPattern = {0};
+tBuzzer_Pattern armedBuzzerPattern = {0};
+tBuzzer_Pattern noBuzzerPattern = {0};
+tBuzzer_Pattern noTelemetryBuzzerPattern = {0};
+tBuzzer_Pattern lowTelemetryBuzzerPattern = {0};
+tBuzzer_Pattern lowRCBatteryBuzzerPattern = {0};
+tBuzzer_Pattern triggeredBuzzerPattern = {0};
+
 
 bool isBuzzerCycleEnded = true;
 
 void setBuzzerPattern(tBuzzer_Pattern patternToSet)
 {
-    if (currentPattern.id == 8)
+    if (currentPattern.id == triggeredBuzzerPattern.id)
     {
     	cycleCounter++;
     }
@@ -44,7 +45,7 @@ void setBuzzerPattern(tBuzzer_Pattern patternToSet)
     buzzerPhase = 0;
 }
 
-void updateBuzzerStatus(void)
+void updateBuzzerPattern(void)
 {
     if (buzzerPhase == 0)
     {
@@ -240,158 +241,158 @@ void initBuzzerPatterns(void)
 	armedBuzzerPattern.id = 4;
 
 
-	noTelemetryPattern.patternLength = 6;
-	noTelemetryPattern.patternDuration[0] = 100;
-	noTelemetryPattern.patternDuration[1] = 100;
-	noTelemetryPattern.patternDuration[2] = 100;
-	noTelemetryPattern.patternDuration[3] = 100;
-	noTelemetryPattern.patternDuration[4] = 100;
-	noTelemetryPattern.patternDuration[5] = 4500;
-	noTelemetryPattern.patternDuration[6] = 0;
-	noTelemetryPattern.patternDuration[7] = 0;
-	noTelemetryPattern.patternDuration[8] = 0;
-	noTelemetryPattern.patternDuration[9] = 0;
-	noTelemetryPattern.patternDuration[10] = 0;
-	noTelemetryPattern.patternDuration[11] = 0;
-	noTelemetryPattern.patternDuration[12] = 0;
-	noTelemetryPattern.patternDuration[13] = 0;
-	noTelemetryPattern.patternDuration[14] = 0;
-	noTelemetryPattern.patternDuration[15] = 0;
+	noTelemetryBuzzerPattern.patternLength = 6;
+	noTelemetryBuzzerPattern.patternDuration[0] = 100;
+	noTelemetryBuzzerPattern.patternDuration[1] = 100;
+	noTelemetryBuzzerPattern.patternDuration[2] = 100;
+	noTelemetryBuzzerPattern.patternDuration[3] = 100;
+	noTelemetryBuzzerPattern.patternDuration[4] = 100;
+	noTelemetryBuzzerPattern.patternDuration[5] = 4500;
+	noTelemetryBuzzerPattern.patternDuration[6] = 0;
+	noTelemetryBuzzerPattern.patternDuration[7] = 0;
+	noTelemetryBuzzerPattern.patternDuration[8] = 0;
+	noTelemetryBuzzerPattern.patternDuration[9] = 0;
+	noTelemetryBuzzerPattern.patternDuration[10] = 0;
+	noTelemetryBuzzerPattern.patternDuration[11] = 0;
+	noTelemetryBuzzerPattern.patternDuration[12] = 0;
+	noTelemetryBuzzerPattern.patternDuration[13] = 0;
+	noTelemetryBuzzerPattern.patternDuration[14] = 0;
+	noTelemetryBuzzerPattern.patternDuration[15] = 0;
 
-	noTelemetryPattern.patternOnOff[0] = 1; //On
-	noTelemetryPattern.patternOnOff[1] = 0; //Off
-	noTelemetryPattern.patternOnOff[2] = 1;
-	noTelemetryPattern.patternOnOff[3] = 0;
-	noTelemetryPattern.patternOnOff[4] = 1;
-	noTelemetryPattern.patternOnOff[5] = 0;
-	noTelemetryPattern.patternOnOff[6] = 0;
-	noTelemetryPattern.patternOnOff[7] = 0;
-	noTelemetryPattern.patternOnOff[8] = 0;
-	noTelemetryPattern.patternOnOff[9] = 0;
-	noTelemetryPattern.patternOnOff[10] = 0;
-	noTelemetryPattern.patternOnOff[11] = 0;
-	noTelemetryPattern.patternOnOff[12] = 0;
-	noTelemetryPattern.patternOnOff[13] = 0;
-	noTelemetryPattern.patternOnOff[14] = 0;
-	noTelemetryPattern.patternOnOff[15] = 0;
+	noTelemetryBuzzerPattern.patternOnOff[0] = 1; //On
+	noTelemetryBuzzerPattern.patternOnOff[1] = 0; //Off
+	noTelemetryBuzzerPattern.patternOnOff[2] = 1;
+	noTelemetryBuzzerPattern.patternOnOff[3] = 0;
+	noTelemetryBuzzerPattern.patternOnOff[4] = 1;
+	noTelemetryBuzzerPattern.patternOnOff[5] = 0;
+	noTelemetryBuzzerPattern.patternOnOff[6] = 0;
+	noTelemetryBuzzerPattern.patternOnOff[7] = 0;
+	noTelemetryBuzzerPattern.patternOnOff[8] = 0;
+	noTelemetryBuzzerPattern.patternOnOff[9] = 0;
+	noTelemetryBuzzerPattern.patternOnOff[10] = 0;
+	noTelemetryBuzzerPattern.patternOnOff[11] = 0;
+	noTelemetryBuzzerPattern.patternOnOff[12] = 0;
+	noTelemetryBuzzerPattern.patternOnOff[13] = 0;
+	noTelemetryBuzzerPattern.patternOnOff[14] = 0;
+	noTelemetryBuzzerPattern.patternOnOff[15] = 0;
 
-	noTelemetryPattern.isSingleCycle = false;
-	noTelemetryPattern.id = 5;
-
-
-	lowTelemetryPattern.patternLength = 6;
-	lowTelemetryPattern.patternDuration[0] = 300;
-	lowTelemetryPattern.patternDuration[1] = 100;
-	lowTelemetryPattern.patternDuration[2] = 300;
-	lowTelemetryPattern.patternDuration[3] = 100;
-	lowTelemetryPattern.patternDuration[4] = 300;
-	lowTelemetryPattern.patternDuration[5] = 3900;
-	lowTelemetryPattern.patternDuration[6] = 0;
-	lowTelemetryPattern.patternDuration[7] = 0;
-	lowTelemetryPattern.patternDuration[8] = 0;
-	lowTelemetryPattern.patternDuration[9] = 0;
-	lowTelemetryPattern.patternDuration[10] = 0;
-	lowTelemetryPattern.patternDuration[11] = 0;
-	lowTelemetryPattern.patternDuration[12] = 0;
-	lowTelemetryPattern.patternDuration[13] = 0;
-	lowTelemetryPattern.patternDuration[14] = 0;
-	lowTelemetryPattern.patternDuration[15] = 0;
-
-	lowTelemetryPattern.patternOnOff[0] = 1; //On
-	lowTelemetryPattern.patternOnOff[1] = 0; //Off
-	lowTelemetryPattern.patternOnOff[2] = 1;
-	lowTelemetryPattern.patternOnOff[3] = 0;
-	lowTelemetryPattern.patternOnOff[4] = 1;
-	lowTelemetryPattern.patternOnOff[5] = 0;
-	lowTelemetryPattern.patternOnOff[6] = 0;
-	lowTelemetryPattern.patternOnOff[7] = 0;
-	lowTelemetryPattern.patternOnOff[8] = 0;
-	lowTelemetryPattern.patternOnOff[9] = 0;
-	lowTelemetryPattern.patternOnOff[10] = 0;
-	lowTelemetryPattern.patternOnOff[11] = 0;
-	lowTelemetryPattern.patternOnOff[12] = 0;
-	lowTelemetryPattern.patternOnOff[13] = 0;
-	lowTelemetryPattern.patternOnOff[14] = 0;
-	lowTelemetryPattern.patternOnOff[15] = 0;
-
-	lowTelemetryPattern.isSingleCycle = false;
-	lowTelemetryPattern.id = 6;
+	noTelemetryBuzzerPattern.isSingleCycle = false;
+	noTelemetryBuzzerPattern.id = 5;
 
 
-	lowRCBatteryPattern.patternLength = 2;
-	lowRCBatteryPattern.patternDuration[0] = 200;
-	lowRCBatteryPattern.patternDuration[1] = 19800;
-	lowRCBatteryPattern.patternDuration[2] = 0;
-	lowRCBatteryPattern.patternDuration[3] = 0;
-	lowRCBatteryPattern.patternDuration[4] = 0;
-	lowRCBatteryPattern.patternDuration[5] = 0;
-	lowRCBatteryPattern.patternDuration[6] = 0;
-	lowRCBatteryPattern.patternDuration[7] = 0;
-	lowRCBatteryPattern.patternDuration[8] = 0;
-	lowRCBatteryPattern.patternDuration[9] = 0;
-	lowRCBatteryPattern.patternDuration[10] = 0;
-	lowRCBatteryPattern.patternDuration[11] = 0;
-	lowRCBatteryPattern.patternDuration[12] = 0;
-	lowRCBatteryPattern.patternDuration[13] = 0;
-	lowRCBatteryPattern.patternDuration[14] = 0;
-	lowRCBatteryPattern.patternDuration[15] = 0;
+	lowTelemetryBuzzerPattern.patternLength = 6;
+	lowTelemetryBuzzerPattern.patternDuration[0] = 300;
+	lowTelemetryBuzzerPattern.patternDuration[1] = 100;
+	lowTelemetryBuzzerPattern.patternDuration[2] = 300;
+	lowTelemetryBuzzerPattern.patternDuration[3] = 100;
+	lowTelemetryBuzzerPattern.patternDuration[4] = 300;
+	lowTelemetryBuzzerPattern.patternDuration[5] = 3900;
+	lowTelemetryBuzzerPattern.patternDuration[6] = 0;
+	lowTelemetryBuzzerPattern.patternDuration[7] = 0;
+	lowTelemetryBuzzerPattern.patternDuration[8] = 0;
+	lowTelemetryBuzzerPattern.patternDuration[9] = 0;
+	lowTelemetryBuzzerPattern.patternDuration[10] = 0;
+	lowTelemetryBuzzerPattern.patternDuration[11] = 0;
+	lowTelemetryBuzzerPattern.patternDuration[12] = 0;
+	lowTelemetryBuzzerPattern.patternDuration[13] = 0;
+	lowTelemetryBuzzerPattern.patternDuration[14] = 0;
+	lowTelemetryBuzzerPattern.patternDuration[15] = 0;
 
-	lowRCBatteryPattern.patternOnOff[0] = 1; //On
-	lowRCBatteryPattern.patternOnOff[1] = 0; //Off
-	lowRCBatteryPattern.patternOnOff[2] = 0;
-	lowRCBatteryPattern.patternOnOff[3] = 0;
-	lowRCBatteryPattern.patternOnOff[4] = 0;
-	lowRCBatteryPattern.patternOnOff[5] = 0;
-	lowRCBatteryPattern.patternOnOff[6] = 0;
-	lowRCBatteryPattern.patternOnOff[7] = 0;
-	lowRCBatteryPattern.patternOnOff[8] = 0;
-	lowRCBatteryPattern.patternOnOff[9] = 0;
-	lowRCBatteryPattern.patternOnOff[10] = 0;
-	lowRCBatteryPattern.patternOnOff[11] = 0;
-	lowRCBatteryPattern.patternOnOff[12] = 0;
-	lowRCBatteryPattern.patternOnOff[13] = 0;
-	lowRCBatteryPattern.patternOnOff[14] = 0;
-	lowRCBatteryPattern.patternOnOff[15] = 0;
+	lowTelemetryBuzzerPattern.patternOnOff[0] = 1; //On
+	lowTelemetryBuzzerPattern.patternOnOff[1] = 0; //Off
+	lowTelemetryBuzzerPattern.patternOnOff[2] = 1;
+	lowTelemetryBuzzerPattern.patternOnOff[3] = 0;
+	lowTelemetryBuzzerPattern.patternOnOff[4] = 1;
+	lowTelemetryBuzzerPattern.patternOnOff[5] = 0;
+	lowTelemetryBuzzerPattern.patternOnOff[6] = 0;
+	lowTelemetryBuzzerPattern.patternOnOff[7] = 0;
+	lowTelemetryBuzzerPattern.patternOnOff[8] = 0;
+	lowTelemetryBuzzerPattern.patternOnOff[9] = 0;
+	lowTelemetryBuzzerPattern.patternOnOff[10] = 0;
+	lowTelemetryBuzzerPattern.patternOnOff[11] = 0;
+	lowTelemetryBuzzerPattern.patternOnOff[12] = 0;
+	lowTelemetryBuzzerPattern.patternOnOff[13] = 0;
+	lowTelemetryBuzzerPattern.patternOnOff[14] = 0;
+	lowTelemetryBuzzerPattern.patternOnOff[15] = 0;
 
-	lowRCBatteryPattern.isSingleCycle = false;
-	lowRCBatteryPattern.id = 7;
+	lowTelemetryBuzzerPattern.isSingleCycle = false;
+	lowTelemetryBuzzerPattern.id = 6;
 
 
-	triggeredSafeAirPattern.patternLength = 16;
-	triggeredSafeAirPattern.patternDuration[0] = 200;
-	triggeredSafeAirPattern.patternDuration[1] = 180;
-	triggeredSafeAirPattern.patternDuration[2] = 180;
-	triggeredSafeAirPattern.patternDuration[3] = 160;
-	triggeredSafeAirPattern.patternDuration[4] = 160;
-	triggeredSafeAirPattern.patternDuration[5] = 140;
-	triggeredSafeAirPattern.patternDuration[6] = 140;
-	triggeredSafeAirPattern.patternDuration[7] = 120;
-	triggeredSafeAirPattern.patternDuration[8] = 120;
-	triggeredSafeAirPattern.patternDuration[9] = 100;
-	triggeredSafeAirPattern.patternDuration[10] = 100;
-	triggeredSafeAirPattern.patternDuration[11] = 80;
-	triggeredSafeAirPattern.patternDuration[12] = 80;
-	triggeredSafeAirPattern.patternDuration[13] = 60;
-	triggeredSafeAirPattern.patternDuration[14] = 60;
-	triggeredSafeAirPattern.patternDuration[15] = 40;
+	lowRCBatteryBuzzerPattern.patternLength = 2;
+	lowRCBatteryBuzzerPattern.patternDuration[0] = 200;
+	lowRCBatteryBuzzerPattern.patternDuration[1] = 19800;
+	lowRCBatteryBuzzerPattern.patternDuration[2] = 0;
+	lowRCBatteryBuzzerPattern.patternDuration[3] = 0;
+	lowRCBatteryBuzzerPattern.patternDuration[4] = 0;
+	lowRCBatteryBuzzerPattern.patternDuration[5] = 0;
+	lowRCBatteryBuzzerPattern.patternDuration[6] = 0;
+	lowRCBatteryBuzzerPattern.patternDuration[7] = 0;
+	lowRCBatteryBuzzerPattern.patternDuration[8] = 0;
+	lowRCBatteryBuzzerPattern.patternDuration[9] = 0;
+	lowRCBatteryBuzzerPattern.patternDuration[10] = 0;
+	lowRCBatteryBuzzerPattern.patternDuration[11] = 0;
+	lowRCBatteryBuzzerPattern.patternDuration[12] = 0;
+	lowRCBatteryBuzzerPattern.patternDuration[13] = 0;
+	lowRCBatteryBuzzerPattern.patternDuration[14] = 0;
+	lowRCBatteryBuzzerPattern.patternDuration[15] = 0;
 
-	triggeredSafeAirPattern.patternOnOff[0] = 1; //On
-	triggeredSafeAirPattern.patternOnOff[1] = 0; //Off
-	triggeredSafeAirPattern.patternOnOff[2] = 1;
-	triggeredSafeAirPattern.patternOnOff[3] = 0;
-	triggeredSafeAirPattern.patternOnOff[4] = 1;
-	triggeredSafeAirPattern.patternOnOff[5] = 0;
-	triggeredSafeAirPattern.patternOnOff[6] = 1;
-	triggeredSafeAirPattern.patternOnOff[7] = 0;
-	triggeredSafeAirPattern.patternOnOff[8] = 1;
-	triggeredSafeAirPattern.patternOnOff[9] = 0;
-	triggeredSafeAirPattern.patternOnOff[10] = 1;
-	triggeredSafeAirPattern.patternOnOff[11] = 0;
-	triggeredSafeAirPattern.patternOnOff[12] = 1;
-	triggeredSafeAirPattern.patternOnOff[13] = 0;
-	triggeredSafeAirPattern.patternOnOff[14] = 1;
-	triggeredSafeAirPattern.patternOnOff[15] = 0;
+	lowRCBatteryBuzzerPattern.patternOnOff[0] = 1; //On
+	lowRCBatteryBuzzerPattern.patternOnOff[1] = 0; //Off
+	lowRCBatteryBuzzerPattern.patternOnOff[2] = 0;
+	lowRCBatteryBuzzerPattern.patternOnOff[3] = 0;
+	lowRCBatteryBuzzerPattern.patternOnOff[4] = 0;
+	lowRCBatteryBuzzerPattern.patternOnOff[5] = 0;
+	lowRCBatteryBuzzerPattern.patternOnOff[6] = 0;
+	lowRCBatteryBuzzerPattern.patternOnOff[7] = 0;
+	lowRCBatteryBuzzerPattern.patternOnOff[8] = 0;
+	lowRCBatteryBuzzerPattern.patternOnOff[9] = 0;
+	lowRCBatteryBuzzerPattern.patternOnOff[10] = 0;
+	lowRCBatteryBuzzerPattern.patternOnOff[11] = 0;
+	lowRCBatteryBuzzerPattern.patternOnOff[12] = 0;
+	lowRCBatteryBuzzerPattern.patternOnOff[13] = 0;
+	lowRCBatteryBuzzerPattern.patternOnOff[14] = 0;
+	lowRCBatteryBuzzerPattern.patternOnOff[15] = 0;
 
-	triggeredSafeAirPattern.isSingleCycle = false;
-	triggeredSafeAirPattern.id = 8;
+	lowRCBatteryBuzzerPattern.isSingleCycle = false;
+	lowRCBatteryBuzzerPattern.id = 7;
+
+
+	triggeredBuzzerPattern.patternLength = 16;
+	triggeredBuzzerPattern.patternDuration[0] = 200;
+	triggeredBuzzerPattern.patternDuration[1] = 180;
+	triggeredBuzzerPattern.patternDuration[2] = 180;
+	triggeredBuzzerPattern.patternDuration[3] = 160;
+	triggeredBuzzerPattern.patternDuration[4] = 160;
+	triggeredBuzzerPattern.patternDuration[5] = 140;
+	triggeredBuzzerPattern.patternDuration[6] = 140;
+	triggeredBuzzerPattern.patternDuration[7] = 120;
+	triggeredBuzzerPattern.patternDuration[8] = 120;
+	triggeredBuzzerPattern.patternDuration[9] = 100;
+	triggeredBuzzerPattern.patternDuration[10] = 100;
+	triggeredBuzzerPattern.patternDuration[11] = 80;
+	triggeredBuzzerPattern.patternDuration[12] = 80;
+	triggeredBuzzerPattern.patternDuration[13] = 60;
+	triggeredBuzzerPattern.patternDuration[14] = 60;
+	triggeredBuzzerPattern.patternDuration[15] = 40;
+
+	triggeredBuzzerPattern.patternOnOff[0] = 1; //On
+	triggeredBuzzerPattern.patternOnOff[1] = 0; //Off
+	triggeredBuzzerPattern.patternOnOff[2] = 1;
+	triggeredBuzzerPattern.patternOnOff[3] = 0;
+	triggeredBuzzerPattern.patternOnOff[4] = 1;
+	triggeredBuzzerPattern.patternOnOff[5] = 0;
+	triggeredBuzzerPattern.patternOnOff[6] = 1;
+	triggeredBuzzerPattern.patternOnOff[7] = 0;
+	triggeredBuzzerPattern.patternOnOff[8] = 1;
+	triggeredBuzzerPattern.patternOnOff[9] = 0;
+	triggeredBuzzerPattern.patternOnOff[10] = 1;
+	triggeredBuzzerPattern.patternOnOff[11] = 0;
+	triggeredBuzzerPattern.patternOnOff[12] = 1;
+	triggeredBuzzerPattern.patternOnOff[13] = 0;
+	triggeredBuzzerPattern.patternOnOff[14] = 1;
+	triggeredBuzzerPattern.patternOnOff[15] = 0;
+
+	triggeredBuzzerPattern.isSingleCycle = false;
+	triggeredBuzzerPattern.id = 8;
 }

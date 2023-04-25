@@ -51,7 +51,7 @@ uint32_t iap_erase_sector(uint32_t addr)
 }
 //-----------------------------------------------------------------------------
 
-uint32_t iap_write_sector(uint32_t addr, pU32 data, uint32_t data_length)
+uint32_t iap_write_page(uint32_t addr, pU32 data, uint32_t data_length)
 {
 	uint32_t n;
 

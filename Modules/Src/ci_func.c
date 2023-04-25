@@ -26,7 +26,7 @@ eCI_RESULT func_debug(void)
 	return CI_OK;
 }
 
-eCI_RESULT func_updateRCVersion(void)
+eCI_RESULT func_updateTAPVersion(void)
 {
 	if (!sessionUnlocked)
 	{
@@ -61,7 +61,7 @@ eCI_RESULT func_endUpdatePhase(void)
 	return CI_OK;
 }
 
-eCI_RESULT func_resetRC(void)
+eCI_RESULT func_resetTAP(void)
 {
 	NVIC_SystemReset();
 	return CI_OK;
@@ -582,9 +582,9 @@ functionsList cases [] =
 {
 		{ "ver"	, func_versionReport },
 		{ "dbg"	, func_debug },
-		{ "urcv", func_updateRCVersion },
+		{ "urcv", func_updateTAPVersion },
 		{ "end" , func_endUpdatePhase },
-		{ "rst" , func_resetRC },
+		{ "rst" , func_resetTAP },
 		{ "help", func_showAvailableCommands },
 		{ "apof", func_armPWMOff },
 		{ "apon", func_armPWMOn },

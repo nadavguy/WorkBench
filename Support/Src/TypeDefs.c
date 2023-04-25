@@ -156,7 +156,7 @@ bool ee_save1(void)
 	  return false;
   }
 
-  if (iap_write_sector((uint32_t)ee_flash_base1, (pU32)ee_ram_ptr1, ee_size1) != 0)
+  if (iap_write_page((uint32_t)ee_flash_base1, (pU32)ee_ram_ptr1, ee_size1) != 0)
   {
 	  sprintf(terminalBuffer, "Failed to write EEPROM1");
 	  logData(terminalBuffer, true, false, false);

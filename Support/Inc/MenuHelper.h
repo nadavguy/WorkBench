@@ -166,6 +166,7 @@ extern tPOPUP autoCalibrationMessage;
 extern tPOPUP testFlightMessage;
 extern tPOPUP testMotorCutMessage;
 extern tPOPUP returnToIdleMessage;
+extern tPOPUP resetDueToAltitudeMessage;
 
 extern tUINT16_ITEM brightnessItem;
 extern tSTRING_ITEM triggerModeItem;

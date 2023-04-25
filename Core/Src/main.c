@@ -59,6 +59,7 @@
 #include "crc.h"
 #include "ScreenSaverImages.h"
 #include "DataTransferImages.h"
+//#include "swap.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -83,7 +84,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.030;
-float buildID = 1.040;
+float buildID = 1.050;
 
 SYSTEMState rcState = PREINIT;
 
@@ -221,6 +222,7 @@ int main(void)
   uint32_t bootloaderLength = sizeof(Array) / sizeof(char);
   crc currentBL = F_CRC_CalculaCheckSumFromFlash(0x08000000, bootloaderLength);
   crc includedBL = F_CRC_CalculaCheckSum(Array, bootloaderLength);
+//  isGreaterThanOne(3);
 
   if (currentBL != includedBL)
   {
@@ -392,7 +394,7 @@ int main(void)
 			}
 			updateNextFrame();
 		}
-		updateBuzzerStatus();
+		updateBuzzerPattern();
 		checkChargerMux();
 		if (isFirstCycleAfterUSBDisconnection)
 		{
@@ -708,7 +710,7 @@ void updateRCState(void)
 			previousSmaStatus.smaState = TRIGGERED;
 			shouldUpdateStatusText = true;
 		}
-		nextPattern = &triggeredSafeAirPattern;
+		nextPattern = &triggeredBuzzerPattern;
 	}
 	else if ( (currentSmaStatus.smaState == 0x02) && (previousSmaStatus.smaState != ARMED) )
 	{
@@ -734,17 +736,17 @@ void updateRCState(void)
 	else if (isNoSignal)
 	{
 		//Sound no Link
-		nextPattern = &noTelemetryPattern;
+		nextPattern = &noTelemetryBuzzerPattern;
 	}
 	else if (isSignalLow)
 	{
 		//Sound Low signal
-		nextPattern = &lowTelemetryPattern;
+		nextPattern = &lowTelemetryBuzzerPattern;
 	}
 	else if (isLowBattery)
 	{
 		// Sound low RC battery
-		nextPattern = &lowRCBatteryPattern;
+		nextPattern = &lowRCBatteryBuzzerPattern;
 	}
 	else
 	{
