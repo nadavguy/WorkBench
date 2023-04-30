@@ -63,6 +63,7 @@ void initMenuPages(void)
 		memset(rcSettingsPage.itemsArray[i],0 , MAX_CHARACTERS_IN_ITEM);
 		memset(safeAirSettingsPage.itemsArray[i],0 , MAX_CHARACTERS_IN_ITEM);
 		memset(blueToothSettingsPage.itemsArray[i],0 , MAX_CHARACTERS_IN_ITEM);
+		memset(integrationPage.itemsArray[i],0 , MAX_CHARACTERS_IN_ITEM);
 	}
 
 	MainPage.pageID = 1;
@@ -89,18 +90,21 @@ void initMenuPages(void)
 	}
 	else
 	{
-		MainPage.numberOfItemsInPage = 3;
+		MainPage.numberOfItemsInPage = 4;
 		memcpy(&MainPage.itemsArray[0],"RC Settings",strlen("RC Settings"));
 		memcpy(&MainPage.itemsArray[1],"About RC",strlen("About RC"));
-		memcpy(&MainPage.itemsArray[2],"Close menu",strlen("Close menu"));
+		memcpy(&MainPage.itemsArray[2],"Integration",strlen("Integration"));
+		memcpy(&MainPage.itemsArray[3],"Close menu",strlen("Close menu"));
 
 		MainPage.cellTypeArray[0] = PAGE;
 		MainPage.cellTypeArray[1] = POPUP;
-		MainPage.cellTypeArray[2] = CLOSE;
+		MainPage.cellTypeArray[2] = PAGE;
+		MainPage.cellTypeArray[3] = CLOSE;
 
 		MainPage.nextCellIDArray[0] = 2;
 		MainPage.nextCellIDArray[1] = (uint32_t)&aboutRCMessage;
-		MainPage.nextCellIDArray[2] = 0;
+		MainPage.nextCellIDArray[2] = 5;
+		MainPage.nextCellIDArray[3] = 0;
 	}
 
 	rcSettingsPage.pageID = 2;
@@ -275,7 +279,7 @@ void initMenuPages(void)
 	}
 	else
 	{
-		integrationPage.numberOfItemsInPage = 3;
+		integrationPage.numberOfItemsInPage = 2;
 		memcpy(&integrationPage.itemsArray[0],"Test Motor-Cut",strlen("Test Motor-Cut"));
 		memcpy(&integrationPage.itemsArray[1],"Close menu",strlen("Close menu"));
 
@@ -288,11 +292,15 @@ void initMenuPages(void)
 		}
 		else if (currentSmaStatus.smaState != IDLE)
 		{
-			integrationPage.nextCellIDArray[1] = (uint32_t)&returnToIdleMessage;
+			integrationPage.nextCellIDArray[0] = (uint32_t)&returnToIdleMessage;
 		}
 		else if (currentSmaStatus.Altitude >= 6)
 		{
-			integrationPage.nextCellIDArray[1] = (uint32_t)&resetDueToAltitudeMessage;
+			integrationPage.nextCellIDArray[0] = (uint32_t)&resetDueToAltitudeMessage;
+		}
+		else
+		{
+			integrationPage.nextCellIDArray[0] = (uint32_t)&noConnectionMessage;
 		}
 
 		integrationPage.nextCellIDArray[1] = 0;
@@ -639,16 +647,16 @@ void initPopupMessages(void)
 	memcpy(&testFlightMessage.itemsArray[7],"OK",strlen("OK"));
 
 	testMotorCutMessage.popupID = 13;
-	testMotorCutMessage.numberOfItemsInPopup = 8;
+	testMotorCutMessage.numberOfItemsInPopup = 7;
 	testMotorCutMessage.isQuestion = true;
-	memcpy(&testMotorCutMessage.itemsArray[0],"Approve to init",strlen("Approve to init"));
+	memcpy(&testMotorCutMessage.itemsArray[0],"Approve",strlen("Approve"));
 	memcpy(&testMotorCutMessage.itemsArray[1],"motor-cut test",strlen("motor-cut test"));
 	memcpy(&testMotorCutMessage.itemsArray[2],"",strlen(""));
 	memcpy(&testMotorCutMessage.itemsArray[3],"",strlen(""));
-	memcpy(&testMotorCutMessage.itemsArray[4],"",strlen(""));
-	memcpy(&testMotorCutMessage.itemsArray[5],"->Long Press<-",strlen("->Long Press<-"));
-	memcpy(&testMotorCutMessage.itemsArray[6],"Cancel",strlen("Cancel"));
-	memcpy(&testMotorCutMessage.itemsArray[7],"OK",strlen("OK"));
+//	memcpy(&testMotorCutMessage.itemsArray[4],"",strlen(""));
+	memcpy(&testMotorCutMessage.itemsArray[4],"->Long Press<-",strlen("->Long Press<-"));
+	memcpy(&testMotorCutMessage.itemsArray[5],"Cancel",strlen("Cancel"));
+	memcpy(&testMotorCutMessage.itemsArray[6],"OK",strlen("OK"));
 
 	returnToIdleMessage.popupID = 14;
 	returnToIdleMessage.numberOfItemsInPopup = 8;
