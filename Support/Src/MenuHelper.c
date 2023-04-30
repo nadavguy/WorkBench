@@ -621,10 +621,9 @@ void initPopupMessages(void)
 	}
 	memcpy(&autoCalibrationMessage.itemsArray[2],"",strlen(""));
 	memcpy(&autoCalibrationMessage.itemsArray[3],"",strlen(""));
-	memcpy(&autoCalibrationMessage.itemsArray[4],"",strlen(""));
-	memcpy(&autoCalibrationMessage.itemsArray[5],"->Long Press<-",strlen("->Long Press<-"));
-	memcpy(&autoCalibrationMessage.itemsArray[6],"Cancel",strlen("Cancel"));
-	memcpy(&autoCalibrationMessage.itemsArray[7],"OK",strlen("OK"));
+	memcpy(&autoCalibrationMessage.itemsArray[4],"->Long Press<-",strlen("->Long Press<-"));
+	memcpy(&autoCalibrationMessage.itemsArray[5],"Cancel",strlen("Cancel"));
+	memcpy(&autoCalibrationMessage.itemsArray[6],"OK",strlen("OK"));
 
 	testFlightMessage.popupID = 12;
 	testFlightMessage.numberOfItemsInPopup = 8;
@@ -641,10 +640,9 @@ void initPopupMessages(void)
 	}
 	memcpy(&testFlightMessage.itemsArray[2],"",strlen(""));
 	memcpy(&testFlightMessage.itemsArray[3],"",strlen(""));
-	memcpy(&testFlightMessage.itemsArray[4],"",strlen(""));
-	memcpy(&testFlightMessage.itemsArray[5],"->Long Press<-",strlen("->Long Press<-"));
-	memcpy(&testFlightMessage.itemsArray[6],"Cancel",strlen("Cancel"));
-	memcpy(&testFlightMessage.itemsArray[7],"OK",strlen("OK"));
+	memcpy(&testFlightMessage.itemsArray[4],"->Long Press<-",strlen("->Long Press<-"));
+	memcpy(&testFlightMessage.itemsArray[5],"Cancel",strlen("Cancel"));
+	memcpy(&testFlightMessage.itemsArray[6],"OK",strlen("OK"));
 
 	testMotorCutMessage.popupID = 13;
 	testMotorCutMessage.numberOfItemsInPopup = 7;
@@ -653,7 +651,6 @@ void initPopupMessages(void)
 	memcpy(&testMotorCutMessage.itemsArray[1],"motor-cut test",strlen("motor-cut test"));
 	memcpy(&testMotorCutMessage.itemsArray[2],"",strlen(""));
 	memcpy(&testMotorCutMessage.itemsArray[3],"",strlen(""));
-//	memcpy(&testMotorCutMessage.itemsArray[4],"",strlen(""));
 	memcpy(&testMotorCutMessage.itemsArray[4],"->Long Press<-",strlen("->Long Press<-"));
 	memcpy(&testMotorCutMessage.itemsArray[5],"Cancel",strlen("Cancel"));
 	memcpy(&testMotorCutMessage.itemsArray[6],"OK",strlen("OK"));
