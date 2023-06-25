@@ -84,7 +84,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.030;
-float buildID = 1.070;
+float buildID = 1.150;
 
 SYSTEMState rcState = PREINIT;
 
@@ -213,6 +213,7 @@ int main(void)
   MX_RTC_Init();
   MX_ADC3_Init();
   MX_USART2_UART_Init();
+  MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
 
 	UID1 = (*(__I uint32_t *) 0x1FF0F420);
@@ -228,7 +229,7 @@ int main(void)
   {
     localFlashParams.startAddress = 0x08000000;
     localFlashParams.voltageLevel = FLASH_VOLTAGE_RANGE_3;
-//    reallocateDataFromArray(Array, 0x08000000, bootloaderLength);
+    reallocateDataFromArray(Array, 0x08000000, bootloaderLength);
   }
 
   BSP_QSPI_Init();

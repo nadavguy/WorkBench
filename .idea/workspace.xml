@@ -2,7 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e447845d-0404-4cf9-8f7c-0c2976b9c261" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/USB_DEVICE/App/usb_device.c" beforeDir="false" afterPath="$PROJECT_DIR$/USB_DEVICE/App/usb_device.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cproject" beforeDir="false" afterPath="$PROJECT_DIR$/.cproject" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.settings/language.settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.settings/language.settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.settings/stm32cubeide.project.prefs" beforeDir="false" afterPath="$PROJECT_DIR$/.settings/stm32cubeide.project.prefs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Inc/tim.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/tim.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Src/gpio.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/gpio.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Src/tim.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/tim.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c" beforeDir="false" afterPath="$PROJECT_DIR$/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RC-BeyondTheIronCurtain.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/RC-BeyondTheIronCurtain.ioc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/STM32F777VITX_FLASH.ld" beforeDir="false" afterPath="$PROJECT_DIR$/STM32F777VITX_FLASH.ld" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/USB_DEVICE/Target/usbd_conf.c" beforeDir="false" afterPath="$PROJECT_DIR$/USB_DEVICE/Target/usbd_conf.c" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
