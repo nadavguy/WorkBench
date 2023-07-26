@@ -530,6 +530,11 @@ void updatePlatformText(void)
 			centeredString(SystemTextX, SystemTextY, "Mavic EU", BLACK, BACKGROUND, 16, Font12);
 			break;
 		}
+		case M30:
+		{
+			centeredString(SystemTextX, SystemTextY, "M30", BLACK, BACKGROUND, 16, Font12);
+			break;
+		}
 		default: /* Optional */
 		{
 			centeredString(SystemTextX, SystemTextY, "Unknown platform", BLACK, BACKGROUND, 16, Font12);
@@ -1522,11 +1527,35 @@ void setFullDisplay(void)
 
 	shouldUpdateStatusText = true;
 
-	shouldReDrawAutoPilotIcon = false;
-	shouldReDrawPlatformIcon = false;
-	shouldReDrawTriggerModeIcon = true;
-	shouldRedrawSafeAirBatteryIcon = true;
 	shouldDrawSafeAirAltitude = true;
+	if (numberOfDisplayedSafeAirIcons == 1)
+	{
+		shouldRedrawSafeAirBatteryIcon = true;
+		shouldReDrawTriggerModeIcon = false;
+		shouldReDrawAutoPilotIcon = false;
+		shouldReDrawPlatformIcon = false;
+	}
+	else if (numberOfDisplayedSafeAirIcons == 2)
+	{
+		shouldRedrawSafeAirBatteryIcon = true;
+		shouldReDrawTriggerModeIcon = true;
+		shouldReDrawAutoPilotIcon = false;
+		shouldReDrawPlatformIcon = false;
+	}
+	else if (numberOfDisplayedSafeAirIcons == 3)
+	{
+		shouldRedrawSafeAirBatteryIcon = true;
+		shouldReDrawTriggerModeIcon = true;
+		shouldReDrawAutoPilotIcon = true;
+		shouldReDrawPlatformIcon = false;
+	}
+	else if (numberOfDisplayedSafeAirIcons == 4)
+	{
+		shouldRedrawSafeAirBatteryIcon = true;
+		shouldReDrawTriggerModeIcon = true;
+		shouldReDrawAutoPilotIcon = true;
+		shouldReDrawPlatformIcon = true;
+	}
 
 	shouldClearDisplayedWarning = false;
 	isPopupDisplayed = false;
@@ -1571,15 +1600,39 @@ void setIconPositionOnScreen(void)
 		AltitudeOrGPSX = VerticalAltitudeOrGPSX;
 		AltitudeOrGPSY = VerticalAltitudeOrGPSY;
 
+		if (numberOfDisplayedSafeAirIcons == 1)
+		{
+			SafeAirBatteryX =  -1 * safeAirBarIconWidth / 2 + VerticalDisplayCenterWidth;//VerticalSafeAirBatteryX;
+			SafeAirBatteryY = VerticalSafeAirBatteryY;
+		}
+		else if (numberOfDisplayedSafeAirIcons == 2)
+		{
+			SafeAirBatteryX = ( 1 ) * safeAirBarIconWidth + VerticalDisplayCenterWidth;//VerticalSafeAirBatteryX;
+			SafeAirBatteryY = VerticalSafeAirBatteryY;
+			TriggerModeX = (0) * safeAirBarIconWidth + VerticalDisplayCenterWidth;
+			TriggerModeY = VerticalTriggerModeY;
+		}
+		else if (numberOfDisplayedSafeAirIcons == 3)
+		{
+			SafeAirBatteryX = ( 0.5 ) * safeAirBarIconWidth + VerticalDisplayCenterWidth;//VerticalSafeAirBatteryX;
+			SafeAirBatteryY = VerticalSafeAirBatteryY;
+			TriggerModeX = (-0.5) * safeAirBarIconWidth + VerticalDisplayCenterWidth;
+			TriggerModeY = VerticalTriggerModeY;
+			AutoPilotX = (-1.5) * safeAirBarIconWidth + VerticalDisplayCenterWidth;
+			AutoPilotY = VerticalPltfomTypeY;
+		}
+		else if (numberOfDisplayedSafeAirIcons == 4)
+		{
+			SafeAirBatteryX = (1) * safeAirBarIconWidth + VerticalDisplayCenterWidth;//VerticalSafeAirBatteryX;
+			SafeAirBatteryY = VerticalSafeAirBatteryY;
+			TriggerModeX = (0) * safeAirBarIconWidth + VerticalDisplayCenterWidth;
+			TriggerModeY = VerticalTriggerModeY;
+			AutoPilotX = (-1) * safeAirBarIconWidth + VerticalDisplayCenterWidth;
+			AutoPilotY = VerticalPltfomTypeY;
+			PlatfomTypeX = (-2) * safeAirBarIconWidth + VerticalDisplayCenterWidth;
+			PlatfomTypeY = VerticalAutoPilotY;
+		}
 
-		SafeAirBatteryX = (numberOfDisplayedSafeAirIcons /2 - 1 ) * safeAirBarIconWidth + VerticalDisplayCenterWidth;//VerticalSafeAirBatteryX;
-		SafeAirBatteryY = VerticalSafeAirBatteryY;
-		TriggerModeX = (numberOfDisplayedSafeAirIcons /2 - 2 ) * safeAirBarIconWidth + VerticalDisplayCenterWidth;
-		TriggerModeY = VerticalTriggerModeY;
-		PlatfomTypeX = (numberOfDisplayedSafeAirIcons /2 - 3 ) * safeAirBarIconWidth + VerticalDisplayCenterWidth;
-		PlatfomTypeY = VerticalPltfomTypeY;
-		AutoPilotX = (numberOfDisplayedSafeAirIcons /2 - 4 ) * safeAirBarIconWidth + VerticalDisplayCenterWidth;
-		AutoPilotY = VerticalAutoPilotY;
 
 		ChargingModeImageX = VerticalChargingModeX;
 		ChargingModeImageY = VerticalChargingModeX;

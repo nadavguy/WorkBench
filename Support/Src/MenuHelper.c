@@ -48,6 +48,7 @@ tPOPUP testMotorCutMessage;
 tPOPUP returnToIdleMessage;
 tPOPUP resetDueToAltitudeMessage;
 tPOPUP disconnectPyroMessage;
+tPOPUP markGPSPositionMessage;
 
 bool isTestCalibActive = false;
 bool isAutoCalibActive = false;
@@ -208,7 +209,7 @@ void initMenuPages(void)
 	integrationPage.pageID = 5;
 	if ( (menuLevel == DEVELOPER) || (menuLevel == OEM) )
 	{
-		integrationPage.numberOfItemsInPage = 6;
+		integrationPage.numberOfItemsInPage = 7;
 		if (!isAutoCalibActive)
 		{
 			memcpy(&integrationPage.itemsArray[0],"Init Auto-Calib",strlen("Init Auto-Calib"));
@@ -226,16 +227,18 @@ void initMenuPages(void)
 			memcpy(&integrationPage.itemsArray[1],"Stop Calib Test",strlen("Stop Calib Test"));
 		}
 		memcpy(&integrationPage.itemsArray[2],"Test Motor-Cut",strlen("Test Motor-Cut"));
-		memcpy(&integrationPage.itemsArray[3],"Lower Bar Info",strlen("Lower Bar Info"));
-		memcpy(&integrationPage.itemsArray[4],"Back",strlen("Back"));
-		memcpy(&integrationPage.itemsArray[5],"Close menu",strlen("Close menu"));
+		memcpy(&integrationPage.itemsArray[3],"Mark GPS Pos",strlen("Mark GPS Pos"));
+		memcpy(&integrationPage.itemsArray[4],"Lower Bar Info",strlen("Lower Bar Info"));
+		memcpy(&integrationPage.itemsArray[5],"Back",strlen("Back"));
+		memcpy(&integrationPage.itemsArray[6],"Close menu",strlen("Close menu"));
 
 		integrationPage.cellTypeArray[0] = POPUP;
 		integrationPage.cellTypeArray[1] = POPUP;
 		integrationPage.cellTypeArray[2] = POPUP;
-		integrationPage.cellTypeArray[3] = STRING_ITEM;
-		integrationPage.cellTypeArray[4] = BACK;
-		integrationPage.cellTypeArray[5] = CLOSE;
+		integrationPage.cellTypeArray[3] = POPUP;
+		integrationPage.cellTypeArray[4] = STRING_ITEM;
+		integrationPage.cellTypeArray[5] = BACK;
+		integrationPage.cellTypeArray[6] = CLOSE;
 
 		if (!(currentSmaStatus.BITStatus & 0x04) && (!isAutoCalibActive) && (!isTestCalibActive))
 		{
@@ -247,6 +250,7 @@ void initMenuPages(void)
 			integrationPage.nextCellIDArray[0] = (uint32_t)&autoCalibrationMessage;
 			integrationPage.nextCellIDArray[1] = (uint32_t)&testFlightMessage;
 			integrationPage.nextCellIDArray[2] = (uint32_t)&testMotorCutMessage;
+			integrationPage.nextCellIDArray[3] = (uint32_t)&markGPSPositionMessage;
 		}
 		else
 		{
@@ -273,18 +277,21 @@ void initMenuPages(void)
 				integrationPage.nextCellIDArray[2] = (uint32_t)&returnToIdleMessage;
 //			}
 		}
-		integrationPage.nextCellIDArray[3] = (uint32_t)&LowerBarDisplayItem;
-		integrationPage.nextCellIDArray[4] = 0;
+		integrationPage.nextCellIDArray[3] = (uint32_t)&markGPSPositionMessage;
+		integrationPage.nextCellIDArray[4] = (uint32_t)&LowerBarDisplayItem;
 		integrationPage.nextCellIDArray[5] = 0;
+		integrationPage.nextCellIDArray[6] = 0;
 	}
 	else
 	{
-		integrationPage.numberOfItemsInPage = 2;
+		integrationPage.numberOfItemsInPage = 3;
 		memcpy(&integrationPage.itemsArray[0],"Test Motor-Cut",strlen("Test Motor-Cut"));
-		memcpy(&integrationPage.itemsArray[1],"Close menu",strlen("Close menu"));
+		memcpy(&integrationPage.itemsArray[1],"Mark GPS Pos",strlen("Mark GPS Pos"));
+		memcpy(&integrationPage.itemsArray[2],"Close menu",strlen("Close menu"));
 
 		integrationPage.cellTypeArray[0] = POPUP;
-		integrationPage.cellTypeArray[1] = CLOSE;
+		integrationPage.cellTypeArray[1] = POPUP;
+		integrationPage.cellTypeArray[2] = CLOSE;
 
 		if ( (currentSmaStatus.smaState == IDLE) && (currentSmaStatus.Altitude < 6) )
 		{
@@ -302,8 +309,8 @@ void initMenuPages(void)
 		{
 			integrationPage.nextCellIDArray[0] = (uint32_t)&noConnectionMessage;
 		}
-
-		integrationPage.nextCellIDArray[1] = 0;
+		integrationPage.nextCellIDArray[1] = (uint32_t)&markGPSPositionMessage;
+		integrationPage.nextCellIDArray[2] = 0;
 	}
 
 
@@ -691,6 +698,17 @@ void initPopupMessages(void)
 	memcpy(&resetDueToAltitudeMessage.itemsArray[5],"->Long Press<-",strlen("->Long Press<-"));
 	memcpy(&resetDueToAltitudeMessage.itemsArray[6],"Cancel",strlen("Cancel"));
 	memcpy(&resetDueToAltitudeMessage.itemsArray[7],"OK",strlen("OK"));
+
+	markGPSPositionMessage.popupID = 17;
+	markGPSPositionMessage.numberOfItemsInPopup = 7;
+	markGPSPositionMessage.isQuestion = true;
+	memcpy(&markGPSPositionMessage.itemsArray[0],"Save GPS",strlen("Save GPS"));
+	memcpy(&markGPSPositionMessage.itemsArray[1],"Position",strlen("Position"));
+	memcpy(&markGPSPositionMessage.itemsArray[2],"",strlen(""));
+	memcpy(&markGPSPositionMessage.itemsArray[3],"",strlen(""));
+	memcpy(&markGPSPositionMessage.itemsArray[4],"->Long Press<-",strlen("->Long Press<-"));
+	memcpy(&markGPSPositionMessage.itemsArray[5],"Cancel",strlen("Cancel"));
+	memcpy(&markGPSPositionMessage.itemsArray[6],"OK",strlen("OK"));
 }
 
 void updateSelection(void)

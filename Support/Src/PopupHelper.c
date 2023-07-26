@@ -447,6 +447,41 @@ void waitForPopupInput(void)
 				break;
 			}
 
+			case 17:
+			{
+				waitForAckResponse = false;
+				while ( (okButtonPressDuration < 1075) )
+				{
+					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 1000) )
+					{
+						break;
+					}
+					if ( (popupToShow.isQuestion) && (okButtonPressDuration >= 1000) && (popupDrawDirection == DOWN))
+					{
+						markGPSPosition = true;
+						waitForAckResponse = true;
+						configurationMessageCounter++;
+						break;
+					}
+					sendChannelMessageToTBS();
+					updateRCState();
+					CheckButtons();
+					screenUpdate(false);
+					updateNextFrame();
+				}
+				while (waitForAckResponse)
+				{
+					sendChannelMessageToTBS();
+					updateRCState();
+					CheckButtons();
+					showWaitForSAAck();
+				}
+				markGPSPosition = false;
+				initMenuPages();
+				initPopupMessages();
+				break;
+			} //End of Test Motor Cut
+
 			default:
 			{
 				break;

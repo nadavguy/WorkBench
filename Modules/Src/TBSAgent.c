@@ -352,6 +352,10 @@ bool parseTBSMessage(void)
 			{
 				currentSmaStatus.smaPlatformName = MAVICEU;
 			}
+			else if ( (localRxArray[i + 12] == 9)  && (ee.legacySystemType == 0) )
+			{
+				currentSmaStatus.smaPlatformName = M30;
+			}
 			else if (ee.legacySystemType != 0)
 			{
 				currentSmaStatus.smaPlatformName = ee.legacySystemType;
@@ -397,6 +401,9 @@ bool parseTBSMessage(void)
 				//Unit time
 //				remainingCalibrationTime = 0;
 			}
+
+			isAutoPilotDisplayed = (bool)(localRxArray[i + 24] & 1);
+			isPlatformDisplayed = (bool)(localRxArray[i + 24] & 2);
 			i = i + 0x1B - 1;
 
 			if (currentSmaStatus.BITStatus & 0x01)
@@ -424,6 +431,20 @@ bool parseTBSMessage(void)
 			else
 			{
 				displayWarning.BITStatus &= ~smaPyroError;
+			}
+
+			if (currentSmaStatus.BITStatus & 0x8)
+			{
+				displayWarning.BITStatus |= autoPilot;
+				currentSmaStatus.isAutoPilotConnected = true;
+				currentSmaStatus.autoPilotConnection = CONNECTED;
+
+			}
+			else
+			{
+				displayWarning.BITStatus &= ~autoPilot;
+				currentSmaStatus.isAutoPilotConnected = false;
+				currentSmaStatus.autoPilotConnection = DISCONNECTED;
 			}
 
 			if ( (!isSMABatteryLow) && (!isSMABatteryCritical) && (!isSMABatteryMedium) && (currentSmaStatus.batteryVoltage >= 3.9 ) )
@@ -467,17 +488,6 @@ bool parseTBSMessage(void)
 				displayWarning.BITStatus &= ~geoFencing;
 			}
 
-			if (currentSmaStatus.BITStatus & 0x100)
-			{
-				displayWarning.BITStatus |= autoPilot;
-				currentSmaStatus.isAutoPilotConnected = true;
-
-			}
-			else
-			{
-				displayWarning.BITStatus &= ~autoPilot;
-				currentSmaStatus.isAutoPilotConnected = false;
-			}
 
 			if (currentSmaStatus.BITStatus & 0x200)
 			{
@@ -818,7 +828,7 @@ void sendSafeAirConfigurationMessage(bool includeTimeInMessage)
 			safeairConfiguration.formatSD = 0x17;
 		}
 		safeairConfigurationFrame[12] = safeairConfiguration.formatSD;
-		safeairConfigurationFrame[13] = safeairConfiguration.loggingMode;
+		safeairConfigurationFrame[13] = safeairConfiguration.loggingMode + 16 * markGPSPosition;
 		safeairConfigurationFrame[14] = (uint8_t)((uint16_t)((safeairConfiguration.MTD) & 0xff00)>>8); // MTD High Byte
 		safeairConfigurationFrame[15] = (uint8_t)((uint16_t)((safeairConfiguration.MTD) & 0x00ff)); // MTD Low Byte
 		safeairConfigurationFrame[16] = includeTimeInMessage * 0x85 + (1 - includeTimeInMessage) * 0x17; //Time Included
