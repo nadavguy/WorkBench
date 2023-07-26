@@ -480,7 +480,31 @@ void waitForPopupInput(void)
 				initMenuPages();
 				initPopupMessages();
 				break;
-			} //End of Test Motor Cut
+			} //End of mark GPS Position
+
+			case 18:
+			{
+				while ( (okButtonPressDuration < 1075) )
+				{
+					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 1000) )
+					{
+						break;
+					}
+					if ( (popupToShow.isQuestion) && (okButtonPressDuration >= 1000) && (popupDrawDirection == DOWN))
+					{
+
+						break;
+					}
+					sendChannelMessageToTBS();
+					updateRCState();
+					CheckButtons();
+					screenUpdate(false);
+					updateNextFrame();
+				}
+				initMenuPages();
+				initPopupMessages();
+				break;
+			}
 
 			default:
 			{

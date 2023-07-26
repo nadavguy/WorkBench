@@ -49,6 +49,7 @@ tPOPUP returnToIdleMessage;
 tPOPUP resetDueToAltitudeMessage;
 tPOPUP disconnectPyroMessage;
 tPOPUP markGPSPositionMessage;
+tPOPUP noAutoPilotMessage;
 
 bool isTestCalibActive = false;
 bool isAutoCalibActive = false;
@@ -250,7 +251,15 @@ void initMenuPages(void)
 			integrationPage.nextCellIDArray[0] = (uint32_t)&autoCalibrationMessage;
 			integrationPage.nextCellIDArray[1] = (uint32_t)&testFlightMessage;
 			integrationPage.nextCellIDArray[2] = (uint32_t)&testMotorCutMessage;
-			integrationPage.nextCellIDArray[3] = (uint32_t)&markGPSPositionMessage;
+//			integrationPage.nextCellIDArray[3] = (uint32_t)&markGPSPositionMessage;
+			if (currentSmaStatus.autoPilotConnection)
+			{
+				integrationPage.nextCellIDArray[3] = (uint32_t)&markGPSPositionMessage;
+			}
+			else
+			{
+				integrationPage.nextCellIDArray[3] = (uint32_t)&noAutoPilotMessage;
+			}
 		}
 		else
 		{
@@ -277,7 +286,15 @@ void initMenuPages(void)
 				integrationPage.nextCellIDArray[2] = (uint32_t)&returnToIdleMessage;
 //			}
 		}
-		integrationPage.nextCellIDArray[3] = (uint32_t)&markGPSPositionMessage;
+//		integrationPage.nextCellIDArray[3] = (uint32_t)&markGPSPositionMessage;
+		if (currentSmaStatus.autoPilotConnection)
+		{
+			integrationPage.nextCellIDArray[3] = (uint32_t)&markGPSPositionMessage;
+		}
+		else
+		{
+			integrationPage.nextCellIDArray[3] = (uint32_t)&noAutoPilotMessage;
+		}
 		integrationPage.nextCellIDArray[4] = (uint32_t)&LowerBarDisplayItem;
 		integrationPage.nextCellIDArray[5] = 0;
 		integrationPage.nextCellIDArray[6] = 0;
@@ -309,7 +326,14 @@ void initMenuPages(void)
 		{
 			integrationPage.nextCellIDArray[0] = (uint32_t)&noConnectionMessage;
 		}
-		integrationPage.nextCellIDArray[1] = (uint32_t)&markGPSPositionMessage;
+		if (currentSmaStatus.autoPilotConnection)
+		{
+			integrationPage.nextCellIDArray[1] = (uint32_t)&markGPSPositionMessage;
+		}
+		else
+		{
+			integrationPage.nextCellIDArray[1] = (uint32_t)&noAutoPilotMessage;
+		}
 		integrationPage.nextCellIDArray[2] = 0;
 	}
 
@@ -709,6 +733,18 @@ void initPopupMessages(void)
 	memcpy(&markGPSPositionMessage.itemsArray[4],"->Long Press<-",strlen("->Long Press<-"));
 	memcpy(&markGPSPositionMessage.itemsArray[5],"Cancel",strlen("Cancel"));
 	memcpy(&markGPSPositionMessage.itemsArray[6],"OK",strlen("OK"));
+
+	noAutoPilotMessage.popupID = 18;
+	noAutoPilotMessage.numberOfItemsInPopup = 8;
+	noAutoPilotMessage.isQuestion = false;
+	memcpy(&noAutoPilotMessage.itemsArray[0],"SafeAir is not",strlen("SafeAir is not"));
+	memcpy(&noAutoPilotMessage.itemsArray[1],"connected to,",strlen("connected to,"));
+	memcpy(&noAutoPilotMessage.itemsArray[2],"Auto-Pilot",strlen("Auto-Pilot"));
+	memcpy(&noAutoPilotMessage.itemsArray[3],"               ",strlen("               "));
+	memcpy(&noAutoPilotMessage.itemsArray[4],"               ",strlen("               "));
+	memcpy(&noAutoPilotMessage.itemsArray[5],"->Long Press<-",strlen("->Long Press<-"));
+	memcpy(&noAutoPilotMessage.itemsArray[6],"Cancel",strlen("Cancel"));
+	memcpy(&noAutoPilotMessage.itemsArray[7],"OK",strlen("OK"));
 }
 
 void updateSelection(void)
