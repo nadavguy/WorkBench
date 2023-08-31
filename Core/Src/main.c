@@ -84,7 +84,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.040;
-float buildID = 1.170;
+float buildID = 1.180;
 
 SYSTEMState rcState = PREINIT;
 
@@ -616,7 +616,7 @@ void updateRCState(void)
 	else if ( (rcLinkStatus.DownlinkPSRLQ > 50) && (rcLinkStatus.DownlinkPSRLQ <= 75) && (tbsLink != MEDIUM) )
 	{
 		isNoSignal = false;
-		isSignalLow = true;
+		isSignalLow = false;
 		shouldRedrawSignalStrengthIcon = true;
 		tbsLink = MEDIUM;
 		logRCLinkStatus(true);
