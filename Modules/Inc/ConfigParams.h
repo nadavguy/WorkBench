@@ -31,6 +31,10 @@ typedef struct sEE_DATA
 	char password[32];
 	uint8_t legacySystemType;
 	uint8_t informationLevel;
+	char geoCagingFileName[16];
+	char geoCagingDate[16];
+	uint8_t geoCagingPolygons;
+	uint8_t geoCagingCircles;
 }tEE_DATA;
 
 

@@ -63,6 +63,10 @@ bool committedLastLogCommand = true;
 //bool logDataAckSent = false;
 
 char safeAirTailID[12] = "";
+// char geoCagingFilename[16] = "";
+// char geoCagingDate[10] = "";
+// uint8_t numberOfGeoPolygons = 0;
+// uint8_t numberOfGeoCircle = 0;
 
 tRC_LINK rcLinkStatus;
 tSMA_Status previousSmaStatus;
@@ -199,18 +203,18 @@ bool parseTBSMessage(void)
 	uint8_t crc = 0;
 	bool localRet = false;
 
-// 	char test[1024] = "";
-// 	logData((char *)"TBS RX: ", true, true, false);
-// 	for (int i = 0 ; i < 128 ; i++)
-// 	{
-// 		sprintf(&test[i*5], "-0x%02X",tbsRXArray[i]);
-// 		if (tbsRXArray[i] == 0xFD)
-// 		{
-// //			int y = 1;
-// 		}
-// 	}
-// 	logData(test, true, true, false);
-// 	memset(test, 0, 1024);
+//  	char test[1024] = "";
+//  	logData((char *)"TBS RX: ", true, true, false);
+//  	for (int i = 0 ; i < 128 ; i++)
+//  	{
+//  		sprintf(&test[i*5], "-0x%02X",tbsRXArray[i]);
+//  		if (tbsRXArray[i] == 0xFD)
+//  		{
+//  //			int y = 1;
+//  		}
+//  	}
+//  	logData(test, true, true, false);
+//  	memset(test, 0, 1024);
 	uint8_t localRxArray[TBS_RX_BUFFER] = {0};
 	memcpy(localRxArray,tbsRXArray,TBS_RX_BUFFER);
 
@@ -733,6 +737,57 @@ bool parseTBSMessage(void)
 		}
 		else if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x3E) && (localRxArray[i + 2] == 0xBF) && (TBS_RX_BUFFER - i >= 0x3E)
 				&& (crc != localRxArray[i + 0x3E + 1]) )
+		{
+
+		}
+
+		if ( TBS_RX_BUFFER - (i + 2) > 0x1E - 1 )
+		{
+			crc = crc8(&localRxArray[i + 2], 0x1E - 1);
+		}
+		if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x1E) && (localRxArray[i + 2] == 0xD3) && (TBS_RX_BUFFER - i >= 0x1E)
+				&& (crc == localRxArray[i + 0x1E + 1]) )
+		{
+			// char geoCagingFilename[16] = "";
+			// char geoCagingDate[10] = "";
+			// uint8_t numberOfGeoPolygons = 0;
+			// uint8_t numberOfGeoCircle = 0;
+			ee.geoCagingFileName[0] = (char)(localRxArray[i + 3]);
+			ee.geoCagingFileName[1] = (char)(localRxArray[i + 4]);
+			ee.geoCagingFileName[2] = (char)(localRxArray[i + 5]);
+			ee.geoCagingFileName[3] = (char)(localRxArray[i + 6]);
+			ee.geoCagingFileName[4] = (char)(localRxArray[i + 7]);
+			ee.geoCagingFileName[5] = (char)(localRxArray[i + 8]);
+			ee.geoCagingFileName[6] = (char)(localRxArray[i + 9]);
+			ee.geoCagingFileName[7] = (char)(localRxArray[i + 10]);
+			ee.geoCagingFileName[8] = (char)(localRxArray[i + 11]);
+			ee.geoCagingFileName[9] = (char)(localRxArray[i + 12]);
+			ee.geoCagingFileName[10] = (char)(localRxArray[i + 13]);
+			ee.geoCagingFileName[11] = (char)(localRxArray[i + 14]);
+			ee.geoCagingFileName[12] = (char)(localRxArray[i + 15]);
+			ee.geoCagingFileName[13] = (char)(localRxArray[i + 16]);
+			ee.geoCagingFileName[14] = (char)(localRxArray[i + 17]);
+			ee.geoCagingFileName[15] = (char)(localRxArray[i + 18]);
+			ee.geoCagingDate[0] = (char)(localRxArray[i + 19]);
+			ee.geoCagingDate[1] = (char)(localRxArray[i + 20]);
+			ee.geoCagingDate[2] = (char)(localRxArray[i + 21]);
+			ee.geoCagingDate[3] = (char)(localRxArray[i + 22]);
+			ee.geoCagingDate[4] = (char)(localRxArray[i + 23]);
+			ee.geoCagingDate[5] = (char)(localRxArray[i + 24]);
+			ee.geoCagingDate[6] = (char)(localRxArray[i + 25]);
+			ee.geoCagingDate[7] = (char)(localRxArray[i + 26]);
+			ee.geoCagingDate[8] = (char)(localRxArray[i + 27]);
+			ee.geoCagingDate[9] = (char)(localRxArray[i + 28]);
+			ee.geoCagingPolygons = localRxArray[i + 29];
+			ee.geoCagingCircles = localRxArray[i + 30];
+
+			lastReceivedCRSFMessage = HAL_GetTick();
+			i = i + 0x1E - 1;
+			initMenuItems();
+			initPopupMessages();
+		}
+		else if ( (localRxArray[i] == 0xEA) && (localRxArray[i + 1] == 0x1E) && (localRxArray[i + 2] == 0xD3) && (TBS_RX_BUFFER - i >= 0x1E)
+				&& (crc != localRxArray[i + 0x1E + 1]) )
 		{
 
 		}

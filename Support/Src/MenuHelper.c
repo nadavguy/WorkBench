@@ -50,6 +50,7 @@ tPOPUP resetDueToAltitudeMessage;
 tPOPUP disconnectPyroMessage;
 tPOPUP markGPSPositionMessage;
 tPOPUP noAutoPilotMessage;
+tPOPUP geoCagingMessage;
 
 bool isTestCalibActive = false;
 bool isAutoCalibActive = false;
@@ -71,24 +72,27 @@ void initMenuPages(void)
 	MainPage.pageID = 1;
 	if ( (menuLevel == DEVELOPER) || (menuLevel == OEM) )
 	{
-		MainPage.numberOfItemsInPage = 5;
+		MainPage.numberOfItemsInPage = 6;
 		memcpy(&MainPage.itemsArray[0],"RC Settings",strlen("RC Settings"));
 		memcpy(&MainPage.itemsArray[1],"SA Settings",strlen("SA Settings"));
 		memcpy(&MainPage.itemsArray[2],"Integration",strlen("Integration"));
 		memcpy(&MainPage.itemsArray[3],"About RC",strlen("About RC"));
-		memcpy(&MainPage.itemsArray[4],"Close menu",strlen("Close menu"));
+		memcpy(&MainPage.itemsArray[4],"GeoCaging",strlen("GeoCaging"));
+		memcpy(&MainPage.itemsArray[5],"Close menu",strlen("Close menu"));
 
 		MainPage.cellTypeArray[0] = PAGE;
 		MainPage.cellTypeArray[1] = PAGE;
 		MainPage.cellTypeArray[2] = PAGE;
 		MainPage.cellTypeArray[3] = POPUP;
-		MainPage.cellTypeArray[4] = CLOSE;
+		MainPage.cellTypeArray[4] = POPUP;
+		MainPage.cellTypeArray[5] = CLOSE;
 
 		MainPage.nextCellIDArray[0] = 2;
 		MainPage.nextCellIDArray[1] = 3;
 		MainPage.nextCellIDArray[2] = 5;
 		MainPage.nextCellIDArray[3] = (uint32_t)&aboutRCMessage;
-		MainPage.nextCellIDArray[4] = 0;
+		MainPage.nextCellIDArray[4] = (uint32_t)&geoCagingMessage;
+		MainPage.nextCellIDArray[5] = 0;
 	}
 	else
 	{
@@ -745,6 +749,21 @@ void initPopupMessages(void)
 	memcpy(&noAutoPilotMessage.itemsArray[5],"->Long Press<-",strlen("->Long Press<-"));
 	memcpy(&noAutoPilotMessage.itemsArray[6],"Cancel",strlen("Cancel"));
 	memcpy(&noAutoPilotMessage.itemsArray[7],"OK",strlen("OK"));
+
+
+	memset(&geoCagingMessage, 0, sizeof(tPOPUP));
+	char buffer[3] = "";
+	itoa(ee.geoCagingPolygons,buffer,10);
+	geoCagingMessage.popupID = 19;
+	geoCagingMessage.numberOfItemsInPopup = 8;
+	geoCagingMessage.isQuestion = false;
+	memcpy(&geoCagingMessage.itemsArray[0],"Geo-Caging data",strlen("Geo-Caging data"));
+	memcpy(&geoCagingMessage.itemsArray[1],"File Name&Date:",strlen("File Name&Date:"));
+	memcpy(&geoCagingMessage.itemsArray[2],ee.geoCagingFileName,strlen(ee.geoCagingFileName));
+	memcpy(&geoCagingMessage.itemsArray[3],ee.geoCagingDate,strlen(ee.geoCagingDate));
+	memcpy(&geoCagingMessage.itemsArray[4],"# Of Polygons",strlen("# Of Polygons"));
+	memcpy(&geoCagingMessage.itemsArray[5],buffer,strlen(buffer));
+	memcpy(&geoCagingMessage.itemsArray[7],"OK",strlen("OK"));
 }
 
 void updateSelection(void)

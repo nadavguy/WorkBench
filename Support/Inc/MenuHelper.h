@@ -169,6 +169,7 @@ extern tPOPUP returnToIdleMessage;
 extern tPOPUP resetDueToAltitudeMessage;
 extern tPOPUP markGPSPositionMessage;
 extern tPOPUP noAutoPilotMessage;
+extern tPOPUP geoCagingMessage;
 
 extern tUINT16_ITEM brightnessItem;
 extern tSTRING_ITEM triggerModeItem;

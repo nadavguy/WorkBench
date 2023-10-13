@@ -506,6 +506,30 @@ void waitForPopupInput(void)
 				break;
 			}
 
+			case 19:
+			{
+				while ( (okButtonPressDuration < 1075) )
+				{
+					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 10) )
+					{
+						break;
+					}
+					if ( (popupToShow.isQuestion) && (okButtonPressDuration >= 10) && (popupDrawDirection == DOWN))
+					{
+
+						break;
+					}
+					sendChannelMessageToTBS();
+					updateRCState();
+					CheckButtons();
+					screenUpdate(false);
+					updateNextFrame();
+				}
+				initMenuPages();
+				initPopupMessages();
+				break;
+			} //End of GeoCaging popup
+
 			default:
 			{
 				break;

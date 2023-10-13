@@ -126,6 +126,10 @@ extern bool everReceivedConfigurationMessage;
 //extern bool logDataAckSent;
 
 extern char safeAirTailID[12];
+// extern char geoCagingFilename[16];
+// extern char geoCagingDate[10];
+// extern uint8_t numberOfGeoPolygons;
+// extern uint8_t numberOfGeoCircle;
 
 extern tRC_LINK rcLinkStatus;
 extern tSMA_Status previousSmaStatus;

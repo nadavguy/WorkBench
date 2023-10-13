@@ -2,5 +2,6 @@
     "files.associations": {
         "stdint.h": "c",
         "logagent.h": "c"
-    }
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }

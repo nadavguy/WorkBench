@@ -84,7 +84,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.040;
-float buildID = 1.190;
+float buildID = 1.200;
 
 SYSTEMState rcState = PREINIT;
 
@@ -230,7 +230,7 @@ int main(void)
   {
     localFlashParams.startAddress = 0x08000000;
     localFlashParams.voltageLevel = FLASH_VOLTAGE_RANGE_3;
-    reallocateDataFromArray(Array, 0x08000000, bootloaderLength);
+	reallocateDataFromArray(Array, 0x08000000, bootloaderLength);
   }
 
   BSP_QSPI_Init();
@@ -241,13 +241,15 @@ int main(void)
 	createNewLogFile();
 
 	ee_init1((pU32)&ee, sizeof(ee));
-	sprintf(ee.password, "PARAZERO@DOVHOZ#30");
 	if (!ee_validate1())
 	{
 		sprintf(terminalBuffer,"EEPROM1 Error, set default values");
 		logData(terminalBuffer, true, false, false);
 		ee_save1();
 	}
+	sprintf(ee.password, "PARAZERO@DOVHOZ#30");
+	memset(ee.geoCagingFileName, 0, 16);
+	memset(ee.geoCagingDate, 0, 16);
 	ee.rcMode = 0;
 	safeairConfiguration.MTD = 0;
 
