@@ -105,6 +105,9 @@
 #define VerticalBatteryX 104
 #define VerticalBatteryY 1
 
+#define VerticalSapGPSX 24
+#define VerticalsapGPSY 1
+
 #define VerticalLogoX 0
 #define VerticalLogoY 0
 
@@ -209,6 +212,7 @@ extern const unsigned char *previousSignalImage;
 extern const unsigned char *previousBatteryImage;
 extern const unsigned char *previousDataTransferImage;
 extern const unsigned char *previousButtonDotImage;
+extern const unsigned char *previoussapGPSImage;
 
 extern bool shouldRenderBatteryPercent;
 extern bool shouldRenderMenu;
@@ -229,6 +233,9 @@ extern bool isSafeAirBatteryDisplayed;
 extern bool isAltitudeDisplayed;
 extern bool isGPSPositionDisplayed;
 extern bool shouldRenderDataTransfer;
+extern bool isSAPGPSEnabled;
+extern bool isSAPGPSLocked;
+extern bool shouldRenderSAPGPS;
 
 extern uint8_t LineStartX;
 extern uint8_t LineEndX;

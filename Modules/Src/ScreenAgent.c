@@ -23,6 +23,7 @@
 #include "usb_device.h"
 #include "ScreenSaverImages.h"
 #include "DataTransferImages.h"
+#include "SAPGPSImages.h"
 
 const unsigned char *previousBluetoothImage;
 const unsigned char *previousPlatformImage;
@@ -34,6 +35,7 @@ const unsigned char *previousRCBatteryImage;
 const unsigned char *previousAltitudeOrGPSImage;
 const unsigned char *previousDataTransferImage;
 const unsigned char *previousButtonDotImage;
+const unsigned char *previoussapGPSImage;
 
 bool shouldRenderBatteryPercent = false;
 bool shouldRenderMenu = false;
@@ -54,6 +56,9 @@ bool isSafeAirBatteryDisplayed = true;
 bool isAltitudeDisplayed = true;
 bool isGPSPositionDisplayed = false;
 bool shouldRenderDataTransfer = false;
+bool isSAPGPSEnabled = false;
+bool isSAPGPSLocked = false;
+bool shouldRenderSAPGPS = false;
 
 uint8_t PlatfomTypeX = 0;
 uint8_t PlatfomTypeY = 0;
@@ -104,6 +109,8 @@ uint8_t posX = 0;
 uint8_t posY = 0;
 uint8_t ButtonDotX = 0;
 uint8_t ButtonDotY = 0;
+uint8_t sapGPSX = 0;
+uint8_t sapGPSY = 0;
 
 uint32_t lastBatteryRefresh = 0;
 uint32_t lastBITStatusChange = 0;
@@ -1158,6 +1165,74 @@ void drawButtonDotIcon(bool drawDeltaImage)
 	}
 }
 
+void drawSapGpsIcon(bool drawDeltaImage)
+{
+	switch (currentSmaStatus.sapGPS)
+	{
+		case GPSDisconnected:
+		{
+			if (!drawDeltaImage)
+			{
+
+				Paint_DrawImage(gImage_GPSWhite, sapGPSX, sapGPSY, statusBarIconWidth, statusBarIconWidth);
+
+			}
+			else
+			{
+				Paint_DrawDeltaImage(gImage_GPSWhite, previoussapGPSImage,
+						sapGPSX, sapGPSY, statusBarIconWidth, statusBarIconWidth);
+			}
+			previousPlatformImage = gImage_GPSWhite;
+			break; /* optional */
+		}
+
+		case GPSLocked:
+		{
+			if (!drawDeltaImage)
+			{
+				Paint_DrawImage(gImage_GPSGreen, sapGPSX, sapGPSY, statusBarIconWidth, statusBarIconWidth);
+			}
+			else
+			{
+				Paint_DrawDeltaImage(gImage_GPSGreen, previoussapGPSImage,
+						sapGPSX, sapGPSY, statusBarIconWidth, statusBarIconWidth);
+			}
+			previousPlatformImage = gImage_GPSGreen;
+			break; /* optional */
+		}
+
+		case GPSNotLocked:
+		{
+			if (!drawDeltaImage)
+			{
+				Paint_DrawImage(gImage_GPSRed, sapGPSX, sapGPSY, statusBarIconWidth, statusBarIconWidth);
+			}
+			else
+			{
+				Paint_DrawDeltaImage(gImage_GPSRed, previoussapGPSImage,
+						sapGPSX, sapGPSY, statusBarIconWidth, statusBarIconWidth);
+			}
+			previousPlatformImage = gImage_GPSRed;
+			break; /* optional */
+		}
+
+		default: /* Optional */
+		{
+			if (!drawDeltaImage)
+			{
+
+				Paint_DrawImage(gImage_GPSWhite, sapGPSX, sapGPSY, statusBarIconWidth, statusBarIconWidth);
+			}
+			else
+			{
+				Paint_DrawDeltaImage(gImage_GPSWhite, previoussapGPSImage,
+						sapGPSX, sapGPSY, statusBarIconWidth, statusBarIconWidth);
+			}
+			previousPlatformImage = gImage_GPSWhite;
+		}
+	}
+}
+
 void screenUpdate(bool drawDeltaImage)
 {
 	numberOfDisplayedSafeAirIcons = 1 * isAutoPilotDisplayed + 1 * isPlatformDisplayed +
@@ -1267,7 +1342,6 @@ void screenUpdate(bool drawDeltaImage)
 
 		if (shouldUpdateStatusText)
 		{
-
 			updateStatusText();
 			shouldUpdateStatusText = false;
 		} // End of should update status text
@@ -1278,33 +1352,39 @@ void screenUpdate(bool drawDeltaImage)
 			shouldRedrawButtonDotIcon = false;
 		} // End of should update Button Dot
 
-		if ( (menuLevel == DEVELOPER) )
-		{
-			if ( (tbsTXRXStatus != TBSRX) && (HAL_GetTick() - lastLogDataRefresh < 500) )
-			{
-				tbsTXRXStatus = TBSRX;
-//				drawTBSTxRxIcon(drawDeltaImage);
-			}
-			else if ( (HAL_GetTick() - lastLogDataRefresh >= 500) && (HAL_GetTick() - lastLogDataRefresh < 1000) )
-			{
-//				lastLogDataRefresh = HAL_GetTick();
-//				drawTBSTxRxIcon(drawDeltaImage);
-			}
-			if (HAL_GetTick() - lastLogDataRefresh >= 1000)
-			{
-				tbsTXRXStatus = TBSIDLE;
-//				drawTBSTxRxIcon(drawDeltaImage);
-				shouldRenderDataTransfer = false;
-//				lastLogDataRefresh = HAL_GetTick();
-			}
-			drawTBSTxRxIcon(drawDeltaImage);
-		}
+//		if ( (menuLevel == DEVELOPER) )
+//		{
+//			if ( (tbsTXRXStatus != TBSRX) && (HAL_GetTick() - lastLogDataRefresh < 500) )
+//			{
+//				tbsTXRXStatus = TBSRX;
+////				drawTBSTxRxIcon(drawDeltaImage);
+//			}
+//			else if ( (HAL_GetTick() - lastLogDataRefresh >= 500) && (HAL_GetTick() - lastLogDataRefresh < 1000) )
+//			{
+////				lastLogDataRefresh = HAL_GetTick();
+////				drawTBSTxRxIcon(drawDeltaImage);
+//			}
+//			if (HAL_GetTick() - lastLogDataRefresh >= 1000)
+//			{
+//				tbsTXRXStatus = TBSIDLE;
+////				drawTBSTxRxIcon(drawDeltaImage);
+//				shouldRenderDataTransfer = false;
+////				lastLogDataRefresh = HAL_GetTick();
+//			}
+//			drawTBSTxRxIcon(drawDeltaImage);
+//		}
 
 		if (HAL_GetTick() - lastBITStatusChange >= 500)
 		{
 			lastBITStatusChange = HAL_GetTick();
 			updateBITStatus();
 		}
+
+		if (shouldRenderSAPGPS)
+		{
+			drawSapGpsIcon(drawDeltaImage);
+			shouldRenderSAPGPS = false;
+		} // End of should update sap GPS status
 	} // end of RC and SafeAir data display
 	else if (isMenuDisplayed)
 	{
@@ -1522,6 +1602,7 @@ void setFullDisplay(void)
 	shouldRedrawBatteryIcon = true;
 	shouldRedrawSignalStrengthIcon = true;
 	shouldReDrawBluetoothIcon = isBLEOn;
+	shouldRenderSAPGPS = true;
 
 	shouldUpdatePlatformText = true;
 
@@ -1581,6 +1662,8 @@ void setIconPositionOnScreen(void)
 		TBSSignalY = VerticalTBSSignalY;
 		BatteryX = VerticalBatteryX;
 		BatteryY = VerticalBatteryY;
+		sapGPSX = VerticalSapGPSX;
+		sapGPSY = VerticalsapGPSY;
 
 		AutoPilotY = VerticalAutoPilotY;
 

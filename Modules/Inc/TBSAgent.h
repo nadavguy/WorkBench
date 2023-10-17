@@ -46,6 +46,8 @@ typedef enum {CRITICALANGLE, FREEFALL, MANUALTRIGGER, GEOFENCING, AUTOPILOTTRIGG
 
 typedef enum {TBSIDLE, TBSTX, TBSRX} TBSRXTXType;
 
+typedef enum {GPSDisconnected, GPSLocked, GPSNotLocked} SAPGPSStatus;
+
 typedef struct sRC_LINK
 {
 	uint8_t UplinkRSSIAnt1; //Uplink is ground to UAV
@@ -78,6 +80,7 @@ typedef struct sSMA_Status
 	SIGNALStrength batteryStrength;
 	TRIGGERReason smaTriggerReason;
 	MENULEVELType rcMenuLevel;
+	SAPGPSStatus sapGPS;
 }tSMA_Status;
 
 typedef struct sWarning

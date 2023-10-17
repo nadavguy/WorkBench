@@ -406,8 +406,29 @@ bool parseTBSMessage(void)
 //				remainingCalibrationTime = 0;
 			}
 
+			if ( (isSAPGPSEnabled) && !((bool)(localRxArray[i + 24] & 4)) )
+			{
+				shouldRenderSAPGPS = true;
+				currentSmaStatus.sapGPS = GPSDisconnected;
+			}
+
 			isAutoPilotDisplayed = (bool)(localRxArray[i + 24] & 1);
 			isPlatformDisplayed = (bool)(localRxArray[i + 24] & 2);
+			isSAPGPSEnabled = (bool)(localRxArray[i + 24] & 4);
+			isSAPGPSLocked = (bool)(localRxArray[i + 24] & 8);
+
+			if (isSAPGPSEnabled)
+			{
+				shouldRenderSAPGPS = true;
+				if (isSAPGPSLocked)
+				{
+					currentSmaStatus.sapGPS = GPSLocked;
+				}
+				else
+				{
+					currentSmaStatus.sapGPS = GPSNotLocked;
+				}
+			}
 			i = i + 0x1B - 1;
 
 			if (currentSmaStatus.BITStatus & 0x01)
