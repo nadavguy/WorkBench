@@ -84,7 +84,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.040;
-float buildID = 1.220;
+float buildID = 1.240;
 
 SYSTEMState rcState = PREINIT;
 

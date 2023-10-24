@@ -542,6 +542,11 @@ void updatePlatformText(void)
 			centeredString(SystemTextX, SystemTextY, "M30", BLACK, BACKGROUND, 16, Font12);
 			break;
 		}
+		case M350:
+		{
+			centeredString(SystemTextX, SystemTextY, "M350", BLACK, BACKGROUND, 16, Font12);
+			break;
+		}
 		default: /* Optional */
 		{
 			centeredString(SystemTextX, SystemTextY, "Unknown platform", BLACK, BACKGROUND, 16, Font12);

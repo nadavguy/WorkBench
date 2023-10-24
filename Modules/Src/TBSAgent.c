@@ -360,6 +360,10 @@ bool parseTBSMessage(void)
 			{
 				currentSmaStatus.smaPlatformName = M30;
 			}
+			else if ( (localRxArray[i + 12] == 10)  && (ee.legacySystemType == 0) )
+			{
+				currentSmaStatus.smaPlatformName = M350;
+			}
 			else if (ee.legacySystemType != 0)
 			{
 				currentSmaStatus.smaPlatformName = ee.legacySystemType;
