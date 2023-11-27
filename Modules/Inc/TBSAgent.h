@@ -48,6 +48,8 @@ typedef enum {TBSIDLE, TBSTX, TBSRX} TBSRXTXType;
 
 typedef enum {GPSDisconnected, GPSLocked, GPSNotLocked} SAPGPSStatus;
 
+typedef enum {TAPDisconnected, TAPOk, TAPError} TAPStatus;
+
 typedef struct sRC_LINK
 {
 	uint8_t UplinkRSSIAnt1; //Uplink is ground to UAV
@@ -81,6 +83,7 @@ typedef struct sSMA_Status
 	TRIGGERReason smaTriggerReason;
 	MENULEVELType rcMenuLevel;
 	SAPGPSStatus sapGPS;
+	TAPStatus sapTAP;
 }tSMA_Status;
 
 typedef struct sWarning

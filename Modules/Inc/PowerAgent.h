@@ -30,6 +30,6 @@ extern uint32_t startChargeTime;
 extern uint32_t lastChangeInMeasurement;
 
 extern void measureVoltages(bool forceMeasurement);
-extern int8_t convertVoltageToPercent(float inputVoltage);
+extern int8_t convertBatteryVoltageToPercent(float inputVoltage);
 
 #endif /* INC_POWERAGENT_H_ */

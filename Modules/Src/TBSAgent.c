@@ -149,7 +149,7 @@ uint8_t calcCrossfireTelemetryFrameCRC(void)
 {
 	uint8_t len = tbsRXArray[1];
 	uint8_t crc = crc8(&tbsRXArray[2], len-1);
-	return crc;
+	return (crc);
 }
 
 uint8_t crc8(const uint8_t *ptr, uint32_t len)
@@ -159,7 +159,7 @@ uint8_t crc8(const uint8_t *ptr, uint32_t len)
 	{
 		crc = crc8tab[crc ^ *ptr++];
 	}
-	return crc;
+	return (crc);
 }
 
 // Range for pulses (channels output) is [-1024:+1024]
@@ -194,7 +194,7 @@ uint8_t createCrossfireChannelsFrame(uint8_t * frame, int16_t * pulses)
 		}
 	}
 	*buf++ = crc8(crc_start, 23);
-	return buf - frame;
+	return (buf - frame);
 }
 
 bool parseTBSMessage(void)
@@ -420,6 +420,8 @@ bool parseTBSMessage(void)
 			isPlatformDisplayed = (bool)(localRxArray[i + 24] & 2);
 			isSAPGPSEnabled = (bool)(localRxArray[i + 24] & 4);
 			isSAPGPSLocked = (bool)(localRxArray[i + 24] & 8);
+			isTAPConnectedToSAP = (bool)(localRxArray[i + 24] & 16);
+			TAPStatus = (bool)(localRxArray[i + 24] & 32);
 
 			if (isSAPGPSEnabled)
 			{
@@ -432,6 +434,27 @@ bool parseTBSMessage(void)
 				{
 					currentSmaStatus.sapGPS = GPSNotLocked;
 				}
+			}
+
+			if ( !(isTAPConnectedToSAP) )
+			{
+				currentSmaStatus.sapTAP = TAPDisconnected;
+			}
+			else if ( (isTAPConnectedToSAP) && !(TAPStatus) )
+			{
+				currentSmaStatus.sapTAP = TAPError;
+			}
+			else if ( (isTAPConnectedToSAP) && (TAPStatus) )
+			{
+				currentSmaStatus.sapTAP = TAPOk;
+			}
+			if (currentSmaStatus.sapTAP != previousSmaStatus.sapTAP)
+			{
+				shouldRenderTAP = true;
+			}
+			else
+			{
+				shouldRenderTAP = false;
 			}
 			i = i + 0x1B - 1;
 
@@ -821,7 +844,7 @@ bool parseTBSMessage(void)
 	}
 	memset(tbsRXArray, 0, TBS_RX_BUFFER);
 	memset(localRxArray, 0, TBS_RX_BUFFER);
-	return localRet;
+	return (localRet);
 }
 
 void createPingMessage(void)

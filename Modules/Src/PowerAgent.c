@@ -12,7 +12,7 @@
 uint8_t previousBatteryCharge = 0;
 uint8_t cyclesAboveThresholdCounter = 0;
 
-uint16_t currentMeasurementValue[3] = {0};
+uint16_t currentADCMeasurementValue[3] = {0};
 
 uint32_t lastVoltageMeasurement = 0;
 uint32_t startChargeTime = 0;
@@ -69,11 +69,11 @@ void measureVoltages(bool forceMeasurement)
 		{
 			/* ADC conversion completed */
 			/*##-5- Get the converted value of regular channel  ########################*/
-			currentMeasurementValue[0] = HAL_ADC_GetValue(&hadc1);
+			currentADCMeasurementValue[0] = HAL_ADC_GetValue(&hadc1);
 		}
 
 
-		currentVoltages[0] = (float)(currentMeasurementValue[0] * 2.0 / ADCRES) * MCURefVoltage;
+		currentVoltages[0] = (float)(currentADCMeasurementValue[0] * 2.0 / ADCRES) * MCURefVoltage;
 	}
 	else
 	{
@@ -107,9 +107,9 @@ void measureVoltages(bool forceMeasurement)
 		{
 			/* ADC conversion completed */
 			/*##-5- Get the converted value of regular channel  ########################*/
-			currentMeasurementValue[1] = HAL_ADC_GetValue(&hadc1);
+			currentADCMeasurementValue[1] = HAL_ADC_GetValue(&hadc1);
 		}
-		currentVoltages[1] = (float)(currentMeasurementValue[1] * 2.0 / ADCRES) * MCURefVoltage;
+		currentVoltages[1] = (float)(currentADCMeasurementValue[1] * 2.0 / ADCRES) * MCURefVoltage;
 
 
 	}
@@ -144,8 +144,8 @@ void measureVoltages(bool forceMeasurement)
 		}
 		HAL_ADC_Start_IT(&hadc3);
 		memcpy(previousVoltages, currentVoltages, sizeof(currentVoltages));
-		currentMeasurementValue[2] = HAL_ADC_GetValue(&hadc3);
-		currentVoltages[2] = (float)(currentMeasurementValue[2] * 2.0 / ADCRES) * MCURefVoltage;
+		currentADCMeasurementValue[2] = HAL_ADC_GetValue(&hadc3);
+		currentVoltages[2] = (float)(currentADCMeasurementValue[2] * 2.0 / ADCRES) * MCURefVoltage;
 		//		sprintf(terminalBuffer,"Voltage battery: %6.3f, %d",currentVoltages[2], currentMeasurementValue[2]);
 		//		logData(terminalBuffer, false, false, false);
 		if (currentVoltages[0] < 3.1)
@@ -206,7 +206,7 @@ void measureVoltages(bool forceMeasurement)
 	}
 }
 
-int8_t convertVoltageToPercent(float inputVoltage)
+int8_t convertBatteryVoltageToPercent(float inputVoltage)
 {
 	uint8_t ret = 0;
 	if (ee.batteryType == 1)

@@ -84,7 +84,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.040;
-float buildID = 1.240;
+float buildID = 1.250;
 
 SYSTEMState rcState = PREINIT;
 
@@ -363,7 +363,7 @@ int main(void)
 				Paint_DrawImage(gImage_ChargingMode, ChargingModeImageX, ChargingModeImageY, 43, 86);
 				char localText[12] = "";
 				chargingMaxValue = fmax(chargingMaxValue, batteryVoltage);
-				int8_t localPercent = convertVoltageToPercent(chargingMaxValue);
+				int8_t localPercent = convertBatteryVoltageToPercent(chargingMaxValue);
 				if (previousBatteryCharge > localPercent)
 				{
 					previousBatteryCharge = localPercent;

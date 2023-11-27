@@ -59,6 +59,9 @@ bool shouldRenderDataTransfer = false;
 bool isSAPGPSEnabled = false;
 bool isSAPGPSLocked = false;
 bool shouldRenderSAPGPS = false;
+bool isTAPConnectedToSAP = false;
+bool TAPStatus = false;
+bool shouldRenderTAP = false;
 
 uint8_t PlatfomTypeX = 0;
 uint8_t PlatfomTypeY = 0;
