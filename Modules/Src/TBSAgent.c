@@ -421,7 +421,7 @@ bool parseTBSMessage(void)
 			isSAPGPSEnabled = (bool)(localRxArray[i + 24] & 4);
 			isSAPGPSLocked = (bool)(localRxArray[i + 24] & 8);
 			isTAPConnectedToSAP = (bool)(localRxArray[i + 24] & 16);
-			TAPStatus = (bool)(localRxArray[i + 24] & 32);
+			TAPStatusBool = (bool)(localRxArray[i + 24] & 32);
 
 			if (isSAPGPSEnabled)
 			{
@@ -440,11 +440,11 @@ bool parseTBSMessage(void)
 			{
 				currentSmaStatus.sapTAP = TAPDisconnected;
 			}
-			else if ( (isTAPConnectedToSAP) && !(TAPStatus) )
+			else if ( (isTAPConnectedToSAP) && !(TAPStatusBool) )
 			{
 				currentSmaStatus.sapTAP = TAPError;
 			}
-			else if ( (isTAPConnectedToSAP) && (TAPStatus) )
+			else if ( (isTAPConnectedToSAP) && (TAPStatusBool) )
 			{
 				currentSmaStatus.sapTAP = TAPOk;
 			}

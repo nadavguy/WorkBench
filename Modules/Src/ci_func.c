@@ -582,6 +582,7 @@ functionsList cases [] =
 {
 		{ "ver"	, func_versionReport },
 		{ "dbg"	, func_debug },
+		{ "ee?"	, func_systemConfiguration },
 		{ "urcv", func_updateTAPVersion },
 		{ "end" , func_endUpdatePhase },
 		{ "rst" , func_resetTAP },
@@ -591,7 +592,6 @@ functionsList cases [] =
 		{ "tpof", func_triggerPWMOff },
 		{ "tpon", func_triggerPWMOn },
 		{ "lnkt", func_linkType },
-		{ "ee?"	, func_systemConfiguration },
 		{ "bklt", func_backLight },
 		{ "msc", func_massStorage },
 		{ "imp", func_importFile },

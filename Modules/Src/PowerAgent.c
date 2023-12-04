@@ -41,7 +41,7 @@ void measureVoltages(bool forceMeasurement)
 		ADC_ChannelConfTypeDef sConfig;
 		sConfig.Channel      = ADC_CHANNEL_1;                /* Sampled channel number */
 		sConfig.Rank         = 1;          /* Rank of sampled channel number ADCx_CHANNEL */
-		sConfig.SamplingTime = ADC_SAMPLETIME_15CYCLES;    /* Sampling time (number of clock cycles unit) */
+		sConfig.SamplingTime = ADC_SAMPLETIME_56CYCLES;    /* Sampling time (number of clock cycles unit) */
 		sConfig.Offset = 0;
 
 		if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
@@ -80,7 +80,7 @@ void measureVoltages(bool forceMeasurement)
 		ADC_ChannelConfTypeDef sConfig;
 		sConfig.Channel      = ADC_CHANNEL_4;                /* Sampled channel number */
 		sConfig.Rank         = 1;          /* Rank of sampled channel number ADCx_CHANNEL */
-		sConfig.SamplingTime = ADC_SAMPLETIME_15CYCLES;    /* Sampling time (number of clock cycles unit) */
+		sConfig.SamplingTime = ADC_SAMPLETIME_56CYCLES;    /* Sampling time (number of clock cycles unit) */
 		sConfig.Offset = 0;
 		if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
 		{
@@ -241,5 +241,5 @@ int8_t convertBatteryVoltageToPercent(float inputVoltage)
 		}
 	}
 
-	return ret;
+	return (ret);
 }

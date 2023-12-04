@@ -60,7 +60,7 @@ bool isSAPGPSEnabled = false;
 bool isSAPGPSLocked = false;
 bool shouldRenderSAPGPS = false;
 bool isTAPConnectedToSAP = false;
-bool TAPStatus = false;
+bool TAPStatusBool = false;
 bool shouldRenderTAP = false;
 
 uint8_t PlatfomTypeX = 0;

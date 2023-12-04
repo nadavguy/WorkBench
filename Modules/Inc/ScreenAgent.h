@@ -237,7 +237,7 @@ extern bool isSAPGPSEnabled;
 extern bool isSAPGPSLocked;
 extern bool shouldRenderSAPGPS;
 extern bool isTAPConnectedToSAP;
-extern bool TAPStatus;
+extern bool TAPStatusBool;
 extern bool shouldRenderTAP;
 
 extern uint8_t LineStartX;
