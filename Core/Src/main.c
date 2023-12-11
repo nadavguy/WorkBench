@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "crc.h"
 #include "dma.h"
 #include "fatfs.h"
 #include "quadspi.h"
@@ -56,7 +57,7 @@
 #include "w25q128fv.h"
 #include "LCD_1in8.h"
 #include "BootLoader.h"
-#include "crc.h"
+#include "crcAgent.h"
 #include "ScreenSaverImages.h"
 #include "DataTransferImages.h"
 //#include "swap.h"
@@ -84,7 +85,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.040;
-float buildID = 1.260;
+float buildID = 1.270;
 
 SYSTEMState rcState = PREINIT;
 
@@ -215,6 +216,7 @@ int main(void)
   MX_ADC3_Init();
   MX_USART2_UART_Init();
   MX_TIM4_Init();
+  MX_CRC_Init();
   /* USER CODE BEGIN 2 */
 
 	UID1 = (*(__I uint32_t *) 0x1FF0F420);
@@ -247,7 +249,6 @@ int main(void)
 		logData(terminalBuffer, true, false, false);
 		ee_save1();
 	}
-	sprintf(ee.password, "PARAZERO@DOVHOZ#30");
 	memset(ee.geoCagingFileName, 0, 16);
 	memset(ee.geoCagingDate, 0, 16);
 	ee.rcMode = 0;

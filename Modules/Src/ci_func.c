@@ -5,6 +5,7 @@
 #include "stm32746g_qspi.h"
 #include "usb_device.h"
 #include "usbd_cdc_if.h"
+#include "crc.h"
 
 
 bool isReportParametersActive = false;
@@ -14,7 +15,7 @@ eCI_RESULT func_debug(void)
 {
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+		return (CI_COMMAND_ERROR);
 	}
 	if (get_param_count() > 0)
 	{
@@ -23,14 +24,14 @@ eCI_RESULT func_debug(void)
 		sprintf(terminalBuffer,"Debug level set to: %d",ee.debugLevel);
 		logData(terminalBuffer, false, false, false);
 	}
-	return CI_OK;
+	return (CI_OK);
 }
 
 eCI_RESULT func_updateTAPVersion(void)
 {
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+		return (CI_COMMAND_ERROR);
 	}
 	localFlashParams.startAddress = 0x08180000;
 	localFlashParams.voltageLevel = FLASH_VOLTAGE_RANGE_3;
@@ -41,42 +42,42 @@ eCI_RESULT func_updateTAPVersion(void)
 	char localString[16] = "C\r";
 	CDC_Transmit_FS((uint8_t*)localString, 16);
 	fullFrameDelay = 500;
-	return CI_OK;
+	return (CI_OK);
 }
 
 eCI_RESULT func_versionReport(void)
 {
 	sprintf(terminalBuffer,"RC Firmware Version: %2.2f, BuildID: %2.2f, Configuration: %2.2f \3",fwVersion, buildID, ee.configuration);
 	logData(terminalBuffer, false, true, false);
-	return CI_OK;
+	return (CI_OK);
 }
 
 eCI_RESULT func_endUpdatePhase(void)
 {
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+		return (CI_COMMAND_ERROR);
 	}
 	isInfwUpdateMode = false;
-	return CI_OK;
+	return (CI_OK);
 }
 
 eCI_RESULT func_resetTAP(void)
 {
 	NVIC_SystemReset();
-	return CI_OK;
+	return (CI_OK);
 }
 
 eCI_RESULT func_showAvailableCommands(void)
 {
-	return CI_OK;
+	return (CI_OK);
 }
 
 eCI_RESULT func_armPWMOff(void)
 {
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+		return (CI_COMMAND_ERROR);
 	}
 	if (get_param_count() > 0)
 	{
@@ -85,14 +86,14 @@ eCI_RESULT func_armPWMOff(void)
 		sprintf(terminalBuffer,"Arm PWM Off value set to: %d",ee.armPWMOffValue);
 		logData(terminalBuffer, false, false, false);
 	}
-	return CI_OK;
+	return (CI_OK);
 }
 
 eCI_RESULT func_armPWMOn(void)
 {
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+		return (CI_COMMAND_ERROR);
 	}
 	if (get_param_count() > 0)
 	{
@@ -101,14 +102,14 @@ eCI_RESULT func_armPWMOn(void)
 		sprintf(terminalBuffer,"Arm PWM On value set to: %d",ee.armPWMOnValue);
 		logData(terminalBuffer, false, false, false);
 	}
-	return CI_OK;
+	return (CI_OK);
 }
 
 eCI_RESULT func_triggerPWMOff(void)
 {
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+		return (CI_COMMAND_ERROR);
 	}
 	if (get_param_count() > 0)
 	{
@@ -117,14 +118,14 @@ eCI_RESULT func_triggerPWMOff(void)
 		sprintf(terminalBuffer,"Trigger PWM Off value set to: %d",ee.triggerPWMOffValue);
 		logData(terminalBuffer, false, false, false);
 	}
-	return CI_OK;
+	return (CI_OK);
 }
 
 eCI_RESULT func_triggerPWMOn(void)
 {
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+		return (CI_COMMAND_ERROR);
 	}
 	if (get_param_count() > 0)
 	{
@@ -133,14 +134,14 @@ eCI_RESULT func_triggerPWMOn(void)
 		sprintf(terminalBuffer,"Trigger PWM On value set to: %d",ee.triggerPWMOnValue);
 		logData(terminalBuffer, false, false, false);
 	}
-	return CI_OK;
+	return (CI_OK);
 }
 
 eCI_RESULT func_linkType(void)
 {
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+		return (CI_COMMAND_ERROR);
 	}
 	if (get_param_count() > 0)
 	{
@@ -149,24 +150,24 @@ eCI_RESULT func_linkType(void)
 		sprintf(terminalBuffer,"Link type set to: %s",(ee.linkType==PWM) ? "PWM" : "Digital");
 		logData(terminalBuffer, false, false, false);
 	}
-	return CI_OK;
+	return (CI_OK);
 }
 
 eCI_RESULT func_systemConfiguration(void)
 {
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+		return (CI_COMMAND_ERROR);
 	}
 	printConfiguration(true);
-	return CI_OK;
+	return (CI_OK);
 }
 
 eCI_RESULT func_backLight(void)
 {
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+		return (CI_COMMAND_ERROR);
 	}
 	if (get_param_count() > 0)
 	{
@@ -175,25 +176,25 @@ eCI_RESULT func_backLight(void)
 		sprintf(terminalBuffer,"Backlight value set to: %3.1f per-cent",ee.backLight*10.0);
 		logData(terminalBuffer, false, false, false);
 	}
-	return CI_OK;
+	return (CI_OK);
 }
 
 eCI_RESULT func_massStorage(void)
 {
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+return (CI_COMMAND_ERROR);
 	}
 	isMSCMode = true;
 	MX_MSC_DEVICE_Init();
-	return CI_OK;
+	return (CI_OK);
 }
 
 eCI_RESULT func_importFile(void)
 {
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+		return (CI_COMMAND_ERROR);
 	}
 	char *res = 0;
 	//	  uint16_t slen = 0;
@@ -225,14 +226,14 @@ eCI_RESULT func_importFile(void)
 		}
 	}
 	f_close(&fileToRead);
-	return CI_OK;
+	return (CI_OK);
 }
 
 eCI_RESULT func_screenOrientation(void)
 {
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+		return (CI_COMMAND_ERROR);
 	}
 	if (get_param_count() > 0)
 	{
@@ -253,16 +254,21 @@ eCI_RESULT func_screenOrientation(void)
 			logData("Screen orientation set to Portrait", false, false, false);
 		}
 	}
-	return CI_OK;
+	return (CI_OK);
 }
 
 eCI_RESULT func_setDateTime(void)
 {
-	int year = 0, month = 0, day = 0, hour = 0, minute = 0, second = 0;
+	int year = 0;
+	int month = 0;
+	int day = 0;
+	int hour = 0;
+	int minute = 0;
+	int second = 0;
 
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+		return (CI_COMMAND_ERROR);
 	}
 	if (get_param_count() > 0)
 	{
@@ -301,7 +307,7 @@ eCI_RESULT func_gpsLocation(void)
 {
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+		return (CI_COMMAND_ERROR);
 	}
 	if (get_param_count() == 3)
 	{
@@ -318,47 +324,47 @@ eCI_RESULT func_gpsLocation(void)
 		sprintf(terminalBuffer, "Received partial GPS position");
 		logData(terminalBuffer, false, false, false);
 	}
-	return CI_OK;
+	return (CI_OK);
 }
 
 eCI_RESULT func_bleConnected(void)
 {
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+		return (CI_COMMAND_ERROR);
 	}
 	bluetoothConnection = CONNECTED;
-	return CI_OK;
+	return (CI_OK);
 }
 
 eCI_RESULT func_openNewLogFile(void)
 {
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+		return (CI_COMMAND_ERROR);
 	}
 	createNewLogFile();
 	logData("Received external command to create a new log file", false, false, false);
-	return CI_NO_UART_ACK;
+	return (CI_NO_UART_ACK);
 }
 
 eCI_RESULT func_closeCurrentLogFile(void) // Do file close
 {
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+		return (CI_COMMAND_ERROR);
 	}
 	logData("Received external command to close log file", false, false, false);
 	closeLogFile();
 //  PRINT(SessionUnlocked);
-  return CI_NO_UART_ACK;
+  return (CI_NO_UART_ACK);
 }
 
 eCI_RESULT func_bleMode(void)
 {
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+		return (CI_COMMAND_ERROR);
 	}
 	if (get_param_count() > 0)
 	{
@@ -366,36 +372,36 @@ eCI_RESULT func_bleMode(void)
 		ee_save1();
 	}
 //  PRINT(SessionUnlocked);
-  return CI_NO_UART_ACK;
+  return (CI_NO_UART_ACK);
 }
 
 eCI_RESULT func_bootloaderMode(void)
 {
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+		return (CI_COMMAND_ERROR);
 	}
 	NVIC_SystemReset();
 //  PRINT(SessionUnlocked);
-  return CI_NO_UART_ACK;
+  return (CI_NO_UART_ACK);
 }
 
 eCI_RESULT func_showChargeCycles(void)
 {
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+		return (CI_COMMAND_ERROR);
 	}
 	sprintf(terminalBuffer, "Full charge cycles: %d", ee.fullChargeCycles);
 	logData(terminalBuffer, false, true, false);
-	return CI_OK;
+	return (CI_OK);
 }
 
 eCI_RESULT func_changeRCMode(void)
 {
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+		return (CI_COMMAND_ERROR);
 	}
 	if (get_param_count() > 0)
 	{
@@ -419,14 +425,14 @@ eCI_RESULT func_changeRCMode(void)
 		sprintf(terminalBuffer, "Changed RC Mode to: %d", ee.rcMode);
 	}
 	logData(terminalBuffer, false, true, false);
-	return CI_OK;
+	return (CI_OK);
 }
 
 eCI_RESULT func_deleteFile(void)
 {
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+		return (CI_COMMAND_ERROR);
 	}
 	if (get_param_count() > 0)
 	{
@@ -443,7 +449,7 @@ eCI_RESULT func_deleteFile(void)
 			logData(terminalBuffer, false, false, false);
 		}
 	}
-	return CI_NO_UART_ACK;
+	return (CI_NO_UART_ACK);
 }
 
 eCI_RESULT func_showLastTailID(void)
@@ -451,14 +457,14 @@ eCI_RESULT func_showLastTailID(void)
 
 	sprintf(terminalBuffer, "Last TailID:  %s\3", ee.lastPairedDevice);
 	logData(terminalBuffer, false, true, false);
-	return CI_NO_UART_ACK;
+	return (CI_NO_UART_ACK);
 } //
 
 eCI_RESULT func_updateBatteryType(void)
 {
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+		return (CI_COMMAND_ERROR);
 	}
 	if (get_param_count() > 0)
 	{
@@ -472,16 +478,51 @@ eCI_RESULT func_updateBatteryType(void)
 		sprintf(terminalBuffer, "Battery type did not update");
 		logData(terminalBuffer, false, false, false);
 	}
-	return CI_NO_UART_ACK;
+	return (CI_NO_UART_ACK);
 } //
 
 eCI_RESULT func_enterPassword(void)
 {
 	if (get_param_count() > 0)
 	{
-		if (strcmp(get_param_str(0), ee.password) == 0)
+		char Phrase[32] = {0};
+		uint32_t localCRC[8] = {0};
+		uint32_t orgCRC[8] = {0};
+		uint8_t localCRCCount = 0;
+		uint8_t localIncomingString = strlen(get_param_str(0));
+		if (localIncomingString > 32)
+		{
+			localIncomingString = 32;
+		}
+		memcpy(&Phrase[0], get_param_str(0), localIncomingString);
+		for (int i = 0; i < sizeof(Phrase) / 4; i++)
+		{
+			localCRC[i] = HAL_CRC_Calculate(&hcrc, (uint32_t *)&Phrase[i * 4], (8 - i));
+		}
+		orgCRC[0] = 0x7ca1beb1;
+		orgCRC[1] = 0xe5f40e41;
+		orgCRC[2] = 0xba45ff48;
+		orgCRC[3] = 0xbbf4c1f3;
+		orgCRC[4] = 0x314377d;
+		orgCRC[5] = 0x99c5421;
+		orgCRC[6] = 0x6904bb59;
+		orgCRC[7] = 0xc704dd7b;
+
+		for (int i = 0; i < 8; i++)
+		{
+			if (orgCRC[i] - localCRC[i] == 0)
+			{
+				localCRCCount += 0;
+			}
+			else
+			{
+				localCRCCount += 1;
+			}
+		}
+		if (localCRCCount == 0)
 		{
 			sessionUnlocked = true;
+			ee.debugLevel = 0;
 			sprintf(terminalBuffer, "\r\nUnit unlocked\n\r");
 			logData(terminalBuffer, false, true, false);
 		}
@@ -499,7 +540,7 @@ eCI_RESULT func_updateInformationLevel(void)
 {
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+		return (CI_COMMAND_ERROR);
 	}
 	if (get_param_count() == 1)
 	{
@@ -523,14 +564,14 @@ eCI_RESULT func_updateInformationLevel(void)
 		sprintf(terminalBuffer, "Information Level did not update");
 		logData(terminalBuffer, false, false, false);
 	}
-	return CI_NO_UART_ACK;
+	return (CI_NO_UART_ACK);
 } //
 
 eCI_RESULT func_dir(void)
 {
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+		return (CI_COMMAND_ERROR);
 	}
     FILINFO fno1;
     DIR dp1;
@@ -552,14 +593,14 @@ eCI_RESULT func_dir(void)
     }
     f_closedir(&dp1);
     logData("dir EOD", false, true, true);
-	return CI_OK;
+	return (CI_OK);
 }
 
 eCI_RESULT func_fmt(void)
 {
 	if (!sessionUnlocked)
 	{
-		return CI_COMMAND_ERROR;
+		return (CI_COMMAND_ERROR);
 	}
 	sprintf(terminalBuffer, "\r\n%s!Formatting Flash...restart required!\n\r", CT());
 	logData(terminalBuffer, false, false, false);
@@ -569,7 +610,7 @@ eCI_RESULT func_fmt(void)
 	BSP_QSPI_Erase_Chip();
 	fileSystemInit();
 	createNewLogFile();
-	return CI_OK;
+	return (CI_OK);
 }
 
 typedef struct
@@ -622,9 +663,9 @@ uint8_t funcTable( char* token )
 		if( 0 == strcmp( pCase->string, token ) )
 		{
 			(*pCase->func)();
-			return 1;
+			return (1);
 			break;
 		}
 	}
-	return 0;
+	return (0);
 }

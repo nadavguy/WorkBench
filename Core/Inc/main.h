@@ -67,7 +67,7 @@ extern "C" {
 #include "stm32746g_qspi.h"
 #include "w25q128fv.h"
 #include "Pitches.h"
-#include "crc.h"
+#include <crcAgent.h>
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

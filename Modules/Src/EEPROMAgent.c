@@ -293,7 +293,7 @@ void changeROP(uint8_t ProtectionLevel)
 //	HAL_FLASH_Lock();
 }
 
-crc checkCRC(uint32_t startAddress, uint32_t length)
-{
- return 0;
-}
+//crc checkCRC(uint32_t startAddress, uint32_t length)
+//{
+// return 0;
+//}
