@@ -85,7 +85,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.040;
-float buildID = 1.290;
+float buildID = 1.300;
 
 SYSTEMState rcState = PREINIT;
 
@@ -116,6 +116,7 @@ bool isDisableButtonDetection = false;
 bool isFirstCycleAfterUSBDisconnection = false;
 bool shouldRedrawButtonDotIcon = true;
 bool markGPSPosition = false;
+bool armDroneRequest = false;
 
 
 uint16_t fullFrameDelay = 5000;
@@ -232,7 +233,7 @@ int main(void)
   {
     localFlashParams.startAddress = 0x08000000;
     localFlashParams.voltageLevel = FLASH_VOLTAGE_RANGE_3;
-	reallocateDataFromArray(Array, 0x08000000, bootloaderLength);
+//	reallocateDataFromArray(Array, 0x08000000, bootloaderLength);
   }
 
   BSP_QSPI_Init();

@@ -147,6 +147,7 @@ extern bool isDisableButtonDetection;
 extern bool isFirstCycleAfterUSBDisconnection;
 extern bool shouldRedrawButtonDotIcon;
 extern bool markGPSPosition;
+extern bool armDroneRequest;
 
 extern uint16_t fullFrameDelay;
 

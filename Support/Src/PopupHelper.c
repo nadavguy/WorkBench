@@ -530,6 +530,41 @@ void waitForPopupInput(void)
 				break;
 			} //End of GeoCaging popup
 
+			case 20:
+			{
+				waitForAckResponse = false;
+				while ( (okButtonPressDuration < 1075) )
+				{
+					if ( (!popupToShow.isQuestion) && (okButtonPressDuration >= 1000) )
+					{
+						break;
+					}
+					if ( (popupToShow.isQuestion) && (okButtonPressDuration >= 1000) && (popupDrawDirection == DOWN))
+					{
+						armDroneRequest = true;
+						waitForAckResponse = true;
+						configurationMessageCounter++;
+						break;
+					}
+					sendChannelMessageToTBS();
+					updateRCState();
+					CheckButtons();
+					screenUpdate(false);
+					updateNextFrame();
+				}
+				while (waitForAckResponse)
+				{
+					sendChannelMessageToTBS();
+					updateRCState();
+					CheckButtons();
+					showWaitForSAAck();
+				}
+				armDroneRequest = false;
+				initMenuPages();
+				initPopupMessages();
+				break;
+			} //End of Arm Drone Request
+
 			default:
 			{
 				break;

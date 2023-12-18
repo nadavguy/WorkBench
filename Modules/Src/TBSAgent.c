@@ -969,7 +969,14 @@ void sendSafeAirConfigurationMessage(bool includeTimeInMessage)
 		{
 			safeairConfigurationFrame[23] = 0x17;
 		}
-		safeairConfigurationFrame[24] = 0x00; //
+		if (armDroneRequest)
+		{
+			safeairConfigurationFrame[24] = 0x85;
+		}
+		else
+		{
+			safeairConfigurationFrame[24] = 0x17;
+		}
 		safeairConfigurationFrame[25] = 0x00; //
 		safeairConfigurationFrame[26] = 0x00; //
 		safeairConfigurationFrame[27] = 0x00; //

@@ -51,6 +51,7 @@ tPOPUP disconnectPyroMessage;
 tPOPUP markGPSPositionMessage;
 tPOPUP noAutoPilotMessage;
 tPOPUP geoCagingMessage;
+tPOPUP armSafeAirMessage;
 
 bool isTestCalibActive = false;
 bool isAutoCalibActive = false;
@@ -214,7 +215,7 @@ void initMenuPages(void)
 	integrationPage.pageID = 5;
 	if ( (menuLevel == DEVELOPER) || (menuLevel == OEM) )
 	{
-		integrationPage.numberOfItemsInPage = 7;
+		integrationPage.numberOfItemsInPage = 8;
 		if (!isAutoCalibActive)
 		{
 			memcpy(&integrationPage.itemsArray[0],"Init Auto-Calib",strlen("Init Auto-Calib"));
@@ -232,20 +233,22 @@ void initMenuPages(void)
 			memcpy(&integrationPage.itemsArray[1],"Stop Calib Test",strlen("Stop Calib Test"));
 		}
 		memcpy(&integrationPage.itemsArray[2],"Test Motor-Cut",strlen("Test Motor-Cut"));
-		memcpy(&integrationPage.itemsArray[3],"Mark GPS Pos",strlen("Mark GPS Pos"));
-		memcpy(&integrationPage.itemsArray[4],"Lower Bar Info",strlen("Lower Bar Info"));
-		memcpy(&integrationPage.itemsArray[5],"Back",strlen("Back"));
-		memcpy(&integrationPage.itemsArray[6],"Close menu",strlen("Close menu"));
+		memcpy(&integrationPage.itemsArray[3],"Arm SafeAir",strlen("Arm SafeAir"));
+		memcpy(&integrationPage.itemsArray[4],"Mark GPS Pos",strlen("Mark GPS Pos"));
+		memcpy(&integrationPage.itemsArray[5],"Lower Bar Info",strlen("Lower Bar Info"));
+		memcpy(&integrationPage.itemsArray[6],"Back",strlen("Back"));
+		memcpy(&integrationPage.itemsArray[7],"Close menu",strlen("Close menu"));
 
 		integrationPage.cellTypeArray[0] = POPUP;
 		integrationPage.cellTypeArray[1] = POPUP;
 		integrationPage.cellTypeArray[2] = POPUP;
 		integrationPage.cellTypeArray[3] = POPUP;
-		integrationPage.cellTypeArray[4] = STRING_ITEM;
-		integrationPage.cellTypeArray[5] = BACK;
-		integrationPage.cellTypeArray[6] = CLOSE;
+		integrationPage.cellTypeArray[4] = POPUP;
+		integrationPage.cellTypeArray[5] = STRING_ITEM;
+		integrationPage.cellTypeArray[6] = BACK;
+		integrationPage.cellTypeArray[7] = CLOSE;
 
-		if (!(currentSmaStatus.BITStatus & 0x04) && (!isAutoCalibActive) && (!isTestCalibActive))
+		if ( (currentSmaStatus.BITStatus & 0x04) && (!isAutoCalibActive) && (!isTestCalibActive))
 		{
 			integrationPage.nextCellIDArray[0] = (uint32_t)&disconnectPyroMessage;
 			integrationPage.nextCellIDArray[1] = (uint32_t)&disconnectPyroMessage;
@@ -255,14 +258,14 @@ void initMenuPages(void)
 			integrationPage.nextCellIDArray[0] = (uint32_t)&autoCalibrationMessage;
 			integrationPage.nextCellIDArray[1] = (uint32_t)&testFlightMessage;
 			integrationPage.nextCellIDArray[2] = (uint32_t)&testMotorCutMessage;
-//			integrationPage.nextCellIDArray[3] = (uint32_t)&markGPSPositionMessage;
+			integrationPage.nextCellIDArray[3] = (uint32_t)&armSafeAirMessage;
 			if (currentSmaStatus.autoPilotConnection)
 			{
-				integrationPage.nextCellIDArray[3] = (uint32_t)&markGPSPositionMessage;
+				integrationPage.nextCellIDArray[4] = (uint32_t)&markGPSPositionMessage;
 			}
 			else
 			{
-				integrationPage.nextCellIDArray[3] = (uint32_t)&noAutoPilotMessage;
+				integrationPage.nextCellIDArray[4] = (uint32_t)&noAutoPilotMessage;
 			}
 		}
 		else
@@ -290,18 +293,18 @@ void initMenuPages(void)
 				integrationPage.nextCellIDArray[2] = (uint32_t)&returnToIdleMessage;
 //			}
 		}
-//		integrationPage.nextCellIDArray[3] = (uint32_t)&markGPSPositionMessage;
+//		integrationPage.nextCellIDArray[3] = (uint32_t)&armSafeAirMessage;
 		if (currentSmaStatus.autoPilotConnection)
 		{
-			integrationPage.nextCellIDArray[3] = (uint32_t)&markGPSPositionMessage;
+			integrationPage.nextCellIDArray[4] = (uint32_t)&markGPSPositionMessage;
 		}
 		else
 		{
-			integrationPage.nextCellIDArray[3] = (uint32_t)&noAutoPilotMessage;
+			integrationPage.nextCellIDArray[4] = (uint32_t)&noAutoPilotMessage;
 		}
-		integrationPage.nextCellIDArray[4] = (uint32_t)&LowerBarDisplayItem;
-		integrationPage.nextCellIDArray[5] = 0;
+		integrationPage.nextCellIDArray[5] = (uint32_t)&LowerBarDisplayItem;
 		integrationPage.nextCellIDArray[6] = 0;
+		integrationPage.nextCellIDArray[7] = 0;
 	}
 	else
 	{
@@ -742,7 +745,7 @@ void initPopupMessages(void)
 	noAutoPilotMessage.numberOfItemsInPopup = 8;
 	noAutoPilotMessage.isQuestion = false;
 	memcpy(&noAutoPilotMessage.itemsArray[0],"SafeAir is not",strlen("SafeAir is not"));
-	memcpy(&noAutoPilotMessage.itemsArray[1],"connected to,",strlen("connected to,"));
+	memcpy(&noAutoPilotMessage.itemsArray[1],"connected to",strlen("connected to"));
 	memcpy(&noAutoPilotMessage.itemsArray[2],"Auto-Pilot",strlen("Auto-Pilot"));
 	memcpy(&noAutoPilotMessage.itemsArray[3],"               ",strlen("               "));
 	memcpy(&noAutoPilotMessage.itemsArray[4],"               ",strlen("               "));
@@ -764,6 +767,17 @@ void initPopupMessages(void)
 	memcpy(&geoCagingMessage.itemsArray[4],"# Of Polygons",strlen("# Of Polygons"));
 	memcpy(&geoCagingMessage.itemsArray[5],buffer,strlen(buffer));
 	memcpy(&geoCagingMessage.itemsArray[7],"OK",strlen("OK"));
+
+	armSafeAirMessage.popupID = 20;
+	armSafeAirMessage.numberOfItemsInPopup = 7;
+	armSafeAirMessage.isQuestion = true;
+	memcpy(&armSafeAirMessage.itemsArray[0],"Approve",strlen("Approve"));
+	memcpy(&armSafeAirMessage.itemsArray[1],"Drone Arming",strlen("Drone Arming"));
+	memcpy(&armSafeAirMessage.itemsArray[2],"",strlen(""));
+	memcpy(&armSafeAirMessage.itemsArray[3],"",strlen(""));
+	memcpy(&armSafeAirMessage.itemsArray[4],"->Long Press<-",strlen("->Long Press<-"));
+	memcpy(&armSafeAirMessage.itemsArray[5],"Cancel",strlen("Cancel"));
+	memcpy(&armSafeAirMessage.itemsArray[6],"OK",strlen("OK"));
 }
 
 void updateSelection(void)
