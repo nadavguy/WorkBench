@@ -85,7 +85,7 @@ char terminalBuffer[terminalRXBufferSize] = {0};
 //char *ttt;
 
 float fwVersion = 1.040;
-float buildID = 1.270;
+float buildID = 1.280;
 
 SYSTEMState rcState = PREINIT;
 
@@ -232,7 +232,7 @@ int main(void)
   {
     localFlashParams.startAddress = 0x08000000;
     localFlashParams.voltageLevel = FLASH_VOLTAGE_RANGE_3;
-	reallocateDataFromArray(Array, 0x08000000, bootloaderLength);
+//	reallocateDataFromArray(Array, 0x08000000, bootloaderLength);
   }
 
   BSP_QSPI_Init();

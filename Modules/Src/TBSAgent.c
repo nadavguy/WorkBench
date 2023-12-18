@@ -369,21 +369,31 @@ bool parseTBSMessage(void)
 				currentSmaStatus.smaPlatformName = ee.legacySystemType;
 			}
 
-			if (localRxArray[i + 13] == 1)
+			if ( (localRxArray[i + 13] & 0x0f) == 1)
 			{
 				currentSmaStatus.smaPlatfom = MULTICOPTER;
 			}
-			else if (localRxArray[i + 13] == 2)
+			else if ( (localRxArray[i + 13] & 0x0f) == 2)
 			{
 				currentSmaStatus.smaPlatfom = VTOLVERTICAL;
 			}
-			else if (localRxArray[i + 13] == 3)
+			else if ( (localRxArray[i + 13] & 0x0f) == 3)
 			{
 				currentSmaStatus.smaPlatfom = VTOLTRANSITION;
 			}
-			else if (localRxArray[i + 13] == 4)
+			else if ( (localRxArray[i + 13] & 0x0f) == 4)
 			{
 				currentSmaStatus.smaPlatfom = VTOLHORIZONTAL;
+			}
+
+			uint8_t platformTypeUpperByte = (localRxArray[i + 13] & 0xf0) >> 4;
+			if ( platformTypeUpperByte == 0 )
+			{
+				isGPSConnectedToSAP = false;
+			}
+			else if ( (bool)( platformTypeUpperByte & 0x01) )
+			{
+				isGPSConnectedToSAP = true;
 			}
 
 			uint16_t localSMATime = 256 * localRxArray[i + 14] + localRxArray[i + 15];
@@ -410,23 +420,20 @@ bool parseTBSMessage(void)
 //				remainingCalibrationTime = 0;
 			}
 
-			if ( (isSAPGPSEnabled) && !((bool)(localRxArray[i + 24] & 4)) )
-			{
-				shouldRenderSAPGPS = true;
-				currentSmaStatus.sapGPS = GPSDisconnected;
-			}
-
 			isAutoPilotDisplayed = (bool)(localRxArray[i + 24] & 1);
 			isPlatformDisplayed = (bool)(localRxArray[i + 24] & 2);
-			isSAPGPSEnabled = (bool)(localRxArray[i + 24] & 4);
+			isSAPGPSTimedOut = (bool)(localRxArray[i + 24] & 4);
 			isSAPGPSLocked = (bool)(localRxArray[i + 24] & 8);
 			isTAPConnectedToSAP = (bool)(localRxArray[i + 24] & 16);
 			TAPStatusBool = (bool)(localRxArray[i + 24] & 32);
 
-			if (isSAPGPSEnabled)
+			if (isGPSConnectedToSAP)
 			{
-				shouldRenderSAPGPS = true;
-				if (isSAPGPSLocked)
+				if (isSAPGPSTimedOut)
+				{
+					currentSmaStatus.sapGPS = GPSDisconnected;
+				}
+				else if (isSAPGPSLocked)
 				{
 					currentSmaStatus.sapGPS = GPSLocked;
 				}
@@ -434,6 +441,19 @@ bool parseTBSMessage(void)
 				{
 					currentSmaStatus.sapGPS = GPSNotLocked;
 				}
+
+				if (previousSmaStatus.sapGPS != currentSmaStatus.sapGPS)
+				{
+					shouldRenderSAPGPS = true;
+				}
+				else
+				{
+					shouldRenderSAPGPS = false;
+				}
+			}
+			else
+			{
+				shouldRenderSAPGPS = false;
 			}
 
 			if ( !(isTAPConnectedToSAP) )

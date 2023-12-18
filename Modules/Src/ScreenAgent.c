@@ -56,9 +56,10 @@ bool isSafeAirBatteryDisplayed = true;
 bool isAltitudeDisplayed = true;
 bool isGPSPositionDisplayed = false;
 bool shouldRenderDataTransfer = false;
-bool isSAPGPSEnabled = false;
+bool isSAPGPSTimedOut = false;
 bool isSAPGPSLocked = false;
 bool shouldRenderSAPGPS = false;
+bool isGPSConnectedToSAP = false;
 bool isTAPConnectedToSAP = false;
 bool TAPStatusBool = false;
 bool shouldRenderTAP = false;
@@ -1610,7 +1611,14 @@ void setFullDisplay(void)
 	shouldRedrawBatteryIcon = true;
 	shouldRedrawSignalStrengthIcon = true;
 	shouldReDrawBluetoothIcon = isBLEOn;
-	shouldRenderSAPGPS = true;
+	if (isGPSConnectedToSAP)
+	{
+		shouldRenderSAPGPS = true;
+	}
+	else
+	{
+		shouldRenderSAPGPS = false;
+	}
 
 	shouldUpdatePlatformText = true;
 
