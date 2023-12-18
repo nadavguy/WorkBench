@@ -108,6 +108,9 @@
 #define VerticalSapGPSX 24
 #define VerticalsapGPSY 1
 
+#define VerticalButtonDotX 0
+#define VerticalButtonDotY 1
+
 #define VerticalLogoX 0
 #define VerticalLogoY 0
 

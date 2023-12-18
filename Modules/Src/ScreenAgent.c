@@ -1611,6 +1611,7 @@ void setFullDisplay(void)
 	shouldRedrawBatteryIcon = true;
 	shouldRedrawSignalStrengthIcon = true;
 	shouldReDrawBluetoothIcon = isBLEOn;
+	shouldRedrawButtonDotIcon = true;
 	if (isGPSConnectedToSAP)
 	{
 		shouldRenderSAPGPS = true;
@@ -1680,6 +1681,8 @@ void setIconPositionOnScreen(void)
 		BatteryY = VerticalBatteryY;
 		sapGPSX = VerticalSapGPSX;
 		sapGPSY = VerticalsapGPSY;
+		ButtonDotX = VerticalButtonDotX;
+		ButtonDotY = VerticalButtonDotY;
 
 		AutoPilotY = VerticalAutoPilotY;
 
