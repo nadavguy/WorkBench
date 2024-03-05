@@ -7,9 +7,7 @@
 
 #include <stdint.h>
 #include <math.h>
-#include "usart.h"
 #include "Common.h"
-#include "usbd_cdc_if.h"
 
 pFunction JumpToApplication;
 

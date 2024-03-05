@@ -9,8 +9,6 @@
 #include <string.h>
 #include "main.h"
 #include "PushButton.h"
-#include "TBSAgent.h"
-#include "UniqueImages.h"
 #include "LCD_1in8.h"
 uint8_t armButtonCycle = 0;
 uint8_t triggerButtonCycle = 0;
@@ -61,18 +59,6 @@ void CheckButtons(void)
 	downPinState = HAL_GPIO_ReadPin(downGPIO, downPIN);
 	okPinState = HAL_GPIO_ReadPin(okGPIO, okPIN);
 
-	if ( (rcState == PREINIT) && (downPinState == GPIO_PIN_RESET) )
-	{
-		HAL_FLASH_Unlock();
-		/* Allow Access to option bytes sector */
-		HAL_FLASH_OB_Unlock();
-	}
-	else if ( (rcState == INIT) && (okPinState == GPIO_PIN_RESET) )
-	{
-		LCD_1IN8_SetBackLight(20000);
-//		checkMMA();
-	}
-
 	if ( (armPinState == GPIO_PIN_RESET) || (triggerPinState == GPIO_PIN_RESET) || (upPinState == GPIO_PIN_RESET)
 			|| (downPinState == GPIO_PIN_RESET) || (okPinState == GPIO_PIN_RESET) )
 	{
@@ -106,57 +92,24 @@ void CheckButtons(void)
 		return;
 	}
 
-	uint8_t triggerChannel = 1;
-	uint8_t armChannel = 0;
-	if (isLegacyDronePlatform)
-	{
-		triggerChannel = 0;
-		armChannel = 1;
-	}
-
 	/*Accumulate Button Press Pattern  */
 	if (armPinState == GPIO_PIN_RESET)
 	{
 		if ( (armButtonIsHigh) && (!armButtonIsLow) )
 		{
-			logData("Arm button pressed", false, false, false);
-		}
-		armButtonIsHigh = false;
-		armButtonIsLow = true;
-		if ( (ee.linkType == PWM) && (rcState == OPERATIONAL) )
-		{
-			channelPWMValues[armChannel] =  ((ee.armPWMOnValue - 1500) * 2);
-		}
-		else
-		{
-			channelPWMValues[armChannel] =  ((ee.armPWMOffValue - 1500) * 2);
+//			logData("Arm button pressed", false, false, false);
 		}
 	}
 	else
 	{
 		if (armButtonIsLow)
 		{
-			if ( (ee.linkType == PWM) && (rcState == OPERATIONAL) )
-			{
-				channelPWMValues[armChannel] = ((ee.armPWMOffValue - 1500) * 2);
-			}
-			uint32_t armLocalDuration = ((HAL_GetTick()
-					- armButtonPressStart) / 100) * 100;
-			if ( (armButtonCycle < 5) && (armLocalDuration > 100) )
-			{
-				armButtonPressDurationmSec[armButtonCycle] = armLocalDuration;
-				armButtonCycle++;
-			}
-			if (armButtonCycle > 5)
-			{
-				armButtonCycle = 0;
-				memset(armButtonPressDurationmSec, 0, 20);
-			}
+
 		}
 
 		if ( (!armButtonIsHigh) && (armButtonIsLow) )
 		{
-			logData("Arm button released", false, false, false);
+//			logData("Arm button released", false, false, false);
 		}
 
 		armButtonIsHigh = true;
@@ -172,29 +125,16 @@ void CheckButtons(void)
 	{
 		if ( (triggerButtonIsHigh) && (!triggerButtonIsLow) )
 		{
-			logData("Trigger button pressed", false, false, false);
+//			logData("Trigger button pressed", false, false, false);
 		}
 		shouldRedrawButtonDotIcon = true;
 		triggerButtonIsHigh = false;
 		triggerButtonIsLow = true;
-		if ( (ee.linkType == PWM) && (rcState == OPERATIONAL) )
-		{
-			channelPWMValues[triggerChannel] = ((ee.triggerPWMOnValue - 1500) * 2);
-			channelPWMValues[5] = ((ee.triggerPWMOnValue - 1500) * 2);
-		}
-		else
-		{
-			channelPWMValues[triggerChannel] = ((ee.triggerPWMOffValue - 1500) * 2);
-			channelPWMValues[5] = ((ee.triggerPWMOffValue - 1500) * 2);
-		}
+
 	}
 	else
 	{
-		if ( (ee.linkType == PWM) && (rcState == OPERATIONAL) )
-		{
-			channelPWMValues[triggerChannel] = ((ee.triggerPWMOffValue - 1500) * 2);
-			channelPWMValues[5] = ((ee.triggerPWMOffValue - 1500) * 2);
-		}
+
 		if (triggerButtonIsLow)
 		{
 			uint32_t triggerLocalDuration = ((HAL_GetTick()
@@ -213,7 +153,7 @@ void CheckButtons(void)
 
 		if ( (!triggerButtonIsHigh) && (triggerButtonIsLow) )
 		{
-			logData("Trigger button released", false, false, false);
+//			logData("Trigger button relea/sed", false, false, false);
 		}
 		shouldRedrawButtonDotIcon = true;
 		triggerButtonIsHigh = true;
@@ -241,281 +181,7 @@ void CheckButtons(void)
 	/* Act Upon Received Pattern */
 	if ( (armButtonIsHigh) && (triggerButtonIsHigh) )
 	{
-		if ( (rcState == OPERATIONAL) && (ee.linkType == DIGITAL) )
-		{
-			if (HAL_GetTick() - armButtonPressCycleStart > 5000)
-			{
-				if (armButtonPressDurationmSec[0] >= 3000)
-				{
 
-					//Do this --> Arm System
-
-					//				sprintf(USBTXArray, "%6.3f, Do this\r\n", CurrentTime());
-					//				Print(false, true, true);
-				}
-				else if ((armButtonPressDurationmSec[0] >= 1000)
-						&& (armButtonPressDurationmSec[1] >= 1000))
-				{
-					//Do that
-					//				sprintf(USBTXArray, "%6.3f, Do that\r\n", CurrentTime());
-					//				Print(false, true, true);
-				}
-				else if ((armButtonPressDurationmSec[0] >= 1000)
-						&& (armButtonPressDurationmSec[1] == 0))
-				{
-					//Do that
-					//				sprintf(USBTXArray, "%6.3f, Do that Single Press\r\n",
-					//						CurrentTime());
-					//				Print(false, true, true);
-				}
-				else if ((armButtonPressDurationmSec[0] >= 500)
-						&& (armButtonPressDurationmSec[1] >= 1000))
-				{
-					//Or maybe this
-					//				sprintf(USBTXArray, "%6.3f, Or maybe this\r\n", CurrentTime());
-					//				Print(false, true, true);
-
-				}
-				else if ((armButtonPressDurationmSec[0] >= 500)
-						&& (armButtonPressDurationmSec[1] >= 500))
-				{
-					//Or maybe that
-					//				sprintf(USBTXArray, "%6.3f, Or maybe that\r\n", CurrentTime());
-					//				Print(false, true, true);
-				}
-				armButtonCycle = 0;
-				memset(armButtonPressDurationmSec, 0, 20);
-			}
-		}
-	}
-
-	if ( (currentSmaStatus.smaState != ARMED) && (currentSmaStatus.smaState != TRIGGERED) )
-	{
-		if ( (okPinState == GPIO_PIN_RESET) && (!isMenuDisplayed) && (!isPopupDisplayed) && (HAL_GetTick() - lastOkButtonPress > 400))
-		{
-			isMenuDisplayed = true;
-			shouldRenderMenu = true;
-			shouldClearScreen = true;
-			currentCursorPosition.currentPageID = 1;
-			currentCursorPosition.cursorPosition = 0;
-			lastOkButtonPress = HAL_GetTick();
-			menuDrawDirection = FULL;
-			initMenuPages();
-
-			if (ee.informationLevel & 0x02)
-			{
-				sprintf(terminalBuffer, "Analytics, Opened Main Menu, %d", currentCursorPosition.currentPageID);
-				logData(terminalBuffer, true, false, false);
-			}
-		}
-		else if ( (okPinState == GPIO_PIN_RESET) && (isMenuDisplayed) && (!isItemDisplayed) && (HAL_GetTick() - lastOkButtonPress > 400) )
-		{
-			shouldClearScreen = true;
-			itemDrawDirection = FULL;
-			updateSelection();
-			lastOkButtonPress = HAL_GetTick();
-			menuDrawDirection = FULL;
-		}
-		else if ( (okPinState == GPIO_PIN_RESET) && (isMenuDisplayed) && (isItemDisplayed) && (HAL_GetTick() - lastOkButtonPress > 400) )
-		{
-			shouldClearScreen = false;
-			if (currentCursorPosition.cursorPosition == 0x2)
-			{
-				currentCursorPosition.cursorPosition = VALUE;
-				itemDrawDirection = RIGHT;
-			}
-			else if (currentCursorPosition.cursorPosition == 0x3)
-			{
-				currentCursorPosition.cursorPosition = MULTIPLIER;
-				itemDrawDirection = RIGHT;
-			}
-			else if (currentCursorPosition.cursorPosition == 0x4)
-			{
-				isItemDisplayed = false;
-
-			}
-			else if (currentCursorPosition.cursorPosition == 0x5)
-			{
-				isParameterUpdateRequired = true;
-				isItemDisplayed = false;
-			}
-			else if (currentCursorPosition.cursorPosition == VALUE)
-			{
-				currentCursorPosition.cursorPosition = 0x2;
-				itemDrawDirection = LEFT;
-			}
-			else if (currentCursorPosition.cursorPosition == MULTIPLIER)
-			{
-				currentCursorPosition.cursorPosition = 0x3;
-				itemDrawDirection = LEFT;
-			}
-			updateSelection();
-			if (isParameterUpdateRequired)
-			{
-				updateSelectedParameter();
-				isParameterUpdateRequired = false;
-			}
-			lastOkButtonPress = HAL_GetTick();
-
-		}
-		else if ( (downPinState == GPIO_PIN_RESET) && (isMenuDisplayed) && (!isItemDisplayed) && (HAL_GetTick() - lastDownButtonPress > 400) )
-		{
-			shouldRenderMenu = true;
-			shouldClearScreen = false;
-			currentCursorPosition.cursorPosition = fmin(currentCursorPosition.cursorPosition+1,
-					pagesArray[currentCursorPosition.currentPageID].numberOfItemsInPage - 1);
-			lastDownButtonPress = HAL_GetTick();
-			menuDrawDirection = DOWN;
-		}
-		else if ( (downPinState == GPIO_PIN_RESET) && (isItemDisplayed) && (HAL_GetTick() - lastDownButtonPress > 400) )
-		{
-			shouldRenderItem = true;
-			shouldClearScreen = false;
-			if (currentCursorPosition.cursorPosition == 0x2)
-			{
-				currentCursorPosition.cursorPosition = 0x3;
-			}
-			else if (currentCursorPosition.cursorPosition == 0x3)
-			{
-				currentCursorPosition.cursorPosition = 0x4;
-			}
-			else if (currentCursorPosition.cursorPosition == 0x4)
-			{
-				currentCursorPosition.cursorPosition = 0x5;
-			}
-			else if (currentCursorPosition.cursorPosition == 0x5)
-			{
-				currentCursorPosition.cursorPosition = 0x5;
-			}
-			else if (currentCursorPosition.cursorPosition == VALUE)
-			{
-				currentCursorPosition.cursorPosition = VALUE;
-			}
-			else if (currentCursorPosition.cursorPosition == MULTIPLIER)
-			{
-				currentCursorPosition.cursorPosition = MULTIPLIER;
-			}
-			updateSelection();
-			lastDownButtonPress = HAL_GetTick();
-			itemDrawDirection = DOWN;
-		}
-		else if ((downPinState == GPIO_PIN_RESET) && (isPopupDisplayed) && (HAL_GetTick() - lastDownButtonPress > 400))
-		{
-			if (popupToShow.isQuestion)
-			{
-				shouldRenderPopup = true;
-				popupDrawDirection = DOWN;
-			}
-		}
-		else if ( (upPinState == GPIO_PIN_RESET) && (isMenuDisplayed) && (!isItemDisplayed) && (HAL_GetTick() - lastUpButtonPress > 400) )
-		{
-			shouldRenderMenu = true;
-			shouldClearScreen = false;
-
-			currentCursorPosition.cursorPosition = fmax(currentCursorPosition.cursorPosition - 1 , 0);
-			lastUpButtonPress = HAL_GetTick();
-			menuDrawDirection = UP;
-		}
-		else if ( (upPinState == GPIO_PIN_RESET) && (isItemDisplayed) && (HAL_GetTick() - lastUpButtonPress > 400) )
-		{
-			shouldRenderItem = true;
-			shouldClearScreen = false;
-			if (currentCursorPosition.cursorPosition == 0x2)
-			{
-				currentCursorPosition.cursorPosition = 0x2;
-			}
-			else if (currentCursorPosition.cursorPosition == 0x3)
-			{
-				currentCursorPosition.cursorPosition = 0x2;
-			}
-			else if (currentCursorPosition.cursorPosition == 0x4)
-			{
-				currentCursorPosition.cursorPosition = 0x3;
-			}
-			else if (currentCursorPosition.cursorPosition == 0x5)
-			{
-				currentCursorPosition.cursorPosition = 0x4;
-			}
-			else if (currentCursorPosition.cursorPosition == VALUE)
-			{
-				currentCursorPosition.cursorPosition = VALUE;
-			}
-			else if (currentCursorPosition.cursorPosition == MULTIPLIER)
-			{
-				currentCursorPosition.cursorPosition = MULTIPLIER;
-			}
-			updateSelection();
-			lastUpButtonPress = HAL_GetTick();
-			itemDrawDirection = UP;
-		}
-		else if ((upPinState == GPIO_PIN_RESET) && (isPopupDisplayed) && (HAL_GetTick() - lastDownButtonPress > 400))
-		{
-			if (popupToShow.isQuestion)
-			{
-				shouldRenderPopup = true;
-				popupDrawDirection = UP;
-			}
-		}
-//		if ( (okPinState == GPIO_PIN_SET) /*&& (isPopupDisplayed)*/ )
-//		{
-//			lastOkButtonUnpress = HAL_GetTick();
-//			okButtonPressDuration = 0;
-//		}
-//		else
-//		{
-//			if (HAL_GetTick() - lastOkButtonUnpress > 100)
-//			{
-//				okButtonPressDuration = HAL_GetTick() - lastOkButtonUnpress;
-//			}
-//		}
-	}
-	else if ( (currentSmaStatus.smaState == ARMED) && (currentSmaStatus.smaState != TRIGGERED) )
-	{
-		if ( (!isPopupDisplayed) && (okButtonPressDuration > 1000) )
-		{
-			isPopupDisplayed = true;
-			popupDrawDirection = FULL;
-			shouldRenderPopup = true;
-			memcpy(&popupToShow, &safeairForceDisarmMessage, sizeof(popupToShow));
-			screenUpdate(false);
-		}
-		if ((downPinState == GPIO_PIN_RESET) && (isPopupDisplayed) && (HAL_GetTick() - lastDownButtonPress > 400))
-		{
-			if (popupToShow.isQuestion)
-			{
-				shouldRenderPopup = true;
-				popupDrawDirection = DOWN;
-			}
-		}
-		else if ((upPinState == GPIO_PIN_RESET) && (isPopupDisplayed) && (HAL_GetTick() - lastDownButtonPress > 400))
-		{
-			if (popupToShow.isQuestion)
-			{
-				shouldRenderPopup = true;
-				popupDrawDirection = UP;
-			}
-		}
-//		if ( (isPopupDisplayed) && (okButtonPressDuration > 1000) )
-//		{
-//			isPopupDisplayed = true;
-//			shouldRenderPopup = true;
-//			memcpy(&popupToShow, &safeairForceDisarmMessage, sizeof(popupToShow));
-//			screenUpdate(false);
-//		}
-	}
-	if ( (downPinState == GPIO_PIN_RESET) && (!isMenuDisplayed) && (!isItemDisplayed) && (!isPopupDisplayed) && (HAL_GetTick() - lastDownButtonPress > 400) )
-	{
-		if (lowerBarDisplayID > 0)
-		{
-			lowerBarDisplayID = lowerBarDisplayID - 1;
-		}
-	}
-	if ( (upPinState == GPIO_PIN_RESET) && (!isMenuDisplayed) && (!isItemDisplayed) && (!isPopupDisplayed) && (HAL_GetTick() - lastDownButtonPress > 400) )
-	{
-		if (lowerBarDisplayID < 1)
-		{
-			lowerBarDisplayID = lowerBarDisplayID + 1;
-		}
 	}
 }
 

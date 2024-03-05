@@ -152,7 +152,7 @@ bool ee_save1(void)
   if (iap_erase_sector((uint32_t)ee_flash_base1) != 0)
   {
 	  sprintf(terminalBuffer, "Failed to save EEPROM1");
-	  logData(terminalBuffer, true, false, false);
+//	  logData(terminalBuffer, true, false, false);/
 	  return false;
   }
 

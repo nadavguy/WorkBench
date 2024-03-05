@@ -49,23 +49,15 @@ extern "C" {
 #include "FrameHelper.h"
 #include "fonts.h"
 
-#include "LogAgent.h"
-#include "cmd_interp.h"
 #include "ConfigParams.h"
-#include "ConfigurationHelper.h"
-#include "TBSAgent.h"
 #include "ScreenAgent.h"
 #include "PushButton.h"
 #include "BuzzerAgent.h"
 #include "TerminalAgent.h"
 #include "ymodem.h"
 #include "Common.h"
-#include "BleAgent.h"
-#include "ci_func.h"
 #include "PowerAgent.h"
 #include "EEPROMAgent.h"
-#include "stm32746g_qspi.h"
-#include "w25q128fv.h"
 #include "Pitches.h"
 #include <crcAgent.h>
 /* USER CODE END Includes */
@@ -158,16 +150,7 @@ extern uint32_t UID3;
 
 extern unsigned int BytesWritten;
 
-extern SYSTEMConnectionStatus bluetoothConnection;
-
-extern SIGNALStrength batteryStrength;
-extern SIGNALStrength tbsLink;
-
-extern SYSTEMState rcState;
 extern LINKType linkType;
-extern tWarning displayWarning;
-
-extern SYSTEMState desiredSMAState;
 
 extern tCURSOR_DATA currentCursorPosition;
 
@@ -194,8 +177,6 @@ extern void updateRCState(void);
 #define GPIO_ArmButton_GPIO_Port GPIOE
 #define AntiTamper_Pin GPIO_PIN_13
 #define AntiTamper_GPIO_Port GPIOC
-#define GPIO_WakeUp_Pin GPIO_PIN_0
-#define GPIO_WakeUp_GPIO_Port GPIOA
 #define SPI1_SCK___LCD_Pin GPIO_PIN_5
 #define SPI1_SCK___LCD_GPIO_Port GPIOA
 #define SPI1_MISO___LCD_Pin GPIO_PIN_6
@@ -208,38 +189,25 @@ extern void updateRCState(void);
 #define GPIO_RST___LCD_GPIO_Port GPIOC
 #define TIM3_CH3___BL_LCD_Pin GPIO_PIN_0
 #define TIM3_CH3___BL_LCD_GPIO_Port GPIOB
-#define GPIO_3_3Mux_Stat_Pin GPIO_PIN_1
-#define GPIO_3_3Mux_Stat_GPIO_Port GPIOB
-#define GPIO_BLE___AppOrConfig_Pin GPIO_PIN_8
-#define GPIO_BLE___AppOrConfig_GPIO_Port GPIOE
 #define GPIO_TriggerButton_Pin GPIO_PIN_9
 #define GPIO_TriggerButton_GPIO_Port GPIOE
-#define GPIO_BLE___Reset_Pin GPIO_PIN_10
-#define GPIO_BLE___Reset_GPIO_Port GPIOE
-#define USART_TX___TBS_Pin GPIO_PIN_14
-#define USART_TX___TBS_GPIO_Port GPIOB
-#define USART_RX___TBS_Pin GPIO_PIN_15
-#define USART_RX___TBS_GPIO_Port GPIOB
-#define USART3_TX___BLE_Pin GPIO_PIN_8
-#define USART3_TX___BLE_GPIO_Port GPIOD
-#define USART3_RX___BLE_Pin GPIO_PIN_9
-#define USART3_RX___BLE_GPIO_Port GPIOD
 #define GPIO_CS___LCD_Pin GPIO_PIN_6
 #define GPIO_CS___LCD_GPIO_Port GPIOC
-#define USB_DM___White_Wire_Pin GPIO_PIN_11
-#define USB_DM___White_Wire_GPIO_Port GPIOA
-#define USB_DP___Green_Wire_Pin GPIO_PIN_12
-#define USB_DP___Green_Wire_GPIO_Port GPIOA
+#define GPIO_ChargeDetect_Pin GPIO_PIN_9
+#define GPIO_ChargeDetect_GPIO_Port GPIOA
 #define GPIO_UpButton_Pin GPIO_PIN_3
 #define GPIO_UpButton_GPIO_Port GPIOD
 #define GPIO_DownButton_Pin GPIO_PIN_4
 #define GPIO_DownButton_GPIO_Port GPIOD
 #define GPIO_ApproveButton_Pin GPIO_PIN_7
 #define GPIO_ApproveButton_GPIO_Port GPIOD
+#define TIM3_CH1_LED_PWM_Pin GPIO_PIN_4
+#define TIM3_CH1_LED_PWM_GPIO_Port GPIOB
 #define GPIO_Buzzer_Pin GPIO_PIN_0
 #define GPIO_Buzzer_GPIO_Port GPIOE
 #define GPIO_ChargeEN_Pin GPIO_PIN_1
 #define GPIO_ChargeEN_GPIO_Port GPIOE
+
 /* USER CODE BEGIN Private defines */
 
 #define DC_Pin GPIO_PIN_4

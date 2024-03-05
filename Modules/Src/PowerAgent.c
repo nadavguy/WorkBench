@@ -151,12 +151,12 @@ void measureVoltages(bool forceMeasurement)
 		if (currentVoltages[0] < 3.1)
 		{
 			sprintf(terminalBuffer,"Low 3.3V regulator output: %1.3f", currentVoltages[0]);
-			logData(terminalBuffer, false, false, false);
+//			logData(terminalBuffer, false, false, false);
 		}
 		if (currentVoltages[1] < 4.8)
 		{
 			sprintf(terminalBuffer,"Low 5.1V regulator output: %1.3f", currentVoltages[1]);
-			logData(terminalBuffer, false, false, false);
+//			logData(terminalBuffer, false, false, false);
 		}
 		batteryVoltage = currentVoltages[2];
 

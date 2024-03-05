@@ -57,15 +57,9 @@ void DebugMon_Handler(void);
 void PendSV_Handler(void);
 void SysTick_Handler(void);
 void FLASH_IRQHandler(void);
-void DMA1_Stream1_IRQHandler(void);
-void DMA1_Stream5_IRQHandler(void);
 void ADC_IRQHandler(void);
 void TIM3_IRQHandler(void);
 void SPI1_IRQHandler(void);
-void USART1_IRQHandler(void);
-void USART3_IRQHandler(void);
-void DMA2_Stream2_IRQHandler(void);
-void OTG_FS_IRQHandler(void);
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */

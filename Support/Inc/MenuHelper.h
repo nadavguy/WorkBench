@@ -157,26 +157,13 @@ typedef struct sPOPUP
 extern MENULEVELType menuLevel;
 
 extern tMENU_PAGE MainPage;
-extern tMENU_PAGE pagesArray[6];
+extern tMENU_PAGE pagesArray[5];
 
 extern tPOPUP noConnectionMessage;
 extern tPOPUP safeairForceDisarmMessage;
-extern tPOPUP tbsInChargeModeMessage;
-extern tPOPUP autoCalibrationMessage;
-extern tPOPUP testFlightMessage;
-extern tPOPUP testMotorCutMessage;
-extern tPOPUP returnToIdleMessage;
-extern tPOPUP resetDueToAltitudeMessage;
-extern tPOPUP markGPSPositionMessage;
-extern tPOPUP noAutoPilotMessage;
-extern tPOPUP geoCagingMessage;
-extern tPOPUP armSafeAirMessage;
 
 extern tUINT16_ITEM brightnessItem;
 extern tSTRING_ITEM triggerModeItem;
-
-extern bool isTestCalibActive;
-extern bool isAutoCalibActive;
 
 extern uint32_t itemIDtoUpdate;
 

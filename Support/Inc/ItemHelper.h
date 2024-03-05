@@ -8,7 +8,7 @@
 #ifndef INC_ITEMHELPER_H_
 #define INC_ITEMHELPER_H_
 
-
+#include "main.h"
 extern uint8_t multiplierIndex;
 
 extern void updateUint8Item(MENUDRAWType howToDraw);

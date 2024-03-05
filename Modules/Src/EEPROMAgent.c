@@ -6,7 +6,6 @@
  */
 #include "main.h"
 #include "stm32f7xx_hal.h"
-#include "usb_device.h"
 uint32_t BankNumber = 0;
 //FLASH_EraseInitTypeDef EraseInitStruct;
 tFlashParams localFlashParams;
@@ -215,23 +214,23 @@ uint32_t writeData(uint32_t startAddress, uint32_t* data, uint32_t data_length)
 
 void reallocateData(uint32_t oldAddress, uint32_t newAddress, uint32_t totalNumberOfBytesToAllocate)
 {
-	uint8_t localArray[1024] = {0xFF};
-	uint16_t localMaxNumberOfArrays = totalNumberOfBytesToAllocate / 1024;
-	localFlashParams.startAddress = newAddress;
-	prepFlash(4);
-	for (int i = 0 ; i < localMaxNumberOfArrays ; i++)
-	{
-		memcpy(localArray, (uint32_t *)(oldAddress + 1024*i), 1024);
-		writeData(newAddress + 1024*i, (uint32_t *)localArray, 1024);
-//		HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, newAddress + 1024*i, *(uint32_t *)localArray);
-		memset(localArray, 0xFF, 1024);
-	}
-	uint32_t reminderOfData = totalBytesLengthInFile - 1024 * localMaxNumberOfArrays;
-	memcpy(localArray, (uint32_t *)(oldAddress + 1024*localMaxNumberOfArrays), reminderOfData);
-//	HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, newAddress + 1024*localMaxNumberOfArrays, *(uint32_t *)localArray);
-	writeData(newAddress + 1024*localMaxNumberOfArrays, (uint32_t *)localArray, reminderOfData);
-	localFlashParams.startAddress = oldAddress;
-	prepFlash(1);
+//	uint8_t localArray[1024] = {0xFF};
+//	uint16_t localMaxNumberOfArrays = totalNumberOfBytesToAllocate / 1024;
+//	localFlashParams.startAddress = newAddress;
+//	prepFlash(4);
+//	for (int i = 0 ; i < localMaxNumberOfArrays ; i++)
+//	{
+//		memcpy(localArray, (uint32_t *)(oldAddress + 1024*i), 1024);
+//		writeData(newAddress + 1024*i, (uint32_t *)localArray, 1024);
+////		HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, newAddress + 1024*i, *(uint32_t *)localArray);
+//		memset(localArray, 0xFF, 1024);
+//	}
+//	uint32_t reminderOfData = totalBytesLengthInFile - 1024 * localMaxNumberOfArrays;
+//	memcpy(localArray, (uint32_t *)(oldAddress + 1024*localMaxNumberOfArrays), reminderOfData);
+////	HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, newAddress + 1024*localMaxNumberOfArrays, *(uint32_t *)localArray);
+//	writeData(newAddress + 1024*localMaxNumberOfArrays, (uint32_t *)localArray, reminderOfData);
+//	localFlashParams.startAddress = oldAddress;
+//	prepFlash(1);
 }
 
 void reallocateDataFromArray(const unsigned char *AF_Datos, uint32_t newAddress, uint32_t totalNumberOfBytesToAllocate)

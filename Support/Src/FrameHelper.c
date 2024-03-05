@@ -6,41 +6,37 @@
  */
 
 #include "main.h"
-#include "GUI_Paint.h"
 #include "DEV_Config.h"
+#include "LCD_1in8.h"
+
 uint8_t numberOfDisplayedSafeAirIcons = 0;
 
-void createEmptyFrame(bool isMenuFrame, bool addStatusBar)
+uint32_t LCDArraySize = 40960;
+
+void createEmptyFrame(bool isMenuFrame)
 {
-	uint8_t offset = 0;
-	if (addStatusBar)
-	{
-		offset = (uint8_t)STATUSBAR_HEIGHT;
-		Paint_DrawLine(LineStartX, LineY, LineEndX, LineY, BLACK, DOT_PIXEL_1X1, LINE_STYLE_SOLID);
-	}
 	if (!isMenuFrame)
 	{
-		memset(nextFrameToDraw,0x00,40960);
+		memset(nextFrameToDraw,0x00,LCDArraySize);
 
-		for (int i = 0 ; i < (40960 - SCREEN_WIDTH * offset * 2) /2 ; i++)
+		for (int i = 0 ; i < (LCDArraySize - SCREEN_WIDTH * STATUSBAR_HEIGHT * 2) /2 ; i++)
 		{
-			nextFrameToDraw[(i + SCREEN_WIDTH * offset) * 2] = BACKGROUND_HIGH_BYTE;
-			nextFrameToDraw[(i + SCREEN_WIDTH * offset) * 2 + 1] = BACKGROUND_LOW_BYTE;
+			nextFrameToDraw[(i + SCREEN_WIDTH * STATUSBAR_HEIGHT) * 2] = BACKGROUND_HIGH_BYTE;
+			nextFrameToDraw[(i + SCREEN_WIDTH * STATUSBAR_HEIGHT) * 2 + 1] = BACKGROUND_LOW_BYTE;
 		}
-
-
 	}
 	else if (isMenuFrame)
 	{
-		memset(nextFrameToDraw,0xFF,40960);
+		memset(nextFrameToDraw,0xFF,LCDArraySize);
 	}
 }
 
-void updateNextFrame(void)
+void displayNextFrame(void)
 {
+//	LCD_1IN8_SetCursor(0, 0);
 	if (HAL_GetTick() - lastFrameDisplayed > 30)
 	{
-		HAL_SPI_Transmit(&DEV_SPI, (uint8_t *)nextFrameToDraw, 40960, 1500);
+		HAL_SPI_Transmit(&DEV_SPI, (uint8_t *)nextFrameToDraw, LCDArraySize, 1500);
 //		createEmptyFrame();
 		lastFrameDisplayed = HAL_GetTick();
 	}
@@ -61,4 +57,9 @@ void addRectangleToFrame(uint8_t xStart, uint8_t yStart, uint8_t xEnd, uint8_t y
 		nextFrameToDraw[(i + SCREEN_WIDTH * yStart + xStart) * 2] = (uint8_t)((Color & 0xFF00) >> 8 );
 		nextFrameToDraw[(i + SCREEN_WIDTH * yStart + xStart) * 2 + 1] = (uint8_t)((Color & 0x00FF));
 	}
+}
+
+void prepareNextFrame(void)
+{
+
 }

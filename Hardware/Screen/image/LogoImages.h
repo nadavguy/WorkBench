@@ -8,13 +8,7 @@
 #ifndef SCREEN_IMAGE_LOGOIMAGES_H_
 #define SCREEN_IMAGE_LOGOIMAGES_H_
 
-extern const unsigned char gImage_Logo[];
-extern const unsigned char gImage_Logo_36[];
-extern const unsigned char gImage_SafeAir_Logo_74_11[];
-extern const unsigned char gImage_SafeAir_Logo_59_9[];
-extern const unsigned char gImage_ParaZero_Logo_100_121_LSB[];
-extern const unsigned char gImage_ParaZero_Logo_Legacy_62_77[];
-
+extern const unsigned char gImage_Rain[];
 
 
 #endif /* SCREEN_IMAGE_LOGOIMAGES_H_ */
